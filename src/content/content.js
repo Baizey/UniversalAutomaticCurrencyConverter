@@ -171,6 +171,10 @@ runner.loader.finally(() => {
     if (engine.blacklist.isBlacklisted(window.location.href))
         return;
 
+    Timer.start('Localization');
+    engine.currencyDetector.localize(Browser.getHost(), document.body.innerText);
+    Timer.log('Localization');
+
     if (engine.automaticPageConversion) {
         Timer.start('Converting page');
         runner.convertElements(document.body);

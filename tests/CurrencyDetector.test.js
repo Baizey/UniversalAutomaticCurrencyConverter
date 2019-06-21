@@ -32,11 +32,12 @@ describe("CurrencyDetector tests", () => {
 
     it("Test scandinavian special currency", () => {
         // Setup
-        const detector = new CurrencyDetector(Browser.instance({
-            type: Browsers.Chrome,
-            access: null
-        }));
-        CurrencyDetector.localize(detector, 'dk');
+        const detector = new CurrencyDetector(
+            Browser.instance({
+                type: Browsers.Chrome,
+                access: null
+            }));
+        detector.localize('dk');
 
         const data = '5,-';
         const expected = [new SearchResult(data, '', '', '', '', 5, 'DKK')];
@@ -70,6 +71,7 @@ describe("CurrencyDetector tests", () => {
     it("Test amazon.co.uk", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
+        detector.localize('uk');
         const data = "£2\n.\n49";
         const expected = [new SearchResult(data, '', '', '', '', 2.49, 'GBP')];
 

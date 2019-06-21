@@ -10,66 +10,15 @@ class CurrencyDetector {
     }
 
     /**
-     * @param {CurrencyDetector} instance
-     * @param {string|null} givenHost
+     * @param {string} host
+     * @param {string} text
      */
-    static localize(instance, givenHost = null) {
-        const hostname = window.location.hostname;
-        const index = hostname.lastIndexOf('.');
-        const host = givenHost ? givenHost
-            : (index >= 0 && hostname.length >= index + 1
-                ? hostname.substr(hostname.lastIndexOf('.') + 1)
-                : null);
-
-
-        instance.currencies['dollar'] = 'USD';
-        instance.currencies['dollars'] = 'USD';
-
-        switch (host) {
-            case 'dk':
-                instance.currencies['kr.'] = 'DKK';
-                instance.currencies['kr'] = 'DKK';
-                instance.currencies[',-'] = 'DKK';
-                break;
-            case 'se':
-                instance.currencies['kr.'] = 'SEK';
-                instance.currencies['kr'] = 'SEK';
-                instance.currencies[',-'] = 'SEK';
-                break;
-            case 'no':
-                instance.currencies['kr.'] = 'NOK';
-                instance.currencies['kr'] = 'NOK';
-                instance.currencies[',-'] = 'NOK';
-                break;
-            case 'ca':
-                instance.currencies['dollar'] = 'CAD';
-                instance.currencies['dollars'] = 'CAD';
-                instance.currencies['$'] = 'CAD';
-                break;
-            case 'au':
-                instance.currencies['dollar'] = 'AUD';
-                instance.currencies['dollars'] = 'AUD';
-                instance.currencies['$'] = 'AUD';
-                break;
-            case 'jp':
-                instance.currencies['¥'] = 'JPY';
-                break;
-            case 'mx':
-                instance.currencies['$'] = 'MXN';
-                break;
-        }
+    localize(host = undefined, text = '') {
+        Localization.analyze(this.currencies, text, host);
     }
 
     constructor(browser = null) {
         this._browser = browser ? browser : Browser.instance();
-        this._currencySymbols = {
-            '£': 'GBP', // UK
-            '€': 'EUR', // EU
-            '$': 'USD', // US (or mexico localized)
-            '₽': 'RUB', // Russia
-            '¥': 'CNY', // China (or Japan localized)
-            '₩': 'KRW', // S. Korea
-        };
         this._currencies = {
             HRK: 'HRK',
             HUF: 'HUF',
@@ -105,9 +54,6 @@ class CurrencyDetector {
             ILS: 'ILS',
             NOK: 'NOK'
         };
-        this.updateWithMoreCurrencies(this._currencySymbols);
-        CurrencyDetector.localize(this);
-
 
         const s = /["+\-',.<>()\/\s]/;
         const start = new RegExp(`(${s.source}|^)`);

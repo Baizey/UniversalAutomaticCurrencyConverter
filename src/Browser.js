@@ -17,6 +17,12 @@ class Browser {
                 .replace('{author}', Browser.author);
     }
 
+    static getHost() {
+        const hostname = window.location.hostname;
+        const index = hostname.lastIndexOf('.');
+        return index < 0 ? '' : hostname.substr(index + 1);
+    }
+
     static get author() {
         return chrome.runtime.getManifest().author;
     }
@@ -26,6 +32,7 @@ class Browser {
     }
 
     static instance(dummy) {
+        if (dummy) return (_browserInstance = new Browser(dummy));
         return _browserInstance ? _browserInstance : (_browserInstance = new Browser(dummy));
     }
 
