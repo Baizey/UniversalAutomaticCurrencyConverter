@@ -126,7 +126,7 @@ class CurrencyDetector {
     }
 
     /**
-     * @param {string|Element} text
+     * @param {string|HTMLElement} text
      * @param {boolean} expectOnlyCurrency
      * @return {SearchResult[]}
      */
@@ -151,7 +151,7 @@ class CurrencyDetector {
     }
 
     /**
-     * @param {string|Element} text
+     * @param {string|HTMLElement} text
      * @param {boolean} expectOnlyCurrency
      * @return {boolean}
      */

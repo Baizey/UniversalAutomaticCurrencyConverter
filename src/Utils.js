@@ -6,11 +6,11 @@ class Timer {
         return _TimerInstance ? _TimerInstance : (_TimerInstance = new Timer());
     }
 
-    static start(name = 'everything') {
+    static start(name = 'Everything') {
         Timer.instance().start(name);
     }
 
-    static log(name = 'everything') {
+    static log(name = 'Everything') {
         Timer.instance().log(name);
     }
 
@@ -20,12 +20,11 @@ class Timer {
         };
     }
 
-    start(name = 'everything') {
-        const start = Date.now();
-        this.times[name] = start;
+    start(name = 'Everything') {
+        this.times[name] = Date.now();
     }
 
-    log(name = 'everything') {
+    log(name = 'Everything') {
         const end = Date.now();
         const start = this.times[name];
         console.log(`UACC ${Browser.extensionVersion} ${name} took ${((end - start) / 1000).toFixed(3)} seconds`);

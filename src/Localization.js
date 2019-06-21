@@ -20,6 +20,8 @@ class Localization {
         this.lookup = {
             // Usa, Canada, Australia, Mexico, New Zealand, Singapore, Hong kong
             '$': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
+            'dollar': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
+            'dollars': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
             // Denmark, Sweden,  Norway, Island, Czechia
             'kr.': ['DKK', 'SEK', 'NOK', 'ISK', 'CZK'],
             'kr': ['DKK', 'SEK', 'NOK', 'ISK', 'CZK'],
@@ -70,7 +72,7 @@ class Localization {
             'bg': 'BGN',
             'dk': 'DKK',
             'se': 'SEK',
-            'uk': 'NOK',
+            'no': 'NOK',
             'is': 'ISK',
             'cz': 'CZK',
             'ca': 'CAD',
@@ -79,7 +81,29 @@ class Localization {
             'nz': 'NZD',
             'sg': 'SGP',
             'hk': 'HKD',
+            'uk': 'GBP',
         }
+    }
+
+    /**
+     * @param {object} currencies
+     * @param {string} text
+     * @param {string} host
+     * @return {*}
+     */
+    count(currencies, text) {
+        const counter = Object.keys(currencies).reduce((a, b) => (a[b] = 0) || a, {});
+
+        const regex = /(?:^|[\W_])([A-Z]{3})(?:$|[\W_])/g;
+        do {
+            regex.lastIndex--;
+            const resp = regex.exec(text);
+            if (!resp) break;
+            let [, currency] = resp;
+            if (typeof counter[currency] !== 'number') continue;
+            counter[currency]++;
+        } while (true);
+        return counter;
     }
 
     /**
@@ -96,7 +120,7 @@ class Localization {
         // If host is found it will give default bonus assertion,
         // otherwise USD will always be seen as default
         host = this.hostToCurrency[host] || 'USD';
-        counter[host] = 20;
+        counter[host] = 1;
 
         const regex = /(?:^|[\W_])([A-Z]{3})(?:$|[\W_])/g;
         do {
@@ -112,11 +136,10 @@ class Localization {
             const countries = this.lookup[key];
             if (countries.length === 1)
                 return currencies[key] = countries[0];
-            const score = countries.map(e => counter[e]).map(e => e ? e : 0);
+            const score = countries.map(e => counter[e]).map(e => e ? e : -1);
             const max = score.indexOf(Math.max(...score));
             currencies[key] = countries[max];
         });
-
     }
 
 }

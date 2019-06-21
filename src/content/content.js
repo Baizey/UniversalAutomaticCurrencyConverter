@@ -70,6 +70,7 @@ class UACCContent {
 
     transformElement(element, full = false) {
         if (!element) return;
+        if (element.hasAttribute(convertedTag)) return;
         element.setAttribute(convertedTag, 'true');
         const newText = this.convertElement(element, full);
         const oldText = element.innerHTML;
@@ -198,36 +199,30 @@ runner.loader.finally(() => {
             childList: true,
             subtree: true
         });
-        // Add event on keyup to look for shortcut to convert back
-        window.addEventListener("keyup", e => {
-            // Secure element in case it changes between check and execution
-            const securedOver = mouseIsOver;
-            if (e.key === engine.conversionShortcut && securedOver) securedOver.UACCChanger();
-        }, false);
-    } else {
-        window.addEventListener("keyup", e => {
-            // Secure element in case it changes between check and execution
-            const securedOver = mouseIsOver;
-            if (e.key !== engine.conversionShortcut)
-                return;
-
-            if (securedOver)
-                return securedOver.UACCChanger();
-
-            let parent;
-            if (!(parent = window.getSelection()))
-                return;
-
-            if (!(parent = parent.anchorNode))
-                return;
-            if (!(parent = parent.parentElement))
-                return;
-            if (!(parent = parent.parentElement))
-                return;
-
-            runner.convertElements(parent);
-            parent.setAttribute(convertedTag, 'true');
-        }, false);
     }
+
+    window.addEventListener("keyup", e => {
+        // Secure element in case it changes between check and execution
+        if (e.key !== engine.conversionShortcut)
+            return;
+
+        const securedOver = mouseIsOver;
+        if (securedOver)
+            return securedOver.UACCChanger();
+
+        let parent;
+        if (!(parent = window.getSelection()))
+            return;
+
+        if (!(parent = parent.anchorNode))
+            return;
+        if (!(parent = parent.parentElement))
+            return;
+        if (!(parent = parent.parentElement))
+            return;
+
+        runner.convertElements(parent);
+        parent.setAttribute(convertedTag, 'true');
+    }, false);
     Timer.log();
 });
