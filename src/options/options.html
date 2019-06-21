@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Universal Automatic Converter Options</title>
+    <!-- Latest compiled and minified CSS Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Unified converters custom css -->
+    <link rel="stylesheet" type="text/css" href="options.css">
+    <!-- JS RegExp extension needed by Firefox -->
+    <script src="../XRegExp.js"></script>
+    <!-- UACC Need -->
+    <script src="../Utils.js"></script>
+    <script src="../Browser.js"></script>
+    <!-- UACC Data holders -->
+    <script src="../Highlighter.js"></script>
+    <script src="../CustomTag.js"></script>
+    <script src="../Blacklist.js"></script>
+    <!-- UACC Mini-services -->
+    <script src="../NumberFormatter.js"></script>
+    <script src="../CurrencyConverter.js"></script>
+    <script src="../CurrencyDetector.js"></script>
+    <!-- UACC Runner -->
+    <script src="../Engine.js"></script>
+    <!-- UACC domain specific -->
+    <script src="options.js"></script>
+</head>
+<body>
+<div class="centering">
+    <br>
+    <h1>Universal Automatic Currency Converter Options</h1>
+    <div class="setting-wrap collapsible">
+        <h2>Currency Converter options</h2>
+        <div class="row setting-tab">
+            <div class="col-sm">
+                <div class="col-sm">
+                    <label class="center" for="usingCurrencyConverter">Using currency converter</label>
+                    <input class="form-control center" type="checkbox" id="usingCurrencyConverter" checked>
+                </div>
+                <div id="footer" style="margin:auto; text-align:center">Version {version}<br>Created by {author}</div>
+            </div>
+        </div>
+        <div class="row setting-tab">
+            <h3>Currency</h3>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-4">
+                    <label class="center" for="currency">Base currency</label>
+                    <select id="currency" name="currency" class="form-control">
+                        <option value="EUR">EUR</option>
+                        <option value="USD">USD</option>
+                        <option value="AUD">AUD</option>
+                        <option value="BGN">BGN</option>
+                        <option value="BRL">BRL</option>
+                        <option value="CAD">CAD</option>
+                        <option value="CHF">CHF</option>
+                        <option value="CNY">CNY</option>
+                        <option value="CZK">CZK</option>
+                        <option value="DKK">DKK</option>
+                        <option value="GBP">GBP</option>
+                        <option value="HKD">HKD</option>
+                        <option value="HRK">HRK</option>
+                        <option value="HUF">HUF</option>
+                        <option value="IDR">IDR</option>
+                        <option value="ILS">ILS</option>
+                        <option value="INR">INR</option>
+                        <option value="ISK">ISK</option>
+                        <option value="JPY">JPY</option>
+                        <option value="KRW">KRW</option>
+                        <option value="MXN">MXN</option>
+                        <option value="MYR">MYR</option>
+                        <option value="NOK">NOK</option>
+                        <option value="NZD">NZD</option>
+                        <option value="PHP">PHP</option>
+                        <option value="PLN">PLN</option>
+                        <option value="RON">RON</option>
+                        <option value="RUB">RUB</option>
+                        <option value="SEK">SEK</option>
+                        <option value="SGD">SGD</option>
+                        <option value="THB">THB</option>
+                        <option value="TRY">TRY</option>
+                        <option value="ZAR">ZAR</option>
+                    </select>
+                    <span class="help-block center">Your preferred currency</span>
+                </div>
+                <div class="col-sm-6">
+                    <label class="center" for="currencyApikey">API key for fixer.io</label>
+                    <input id="currencyApikey" class="form-control" name="currencyApikey" type="text">
+                    <span class="help-block center">Optional<br>Adds 150+ exchange rates to extension<br>
+                        <a target="_blank" href="https://fixer.io/signup/free">Get API key here</a>
+                    </span>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyConversionRate">Convert from</label>
+                    <select id="currencyConversionRate" class="form-control clickable center"
+                            name="currencyConversionRate"
+                            type="text">
+                        <option value="EUR">EUR</option>
+                        <option value="USD">USD</option>
+                        <option value="AUD">AUD</option>
+                        <option value="BGN">BGN</option>
+                        <option value="BRL">BRL</option>
+                        <option value="CAD">CAD</option>
+                        <option value="CHF">CHF</option>
+                        <option value="CNY">CNY</option>
+                        <option value="CZK">CZK</option>
+                        <option value="DKK">DKK</option>
+                        <option value="GBP">GBP</option>
+                        <option value="HKD">HKD</option>
+                        <option value="HRK">HRK</option>
+                        <option value="HUF">HUF</option>
+                        <option value="IDR">IDR</option>
+                        <option value="ILS">ILS</option>
+                        <option value="INR">INR</option>
+                        <option value="ISK">ISK</option>
+                        <option value="JPY">JPY</option>
+                        <option value="KRW">KRW</option>
+                        <option value="MXN">MXN</option>
+                        <option value="MYR">MYR</option>
+                        <option value="NOK">NOK</option>
+                        <option value="NZD">NZD</option>
+                        <option value="PHP">PHP</option>
+                        <option value="PLN">PLN</option>
+                        <option value="RON">RON</option>
+                        <option value="RUB">RUB</option>
+                        <option value="SEK">SEK</option>
+                        <option value="SGD">SGD</option>
+                        <option value="THB">THB</option>
+                        <option value="TRY">TRY</option>
+                        <option value="ZAR">ZAR</option>
+                    </select>
+                    <span class="help-block center">See currency rate to your base currency</span>
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyConversionAmount">Convert amount</label>
+                    <input id="currencyConversionAmount" class="form-control number"
+                           name="currencyConversionAmount"
+                           type="number"
+                           value="1">
+                    <span class="help-block center">Amount converting to base currency</span>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <div class="center centering">
+                <span class="centering" style="font-size:1.5em; line-height:165px; text-align:center; width:100%">=
+                    <span id="currencyConversionResult">?</span>
+                </span>
+                    </div></div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+        <div class="row setting-tab">
+            <h3>Formatting</h3>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <label class="center" for="thousandDisplay">Thousands separator</label>
+                    <select id="thousandDisplay" name="thousandDisplay" class="form-control">
+                        <option value=" ">space ( )</option>
+                        <option value=",">comma (,)</option>
+                        <option value=".">point (.)</option>
+                        <option value="">Nothing</option>
+                    </select>
+                    <span class="help-block center">Select which symbol should be used to split thousands</span>
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="decimalDisplay">Decimal separator</label>
+                    <select id="decimalDisplay" name="decimalDisplay" class="form-control">
+                        <option value=".">point (.)</option>
+                        <option value=",">comma (,)</option>
+                        <option value=" ">space ( )</option>
+                    </select>
+                    <span class="help-block center">Select which symbol should split decimals from whole numbers</span>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <label class="center" for="decimalAmount">Number of important digits</label>
+                    <input id="decimalAmount" class="rounding form-control number" name="decimalAmount" type="number"
+                           min="1"
+                           max="20"
+                           value="2">
+                    <span class="help-block center">No matter what you choose there will at most be 2 significant decimal digits</span>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+        <div class="row setting-tab">
+            <h3>Conversion</h3>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyShortcut">Conversion shortcut</label>
+                    <input id="currencyShortcut" class="form-control clickable center" name="currencyShortcut"
+                           type="text"
+                           readonly="readonly" value="Shift">
+                    <span class="help-block center">Select what to click when hovering over a conversion to see the original price. Hover over the field and click your preferred button</span>
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyUsingAutomatic">Use automatic conversion</label>
+                    <input id="currencyUsingAutomatic" class="form-control clickable center" name="currencyUsingAutomatic"
+                           type="checkbox" readonly="readonly" checked>
+                    <span class="help-block center">Whether or not pages should automatically be converted when you load them, if not checked you will have to mark the things you want converted and click your conversion shortcut</span>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label class="center" for="currencyUsingHighlight">Use highlighting</label>
+                    <input class="form-control center" type="checkbox" id="currencyUsingHighlight">
+                    <span class="help-block center">If you want to use your highlighting</span>
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyHighlightColor">Highlight color</label>
+                    <input id="currencyHighlightColor" class="highlight form-control" name="currencyHighlightColor" type="text">
+                    <span class="help-block center">What color should be used when highlighting (Most common names are accepted, but you can also define it in hex like #fff or #f0f0f0)</span>
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyHighlightDuration">Highlight duration</label>
+                    <input id="currencyHighlightDuration" class="highlight form-control number"
+                           name="currencyHighlightDuration"
+                           type="number"
+                           value="500" min="0">
+                    <span class="help-block center">How long conversions should stay highlighted (1000 = 1 second)</span>
+                </div>
+            </div>
+        </div>
+        <div class="row setting-tab">
+            <h3>Custom tag</h3>
+            <div class="col-sm-4">
+                <label class="center" for="currencyUsingCustomTag">Use custom tag</label>
+                <input class="form-control center" type="checkbox" id="currencyUsingCustomTag">
+                <span class="help-block center">If you want to use your custom tag</span>
+            </div>
+            <div class="col-sm-4">
+                <label class="center" for="currencyCustomTag">Name</label>
+                <input id="currencyCustomTag" class="customTag form-control" name="currencyCustomTag" type="text">
+                <span class="help-block center">What your custom tag should be called<br>Write '{amount}' to control where the amount should be displayed, fx '${amount}' would display like '$5'</span>
+            </div>
+            <div class="col-sm-4">
+                <label class="center" for="currencyCustomTagValue">Conversion rate</label>
+                <input id="currencyCustomTagValue" class="customTag form-control number"
+                       name="currencyCustomTagValue"
+                       type="number"
+                       value="1">
+                <span class="help-block center">How much of the base currency is needed for 1 of your custom tag?</span>
+            </div>
+        </div>
+        <div class="row setting-tab">
+            <h3 id="blacklistingTitle">Blacklisting</h3>
+            <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="usingBlacklist">Using blacklisting</label>
+                    <input class="form-control center" type="checkbox" id="usingBlacklist">
+                    <span class="help-block center"></span>
+                </div>
+                <div class="col-sm-4">
+                </div>
+            </div>
+            <br>
+            <ul id="currencyBlacklistUrls" class="blacklist"></ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

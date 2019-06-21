@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Latest compiled and minified CSS Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="popup.css">
+    <!-- JS RegExp extension needed by Firefox -->
+    <script src="../XRegExp.js"></script>
+    <!-- UACC Need -->
+    <script src="../Utils.js"></script>
+    <script src="../Browser.js"></script>
+    <!-- UACC Data holders -->
+    <script src="../Highlighter.js"></script>
+    <script src="../CustomTag.js"></script>
+    <script src="../Blacklist.js"></script>
+    <!-- UACC Mini-services -->
+    <script src="../NumberFormatter.js"></script>
+    <script src="../CurrencyConverter.js"></script>
+    <script src="../CurrencyDetector.js"></script>
+    <!-- UACC Runner -->
+    <script src="../Engine.js"></script>
+    <script src="popup.js"></script>
+    <meta charset="UTF-8">
+    <title>Universal Automatic Currency Converter</title>
+</head>
+<body>
+<div class="centering" style="width: 400px; padding: 10px; margin:10px">
+    <div class="row">
+        <div class="col-xs-12">
+            <h2 class="center"><span id="conversionCount">?</span> page conversion</h2>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-xs-6">
+            <div id="hideAll" class="center btn btn-info">Hide conversion</div>
+        </div>
+        <div class="col-xs-6">
+            <div id="showAll" class="center btn btn-info">Show conversion</div>
+        </div>
+    </div>
+    <br>
+    <div class="row" id="blacklist">
+        <div class="col-xs-12">
+            <input id="blacklistInput" disabled readonly class="center inputDisplay">
+        </div>
+        <div class="col-xs-12">
+            <div id="blacklistButton" class="center btn btn-danger">Blacklist</div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="../options/options.html" target="_blank">
+                <div class="center btn btn-primary">Go to settings</div>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div id="footer">Version {version} Created by {author}</div>
+    </div>
+
+</div>
+</body>
+</html>

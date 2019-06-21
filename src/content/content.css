@@ -1,0 +1,14 @@
+.clickable {
+    cursor: pointer;
+}
+
+.highlighted {
+    transition: background-color 0.5s linear;
+    -moz-transition: background-color 0.5s linear;
+    -webkit-transition: background-color 0.5s linear;
+    -ms-transition: background-color 0.5s linear;
+}
+
+.hiddenHighlight {
+    background-color: transparent;
+}

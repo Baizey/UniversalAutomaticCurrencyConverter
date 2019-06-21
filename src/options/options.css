@@ -1,0 +1,110 @@
+body {
+    font: normal 12px/160% Verdana, Arial, Helvetica, sans-serif;
+    margin-top: 0;
+    padding-top: 0;
+    background-color: #f3f3f3;
+}
+
+.hidden {
+    display: none;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.setting-tab {
+    width: 70em;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 0 20px;
+}
+
+.setting-tab-no-padding {
+    padding: 0;
+}
+
+.setting-title-extra-padding {
+    padding: 35px 0;
+}
+
+.row {
+    margin: 0;
+}
+
+.blacklist {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.setting-wrap {
+    background-color: #fafafa;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+}
+
+.centering {
+    width: fit-content;
+    width: -moz-fit-content;
+    margin: auto;
+}
+
+.center {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}
+
+.number, .example {
+    text-align: right;
+}
+
+select, input {
+    border: 1px solid green;
+}
+
+select:focus, input:focus {
+    border: 1px solid #f0ad4e;
+}
+
+h1 {
+    text-align: center;
+    width: 100%;
+    line-height: 2.5em;
+    font-size: 2.5em;
+}
+
+h2 {
+    text-align: center;
+    width: 100%;
+    line-height: 1em;
+    font-size: 2.25em;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: 0;
+}
+
+h3 {
+    text-align: center;
+    width: 100%;
+    line-height: 1em;
+    font-size: 2em;
+    padding-top: 35px;
+    padding-bottom: 15px;
+    margin: 0;
+}
+
+h2:hover, h3:hover {
+    background-color: #f3f3f3;
+}
+
+#footer {
+    color: dimgrey;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75em;
+}
+
+.form-control {
+    webkit-box-shadow: initial;
+    box-shadow: initial;
+}
