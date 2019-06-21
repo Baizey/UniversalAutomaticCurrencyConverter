@@ -10,6 +10,7 @@
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <!-- Unified converters custom css -->
     <link rel="stylesheet" type="text/css" href="options.css">
+    <link rel="stylesheet" type="text/css" href="../Style.css">
     <!-- JS RegExp extension needed by Firefox -->
     <script src="../XRegExp.js"></script>
     <!-- UACC Need -->
@@ -48,7 +49,7 @@
         <div class="row setting-tab">
             <h3>Currency</h3>
             <div class="row">
-                <div class="col-sm-1"></div>
+                <div class="col-sm-2"></div>
                 <div class="col-sm-4">
                     <label class="center" for="currency">Base currency</label>
                     <select id="currency" name="currency" class="form-control">
@@ -88,14 +89,14 @@
                     </select>
                     <span class="help-block center">Your preferred currency</span>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <label class="center" for="currencyApikey">API key for fixer.io</label>
                     <input id="currencyApikey" class="form-control" name="currencyApikey" type="text">
                     <span class="help-block center">Optional<br>Adds 150+ exchange rates to extension<br>
                         <a target="_blank" href="https://fixer.io/signup/free">Get API key here</a>
                     </span>
                 </div>
-                <div class="col-sm-1"></div>
+                <div class="col-sm-2"></div>
             </div>
             <br>
             <div class="row">
@@ -220,6 +221,9 @@
                 </div>
                 <div class="col-sm-2"></div>
             </div>
+        </div>
+        <div class="row setting-tab">
+            <h3>Highlighting</h3>
             <div class="row">
                 <div class="col-sm-4">
                     <label class="center" for="currencyUsingHighlight">Use highlighting</label>

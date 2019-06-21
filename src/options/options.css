@@ -1,8 +1,5 @@
 body {
     font: normal 12px/160% Verdana, Arial, Helvetica, sans-serif;
-    margin-top: 0;
-    padding-top: 0;
-    background-color: #f3f3f3;
 }
 
 .hidden {
@@ -15,8 +12,14 @@ body {
 
 .setting-tab {
     width: 70em;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #3F474E;
     padding: 0 0 20px;
+}
+
+.setting-wrap {
+    background-color: #1F272E;
+    border-radius: 5px;
+    border: 1px solid #3F474E;
 }
 
 .setting-tab-no-padding {
@@ -34,12 +37,6 @@ body {
 .blacklist {
     padding-left: 20px;
     padding-right: 20px;
-}
-
-.setting-wrap {
-    background-color: #fafafa;
-    border-radius: 5px;
-    border: 1px solid #e0e0e0;
 }
 
 .centering {
@@ -94,7 +91,7 @@ h3 {
 }
 
 h2:hover, h3:hover {
-    background-color: #f3f3f3;
+    background-color: #2F373E;
 }
 
 #footer {

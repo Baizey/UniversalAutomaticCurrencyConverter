@@ -1,0 +1,21 @@
+body, input, select {
+    background-color: #0F171E !important;
+    color: #d0d0d0 !important;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+input, select, .form-control {
+    border: solid 1px #2F373E;
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+    width: 34px;
+    height:34px;
+    margin: 5px auto;
+}

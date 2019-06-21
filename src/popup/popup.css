@@ -1,14 +1,9 @@
 body {
     font: normal 12px/160% Verdana, Arial, Helvetica, sans-serif;
-    width: 100%;
-    background-color: #0F171E;
-    color: #e0e0e0;
 }
 
 input {
-    border: solid 1px #1F272E;
     border-bottom: 0;
-    background-color: #0F171E;
 }
 
 .centering {
