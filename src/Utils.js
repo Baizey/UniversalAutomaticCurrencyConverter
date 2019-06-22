@@ -15,9 +15,8 @@ class Timer {
     }
 
     constructor() {
-        this.times = {
-            everything: Date.now()
-        };
+        this.times = {};
+        this.start();
     }
 
     start(name = 'Everything') {
