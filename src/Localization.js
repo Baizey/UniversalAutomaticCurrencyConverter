@@ -90,7 +90,6 @@ class Localization {
     /**
      * @param {object} currencies
      * @param {string} text
-     * @param {string} host
      * @return {*}
      */
     count(currencies, text) {
