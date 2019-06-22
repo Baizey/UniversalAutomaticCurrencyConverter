@@ -30,6 +30,8 @@ class Localization {
             '£': ['GBP'],
             // China, Japan
             '¥': ['CNY', 'JPY'],
+            // Japan
+            'JP¥': ['JPY'],
             // China
             '元': ['CNY'],
             // India

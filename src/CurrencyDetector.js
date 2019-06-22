@@ -60,7 +60,7 @@ class CurrencyDetector {
         const end = new RegExp(`(${s.source}|$)`);
 
         const whitespace = /(\s*)/;
-        const currency = /([a-zA-Z.,-]{2,3}|[$£€₽¥₩]|dollars?)?/;
+        const currency = /([¥a-zA-Z.,-]{2,3}|[$£€₺Ł元₿Ξ฿₴ɱ₽¥₩]|dollars?)?/;
         const negation = /(-)?/;
         const integer = /((?:\d{1,3}?(?:[., ]\d{3})*)|\d{4,})/;
         const decimal = /(?:\s*[., ]\s*(\d{1,2}|-{2}))?/;

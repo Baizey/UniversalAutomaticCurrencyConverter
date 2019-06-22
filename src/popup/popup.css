@@ -95,3 +95,7 @@ option, select, select:hover |option:hover {
     text-indent: 1px;
     text-overflow: '';
 }
+
+input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover {
+    border: solid 1px #f0ad4e;
+}

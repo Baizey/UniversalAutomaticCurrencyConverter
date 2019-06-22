@@ -49,8 +49,8 @@
         <div class="row setting-tab">
             <h3>Currency</h3>
             <div class="row">
-                <div class="col-sm-2"></div>
-                <div class="col-sm-4">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5">
                     <label class="center" for="currency">Base currency</label>
                     <select id="currency" name="currency" class="form-control">
                         <option value="EUR">EUR</option>
@@ -89,19 +89,19 @@
                     </select>
                     <span class="help-block center">Your preferred currency</span>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     <label class="center" for="currencyApikey">API key for fixer.io</label>
                     <input id="currencyApikey" class="form-control" name="currencyApikey" type="text">
                     <span class="help-block center">Optional<br>Adds 150+ exchange rates to extension<br>
                         <a target="_blank" href="https://fixer.io/signup/free">Get API key here</a>
                     </span>
                 </div>
-                <div class="col-sm-2"></div>
+                <div class="col-sm-1"></div>
             </div>
             <br>
             <div class="row">
-                <div class="col-sm-2"></div>
-                <div class="col-sm-4">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5">
                     <label class="center" for="currencyConversionRate">Convert from</label>
                     <select id="currencyConversionRate" class="form-control clickable center"
                             name="currencyConversionRate"
@@ -142,7 +142,7 @@
                     </select>
                     <span class="help-block center">See currency rate to your base currency</span>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     <label class="center" for="currencyConversionAmount">Convert amount</label>
                     <input id="currencyConversionAmount" class="form-control number"
                            name="currencyConversionAmount"
@@ -150,7 +150,7 @@
                            value="1">
                     <span class="help-block center">Amount converting to base currency</span>
                 </div>
-                <div class="col-sm-2"></div>
+                <div class="col-sm-1"></div>
             </div>
             <div class="row">
                 <div class="col-sm-4"></div>
@@ -192,12 +192,12 @@
             <div class="row">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4">
-                    <label class="center" for="decimalAmount">Number of important digits</label>
+                    <label class="center" for="decimalAmount">Rounding</label>
                     <input id="decimalAmount" class="rounding form-control number" name="decimalAmount" type="number"
                            min="1"
                            max="20"
                            value="2">
-                    <span class="help-block center">No matter what you choose there will at most be 2 significant decimal digits</span>
+                    <span class="help-block center">Number of important digits</span>
                 </div>
                 <div class="col-sm-4"></div>
             </div>

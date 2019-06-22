@@ -30,6 +30,25 @@ describe("CurrencyDetector tests", () => {
         expect(actual).toEqual([]);
     });
 
+    it("Detects japanse currency with symbol", () => {
+        // Setup
+        const detector = new CurrencyDetector(
+            Browser.instance({
+                type: Browsers.Chrome,
+                access: null
+            }));
+        detector.localize('jp');
+
+        const data = 'JP¥5';
+        const expected = [new SearchResult(data, '', '', '', '', 5, 'JPY')];
+
+        // Act
+        const actual = detector.findAll(data, true);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
     it("Test scandinavian special currency", () => {
         // Setup
         const detector = new CurrencyDetector(
