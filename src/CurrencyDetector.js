@@ -113,14 +113,15 @@ class CurrencyDetector {
         dec = dec ? `.${dec}` : '';
 
         let currency;
-        if (!c1)
-            currency = c2;
-        else if (!c2)
-            currency = c1;
-        else
-            currency = this.currencies[c2] ? c2 : c1;
-
-        currency = this.currencies[currency];
+        if (this.currencies[c2]) {
+            currency = this.currencies[c2];
+            c1 = c1 ? c1 : '';
+            start += c1;
+        } else if (this.currencies[c1]) {
+            currency = this.currencies[c1];
+            c2 = c2 ? c2 : '';
+            end = c2 + end;
+        }
 
         return new SearchResult(raw, start, w1, w2, end, neg + int + dec, currency);
     }
