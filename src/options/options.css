@@ -11,7 +11,8 @@ body {
 }
 
 .setting-tab {
-    width: 70em;
+    max-width: 70em;
+    min-width:20em;
     border-bottom: 1px solid #3F474E;
     padding: 0 0 20px;
 }
