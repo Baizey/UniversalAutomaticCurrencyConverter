@@ -5,22 +5,33 @@ const loader = engine.loadSettings();
 document.addEventListener('DOMContentLoaded', () => {
     Browser.updateFooter();
 
-    document.getElementById('showAll').addEventListener('click', () => {
+    const hideButton = document.getElementById('hideConversions');
+    let isConverted = false;
+    hideButton.addEventListener('click', () => {
         Browser.messageTab({
             method: 'convertAll',
-            converted: true
+            converted: isConverted
         }).finally();
-    });
-
-    document.getElementById('hideAll').addEventListener('click', () => {
-        Browser.messageTab({
-            method: 'convertAll',
-            converted: false
-        }).finally();
+        hideButton.innerText = isConverted ? 'Hide conversions' : 'Show conversions';
+        hideButton.classList.remove(isConverted ? 'btn-success' : 'btn-danger');
+        hideButton.classList.add(isConverted ? 'btn-danger' : 'btn-success');
+        isConverted = !isConverted;
     });
 
     Browser.messageTab({method: 'conversionCount'})
-        .then(resp => document.getElementById('conversionCount').innerText = Utils.isDefined(resp) ? resp : 0);
+        .then(resp => document.getElementById('conversionCount').value = (Utils.isDefined(resp) ? resp : 0) + ' conversions');
+
+    [
+        {symbol: '$', id: 'dollar'},
+        {symbol: 'kr', id: 'kroner'},
+        {symbol: '¥', id: 'asian'},
+    ].forEach(data => Browser.messageTab({method: 'getLocalization', symbol: data.symbol})
+        .then(resp => document.getElementById(data.id).value = Utils.isDefined(resp) ? resp : '?')
+        .then(() => document.getElementById(data.id))
+        .then(selector => selector.addEventListener('change', () => {
+            const value = selector.children[selector.selectedIndex].value;
+            Browser.messageTab({method: 'setLocalization', symbol: data.symbol, to: value}).finally();
+        })));
 
     const loadingUrl = Browser.messageTab({method: 'getUrl'})
         .then(resp => {

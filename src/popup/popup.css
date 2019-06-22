@@ -64,10 +64,34 @@ h3 {
 .inputDisplay {
     text-align: center;
     border-radius: 0;
-    font-size:2em;
+    font-size: 1.5em;
 }
 
-#blacklistButton{
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+.bottomConnected {
+    border-top: solid 1px #2F373E;
+    border-left: solid 1px #2F373E;
+    border-right: solid 1px #2F373E;
+    border-radius: 3px 3px 0 0;
+}
+
+.topConnected {
+    border-bottom: solid 1px #2F373E;
+    border-left: solid 1px #2F373E;
+    border-right: solid 1px #2F373E;
+    border-radius: 0 0 3px 3px;
+}
+
+.localizationSelect {
+    width: 100%;
+    text-align: center;
+    text-align-last: center;
+}
+
+option, select, select:hover |option:hover {
+    text-align: center;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
 }

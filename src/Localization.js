@@ -23,9 +23,9 @@ class Localization {
             'dollar': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
             'dollars': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
             // Denmark, Sweden,  Norway, Island, Czechia
-            'kr.': ['DKK', 'SEK', 'NOK', 'ISK', 'CZK'],
-            'kr': ['DKK', 'SEK', 'NOK', 'ISK', 'CZK'],
-            ',-': ['DKK', 'SEK', 'NOK', 'ISK', 'CZK'],
+            'kr.': ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
+            'kr': ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
+            ',-': ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
             '€': ['EUR'],
             '£': ['GBP'],
             // China, Japan
@@ -59,7 +59,7 @@ class Localization {
             // Litecoin
             'Ł': ['LTC']
         };
-        this.hostToCurrency = {
+        this._hostToCurrency = {
             'cn': 'CNY',
             'jp': 'JPY',
             'in': 'INR',
@@ -93,17 +93,21 @@ class Localization {
      */
     count(currencies, text) {
         const counter = Object.keys(currencies).reduce((a, b) => (a[b] = 0) || a, {});
-
         const regex = /(?:^|[\W_])([A-Z]{3})(?:$|[\W_])/g;
         do {
             regex.lastIndex--;
             const resp = regex.exec(text);
             if (!resp) break;
-            let [, currency] = resp;
+            const [, currency] = resp;
             if (typeof counter[currency] !== 'number') continue;
             counter[currency]++;
         } while (true);
         return counter;
+    }
+
+    hostToCurrency(givenHost) {
+        const host = givenHost ? givenHost : Browser.getHost();
+        return this._hostToCurrency[host] || 'USD';
     }
 
     /**
@@ -113,24 +117,12 @@ class Localization {
      * @return {*}
      */
     analyze(currencies, text, host = undefined) {
-        host = host ? host : Browser.getHost();
-        const counter = Object.keys(currencies)
-            .reduce((a, b) => (a[b] = 0) || a, {});
+        host = this.hostToCurrency(host);
+        const counter = this.count(currencies, text);
 
-        // If host is found it will give default bonus assertion,
-        // otherwise USD will always be seen as default
-        host = this.hostToCurrency[host] || 'USD';
-        counter[host] = 1;
-
-        const regex = /(?:^|[\W_])([A-Z]{3})(?:$|[\W_])/g;
-        do {
-            regex.lastIndex--;
-            const resp = regex.exec(text);
-            if (!resp) break;
-            let [, currency] = resp;
-            if (typeof counter[currency] !== 'number') continue;
-            counter[currency]++;
-        } while (true);
+        // Host gives edges if nothing else is found on the site
+        if (typeof counter[host] === 'number')
+            counter[host] += 1;
 
         Object.keys(this.lookup).forEach(key => {
             const countries = this.lookup[key];

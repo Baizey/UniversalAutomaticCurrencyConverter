@@ -1,4 +1,5 @@
 const convertedTag = 'UACC_converted';
+const hasEventsTag = 'UACC_hasEvents';
 const ignoredElements = {
     'script': true,
     'rect': true,
@@ -12,6 +13,10 @@ class UACCContent {
         this.detector = this.engine.currencyDetector;
         this.loader = this.engine.loadSettings();
         this._conversions = [];
+    }
+
+    get conversions() {
+        return this._conversions;
     }
 
     get conversionCount() {
@@ -71,12 +76,16 @@ class UACCContent {
     transformElement(element, full = false) {
         if (!element) return;
         if (element.hasAttribute(convertedTag)) return;
+        const hasEvents = element.hasAttribute(hasEventsTag);
+        element.setAttribute(hasEventsTag, 'true');
         element.setAttribute(convertedTag, 'true');
         const newText = this.convertElement(element, full);
         const oldText = element.innerHTML;
         element.classList.add('clickable');
-        element.addEventListener('mouseout', () => mouseIsOver = null);
-        element.addEventListener('mouseover', () => mouseIsOver = element);
+        if (!hasEvents) {
+            element.addEventListener('mouseout', () => mouseIsOver = null);
+            element.addEventListener('mouseover', () => mouseIsOver = element);
+        }
 
         let isNew = false;
         const setToOld = () => {
@@ -90,14 +99,17 @@ class UACCContent {
         const set = value => value ? setToNew() : setToOld();
         const change = () => isNew ? setToOld() : setToNew();
 
-        this._conversions.push(element);
+        if (!hasEvents)
+            this._conversions.push(element);
 
         change();
 
         element.UACCChanger = change;
         element.UACCSetter = set;
 
-        element.addEventListener('click', () => change());
+        if (!hasEvents)
+            element.addEventListener('click', () => element.UACCChanger());
+
         if (this.engine.highlighter.isEnabled)
             this.highlightConversion(element)
                 .catch(e => Utils.logError(e));
@@ -143,21 +155,54 @@ class UACCContent {
 
 Timer.start('Loading settings');
 const runner = new UACCContent();
-chrome.runtime.onMessage.addListener(function (data, sender, senderResponse) {
-    switch (data.method) {
-        case 'convertAll':
-            runner.setAll(data.converted);
-            senderResponse();
-            break;
-        case 'conversionCount':
-            senderResponse(runner.conversionCount);
-            break;
-        case 'getUrl':
-            senderResponse(window.location.href);
-            break;
+chrome.runtime.onMessage.addListener(
+    function (data, sender, senderResponse) {
+        switch (data.method) {
+            case 'getLocalization':
+                senderResponse(runner.engine.currencyDetector.currencies[data.symbol]);
+                break;
+            case 'setLocalization':
+                const to = data.to;
+                if (!(/^[A-Z]{3}$/.test(to)))
+                    return;
+                const currencies = runner.engine.currencyDetector.currencies;
+                switch (data.symbol) {
+                    case '$':
+                        currencies['$'] = to;
+                        currencies['dollar'] = to;
+                        currencies['dollars'] = to;
+                        break;
+                    case 'kr':
+                        currencies['kr.'] = to;
+                        currencies['kr'] = to;
+                        currencies[',-'] = to;
+                        break;
+                    case '¥':
+                        currencies['¥'] = to;
+                        break;
+                    default:
+                        return senderResponse();
+                }
+                runner.conversions.forEach(c => c.UACCSetter(false));
+                runner.conversions.forEach(c => c.removeAttribute(convertedTag));
+                runner.conversions.forEach(c => runner.transformElement(c));
+                senderResponse();
+                break;
+            case 'convertAll':
+                runner.setAll(data.converted);
+                senderResponse();
+                break;
+            case 'conversionCount':
+                senderResponse(runner.conversionCount);
+                break;
+            case 'getUrl':
+                senderResponse(window.location.href);
+                break;
+        }
+        return true;
     }
-    return true;
-});
+);
+
 runner.loader.then(r => {
     Timer.log('Loading settings');
     return r;

@@ -445,6 +445,29 @@ Footer links
 HelpSend feedbackPrivacyTerms`}.data;
 describe('Localization tests', () => {
 
+    it("Counting test", () => {
+        // Setup
+        const local = new Localization();
+        const currencies = {
+            'DKK': 'DKK',
+            'SEK': 'SEK',
+            'NOK': 'NOK',
+        };
+        const text = 'SEK DKK DKKNOK dkk .DKK DKK#';
+        const expected = {
+            'DKK': 3,
+            'SEK': 1,
+            'NOK': 0,
+        };
+
+        // Act
+        const actual = local.count(currencies, text);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+
     it("Pick sek over dkk using text", () => {
         // Setup
         const local = new Localization();
