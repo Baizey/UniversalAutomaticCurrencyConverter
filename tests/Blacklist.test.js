@@ -5,7 +5,7 @@ describe('Blacklisting tests', () => {
     const http = 'http://';
     const https = 'https://';
     const www = 'www.';
-    blacklist.withUrls(base);
+    blacklist.withUrl(base);
 
     it('base 2', () => {
         // Setup
@@ -22,7 +22,7 @@ describe('Blacklisting tests', () => {
     it('base 2', () => {
         // Setup
         const black = new Blacklist();
-        black.withUrls(https + www + base);
+        black.withUrl(https + www + base);
         const url = base;
         const expected = true;
 

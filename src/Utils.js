@@ -32,7 +32,6 @@ class Timer {
 }
 
 class Utils {
-
     static storageIds() {
         return [
             'currencyHighlightColor',
@@ -52,6 +51,25 @@ class Utils {
             'blacklistingurls',
             'currencyUsingAutomatic'
         ];
+    }
+
+    static initiateCheckboxes(){
+        const checkboxes = document.getElementsByClassName('custom-check');
+        for (let i = 0; i < checkboxes.length; i++) {
+            const box = checkboxes[i];
+            if (Utils.isDefined(box.checked)) return;
+            box.checked = false;
+            box.change = (value = !box.checked) => {
+                if (value === box.checked) return;
+                box.checked = !!value;
+                if (box.checked)
+                    box.classList.add('custom-check-checked');
+                else
+                    box.classList.remove('custom-check-checked');
+                box.dispatchEvent(new Event('change'));
+            };
+            box.addEventListener('click', () => box.change());
+        }
     }
 
     static manualStorageIds() {

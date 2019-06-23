@@ -5,8 +5,15 @@ class Blacklist {
         this.urls = [];
     }
 
+    /**
+     * @param url
+     * @return {String}
+     * @private
+     */
     _clean(url) {
-        return url.replace(/^(https?:\/\/)?(www\.)?/, '');
+        return typeof url === 'string'
+            ? url.replace(/^(https?:\/\/)?(www\.)?/, '')
+            : ''
     }
 
     whitelist(url) {
@@ -15,8 +22,6 @@ class Blacklist {
     }
 
     _worthAdding(url) {
-        if (!url) return false;
-        url = this._clean(url);
         if (!url) return false;
         if (this.urls.some(u => url.startsWith(u)))
             return false;
@@ -30,11 +35,25 @@ class Blacklist {
         return value;
     }
 
+    /**
+     * @param {string} url
+     * @return {string[]}
+     */
+    withUrl(url) {
+        const clean = this._clean(url);
+        if (this._worthAdding(clean))
+            this.urls.push(clean);
+        return this.urls;
+    }
+
+    /**
+     * @param {string[]} urls
+     * @return {string[]}
+     */
     withUrls(urls) {
-        if (Array.isArray(urls))
-            this.urls = urls.filter(u => typeof u === 'string');
-        else if (typeof urls === 'string' && this._worthAdding(urls))
-            this.urls.push(this._clean(urls));
+        const self = this;
+        this.urls = [];
+        urls.forEach(url => self.withUrl(url));
         return this.urls;
     }
 

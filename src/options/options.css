@@ -106,3 +106,8 @@ h2:hover, h3:hover {
     webkit-box-shadow: initial;
     box-shadow: initial;
 }
+
+.custom-check {
+    width: 40px;
+    height: 40px;
+}

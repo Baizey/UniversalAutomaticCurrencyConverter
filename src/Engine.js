@@ -98,7 +98,7 @@ class Engine {
             self.currencyConverter.withBaseCurrency(resp['currency']);
 
             self.blacklist.using(resp['usingBlacklist']);
-            self.blacklist.withUrls(resp['blacklistingurls']);
+            self.blacklist.withUrl(resp['blacklistingurls']);
 
             self.withApikey(resp['currencyApikey']);
             self.using(resp['usingCurrencyConverter']);

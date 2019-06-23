@@ -100,22 +100,6 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
     border: solid 1px #f0ad4e;
 }
 
-.custom-checkbox {
-    background-color: #0F171E;
-    background-image: url(images/radio-unchecked.png);
-    background-size: contain;
-    content: '';
-    background-repeat: no-repeat;
-    background-position-x: 100%;
-    cursor: pointer;
-    background-position: center;
-    width: 100%;
-}
-
-.custom-checkbox-checked {
-    background-image: url(images/radio-checked.png);
-}
-
 .mini-converter-field {
     height: 20px;
     width: 100%;

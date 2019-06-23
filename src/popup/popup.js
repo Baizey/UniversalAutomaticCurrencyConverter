@@ -13,7 +13,7 @@ const createMiniConverterRow = () => {
     const temp = document.createElement('div');
     temp.innerHTML = `<div style="width:100%" class="">
     <div class="col-xs-1 mini-converter-col">
-        <div class="custom-checkbox mini-converter-field"></div>
+        <div class="custom-radio mini-converter-field"></div>
     </div>
     <div class="col-xs-3 mini-converter-col">
         <input class="mini-converter-field" style="text-align-last:right" type="number"/>
@@ -52,9 +52,9 @@ const initiateMiniConverter = async (engine) => {
 
     checkWrappers.forEach(e => e.addEventListener('click', () => e.children[0].click()));
     checks.forEach((c, i) => c.addEventListener('click', () => {
-        if (c.classList.contains('custom-checkbox-checked')) return;
-        checks.forEach(a => a.classList.remove('custom-checkbox-checked'));
-        c.classList.add('custom-checkbox-checked');
+        if (c.classList.contains('custom-radio-checked')) return;
+        checks.forEach(a => a.classList.remove('custom-radio-checked'));
+        c.classList.add('custom-radio-checked');
         engine.currencyConverter.withBaseCurrency(
             currencies[i].children[currencies[i].selectedIndex].value);
         changeEvent();
@@ -85,7 +85,7 @@ const initiateMiniConverter = async (engine) => {
         c.innerHTML = selectables;
         c.value = loadCurrencies[i] || engine.currencyConverter.baseCurrency;
         c.addEventListener('change', () => {
-            if (checks[i].classList.contains('custom-checkbox-checked'))
+            if (checks[i].classList.contains('custom-radio-checked'))
                 engine.currencyConverter.withBaseCurrency(c.children[c.selectedIndex].value);
             changeEvent()
         });
@@ -115,7 +115,7 @@ const initiateBlacklisting = async (url, engine) => {
         button.innerText = isBlacklisting ? 'Blacklist' : 'Whitelist';
         button.classList.remove(isBlacklisting ? 'btn-success' : 'btn-danger');
         button.classList.add(isBlacklisting ? 'btn-danger' : 'btn-success');
-        if (!isBlacklisting) blacklist.withUrls(url);
+        if (!isBlacklisting) blacklist.withUrl(url);
         else blacklist.whitelist(url);
         await Browser.save('blacklistingurls', blacklist.urls);
     });

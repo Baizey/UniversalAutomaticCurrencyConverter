@@ -36,12 +36,9 @@ const updateCurrencyLists = async () => {
         .map(tag => `<option value="${tag}">${symbols.symbols ? `${tag} (${symbols.symbols[tag]})` : tag}</option>`)
         .join('');
     const atCurrency = getUiValue('currency');
-    const atConversion = getUiValue('currencyConversionRate');
     document.getElementById('currency').innerHTML = selectables;
-    document.getElementById('currencyConversionRate').innerHTML = selectables;
     await rates;
     await setUiValue('currency', atCurrency);
-    await setUiValue('currencyConversionRate', atConversion);
 }
 
 const updateBlacklist = wrapper => {
@@ -69,22 +66,21 @@ const createBlacklistField = (wrapper, value = '') => {
     wrapper.appendChild(element);
 };
 
-const updateMiniConverter = () => {
-    const amount = getUiValue('currencyConversionAmount') - 0;
-    const currency = getUiValue('currencyConversionRate');
-    document.getElementById('currencyConversionResult').innerText = engine.transform(amount, currency);
-};
-
 const getUiValue = key => {
     const element = document.getElementById(key);
     switch (key) {
+        case 'currencyCustomTag':
+            let originalValue = element.value;
+            const value = originalValue.indexOf('¤') < 0 ? '¤ ' + originalValue : originalValue;
+            element.value = value;
+            return value;
+
         // Input field
         case 'currencyHighlightColor':
         case 'currencyHighlightDuration':
         case 'currencyConversionAmount':
         case 'currencyShortcut':
         case 'currencyApikey':
-        case 'currencyCustomTag':
         case 'decimalAmount':
         case 'currencyCustomTagValue':
             return element.value;
@@ -100,7 +96,6 @@ const getUiValue = key => {
             return element.checked;
 
         // Selector
-        case 'currencyConversionRate':
         case 'currency':
             return element.children[element.selectedIndex].value || 'EUR';
         // Selector
@@ -115,11 +110,11 @@ const setUiValue = async (key, value) => {
     switch (key) {
         case 'currencyUsingAutomatic':
             engine.shouldAutoconvert(value);
-            element.checked = engine.automaticPageConversion;
+            element.change(engine.automaticPageConversion);
             break;
         case 'usingBlacklist':
             engine.blacklist.using(value);
-            element.checked = engine.blacklist.isEnabled;
+            element.change(engine.blacklist.isEnabled);
             break;
 
         case 'currencyHighlightColor':
@@ -132,16 +127,11 @@ const setUiValue = async (key, value) => {
             break;
         case 'currencyUsingHighlight':
             engine.highlighter.using(value);
-            element.checked = engine.highlighter.isEnabled;
+            element.change(engine.highlighter.isEnabled);
             break;
         case 'currency':
             engine.currencyConverter.withBaseCurrency(value);
             element.value = engine.currencyConverter.baseCurrency;
-            updateMiniConverter();
-            break;
-        case 'currencyConversionAmount':
-        case 'currencyConversionRate':
-            updateMiniConverter();
             break;
         case 'currencyShortcut':
             engine.withCurrencyShortcut(value);
@@ -158,55 +148,47 @@ const setUiValue = async (key, value) => {
                 }
             }
             element.value = engine.apikey;
-            updateMiniConverter();
             break;
         case 'currencyCustomTagValue':
             engine.customTag.withValue(value);
             element.value = engine.customTag.value;
-            updateMiniConverter();
             break;
         case 'currencyCustomTag':
             engine.customTag.withTag(value);
             element.value = engine.customTag.tag;
-            updateMiniConverter();
             break;
         case 'currencyUsingCustomTag':
             engine.customTag.using(value);
-            element.checked = engine.customTag.enabled;
-            updateMiniConverter();
+            element.change(engine.customTag.enabled);
             break;
         case 'usingCurrencyConverter':
             engine.using(value);
-            element.checked = engine.isEnabled;
+            element.change(engine.isEnabled);
             break;
         case 'thousandDisplay':
             engine.numberFormatter.withThousand(value);
             element.value = engine.numberFormatter.thousand;
-            updateMiniConverter();
             break;
         case 'decimalDisplay':
             engine.numberFormatter.withDecimal(value);
             element.value = engine.numberFormatter.decimal;
-            updateMiniConverter();
             break;
         case 'decimalAmount':
             engine.numberFormatter.withRounding(Math.round(value));
             element.value = engine.numberFormatter.rounding;
-            updateMiniConverter();
             break;
+        default:
+            throw 'Unknown element';
     }
 };
 
 document.addEventListener("DOMContentLoaded", async function () {
+    Utils.initiateCheckboxes();
     collapseItems('h2');
     collapseItems('h3');
     Browser.updateFooter();
 
     await engine.loadSettings();
-
-    // Miniconverter
-    ['currencyConversionRate', 'currencyConversionAmount'].forEach(id =>
-        document.getElementById(id).addEventListener('change', () => updateMiniConverter()));
 
     // Conversion shortcut
     let mouseIsOver = null;
@@ -226,7 +208,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const wrapper = document.getElementById('currencyBlacklistUrls');
     engine.blacklist.urls.forEach(url => createBlacklistField(wrapper, url));
     createBlacklistField(wrapper);
-
 
     Utils.storageIds().forEach(async id => {
         if (Utils.manualStorageIds()[id])

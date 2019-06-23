@@ -18,7 +18,7 @@ class Highlighter {
     withColor(color) {
         const div = document.createElement('div');
         div.style.backgroundColor = color;
-        if (div.style.backgroundColor === color)
+        if (div.style.backgroundColor)
             this.color = color;
         return this.color;
     }

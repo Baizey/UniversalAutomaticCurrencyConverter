@@ -1,7 +1,7 @@
 class CustomTag {
 
     constructor() {
-        this.tag = '¤{amount}';
+        this.tag = '$¤';
         this.value = 1;
         this.enabled = false;
     }
@@ -9,9 +9,9 @@ class CustomTag {
     withTag(tag) {
         if (Utils.isUndefined(tag))
             return this.tag;
-        this.tag = typeof tag === 'string' && tag.indexOf('{amount}') >= 0
+        this.tag = typeof tag === 'string' && tag.indexOf('¤') >= 0
             ? tag
-            : '{amount}' + tag;
+            : '¤' + tag;
         return this.tag;
     }
 
@@ -27,7 +27,7 @@ class CustomTag {
     get converter() {
         const tag = this.tag;
         return this.enabled
-            ? number => tag.replace('{amount}', number)
+            ? number => tag.replace('¤', number)
             : (number, currency) => `${number} ${currency}`;
     }
 
