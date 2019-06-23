@@ -11,20 +11,20 @@ const asList = (elements) => {
 
 const createMiniConverterRow = () => {
     const temp = document.createElement('div');
-    temp.innerHTML = `<div style="width:100%" class="">
-    <div class="col-xs-1 mini-converter-col">
-        <div class="custom-radio mini-converter-field"></div>
-    </div>
-    <div class="col-xs-3 mini-converter-col">
-        <input class="mini-converter-field" style="text-align-last:right" type="number"/>
-    </div>
-    <div class="col-xs-2 mini-converter-col">
-        <select class="mini-converter-field"></select>
-    </div>
-    <div class="col-xs-1 mini-converter-col" style="text-align: center;"> = </div>
-    <div class="col-xs-5 mini-converter-col">
-        <input class="mini-converter-field" type="text" readonly/>
-    </div>
+    temp.innerHTML = `<div style="width:100%; height:22px">
+        <div class="col-xs-1 mini-converter-col">
+            <div class="custom-radio mini-converter-field"></div>
+        </div>
+        <div class="col-xs-3 mini-converter-col">
+            <input class="mini-converter-field" style="text-align-last:right" type="number"/>
+        </div>
+        <div class="col-xs-2 mini-converter-col">
+            <select class="mini-converter-field"></select>
+        </div>
+        <div class="col-xs-1 mini-converter-col" style="text-align: center;"> = </div>
+        <div class="col-xs-5 mini-converter-col">
+            <input class="mini-converter-field" type="text" readonly/>
+        </div>
 </div>`.trim();
     return temp.children[0];
 };
@@ -103,7 +103,7 @@ const initiateMiniConverter = async (engine) => {
 
 const initiateBlacklisting = async (url, engine) => {
     const blacklist = engine.blacklist;
-    document.getElementById('blacklistInput').value = url;
+    document.getElementById('blacklistInput').value = url ? url : '';
     const button = document.getElementById('blacklistButton');
     const isBlacklisting = !blacklist.isBlacklisted(url);
     button.innerText = isBlacklisting ? 'Blacklist' : 'Whitelist';
@@ -123,6 +123,7 @@ const initiateBlacklisting = async (url, engine) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     Browser.updateFooter();
+    document.getElementById('review').addEventListener('click', () => Browser.updateReviewLink());
 
     const hideButton = document.getElementById('hideConversions');
     let isConverted = false;

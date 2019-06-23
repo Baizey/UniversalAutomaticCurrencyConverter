@@ -23,6 +23,21 @@ class Browser {
         return index < 0 ? '' : hostname.substr(index + 1);
     }
 
+    static isChrome() {
+        return Browser.instance().isChrome();
+    }
+
+    static isFirefox() {
+        return Browser.instance().isFirefox();
+    }
+
+    static updateReviewLink() {
+        const url = Browser.isChrome()
+            ? 'https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli'
+            : 'https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/';
+        chrome.tabs.create({url: url});
+    }
+
     static get author() {
         return chrome.runtime.getManifest().author;
     }

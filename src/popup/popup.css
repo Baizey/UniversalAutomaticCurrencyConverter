@@ -103,7 +103,7 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
 .mini-converter-field {
     height: 20px;
     width: 100%;
-    border: 0;
+    border: solid 1px transparent;
     border-bottom: solid 1px #3F474E;
 }
 
