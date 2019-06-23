@@ -10,14 +10,20 @@ collapseItems = tag => {
         element.classList.add('clickable');
         const parent = element.parentElement;
         const targets = parent.children;
+        element.children[0].classList.add('opened');
+        element.children[1].classList.add('opened');
         element.addEventListener('click', () => {
                 const state = (collapseState[id] = !collapseState[id]);
                 if (state) {
+                    element.children[0].classList.remove('opened');
+                    element.children[1].classList.remove('opened');
                     parent.classList.add('setting-tab-no-padding');
                     element.classList.add('setting-title-extra-padding');
                     for (let j = 1; j < targets.length; j++)
                         targets[j].classList.add('hidden');
                 } else {
+                    element.children[0].classList.add('opened');
+                    element.children[1].classList.add('opened');
                     parent.classList.remove('setting-tab-no-padding');
                     element.classList.remove('setting-title-extra-padding');
                     for (let j = 1; j < targets.length; j++)

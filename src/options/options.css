@@ -12,7 +12,7 @@ body {
 
 .setting-tab {
     max-width: 70em;
-    min-width:20em;
+    min-width: 20em;
     border-bottom: 1px solid #3F474E;
     padding: 0 0 20px;
 }
@@ -25,10 +25,6 @@ body {
 
 .setting-tab-no-padding {
     padding: 0;
-}
-
-.setting-title-extra-padding {
-    padding: 35px 0;
 }
 
 .row {
@@ -67,6 +63,7 @@ select:focus, input:focus {
 h1 {
     text-align: center;
     width: 100%;
+    padding-top: 35px;
     line-height: 2.5em;
     font-size: 2.5em;
 }
@@ -76,9 +73,10 @@ h2 {
     width: 100%;
     line-height: 1em;
     font-size: 2.25em;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding-top: 35px;
     margin: 0;
+    padding-bottom: 35px;
+    left: 40px;
 }
 
 h3 {
@@ -87,7 +85,7 @@ h3 {
     line-height: 1em;
     font-size: 2em;
     padding-top: 35px;
-    padding-bottom: 15px;
+    padding-bottom: 35px;
     margin: 0;
 }
 
@@ -111,3 +109,66 @@ h2:hover, h3:hover {
     width: 40px;
     height: 40px;
 }
+
+
+.opened, .closed {
+    margin-left: 23px;
+}
+.closed .horizontal {
+    opacity: 1;
+}
+
+.closed .vertical, .closed .horizontal {
+    transition: all 0.5s ease-in-out;
+    transform: rotate(-90deg);
+    background-color: green;
+}
+
+.opened {
+    opacity: 1;
+}
+
+.opened .horizontal {
+    opacity: 0;
+}
+
+.opened .vertical, .opened .horizontal {
+    background-color: red;
+    transition: all 0.5s ease-in-out;
+    transform: rotate(90deg);
+}
+
+.circle-plus {
+    font-size: 1em;
+    opacity: .7;
+}
+
+.circle-plus .circle {
+    position: relative;
+    width: 51px;
+    height: 51px;
+    margin-top: -12px;
+    border-radius: 100%;
+    border: solid 2px #DFDAD7;
+}
+
+.circle-plus .circle .horizontal {
+    position: absolute;
+    width: 30px;
+    height: 5px;
+    left: 50%;
+    margin-left: -15px;
+    top: 50%;
+    margin-top: -2.5px;
+}
+
+.circle-plus .circle .vertical {
+    position: absolute;
+    width: 5px;
+    height: 30px;
+    left: 50%;
+    margin-left: -2.5px;
+    top: 50%;
+    margin-top: -15px;
+}
+
