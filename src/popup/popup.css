@@ -54,7 +54,7 @@ h3 {
     min-width: 20em;
 }
 
-#footer {
+#footer, .infoText {
     color: dimgrey;
     width: 100%;
     text-align: center;

@@ -18,6 +18,7 @@ class Engine {
         this.currencyConverter = new CurrencyConverter().withCustomTag(this.customTag);
         this.numberFormatter = new NumberFormatter();
 
+        this.lastCurrencyUpdate = 'never';
         this.apikey = '';
         this.automaticPageConversion = true;
         this.conversionShortcut = 'Shift';
@@ -167,6 +168,7 @@ class Engine {
                 if (curr <= last + (1000 * 60 * 60 * 24 * 2)) {
                     self.currencyConverter.withConversionRatesBase(stored.base);
                     self.currencyConverter.withConversionRates(stored.rates);
+                    self.lastCurrencyUpdate = stored.date;
                     Object.keys(stored.rates).forEach(tag => self.currencyDetector.currencies[tag] = tag);
                     return resolve(stored);
                 }
@@ -185,6 +187,7 @@ class Engine {
                 conversion.rates[conversion.base] = 1;
 
             await Browser.save(storageName, JSON.stringify(conversion));
+            self.lastCurrencyUpdate = conversion.date;
             self.currencyConverter.withConversionRatesBase(conversion.base);
             self.currencyConverter.withConversionRates(conversion.rates);
             Object.keys(conversion.rates).forEach(tag => self.currencyDetector.currencies[tag] = tag);

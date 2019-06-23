@@ -95,7 +95,7 @@ h2:hover, h3:hover {
     background-color: #2F373E;
 }
 
-#footer {
+#footer, .infoText {
     color: dimgrey;
     width: 100%;
     text-align: center;

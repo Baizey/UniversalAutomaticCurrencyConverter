@@ -81,6 +81,7 @@ class Utils {
     }
 
     static log(from, data) {
+        if(from !== 'error') return;
         console.log(`UACC ${from}: ${data}`);
     }
 

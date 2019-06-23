@@ -189,6 +189,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     Browser.updateFooter();
 
     await engine.loadSettings();
+    document.getElementById('currencyLastUpdate').innerText = engine.lastCurrencyUpdate;
 
     // Conversion shortcut
     let mouseIsOver = null;

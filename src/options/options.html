@@ -44,6 +44,7 @@
                     <!-- <input class="form-control center" type="checkbox" id="usingCurrencyConverter" checked> -->
                 </div>
                 <div id="footer" style="margin:auto; text-align:center">Version {version} Created by {author}</div>
+                <div class="infoText">Currency rates were last updated <span id="currencyLastUpdate"></span></div>
             </div>
         </div>
         <div class="row setting-tab">
@@ -87,7 +88,11 @@
                         <option value="TRY">TRY</option>
                         <option value="ZAR">ZAR</option>
                     </select>
-                    <span class="help-block center">Your preferred currency</span>
+                    <span class="help-block center">
+                        Your preferred currency
+                        <br>
+                        Rates are only updated every couple day and when you change this setting
+                    </span>
                 </div>
                 <div class="col-sm-5">
                     <label class="center" for="currencyApikey">API key for fixer.io</label>

@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     loader.finally(async () => {
+        document.getElementById('currencyLastUpdate').innerText = engine.lastCurrencyUpdate;
         initiateMiniConverter(engine).catch(e => console.error(e));
         url = await loadingUrl;
         initiateBlacklisting(url, engine).catch(e => console.error(e));
