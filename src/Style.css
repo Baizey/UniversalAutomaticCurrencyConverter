@@ -16,7 +16,7 @@ input, select, .form-control {
 input[type="checkbox"] {
     cursor: pointer;
     width: 34px;
-    height:34px;
+    height: 34px;
     margin: 5px auto;
 }
 
@@ -28,6 +28,10 @@ input[type="number"], input[type="text"], option, select {
     text-indent: 1px;
     text-overflow: '';
     text-align-last: center;
+}
+
+input[type="number"], input[type="text"] {
+    cursor: text;
 }
 
 input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover {
@@ -58,13 +62,13 @@ input[type="number"] {
 }
 
 .custom-check {
-     background-image: url(images/check-unchecked.png);
-     background-size: contain;
-     content: '';
-     background-repeat: no-repeat;
-     cursor: pointer;
-     background-position: center;
- }
+    background-image: url(images/check-unchecked.png);
+    background-size: contain;
+    content: '';
+    background-repeat: no-repeat;
+    cursor: pointer;
+    background-position: center;
+}
 
 .custom-check-checked {
     background-image: url(images/check-checked.png);

@@ -59,8 +59,9 @@ class Blacklist {
 
     isBlacklisted(site = window.location.href) {
         site = this._clean(site);
-        const urls = this.urls;
+        if (!site) return false;
 
+        const urls = this.urls;
         for (let i = 0; i < urls.length; i++) {
             if (site.startsWith(urls[i])) {
                 console.log(`${site} is blacklisted by the filter ${this.urls[i]}`);
