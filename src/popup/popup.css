@@ -99,3 +99,41 @@ option, select, select:hover |option:hover {
 input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover {
     border: solid 1px #f0ad4e;
 }
+
+.custom-checkbox {
+    background-color: #0F171E;
+    background-image: url(images/radio-unchecked.png);
+    background-size: contain;
+    content: '';
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    cursor: pointer;
+    background-position: center;
+    width: 100%;
+}
+
+.custom-checkbox-checked {
+    background-image: url(images/radio-checked.png);
+}
+
+.mini-converter-field {
+    height: 20px;
+    width: 100%;
+    border: 0;
+    border-bottom: solid 1px #3F474E;
+}
+
+.mini-converter-col {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+input[type="number"]{
+    text-align: right;
+}
+
+input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover {
+    border: solid 1px #f0ad4e;
+    background-color: #2F373E !important;
+}

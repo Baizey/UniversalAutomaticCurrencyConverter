@@ -106,26 +106,3 @@ h2:hover, h3:hover {
     webkit-box-shadow: initial;
     box-shadow: initial;
 }
-
-input[type="number"], input[type="text"], option, select {
-    text-align: center;
-    cursor: pointer;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    text-indent: 1px;
-    text-overflow: '';
-    text-align-last: center;
-}
-
-input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover {
-    border: solid 1px #f0ad4e;
-}
-
-input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
-     -webkit-appearance: none;
-     margin: 0;
- }
-
-input[type="number"] {
-    -moz-appearance: textfield;
-}
