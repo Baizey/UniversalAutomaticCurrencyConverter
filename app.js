@@ -3,8 +3,6 @@ const fetch = require('snek-node').Request;
 //const config = require('./config.json');
 const config = process.env;
 
-console.error(config);
-
 const data = {
     symbols: null,
     rates: null
