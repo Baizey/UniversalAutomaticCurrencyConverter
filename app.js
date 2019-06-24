@@ -1,7 +1,9 @@
 const express = require('express');
 const fetch = require('snek-node').Request;
 //const config = require('./config.json');
-const apikey = process.env.APPSETTING_apikey;
+const config = process.env;
+
+console.error(config);
 
 const data = {
     symbols: null,
@@ -9,8 +11,8 @@ const data = {
 };
 
 const urls = {
-    symbols: `http://data.fixer.io/api/symbols?access_key=${encodeURIComponent(apikey)}`,
-    rates: `http://data.fixer.io/api/latest?access_key=${encodeURIComponent(apikey)}`
+    symbols: `http://data.fixer.io/api/symbols?access_key=${encodeURIComponent(config.apikey)}`,
+    rates: `http://data.fixer.io/api/latest?access_key=${encodeURIComponent(config.apikey)}`
 };
 
 const update = async () => await Promise.all([
