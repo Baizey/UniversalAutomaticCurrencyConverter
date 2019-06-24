@@ -51,6 +51,7 @@ class Blacklist {
      * @return {string[]}
      */
     withUrls(urls) {
+        if (!urls) return this.urls;
         const self = this;
         this.urls = [];
         urls.forEach(url => self.withUrl(url));
