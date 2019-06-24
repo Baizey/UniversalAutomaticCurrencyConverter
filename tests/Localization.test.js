@@ -444,6 +444,21 @@ Feedback
 Footer links
 HelpSend feedbackPrivacyTerms`}.data;
 describe('Localization tests', () => {
+    const browser = Browser.instance({
+        type: Browsers.Chrome,
+        access: null
+    });
+    describe("CurrencyDetector symbol tests", () => {
+        '$£€₺Ł元₿Ξ฿₴ɱ₽¥₩'.split('').forEach(symbol => {
+            it(`${symbol} detected`, () => {
+                const detector = new CurrencyDetector(browser);
+                detector.localize('com');
+                const text = `${symbol}5`;
+                const actual = detector.findAll(text);
+                expect(actual.length).toBe(1);
+            });
+        });
+    });
 
     it("Counting test", () => {
         // Setup

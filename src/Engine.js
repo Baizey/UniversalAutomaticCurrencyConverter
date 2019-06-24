@@ -9,9 +9,9 @@ class Engine {
         return _EngineInstance ? _EngineInstance : (_EngineInstance = new Engine());
     }
 
-    constructor() {
-        this.browser = Browser.instance();
-        this.currencyDetector = CurrencyDetector.instance();
+    constructor(browser = undefined, detector = undefined) {
+        this.browser = browser ? browser : Browser.instance();
+        this.currencyDetector = detector ? detector : CurrencyDetector.instance();
         this.blacklist = new Blacklist();
         this.customTag = new CustomTag();
         this.highlighter = new Highlighter();
