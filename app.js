@@ -16,15 +16,14 @@ const urls = {
 };
 
 const update = async () => await Promise.all([
-    fetch.get(urls.rates).then(resp => data.rates = resp.body),
-    fetch.get(urls.symbols).then(resp => data.symbols = resp.body)
+    fetch.get(urls.rates).then(resp => data.rates = resp.body).catch(),
+    fetch.get(urls.symbols).then(resp => data.symbols = resp.body).catch()
 ]);
 
+const app = express();
 update().finally(() => {
     // Update data occasionally
     setInterval(async () => await update(), 1000 * 60 * 60 * 2);
-
-    const app = express();
 
     // Currency rates endpoint
     app.get('/rates', (_, respond) => data.rates
