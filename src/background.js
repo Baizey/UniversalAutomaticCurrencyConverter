@@ -23,17 +23,15 @@ const Ajax = {
  */
 const constructUrl = request => {
     switch (request.type) {
-        case 'fixer-symbols':
-            return `http://data.fixer.io/api/symbols?access_key=${encodeURIComponent(request.apiKey)}`;
-        case 'fixer-rates':
-            return `http://data.fixer.io/api/latest?access_key=${encodeURIComponent(request.apiKey)}`;
-        case 'exchangeratesapi':
-            return `https://api.exchangeratesapi.io/latest?base=${encodeURIComponent(request.base)}`;
+        case 'symbols':
+            return 'https://fixer-middle-endpoint.azurewebsites.net/api/symbols';
+        case 'rates':
+            return 'https://fixer-middle-endpoint.azurewebsites.net/api/rates';
     }
 };
 
 /**
- * @param {{type:string, base:undefined|string, apiKey:undefined|string}} request
+ * @param {{type:string, base:undefined|string}} request
  * @param sender
  * @param senderResponse
  * @return {boolean}

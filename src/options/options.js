@@ -86,7 +86,6 @@ const getUiValue = key => {
         case 'currencyHighlightDuration':
         case 'currencyConversionAmount':
         case 'currencyShortcut':
-        case 'currencyApikey':
         case 'decimalAmount':
         case 'currencyCustomTagValue':
             return element.value;
@@ -143,18 +142,6 @@ const setUiValue = async (key, value) => {
             engine.withCurrencyShortcut(value);
             element.value = engine.conversionShortcut;
             break;
-        case 'currencyApikey':
-            engine.withApikey(value);
-            if (value) {
-                const symbols = await engine.getCurrencySymbols();
-                if (!symbols || !symbols.symbols)
-                    engine.withApikey('');
-                else {
-                    await updateCurrencyLists();
-                }
-            }
-            element.value = engine.apikey;
-            break;
         case 'currencyCustomTagValue':
             engine.customTag.withValue(value);
             element.value = engine.customTag.value;
@@ -195,6 +182,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     Browser.updateFooter();
 
     await engine.loadSettings();
+    updateCurrencyLists().catch(e => console.error(e));
     document.getElementById('currencyLastUpdate').innerText = engine.lastCurrencyUpdate;
 
     // Conversion shortcut
