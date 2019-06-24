@@ -20,14 +20,18 @@ const update = async () => await Promise.all([
 update().finally(() => {
     // Update data occasionally
     setInterval(async () => await update(), 1000 * 60 * 60 * 2);
+
     const app = express();
+    
     // Currency rates endpoint
     app.get('/rates', (_, respond) => data.rates
         ? respond.status(200).send(data.rates)
         : respond.status(500).send('Dont have any rates'));
+
     // Currency symbols endpoint
     app.get('/symbols', (_, respond) => data.symbols
         ? respond.status(200).send(data.symbols)
         : respond.status(500).send('Dont have any symbols'));
+
     app.listen(5000);
 });
