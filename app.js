@@ -1,7 +1,9 @@
 const express = require('express');
 const fetch = require('snek-node').Request;
 //const config = require('./config.json');
-const config = process.env.NODE_ENV.reduce((a, b) => a[b.name] = b.value, {});
+const config = process.env.NODE_ENV;
+
+throw JSON.stringify(config);
 
 const data = {
     symbols: null,
