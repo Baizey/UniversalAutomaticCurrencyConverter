@@ -38,7 +38,6 @@ class Utils {
             'currencyHighlightDuration',
             'currencyUsingHighlight',
             'currencyShortcut',
-            'currencyApikey',
             'usingCurrencyConverter',
             'thousandDisplay',
             'decimalDisplay',

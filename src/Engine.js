@@ -19,7 +19,6 @@ class Engine {
         this.numberFormatter = new NumberFormatter();
 
         this.lastCurrencyUpdate = 'never';
-        this.apikey = '';
         this.automaticPageConversion = true;
         this.conversionShortcut = 'Shift';
         this.isEnabled = true;
@@ -29,12 +28,6 @@ class Engine {
         if (Utils.isDefined(value))
             this.conversionShortcut = value;
         return this.conversionShortcut;
-    }
-
-    withApikey(value) {
-        if (Utils.isDefined(value))
-            this.apikey = value;
-        return this.apikey;
     }
 
     using(isEnabled) {
@@ -59,8 +52,6 @@ class Engine {
             case 'currency':
                 return this.currencyConverter.baseCurrency;
 
-            case 'currencyApikey':
-                return this.apikey;
             case 'usingCurrencyConverter':
                 return this.isEnabled;
             case 'currencyUsingAutomatic':
@@ -101,7 +92,6 @@ class Engine {
             self.blacklist.using(resp['usingBlacklist']);
             self.blacklist.withUrls(resp['blacklistingurls']);
 
-            self.withApikey(resp['currencyApikey']);
             self.using(resp['usingCurrencyConverter']);
             self.shouldAutoconvert(resp['currencyUsingAutomatic']);
             self.withCurrencyShortcut(resp['currencyShortcut']);
@@ -119,8 +109,6 @@ class Engine {
             self.numberFormatter.withDecimal(resp['decimalDisplay']);
 
             await self.getConversionRates().catch(async () => {
-                self.withApikey('');
-                await Browser.save('currencyApikey', '');
                 await self.getConversionRates();
             });
             resolve(self);
@@ -150,19 +138,17 @@ class Engine {
     }
 
     getCurrencySymbols() {
-        if (!this.apikey) return Promise.resolve();
-        return Browser.httpGet('fixer-symbols', {apiKey: this.apikey}).catch(e => e.info);
+        return Browser.httpGet('symbols').catch(e => e.info);
     }
 
     getConversionRates() {
         const self = this;
-        const apiKey = this.apikey;
         const base = this.currencyConverter.baseCurrency;
         const storageName = 'currencyConversionRates';
         return new Promise(async (resolve, reject) => {
             let stored = await Browser.load(storageName).then(resp => resp[storageName]);
             // Check if we can use what we already know
-            if (stored && stored.actualBase === base && stored.apiKey === apiKey) {
+            if (stored && stored.actualBase === base) {
                 const curr = new Date().getTime();
                 const last = new Date(stored.date).getTime();
                 if (curr <= last + (1000 * 60 * 60 * 24 * 2)) {
@@ -174,15 +160,12 @@ class Engine {
                 }
             }
 
-            const conversion = apiKey
-                ? await Browser.httpGet('fixer-rates', {apiKey: apiKey})
-                : await Browser.httpGet('exchangeratesapi', {base: base});
+            const conversion = await Browser.httpGet('rates');
 
             if (!conversion || conversion.error)
                 return reject(conversion);
 
             conversion.actualBase = base;
-            conversion.apiKey = apiKey;
             if (!conversion.rates[conversion.base])
                 conversion.rates[conversion.base] = 1;
 
