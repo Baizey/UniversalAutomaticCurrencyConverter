@@ -3,14 +3,13 @@ const fetch = require('snek-node').Request;
 const config = require('./config.json');
 
 const data = {
-    apikey: config.apikey,
     symbols: null,
     rates: null
 };
 
 const urls = {
-    symbols: `http://data.fixer.io/api/symbols?access_key=${encodeURIComponent(data.apikey)}`,
-    rates: `http://data.fixer.io/api/latest?access_key=${encodeURIComponent(data.apikey)}`
+    symbols: `http://data.fixer.io/api/symbols?access_key=${encodeURIComponent(config.apikey)}`,
+    rates: `http://data.fixer.io/api/latest?access_key=${encodeURIComponent(config.apikey)}`
 };
 
 const update = async () => {
