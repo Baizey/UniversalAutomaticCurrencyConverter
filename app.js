@@ -1,6 +1,7 @@
 const express = require('express');
 const fetch = require('snek-node').Request;
-const config = require('./config.json');
+//const config = require('./config.json');
+const config = process.env.NODE_ENV;
 
 const data = {
     symbols: null,
@@ -22,7 +23,7 @@ update().finally(() => {
     setInterval(async () => await update(), 1000 * 60 * 60 * 2);
 
     const app = express();
-    
+
     // Currency rates endpoint
     app.get('/rates', (_, respond) => data.rates
         ? respond.status(200).send(data.rates)
