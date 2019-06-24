@@ -15,12 +15,10 @@ const urls = {
 const update = async () => await Promise.all([
     fetch.get(urls.rates)
         .then(resp => resp.body && resp.body.success ? resp.body : null)
-        .then(resp => data.rates = resp || data.rates)
-        .catch(),
+        .then(resp => data.rates = resp || data.rates).catch(),
     fetch.get(urls.symbols)
         .then(resp => resp.body && resp.body.success ? resp.body : null)
-        .then(resp => data.symbols = resp || data.symbols)
-        .catch()
+        .then(resp => data.symbols = resp || data.symbols).catch()
 ]);
 
 const api = express();
@@ -42,5 +40,5 @@ update().finally(() => {
         ? respond.status(200).send(data.symbols)
         : respond.status(500).send('Dont have any symbols'));
 
-    api.listen(5000, () => console.log('Started'));
+    api.listen(config.port || 5000, () => console.log('Started'));
 });
