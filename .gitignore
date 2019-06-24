@@ -1,4 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea
-deployment.zip
+deployment.zip*
 node_modules
