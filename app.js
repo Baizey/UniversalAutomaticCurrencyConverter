@@ -1,7 +1,7 @@
 const express = require('express');
 const fetch = require('snek-node').Request;
 //const config = require('./config.json');
-const apikey = process.env['container:apikey'];
+const apikey = process.env.apikey;
 
 const data = {
     symbols: null,
