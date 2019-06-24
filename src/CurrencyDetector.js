@@ -116,11 +116,13 @@ class CurrencyDetector {
         if (this.currencies[c2]) {
             currency = this.currencies[c2];
             c1 = c1 ? c1 : '';
-            start += c1;
+            if (!this.currencies[c1])
+                start += c1;
         } else if (this.currencies[c1]) {
             currency = this.currencies[c1];
             c2 = c2 ? c2 : '';
-            end = c2 + end;
+            if (!this.currencies[c2])
+                end = c2 + end;
         }
 
         return new SearchResult(raw, start, w1, w2, end, neg + int + dec, currency);
