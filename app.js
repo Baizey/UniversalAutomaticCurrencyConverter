@@ -40,5 +40,5 @@ update().finally(() => {
         ? respond.status(200).send(data.symbols)
         : respond.status(500).send('Dont have any symbols'));
 
-    api.listen(config.port || 5000, () => console.log('Started'));
+    api.listen(config.PORT || 5000, () => console.log('Started'));
 });
