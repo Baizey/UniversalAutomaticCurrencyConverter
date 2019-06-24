@@ -1,6 +1,7 @@
 const express = require('express');
 const fetch = require('snek-node').Request;
 const config = process.env;
+const port = config.PORT || 3000;
 
 const data = {
     symbols: null,
@@ -40,5 +41,8 @@ update().finally(() => {
         ? respond.status(200).send(data.symbols)
         : respond.status(500).send('Dont have any symbols'));
 
-    api.listen(config.PORT || 5000, () => console.log('Started'));
+    api.listen(port, () => {
+        console.log('Started');
+        console.log(`Port: ${port}`);
+    });
 });
