@@ -13,11 +13,18 @@ const urls = {
 };
 
 const update = async () => await Promise.all([
-    fetch.get(urls.rates).then(resp => data.rates = resp.body).catch(),
-    fetch.get(urls.symbols).then(resp => data.symbols = resp.body).catch()
+    fetch.get(urls.rates)
+        .then(resp => resp.body && resp.body.success ? resp.body : null)
+        .then(resp => data.rates = resp || data.rates)
+        .catch(),
+    fetch.get(urls.symbols)
+        .then(resp => resp.body && resp.body.success ? resp.body : null)
+        .then(resp => data.symbols = resp || data.symbols)
+        .catch()
 ]);
 
-const app = express();
+const api = express();
+
 console.log('Initiating');
 update().finally(() => {
     console.log('Starting');
@@ -26,14 +33,14 @@ update().finally(() => {
     setInterval(() => update(), 1000 * 60 * 60 * 2);
 
     // Currency rates endpoint
-    app.get('/api/rates', (_, respond) => data.rates
+    api.get('/api/rates', (_, respond) => data.rates
         ? respond.status(200).send(data.rates)
         : respond.status(500).send('Dont have any rates'));
 
     // Currency symbols endpoint
-    app.get('/api/symbols', (_, respond) => data.symbols
+    api.get('/api/symbols', (_, respond) => data.symbols
         ? respond.status(200).send(data.symbols)
         : respond.status(500).send('Dont have any symbols'));
 
-    app.listen(5000, () => console.log('Started'));
+    api.listen(5000, () => console.log('Started'));
 });
