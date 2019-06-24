@@ -1,19 +1,8 @@
 {
   "name": "uacc",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "dependencies": {
-    "Chai": "latest",
-    "babel-loader": "^8.0.6",
-    "chai": "^4.2.0",
-    "copy-webpack-plugin": "^5.0.3",
-    "expect": "^24.8.0",
-    "jasmine": "^3.4.0",
-    "karma": "^4.1.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-jasmine": "^2.0.1",
-    "karma-spec-reporter": "0.0.32",
-    "karma-webpack": "^4.0.2",
-    "require-context": "^1.1.0",
-    "webpack": "^4.34.0"
+    "express": "latest",
+    "snek-node": "0.0.2"
   }
 }
