@@ -181,8 +181,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     collapseItems('h3');
     Browser.updateFooter();
 
+    await updateCurrencyLists().catch(e => console.error(e));
     await engine.loadSettings();
-    updateCurrencyLists().catch(e => console.error(e));
+
     document.getElementById('currencyLastUpdate').innerText = engine.lastCurrencyUpdate;
 
     // Conversion shortcut
