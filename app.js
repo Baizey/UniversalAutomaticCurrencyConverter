@@ -130,7 +130,7 @@ update().finally(() => {
     // Handle robots
     api.get('/robots.txt', (request, response) => handleRobots(response));
     api.get('/robots933456.txt', (request, response) => handleRobots(response));
-    api.get('/', (request, response) => response.status(404).send('There is nothing here'));
+    api.get('/', (request, response) => response.status(200).send(`You're not supposed to be here`));
 
     // Currency rates endpoint
     api.get('/api/rates', (request, response) => {
