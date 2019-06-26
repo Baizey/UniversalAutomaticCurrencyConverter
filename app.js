@@ -125,6 +125,13 @@ update().finally(() => {
     // Update occasionally
     setInterval(() => update(), 1000 * 60 * 60 * 12);
 
+    const handleRobots = resp => resp.type('text/plain').status(200).send('User-agent: *\nDisallow: /');
+
+    // Handle robots
+    api.get('/robots.txt', (request, response) => handleRobots(response));
+    api.get('/robots933456.txt', (request, response) => handleRobots(response));
+    api.get('/', (request, response) => response.status(404).send('There is nothing here'));
+
     // Currency rates endpoint
     api.get('/api/rates', (request, response) => {
         Tracker.in(request, response);
