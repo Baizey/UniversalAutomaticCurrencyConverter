@@ -2,7 +2,8 @@
   "name": "uacc",
   "version": "1.0.0",
   "dependencies": {
-    "express": "latest",
-    "snek-node": "0.0.2"
+    "applicationinsights": "^1.4.0",
+    "express": "^4.17.1",
+    "node-fetch": "latest"
   }
 }
