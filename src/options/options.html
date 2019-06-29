@@ -35,29 +35,18 @@
 <div class="centering">
     <br>
     <div class="setting-wrap collapsible">
-        <h2>Currency Converter
-            <div class="circle-plus closed" style="float:left">
-                <div class="circle">
-                    <div class="horizontal"></div>
-                    <div class="vertical"></div>
-                </div>
-            </div>
-            <div class="circle-plus closed" style="visibility:hidden; float:right">
-                <div class="circle">
-                    <div class="horizontal"></div>
-                    <div class="vertical"></div>
-                </div>
-            </div>
-        </h2>
+        <div id="firstime_message" class="hidden row setting-tab">
+            <h1 class="center">Thank you for installing my extension :)</h1>
+            <br>
+            <p class="center">You just need to select your preferred currency below and you're ready to go!</p>
+            <br>
+            <p class="center">If you did not newly install this extension, just change some setting back and forth to save it and this wont show again</p>
+        </div>
         <div class="row setting-tab">
             <div class="col-sm">
-                <div class="col-sm">
-                    <label class="center" for="usingCurrencyConverter">Using currency converter</label>
-                    <div id="usingCurrencyConverter" class="form-control center custom-check"></div>
-                    <!-- <input class="form-control center" type="checkbox" id="usingCurrencyConverter" checked> -->
-                </div>
+                <h1>UA Currency Converter options</h1>
                 <div id="footer" style="margin:auto; text-align:center">Version {version} Created by {author}</div>
-                <div class="infoText">Currency rates were last updated <span id="currencyLastUpdate"></span></div>
+                <div class="infoText">Your currency rates were last updated <span id="currencyLastUpdate"></span></div>
             </div>
         </div>
         <div class="row setting-tab">
@@ -76,8 +65,8 @@
                 </div>
             </h3>
             <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-6">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
                     <label class="center" for="currency">Convert to</label>
                     <select id="currency" name="currency" class="form-control">
                         <option value="EUR">EUR</option>
@@ -120,7 +109,12 @@
                         Rates are only updated every couple day and when you change this setting
                     </span>
                 </div>
-                <div class="col-sm-3"></div>
+                <div class="col-sm-4">
+                    <label class="center" for="usingCurrencyConverter">Using currency converter</label>
+                    <div id="usingCurrencyConverter" class="form-control center custom-check"></div>
+                    <span class="help-block center">Just here if you want the extension, but dont want to use it?</span>
+                </div>
+                <div class="col-sm-2"></div>
             </div>
         </div>
         <div class="row setting-tab">

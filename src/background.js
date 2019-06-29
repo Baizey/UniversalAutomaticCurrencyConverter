@@ -63,5 +63,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) 
         default:
             return handleError(request, senderResponse);
     }
-
 });
+
+
+const openOptionsIfNew = async () => {
+    const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
+    if (isFirstTime) {
+        const optionsUrl = chrome.extension.getURL('options/options.html');
+        chrome.tabs.create({
+            url: optionsUrl,
+            active: true
+        });
+    }
+};
+
+openOptionsIfNew().finally();

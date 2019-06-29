@@ -231,4 +231,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 Browser.save(id, oldValue).then(() => document.getElementById(id).style.border = '1px solid green');
         });
     });
+
+    const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
+    if (isFirstTime)
+        document.getElementById('firstime_message').classList.remove('hidden');
+
 });

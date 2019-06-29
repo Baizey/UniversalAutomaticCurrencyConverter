@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Universal Automatic Currency Converter",
   "short_name": "Universal Currency Converter",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "Your new currency converter.",
   "author": "Baizey",
   "icons": {
@@ -43,6 +43,7 @@
   "background": {
     "scripts": [
       "Utils.js",
+      "Browser.js",
       "background.js"
     ],
     "persistent": true
@@ -62,6 +63,7 @@
 
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ]
 }
