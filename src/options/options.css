@@ -114,6 +114,7 @@ h2:hover, h3:hover {
 .opened, .closed {
     margin-left: 23px;
 }
+
 .closed .horizontal {
     opacity: 1;
 }
@@ -172,3 +173,6 @@ h2:hover, h3:hover {
     margin-top: -15px;
 }
 
+.innerRow {
+    margin-bottom: 20px;
+}

@@ -8,12 +8,13 @@ class Localization {
 
     /**
      * @param {object} currencies
+     * @param {object} defaults
      * @param {string} text
      * @param {string} host
      * @return {*}
      */
-    static analyze(currencies, text, host = undefined) {
-        return Localization.instance().analyze(currencies, text, host);
+    static analyze(currencies, defaults, text, host = undefined) {
+        return Localization.instance().analyze(currencies, defaults, text, host);
     }
 
     constructor() {
@@ -108,16 +109,17 @@ class Localization {
 
     hostToCurrency(givenHost) {
         const host = givenHost ? givenHost : Browser.getHost();
-        return this._hostToCurrency[host] || 'USD';
+        return this._hostToCurrency[host] || 'unknown';
     }
 
     /**
      * @param {object} currencies
+     * @param {object} defaults
      * @param {string} text
      * @param {string} host
      * @return {*}
      */
-    analyze(currencies, text, host = undefined) {
+    analyze(currencies, defaults, text, host = undefined) {
         host = this.hostToCurrency(host);
         const counter = this.count(currencies, text);
 
@@ -130,8 +132,23 @@ class Localization {
             if (countries.length === 1)
                 return currencies[key] = countries[0];
             const score = countries.map(e => counter[e]).map(e => e ? e : -1);
-            const max = score.indexOf(Math.max(...score));
-            currencies[key] = countries[max];
+            const firstMax = score.indexOf(Math.max(...score));
+            const lastMax = score.lastIndexOf(Math.max(...score));
+
+            if (lastMax === firstMax)
+                currencies[key] = countries[firstMax];
+            else {
+                let foundDefault = false;
+                for (let i = firstMax; i < lastMax + 1; i++) {
+                    if (score[firstMax] === score[i] && defaults[countries[i]]) {
+                        currencies[key] = countries[i];
+                        foundDefault = true;
+                        break;
+                    }
+                }
+                if (!foundDefault)
+                    currencies[key] = countries[firstMax];
+            }
         });
     }
 

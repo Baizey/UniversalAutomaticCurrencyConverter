@@ -10,7 +10,8 @@ module.exports = function (config) {
             'tests/*.js'
         ],
         exclude: [
-            'src/background.js'
+            'src/background.js',
+            'ignored'
         ],
 
         webpack: {

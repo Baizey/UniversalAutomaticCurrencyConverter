@@ -14,10 +14,23 @@ class CurrencyDetector {
      * @param {string} text
      */
     localize(host = undefined, text = '') {
-        Localization.analyze(this.currencies, text, host);
+        Localization.analyze(this.currencies, this.defaultLocalization, text, host);
+    }
+
+    get defaultLocalization() {
+        const obj = {};
+        obj[this.storedDefaultLocalization.dollar] = true;
+        obj[this.storedDefaultLocalization.asian] = true;
+        obj[this.storedDefaultLocalization.krone] = true;
+        return obj;
     }
 
     constructor(browser = null) {
+        this.storedDefaultLocalization = {
+            dollar: 'USD',
+            asian: 'CNY',
+            krone: 'SEK'
+        };
         this._browser = browser ? browser : Browser.instance();
         this._currencies = {
             HRK: 'HRK',
@@ -182,6 +195,21 @@ class CurrencyDetector {
     updateWithMoreCurrencies(currencies) {
         Object.keys(currencies).forEach(key => this._currencies[key] = currencies[key]);
         return this;
+    }
+
+    withDefaultLocalization(currency) {
+        if (Utils.isUndefined(currency)) return;
+        const isDollar = ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'].indexOf(currency) >= 0;
+        if (isDollar)
+            return this.storedDefaultLocalization.dollar = currency;
+
+        const isKrone = ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'].indexOf(currency) >= 0;
+        if (isKrone)
+            return this.storedDefaultLocalization.krone = currency;
+
+        const isAsian = ['CNY', 'JPY'].indexOf(currency) >= 0;
+        if (isAsian)
+            return this.storedDefaultLocalization.asian = currency;
     }
 
     get currencies() {

@@ -104,6 +104,9 @@ const getUiValue = key => {
         case 'currency':
             return element.children[element.selectedIndex].value || 'EUR';
         // Selector
+        case 'currencyLocalizationDollar':
+        case 'currencyLocalizationAsian':
+        case 'currencyLocalizationKroner':
         case 'thousandDisplay':
         case 'decimalDisplay':
             return element.children[element.selectedIndex].value;
@@ -113,6 +116,13 @@ const getUiValue = key => {
 const setUiValue = async (key, value) => {
     const element = document.getElementById(key);
     switch (key) {
+
+        case 'currencyLocalizationDollar':
+        case 'currencyLocalizationKroner':
+        case 'currencyLocalizationAsian':
+            engine.currencyDetector.withDefaultLocalization(value);
+            element.value = engine.getById(key);
+            break;
         case 'currencyUsingAutomatic':
             engine.shouldAutoconvert(value);
             element.change(engine.automaticPageConversion);

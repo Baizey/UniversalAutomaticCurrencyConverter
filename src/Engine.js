@@ -44,6 +44,13 @@ class Engine {
 
     getById(id) {
         switch (id) {
+            case 'currencyLocalizationDollar':
+                return this.currencyDetector.storedDefaultLocalization.dollar;
+            case 'currencyLocalizationAsian':
+                return this.currencyDetector.storedDefaultLocalization.asian;
+            case 'currencyLocalizationKroner':
+                return this.currencyDetector.storedDefaultLocalization.krone;
+
             case 'usingBlacklist':
                 return this.blacklist.isEnabled;
             case 'blacklistingurls':
@@ -87,6 +94,11 @@ class Engine {
         const self = this;
         return new Promise(async resolve => {
             const resp = await Browser.load(Utils.storageIds());
+
+            self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationDollar']);
+            self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationKroner']);
+            self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationAsian']);
+
             self.currencyConverter.withBaseCurrency(resp['currency']);
 
             self.blacklist.using(resp['usingBlacklist']);

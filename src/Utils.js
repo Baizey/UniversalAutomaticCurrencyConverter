@@ -34,6 +34,9 @@ class Timer {
 class Utils {
     static storageIds() {
         return [
+            'currencyLocalizationDollar',
+            'currencyLocalizationAsian',
+            'currencyLocalizationKroner',
             'currencyHighlightColor',
             'currencyHighlightDuration',
             'currencyUsingHighlight',

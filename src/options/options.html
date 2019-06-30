@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </h3>
-            <div class="row">
+            <div class="row innerRow">
                 <div class="col-sm-2"></div>
                 <div class="col-sm-4">
                     <label class="center" for="currency">Convert to</label>
@@ -116,6 +116,40 @@
                 </div>
                 <div class="col-sm-2"></div>
             </div>
+            <div class="row innerRow">
+                <div class="col-sm-4">
+                    <label class="center" for="currencyLocalizationDollar">Default $ localization</label>
+                    <select id="currencyLocalizationDollar" name="currencyLocalizationDollar" class="form-control">
+                        <option value="USD">American</option>
+                        <option value="CAD">Canadian</option>
+                        <option value="AUD">Australian</option>
+                        <option value="MXN">Mexican</option>
+                        <option value="NZD">New Zealand</option>
+                        <option value="SGP">Singapore</option>
+                        <option value="HKD">Hong kong</option>
+                    </select>
+                    <span class="help-block center">If no context can be found on pages, default to this</span>
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyLocalizationKroner">Default kr localization</label>
+                    <select id="currencyLocalizationKroner" name="currencyLocalizationKroner" class="form-control">
+                        <option value="SEK">Swedish</option>
+                        <option value="DKK">Danish</option>
+                        <option value="NOK">Norwegian</option>
+                        <option value="ISK">Icelandic</option>
+                        <option value="CZK">Czechia</option>
+                    </select>
+                    <span class="help-block center">If no context can be found on pages, default to this</span>
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyLocalizationAsian">Default ¥ localization</label>
+                    <select id="currencyLocalizationAsian" name="currencyLocalizationAsian" class="form-control">
+                        <option value="CNY">Chinese</option>
+                        <option value="JPY">Japanese</option>
+                    </select>
+                    <span class="help-block center">If no context can be found on pages, default to this</span>
+                </div>
+            </div>
         </div>
         <div class="row setting-tab">
             <h3>Formatting
@@ -132,7 +166,7 @@
                     </div>
                 </div>
             </h3>
-            <div class="row">
+            <div class="row innerRow">
                 <div class="col-sm-4">
                     <label class="center" for="thousandDisplay">Thousands separator</label>
                     <select id="thousandDisplay" name="thousandDisplay" class="form-control">
@@ -177,7 +211,7 @@
                     </div>
                 </div>
             </h3>
-            <div class="row">
+            <div class="row innerRow">
                 <div class="col-sm-2"></div>
                 <div class="col-sm-4">
                     <label class="center" for="currencyShortcut">Conversion shortcut</label>
@@ -213,7 +247,7 @@
                     </div>
                 </div>
             </h3>
-            <div class="row">
+            <div class="row innerRow">
                 <div class="col-sm-4">
                     <label class="center" for="currencyUsingHighlight">Use highlighting</label>
                     <div id="currencyUsingHighlight" class="form-control center custom-check"></div>
@@ -250,33 +284,35 @@
                     </div>
                 </div>
             </h3>
-            <div class="col-sm-4">
-                <label class="center" for="currencyUsingCustomTag">Use custom tag</label>
-                <div id="currencyUsingCustomTag" class="form-control center custom-check"></div>
-                <span class="help-block center">If you want to use your custom tag</span>
-            </div>
-            <div class="col-sm-4">
-                <label class="center" for="currencyCustomTag">Name</label>
-                <input id="currencyCustomTag" class="customTag form-control" name="currencyCustomTag" type="text">
-                <span class="help-block center">
+            <div class="row innerRow">
+                <div class="col-sm-4">
+                    <label class="center" for="currencyUsingCustomTag">Use custom tag</label>
+                    <div id="currencyUsingCustomTag" class="form-control center custom-check"></div>
+                    <span class="help-block center">If you want to use your custom tag</span>
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyCustomTag">Name</label>
+                    <input id="currencyCustomTag" class="customTag form-control" name="currencyCustomTag" type="text">
+                    <span class="help-block center">
                     How the custom tag should be displayed
                     <br>
                     ¤ specifies where the amount is placed
                     <br>
                     '$¤' will fx show '$5'
                 </span>
-            </div>
-            <div class="col-sm-4">
-                <label class="center" for="currencyCustomTagValue">Conversion rate</label>
-                <input id="currencyCustomTagValue" class="customTag form-control number"
-                       name="currencyCustomTagValue"
-                       type="number"
-                       value="1">
-                <span class="help-block center">
+                </div>
+                <div class="col-sm-4">
+                    <label class="center" for="currencyCustomTagValue">Conversion rate</label>
+                    <input id="currencyCustomTagValue" class="customTag form-control number"
+                           name="currencyCustomTagValue"
+                           type="number"
+                           value="1">
+                    <span class="help-block center">
                     The rate for 1 of your preferred currency
                     <br>
                     Fx 1.25 will give a 25% increase
                 </span>
+                </div>
             </div>
         </div>
         <div class="row setting-tab">
@@ -294,7 +330,7 @@
                     </div>
                 </div>
             </h3>
-            <div class="row">
+            <div class="row innerRow">
                 <div class="col-sm-4">
                 </div>
                 <div class="col-sm-4">
