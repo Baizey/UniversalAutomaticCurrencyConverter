@@ -51,7 +51,8 @@ class Utils {
             'currencyCustomTagValue',
             'usingBlacklist',
             'blacklistingurls',
-            'currencyUsingAutomatic'
+            'currencyUsingAutomatic',
+            'whitelistingurls'
         ];
     }
 
@@ -75,7 +76,10 @@ class Utils {
     }
 
     static manualStorageIds() {
-        return {'blacklistingurls': true};
+        return {
+            'blacklistingurls': true,
+            'whitelistingurls': true,
+        };
     }
 
     static logError(exception) {

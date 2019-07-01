@@ -58,18 +58,18 @@ class Blacklist {
         return this.urls;
     }
 
+    /**
+     * @param {string} site
+     * @return {null|string}
+     */
     isBlacklisted(site = window.location.href) {
         site = this._clean(site);
-        if (!site) return false;
-
+        if (!site) return null;
         const urls = this.urls;
-        for (let i = 0; i < urls.length; i++) {
-            if (site.startsWith(urls[i])) {
-                console.log(`${site} is blacklisted by the filter ${this.urls[i]}`);
-                return true;
-            }
-        }
-        return false;
+        for (let i = 0; i < urls.length; i++)
+            if (site.startsWith(urls[i]))
+                return urls[i];
+        return null;
     }
 
 }

@@ -121,3 +121,33 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
     border: solid 1px #f0ad4e;
     background-color: #2F373E !important;
 }
+
+.delete-focus {
+    border: solid 1px red !important;
+}
+
+.vertical, .horizontal {
+    background-color: red;
+    transform: rotate(45deg)
+}
+
+.circle {
+    cursor:pointer;
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.horizontal {
+    margin-top: 8px;
+    position: absolute;
+    width: 20px;
+    height: 4px;
+}
+
+.vertical {
+    margin-left: 8px;
+    position: absolute;
+    height: 20px;
+    width: 4px;
+}

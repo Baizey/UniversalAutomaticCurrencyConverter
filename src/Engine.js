@@ -13,6 +13,7 @@ class Engine {
         this.browser = browser ? browser : Browser.instance();
         this.currencyDetector = detector ? detector : CurrencyDetector.instance();
         this.blacklist = new Blacklist();
+        this.whitelist = new Blacklist();
         this.customTag = new CustomTag();
         this.highlighter = new Highlighter();
         this.currencyConverter = new CurrencyConverter().withCustomTag(this.customTag);
@@ -50,6 +51,11 @@ class Engine {
                 return this.currencyDetector.storedDefaultLocalization.asian;
             case 'currencyLocalizationKroner':
                 return this.currencyDetector.storedDefaultLocalization.krone;
+
+            case 'usingWhitelist':
+                return this.whitelist.isEnabled;
+            case 'whitelistingurls':
+                return this.whitelist.urls;
 
             case 'usingBlacklist':
                 return this.blacklist.isEnabled;
@@ -101,8 +107,15 @@ class Engine {
 
             self.currencyConverter.withBaseCurrency(resp['currency']);
 
-            self.blacklist.using(resp['usingBlacklist']);
+            const usingBlacklistRaw = resp['usingBlacklist'];
+            const usingBlacklist = usingBlacklistRaw === true || usingBlacklistRaw === 'blacklist';
+            const usingWhitelist = usingBlacklistRaw === 'whitelist';
+
+            self.blacklist.using(usingBlacklist);
             self.blacklist.withUrls(resp['blacklistingurls']);
+
+            self.whitelist.using(usingWhitelist);
+            self.whitelist.withUrls(resp['whitelistingurls']);
 
             self.using(resp['usingCurrencyConverter']);
             self.shouldAutoconvert(resp['currencyUsingAutomatic']);

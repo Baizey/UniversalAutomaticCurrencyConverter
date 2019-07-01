@@ -316,7 +316,7 @@
             </div>
         </div>
         <div class="row setting-tab">
-            <h3 id="blacklistingTitle">Blacklisting
+            <h3 id="blacklistingTitle">Blacklisting and Whitelisting
                 <div class="circle-plus closed" style="float:left">
                     <div class="circle">
                         <div class="horizontal"></div>
@@ -334,15 +334,28 @@
                 <div class="col-sm-4">
                 </div>
                 <div class="col-sm-4">
-                    <label class="center" for="usingBlacklist">Using blacklisting</label>
-                    <div id="usingBlacklist" class="form-control center custom-check"></div>
+                    <label class="center" for="usingBlacklist">Using</label>
+                    <select  id="usingBlacklist" class="form-control">
+                        <option value="blacklist">Blacklisting</option>
+                        <option value="whitelist">Whitelisting</option>
+                        <option value="none">None</option>
+                    </select>
                     <span class="help-block center"></span>
                 </div>
                 <div class="col-sm-4">
                 </div>
             </div>
             <br>
-            <ul id="currencyBlacklistUrls" class="blacklist"></ul>
+            <div class="row innerRow">
+                <div class="col-sm-6">
+                    <label class="center" for="currencyBlacklistUrls">Blacklist</label>
+                    <ul id="currencyBlacklistUrls" class="blacklist"></ul>
+                </div>
+                <div class="col-sm-6">
+                    <label class="center" for="currencyWhitelistUrls">Whitelist</label>
+                    <ul id="currencyWhitelistUrls" class="blacklist"></ul>
+                </div>
+            </div>
         </div>
     </div>
     <br>

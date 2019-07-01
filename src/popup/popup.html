@@ -31,7 +31,14 @@
 </head>
 <body>
 <div class="centering" style="width: 400px; padding: 10px; margin:10px">
-    <div class="row">
+    <div class="row hidden" id="no_conversion">
+        <h3>
+            No site context found
+            <br>
+            refresh site to try again
+        </h3>
+    </div>
+    <div class="row" id="conversion">
         <div class="col-xs-6">
             <input id="conversionCount" disabled readonly class=" bottomConnected center inputDisplay">
         </div>
@@ -42,10 +49,10 @@
             <div id="hideConversions" class="topConnected center btn btn-danger">Hide conversions</div>
         </div>
         <div class="col-xs-6">
-            <div id="blacklistButton" class="topConnected center btn btn-danger">Blacklist</div>
+            <div id="blacklistButton" class="topConnected center btn btn-danger">Add blacklisting</div>
         </div>
+        <br><br>
     </div>
-    <br><br>
     <div class="row" id="localization">
         <div class="col-xs-12">
             <h3 style="margin-bottom: 5px" class="center">Page localization</h3>
@@ -85,7 +92,17 @@
         <div class="col-xs-12">
             <h3 style="margin-bottom: 5px" class="center">Mini-converter</h3>
         </div>
-        <div id="mini-converter" class="col-xs-12">
+        <div class="col-xs-12">
+            <div style="width:100%; height:22px">
+                <div class="col-xs-4 mini-converter-col" style="text-align: center;">Convert to</div>
+                <div class="col-xs-8 mini-converter-col">
+                    <select id="mini-converter-to" class="mini-converter-field"></select>
+                </div>
+            </div>
+        </div>
+        <div id="mini-converter" class="col-xs-12"></div>
+        <div class="col-xs-12">
+            <div id="mini-converter-add" class="topConnected center btn btn-success">Add conversion</div>
         </div>
     </div>
     <br>

@@ -151,7 +151,7 @@ class CurrencyDetector {
             text = text.innerText;
 
         if (expectOnlyCurrency)
-            return [this.findResult(text, this._fullRegex)].filter(e => e);
+            return [this.findResult(text, this._fullRegex)].filter(e => e && e.currency);
 
         const result = [];
         let index = 0;

@@ -55,26 +55,38 @@ function handleError(request, senderResponse) {
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
-    switch (request.method) {
-        case 'getSelectedText':
-            return getSelectedText(request, sender, senderResponse);
-        case 'HttpGet':
-            return corsHandler(request, sender, senderResponse);
-        default:
-            return handleError(request, senderResponse);
+    if (request.method === 'openPopup') {
+        senderResponse({success: true, data: null});
+    } else if (request.method === 'getSelectedText') {
+        return getSelectedText(request, sender, senderResponse);
+    } else if (request.method === 'HttpGet') {
+        return corsHandler(request, sender, senderResponse);
+    } else {
+        return handleError(request, senderResponse);
     }
+    return true;
 });
 
 
 const openOptionsIfNew = async () => {
     const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
     if (isFirstTime) {
-        const optionsUrl = chrome.extension.getURL('options/options.html');
         chrome.tabs.create({
-            url: optionsUrl,
+            url: 'options/options.html',
             active: true
         });
     }
 };
 
 openOptionsIfNew().finally();
+
+chrome.contextMenus.create({
+    title: `Add to mini converter`,
+    contexts: ["selection"],
+    onclick: data => {
+        Browser.messageTab({
+            method: 'contextMenu',
+            text: data.selectionText
+        }).finally();
+    }
+});

@@ -136,6 +136,14 @@ class Browser {
         }).catch(error => Utils.logError(error));
     }
 
+    static messageBackground(data) {
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage(data, function (resp) {
+                return resp.success ? resolve(resp.data) : reject(resp.data);
+            });
+        });
+    }
+
     get cors() {
         return {
             call: (type, data = {}) => {

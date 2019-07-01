@@ -47,6 +47,31 @@ const updateCurrencyLists = async () => {
     await setUiValue('currency', atCurrency);
 }
 
+const updateWhitelist = wrapper => {
+    const children = wrapper.children;
+    const urls = [];
+    for (let i = 0; i < children.length; i++) {
+        const value = children[i].value;
+        if (value)
+            urls.push(children[i].value);
+        else
+            wrapper.removeChild(children[i--]);
+    }
+    engine.whitelist.withUrls(urls);
+    Browser.save('whitelistingurls', engine.whitelist.urls);
+    createWhitelistField(wrapper);
+};
+
+const createWhitelistField = (wrapper, value = '') => {
+    const element = document.createElement(`input`);
+    element.classList.add('url', 'form-control');
+    element.placeholder = 'https://...';
+    element.style.borderRadius = '0';
+    element.value = value;
+    element.addEventListener('change', () => updateWhitelist(wrapper));
+    wrapper.appendChild(element);
+};
+
 const updateBlacklist = wrapper => {
     const children = wrapper.children;
     const urls = [];
@@ -92,7 +117,6 @@ const getUiValue = key => {
 
         // Checkbox
         case 'currencyUsingAutomatic':
-        case 'usingBlacklist':
         case 'isBlacklisting':
         case 'currencyUsingHighlight':
         case 'currencyUsingCustomTag':
@@ -104,6 +128,7 @@ const getUiValue = key => {
         case 'currency':
             return element.children[element.selectedIndex].value || 'EUR';
         // Selector
+        case 'usingBlacklist':
         case 'currencyLocalizationDollar':
         case 'currencyLocalizationAsian':
         case 'currencyLocalizationKroner':
@@ -128,8 +153,15 @@ const setUiValue = async (key, value) => {
             element.change(engine.automaticPageConversion);
             break;
         case 'usingBlacklist':
-            engine.blacklist.using(value);
-            element.change(engine.blacklist.isEnabled);
+            if (value === true) value = 'blacklist'; else if (value === false) value = 'none';
+            engine.blacklist.using(value === 'blacklist');
+            engine.whitelist.using(value === 'whitelist');
+
+            const result =
+                engine.blacklist.isEnabled
+                    ? 'blacklist'
+                    : (engine.whitelist.isEnabled ? 'whitelist' : 'none');
+            element.value = result;
             break;
 
         case 'currencyHighlightColor':
@@ -211,9 +243,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     }, false);
 
     // Blacklist
-    const wrapper = document.getElementById('currencyBlacklistUrls');
-    engine.blacklist.urls.forEach(url => createBlacklistField(wrapper, url));
-    createBlacklistField(wrapper);
+    const blacklistWrapper = document.getElementById('currencyBlacklistUrls');
+    engine.blacklist.urls.forEach(url => createBlacklistField(blacklistWrapper, url));
+    createBlacklistField(blacklistWrapper);
+    const whitelistWrapper = document.getElementById('currencyWhitelistUrls');
+    engine.whitelist.urls.forEach(url => createWhitelistField(whitelistWrapper, url));
+    createWhitelistField(whitelistWrapper);
 
     Utils.storageIds().forEach(async id => {
         if (Utils.manualStorageIds()[id])

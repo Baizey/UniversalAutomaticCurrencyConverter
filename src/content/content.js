@@ -156,8 +156,22 @@ class UACCContent {
 Timer.start('Loading settings');
 const runner = new UACCContent();
 chrome.runtime.onMessage.addListener(
-    function (data, sender, senderResponse) {
+    async function (data, sender, senderResponse) {
         switch (data.method) {
+            case 'contextMenu':
+                const text = data.text;
+                if (!text) return;
+                const result = runner.engine.currencyDetector.findAll(text, true)[0];
+                if (!result) return;
+
+                const settings = await Browser.load(['popupCurrencies', 'popupAmounts']);
+                settings['popupCurrencies'] = settings['popupCurrencies'] || [];
+                settings['popupAmounts'] = settings['popupAmounts'] || [];
+                settings['popupCurrencies'].push(result.currency);
+                settings['popupAmounts'].push(result.number);
+                await Browser.save(settings);
+                await Browser.messageBackground({method: 'openPopup'});
+                break;
             case 'getLocalization':
                 senderResponse(runner.engine.currencyDetector.currencies[data.symbol]);
                 break;
@@ -214,7 +228,10 @@ runner.loader.finally(() => {
     if (!engine.isEnabled)
         return Utils.log('content', 'UACC is disabled');
 
-    if (engine.blacklist.isBlacklisted(window.location.href))
+    if (engine.blacklist.isEnabled && engine.blacklist.isBlacklisted(window.location.href))
+        return;
+
+    if (engine.whitelist.isEnabled && !engine.whitelist.isBlacklisted(window.location.href))
         return;
 
     Timer.start('Localization');
