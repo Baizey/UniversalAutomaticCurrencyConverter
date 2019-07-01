@@ -155,14 +155,22 @@ class UACCContent {
 
 Timer.start('Loading settings');
 const runner = new UACCContent();
+
+/**
+ * @param callback
+ * @param data
+ * @return {true|data}
+ */
+const handleResponding = (callback, data) => Browser.isFirefox() ? data : !callback(data) || true;
+
 chrome.runtime.onMessage.addListener(
     async function (data, sender, senderResponse) {
         switch (data.method) {
             case 'contextMenu':
                 const text = data.text;
-                if (!text) return;
+                if (!text) return handleResponding(senderResponse);
                 const result = runner.engine.currencyDetector.findAll(text, true)[0];
-                if (!result) return;
+                if (!result) return handleResponding(senderResponse);
 
                 const settings = await Browser.load(['popupCurrencies', 'popupAmounts']);
                 settings['popupCurrencies'] = settings['popupCurrencies'] || [];
@@ -173,12 +181,11 @@ chrome.runtime.onMessage.addListener(
                 await Browser.messageBackground({method: 'openPopup'});
                 break;
             case 'getLocalization':
-                senderResponse(runner.engine.currencyDetector.currencies[data.symbol]);
-                break;
+                return handleResponding(senderResponse, runner.engine.currencyDetector.currencies[data.symbol]);
             case 'setLocalization':
                 const to = data.to;
                 if (!(/^[A-Z]{3}$/.test(to)))
-                    return;
+                    return handleResponding(senderResponse);
                 const currencies = runner.engine.currencyDetector.currencies;
                 switch (data.symbol) {
                     case '$':
@@ -194,26 +201,19 @@ chrome.runtime.onMessage.addListener(
                     case '¥':
                         currencies['¥'] = to;
                         break;
-                    default:
-                        return senderResponse();
                 }
                 runner.conversions.forEach(c => c.UACCSetter(false));
                 runner.conversions.forEach(c => c.removeAttribute(convertedTag));
                 runner.conversions.forEach(c => runner.transformElement(c));
-                senderResponse();
-                break;
+                return handleResponding(senderResponse);
             case 'convertAll':
                 runner.setAll(data.converted);
-                senderResponse();
-                break;
+                return handleResponding(senderResponse);
             case 'conversionCount':
-                senderResponse(runner.conversionCount);
-                break;
+                return handleResponding(senderResponse, runner.conversionCount);
             case 'getUrl':
-                senderResponse(window.location.href);
-                break;
+                return handleResponding(senderResponse, window.location.href);
         }
-        return true;
     }
 );
 

@@ -187,11 +187,4 @@ document.addEventListener('DOMContentLoaded', () => {
         url = await loadingUrl;
         initiateBlacklisting(url, engine).catch(e => console.error(e));
     });
-
-    /*
-    chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
-        senderResponse({success: true});
-        return true;
-    });
-    */
 });
