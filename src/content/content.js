@@ -169,14 +169,17 @@ chrome.runtime.onMessage.addListener(
             case 'contextMenu':
                 const text = data.text;
                 if (!text) return handleResponding(senderResponse);
-                const result = runner.engine.currencyDetector.findAll(text, true)[0];
-                if (!result) return handleResponding(senderResponse);
+                const result = runner.engine.currencyDetector.findAll(text);
+                if (result.length === 0) return handleResponding(senderResponse);
 
                 const settings = await Browser.load(['popupCurrencies', 'popupAmounts']);
                 settings['popupCurrencies'] = settings['popupCurrencies'] || [];
                 settings['popupAmounts'] = settings['popupAmounts'] || [];
-                settings['popupCurrencies'].push(result.currency);
-                settings['popupAmounts'].push(result.number);
+
+                result.forEach(r => {
+                    settings['popupCurrencies'].push(r.currency);
+                    settings['popupAmounts'].push(r.number);
+                });
                 await Browser.save(settings);
                 await Browser.messageBackground({method: 'openPopup'});
                 break;
