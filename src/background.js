@@ -55,15 +55,29 @@ function handleError(request, senderResponse) {
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
-    if (request.method === 'openPopup') {
-        senderResponse({success: true, data: null});
-    } else if (request.method === 'getSelectedText') {
-        return getSelectedText(request, sender, senderResponse);
-    } else if (request.method === 'HttpGet') {
-        return corsHandler(request, sender, senderResponse);
-    } else {
-        return handleError(request, senderResponse);
+    switch (request.method) {
+        case 'openPopup':
+            chrome.tabs.create({
+               url: 'popup/popup.html',
+               active: false
+            }, tab => {
+                chrome.windows.create({
+                    tabId: tab.id,
+                    focused: true,
+                    type: 'popup',
+                    width: 440,
+                    height: 500,
+                }, window => senderResponse({success: true, data: window}));
+            });
+            break;
+        case 'getSelectedText':
+            return getSelectedText(request, sender, senderResponse);
+        case 'HttpGet':
+            return corsHandler(request, sender, senderResponse);
+        default:
+            return handleError(request, senderResponse);
     }
+
     return true;
 });
 
