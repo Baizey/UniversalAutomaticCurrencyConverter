@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Universal Automatic Currency Converter",
-  "short_name": "Universal Currency Converter",
-  "version": "2.5.3",
+  "short_name": "UA Currency Converter",
+  "version": "2.5.4",
   "description": "Your new currency converter.",
   "author": "Baizey",
   "icons": {
@@ -12,7 +12,7 @@
   },
   "browser_action": {
     "default_icon": "icons/icon.png",
-    "default_title": "Custom Currency Converter",
+    "default_title": "UA Currency Converter",
     "default_popup": "popup/popup.html"
   },
   "content_scripts": [
