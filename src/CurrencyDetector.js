@@ -74,17 +74,28 @@ class CurrencyDetector {
 
         const whitespace = /(\s*)/;
         const currency = /([¥a-zA-Z.,-]{2,3}|[$£€₺Ł元₿Ξ฿₴ɱ₽¥₩]|dollars?)?/;
-        const negation = /(-)?/;
-        const integer = /((?:\d{1,3}?(?:[., ]\d{3})*)|\d{4,})/;
-        const decimal = /(?:\s*[., ]\s*(\d{1,2}|-{2}))?/;
+
+        // Find normal numbers
+        const normalInteger = /(?:(?:\d{1,3}?(?:[., ]\d{3})*)|\d{4,})/.source;
+        const normalDecimal = /(?:\s*[., ]\s*(?:\d{1,2}|-{2}))/.source;
+
+        // Find small decimal numbers
+        const smallInteger = /(?:0)/.source;
+        const smallDecimal = /(?:[,.]\d+)/.source;
+
+        // Find numbers in ranges, like 10-50, ONLY WHOLE NUMBERS
+        const rangeInteger = `${normalInteger}-${normalInteger}`;
+
+        const integers = `(${[rangeInteger, normalInteger, smallInteger].join('|')})`;
+        const decimals = `(${[normalDecimal, smallDecimal].join('|')})?`;
+
+        const numberSource = `(\-)?${integers}${decimals}`;
 
         const rawRegex = [
             start.source,
             currency.source,
             whitespace.source,
-            negation.source,
-            integer.source,
-            decimal.source,
+            numberSource,
             whitespace.source,
             currency.source,
             end.source
@@ -93,9 +104,7 @@ class CurrencyDetector {
             /(^)/.source,
             currency.source,
             whitespace.source,
-            negation.source,
-            integer.source,
-            decimal.source,
+            numberSource,
             whitespace.source,
             currency.source,
             /($)/.source].join('');
@@ -123,7 +132,10 @@ class CurrencyDetector {
 
         neg = neg ? neg : '';
         int = int.replace(/[ ,.]*/g, '');
-        dec = dec ? `.${dec}` : '';
+        dec = (dec ? dec : '').replace(/[^\d]+/g, '');
+        let numbers = [Number(neg + int + '.' + dec)];
+        if (int.indexOf('-') >= 0)
+            numbers = int.split('-').map(e => Number(e));
 
         let currency;
         if (this.currencies[c2]) {
@@ -138,7 +150,7 @@ class CurrencyDetector {
                 end = c2 + end;
         }
 
-        return new SearchResult(raw, start, w1, w2, end, neg + int + dec, currency);
+        return new SearchResult(raw, start, w1, w2, end, numbers, currency);
     }
 
     /**
@@ -220,8 +232,17 @@ class CurrencyDetector {
 
 class SearchResult {
 
-    constructor(raw, start, w1, w2, end, number, currency) {
-        this.number = Number(number);
+    /**
+     * @param {string} raw
+     * @param {string}  start
+     * @param {string}  w1
+     * @param {string}  w2
+     * @param {string} end
+     * @param {number|number[]} numbers
+     * @param {string}  currency
+     */
+    constructor(raw, start, w1, w2, end, numbers, currency) {
+        this.numbers = Array.isArray(numbers) ? numbers : [numbers];
         this.currency = currency;
         this._raw = raw;
 
@@ -240,11 +261,11 @@ class SearchResult {
     }
 
     /**
-     * @param {function(a:number, b:string)} numberStyler
+     * @param {function(a:string, b:string)} numberStyler
      * @return {string}
      */
     result(numberStyler) {
-        return `${this._start}${this._w1}${numberStyler(this.number, this.currency)}${this._w2}${this._end}`
+        return `${this._start}${this._w1}${numberStyler(this.numbers.join('-'), this.currency)}${this._w2}${this._end}`
     }
 
 }

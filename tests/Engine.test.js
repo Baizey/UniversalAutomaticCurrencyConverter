@@ -17,8 +17,11 @@ describe('Engine tests', () => {
             'USD5$',
         ].forEach(text => {
             it(`${text} converts properly`, () => {
-                const actual = engine.transform(detector.findAll(text)[0]);
-                expect(actual).toBe('5 USD');
+                const expected = [new SearchResult(text, '', '', '', '', [5], 'USD')];
+
+                const actual = detector.findAll(text);
+
+                expect(actual).toEqual(expected);
             });
         });
     });

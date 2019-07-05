@@ -146,20 +146,22 @@ class Engine {
      * @return {string}
      */
     transform(value, from = undefined) {
-        let searchResult;
-        if (!from) {
-            searchResult = value;
-            value = searchResult.number;
-            from = searchResult.currency;
+        if (from) {
+            const converted = this.currencyConverter.convert(value, from);
+            const rounded = this.numberFormatter.round(converted);
+            const formatted = this.numberFormatter.format(rounded);
+            return this.customTag.converter(formatted, this.currencyConverter.baseCurrency);
         }
 
-        const converted = this.currencyConverter.convert(value, from);
-        const rounded = this.numberFormatter.round(converted);
-        const formatted = this.numberFormatter.format(rounded);
-        const customized = this.customTag.converter(formatted, this.currencyConverter.baseCurrency);
+        from = value.currency;
 
-        if (searchResult) return searchResult.result(() => customized);
-        return customized;
+        const result = value.numbers.map(v => {
+            const converted = this.currencyConverter.convert(v, from);
+            const rounded = this.numberFormatter.round(converted);
+            const formatted = this.numberFormatter.format(rounded);
+            return this.customTag.converter(formatted, this.currencyConverter.baseCurrency);
+        }).join('-');
+        return value.result(() => result);
     }
 
     getCurrencySymbols() {

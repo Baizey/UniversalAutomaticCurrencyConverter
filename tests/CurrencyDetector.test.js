@@ -69,14 +69,12 @@ describe("CurrencyDetector tests", () => {
     });
 
     // TODO: make it handle this with both values being seen as USD
-    /*
     it("Test X-Y currency", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
-        const data = '5 - 10 USD';
+        const data = '5-10 USD';
         const expected = [
-            new SearchResult('5 -', '', '', ' ', '-', 5, undefined),
-            new SearchResult('- 10 USD', '-', ' ', ' ', '', 10, 'USD')
+            new SearchResult(data, '', '', ' ', '', [5, 10], 'USD'),
         ];
 
         // Act
@@ -85,14 +83,13 @@ describe("CurrencyDetector tests", () => {
         // Assert
         expect(actual).toEqual(expected);
     });
-     */
 
     it("Test amazon.co.uk", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
         detector.localize('uk');
         const data = "£2\n.\n49";
-        const expected = [new SearchResult(data, '', '', '', '', 2.49, 'GBP')];
+        const expected = [new SearchResult(data, '', '', '', '', [2.49], 'GBP')];
 
         // Act
         const actual = detector.findAll(data, true);
@@ -109,6 +106,19 @@ describe("CurrencyDetector tests", () => {
 
         // Act
         const actual = detector.contains(data);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+    it("Detect small numbers", () => {
+        // Setup
+        const detector = new CurrencyDetector(browser);
+        const data = "0.000573USD";
+        const expected = [new SearchResult(data, '', '', '', '', 0.000573, 'USD')];
+
+        // Act
+        const actual = detector.findAll(data, true);
 
         // Assert
         expect(actual).toEqual(expected);
