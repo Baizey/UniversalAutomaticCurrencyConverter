@@ -159,9 +159,10 @@ class Engine {
             const converted = this.currencyConverter.convert(v, from);
             const rounded = this.numberFormatter.round(converted);
             const formatted = this.numberFormatter.format(rounded);
-            return this.customTag.converter(formatted, this.currencyConverter.baseCurrency);
+            return formatted;
         }).join('-');
-        return value.result(() => result);
+        const customized = this.customTag.converter(result, this.currencyConverter.baseCurrency);
+        return value.result(() => customized );
     }
 
     getCurrencySymbols() {
