@@ -177,9 +177,12 @@ chrome.runtime.onMessage.addListener(
                 settings['popupAmounts'] = settings['popupAmounts'] || [];
 
                 result.forEach(r => {
-                    settings['popupCurrencies'].push(r.currency);
-                    settings['popupAmounts'].push(r.number);
+                    r.numbers.forEach(number => {
+                        settings['popupCurrencies'].push(r.currency);
+                        settings['popupAmounts'].push(number);
+                    });
                 });
+
                 await Browser.save(settings);
                 await Browser.messageBackground({method: 'openPopup'});
                 break;
