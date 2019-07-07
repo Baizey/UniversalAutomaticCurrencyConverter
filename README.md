@@ -2,7 +2,23 @@
 
 An extension for Chrome and Firefox
 
-Current build status: [![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
+[![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
+
+## Conversion at all cost
+
+Currency converters can act in 1 of 3 ways:
+
+- Carefully, searches in invididual text nodes, replaces in individual text nodes, Likely to miss currencies, never breaks websites. Runs fast.
+
+- Aggressively, searches across html tags and replaces across html tags. Likely to find all currencies, might break websites. Runs fast.
+
+- Intelligently, searches aggresively, but replaces carefully. Likely to find all currencies, never breaks websites. Runs slowly.
+
+Most extensions will likely act carefully. This extension currently acts aggressively.
+
+Eventually I would like to have it act intelligently, or at the least let the users choose how it should approach conversion.
+
+## Description on Firefox/Chrome stores
 
 <strong>Your new currency converter.</strong>
 
