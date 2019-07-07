@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+  - "latest"
+
+before_install:
+  - npm i -g npm@latest
+  - npm install

@@ -27,11 +27,6 @@ const roundingData = [
     {input: 5489, expect: 5000, rounding: 1},
     {input: 0.505, expect: 0.5, rounding: 1},
 
-    {input: 0.99, expect: 1, rounding: 2},
-    {input: 99, expect: 100, rounding: 2},
-    {input: 95, expect: 100, rounding: 2},
-    {input: 14, expect: 14, rounding: 2},
-    {input: 19, expect: 20, rounding: 2},
     {input: 0.000001, expect: 0.000001, rounding: 2},
     {input: 0.0000001, expect: 0, rounding: 2},
     {input: 0, expect: 0, rounding: 2},
