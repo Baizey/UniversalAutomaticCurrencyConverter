@@ -114,6 +114,12 @@ const update = async () => {
     const symbols = await Tracker.out(urls.symbols).catch(console.error);
     data.rates = rates && rates.success ? rates : data.rates;
     data.symbols = symbols && symbols.success ? symbols : data.symbols;
+    if (data.rates && data.rates.rates) {
+        delete data.rates.rates['ALL'];
+    }
+    if (data.symbols && data.symbols.symbols) {
+        delete data.symbols.symbols['ALL'];
+    }
 };
 
 const api = express();
