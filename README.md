@@ -2,6 +2,10 @@
 
 An extension for Chrome and Firefox
 
+[Firefox add-on](https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/)
+
+[Chrome extension](https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli)
+
 [![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
 
 ## Conversion at all cost
