@@ -8,11 +8,11 @@ An extension for Chrome and Firefox
 
 Currency converters can act in 1 of 3 ways:
 
-- Carefully, searches in invididual text nodes, replaces in individual text nodes, Likely to miss currencies, never breaks websites. Runs fast.
+- Carefully, searches in invididual text nodes, replaces in individual text nodes, Likely to miss currencies, never breaks websites.
 
-- Aggressively, searches across html tags and replaces across html tags. Likely to find all currencies, might break websites. Runs fast.
+- Aggressively, searches across html tags and replaces across html tags. Likely to find all currencies, might break websites.
 
-- Intelligently, searches aggresively, but replaces carefully. Likely to find all currencies, never breaks websites. Runs slowly.
+- Intelligently, searches aggresively, but replaces carefully. Likely to find all currencies, never breaks websites.
 
 Most extensions will likely act carefully. This extension currently acts aggressively.
 
