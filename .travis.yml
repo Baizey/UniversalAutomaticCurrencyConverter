@@ -3,5 +3,5 @@ node_js:
   - "latest"
 
 before_install:
-  - npm i -g npm@latest
+  - npm i -g npm@6.4.1
   - npm install
