@@ -131,8 +131,10 @@ class CurrencyDetector {
         let [raw, start, c1, w1, neg, int, dec, w2, c2, end] = result;
 
         neg = neg ? neg : '';
+        dec = dec ? dec : '';
+
         int = int.replace(/[ ,.]*/g, '');
-        dec = (dec ? dec : '').replace(/[^\d]+/g, '');
+        dec = dec.replace(/[^\d]+/g, '');
         let numbers = [Number(neg + int + '.' + dec)];
         if (int.indexOf('-') >= 0)
             numbers = int.split('-').map(e => Number(e));

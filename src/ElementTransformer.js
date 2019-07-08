@@ -86,8 +86,8 @@ class ElementTransformer {
      * @return {[function(), function(boolean)]}
      */
     transformCarefully(element, full) {
-        const textnodes = this._findTextNodes(element);
         const detector = this.engine.currencyDetector;
+        const textnodes = this.findTextNodes(element).filter(e => detector.contains(e));
 
         const texts = textnodes.map(node => {
             const oldText = node.textContent;
@@ -146,33 +146,55 @@ class ElementTransformer {
      */
     transformIntelligently(element, full) {
         const detector = this.engine.currencyDetector;
-        const textnodes = this._findTextNodes(element);
+        const textnodes = this.findTextNodes(element);
         const text = textnodes.map(e => e.textContent).join(' ');
         const replacements = detector.findAll(text);
 
         const texts = textnodes.map(e => ({new: e.textContent, old: e.textContent}));
         let last = 0;
         replacements.forEach(result => {
-            last = text.indexOf(result, last);
+            last = text.indexOf(result.raw, last);
             if (last < 0) {
                 last = text.length;
                 return;
             }
-            const touched = this._findTouchedNodes(textnodes, last, last + result.raw.length);
+            const touched = this.findTouchedNodes(textnodes, last, last + result.raw.length);
 
             switch (touched.nodes.length) {
                 case 0:
                     // Wait what? BUT I SAW IT... oh shit boi
                     break;
                 case 1:
-                    texts[touched.start].new = texts[touched.start].new.replace(result.raw, this.engine.transform(result));
+                    texts[touched.start].new =
+                        texts[touched.start].new.replace(result.raw, this.engine.transform(result));
                     break;
                 default:
-                    // Oh shit, this is about to get complicated
-                    // 1. find where currency is placed... and remove it... keep the unused... unless it's currency... yeah boi
-                    // 2. Find out if decimal is placed with out without integer
-                    // 3. Remove decimal if alone
-                    // 4. Replace integer (+decimal) with transformation
+                    const subTexts = touched.nodes.map(e => e.textContent);
+                    const number = result.originalData.neg + result.originalData.int + result.originalData.dec;
+                    const integer = result.originalData.neg + result.originalData.int;
+                    let index;
+
+                    // 1. find if entire currency is in 1 node
+                    if (Utils.isDefined(index = subTexts.find(e => e.indexOf(result.raw) >= 0))) {
+                        const r = texts[index + touched.start];
+                        r.new = r.new.replace(result.raw, this.engine.transform(result));
+                        break;
+                    }
+                    // 1.1 If not, find if number is in 1 node
+                    else if (Utils.isDefined(index = subTexts.find(e => e.indexOf(number) >= 0))) {
+                        const r = texts[index + touched.start];
+                        r.new = r.new.replace(number, this.engine.transform(result));
+                    }
+                    // 1.2 If not, find if integer is in 1 node
+                    else if (Utils.isDefined(index = subTexts.find(e => e.indexOf(integer) >= 0))) {
+                        const r = texts[index + touched.start];
+                        r.new = r.new.replace(integer, this.engine.transform(result));
+                    }
+                    // 1.3 If not, give up I dont even
+                    else {
+                        // Shit
+                        break;
+                    }
             }
 
         });
@@ -196,23 +218,24 @@ class ElementTransformer {
      * @param {number} start
      * @param {number} end
      * @return {{nodes: Node[], start: number}}
-     * @private
      */
-    _findTouchedNodes(nodes, start, end) {
+    findTouchedNodes(nodes, start, end) {
         let i = 0;
         let at = 0;
         while (at <= start) {
             at += nodes[i].textContent.length;
             i++;
+            if (i >= nodes.length) break;
         }
 
         const startIndex = i - 1;
         const result = [nodes[startIndex]];
 
-        while (i <= end) {
+        while (at <= end) {
             result.push(nodes[i]);
             at += nodes[i].textContent.length;
             i++;
+            if (i >= nodes.length) break;
         }
 
         return {
@@ -222,18 +245,16 @@ class ElementTransformer {
     }
 
     /**
-     * @param {HTMLElement} element
+     * @param {Element} element
      * @return {Node[]}
-     * @private
      */
-    _findTextNodes(element) {
+    findTextNodes(element) {
         const textnodes = [];
         const queue = [element];
-        const detector = this.engine.currencyDetector;
         while (queue.length > 0) {
             const curr = queue.pop();
-            if (curr.nodeType === Node.TEXT_NODE && detector.contains(curr.textContent))
-                textnodes.push(curr);
+            if (curr.nodeType === Node.TEXT_NODE)
+                textnodes.unshift(curr);
             else if (curr.hasChildNodes())
                 for (let i = 0; i < curr.childNodes.length; i++)
                     queue.push(curr.childNodes[i]);
