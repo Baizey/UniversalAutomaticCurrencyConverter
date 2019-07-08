@@ -32,6 +32,7 @@
         "CurrencyDetector.js",
         "CurrencyConverter.js",
         "NumberFormatter.js",
+        "ElementTransformer.js",
         "Engine.js",
         "content/content.js"
       ],

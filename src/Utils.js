@@ -34,6 +34,7 @@ class Timer {
 class Utils {
     static storageIds() {
         return [
+            'currencyElementTransformationType',
             'currencyLocalizationDollar',
             'currencyLocalizationAsian',
             'currencyLocalizationKroner',

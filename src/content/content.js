@@ -28,23 +28,10 @@ class UACCContent {
         if (this.engine.highlighter.isEnabled)
             this._conversions.forEach(e => {
                 e.UACCSetter(converted);
-                self.highlightConversion(e).finally();
+                self.engine.elementTransformer.highlightConversion(e).finally();
             });
         else
             this._conversions.forEach(e => e.UACCSetter(converted));
-    }
-
-    async highlightConversion(element) {
-        const highlighter = this.engine.highlighter;
-        const duration = highlighter.duration;
-        const oldColor = element.style.backgroundColor;
-        element.classList.add('highlighted');
-        element.style.backgroundColor = highlighter.color;
-        await Utils.wait(duration);
-        element.classList.add('hiddenHighlight');
-        element.style.backgroundColor = oldColor;
-        await Utils.wait(5 * duration);
-        element.classList.remove('highlighted', 'hiddenHighlight');
     }
 
     hasChildrenBeyond(element, limit, depth = 0) {
@@ -66,53 +53,6 @@ class UACCContent {
             if (this.engine.currencyDetector.contains(element.children[i]))
                 return true;
         return false;
-    }
-
-    convertElement(element, full = false) {
-        const replacements = this.detector.findAll(element, full);
-        return replacements.reduce((a, b) => a.replace(b.raw, this.engine.transform(b)), element.innerText);
-    }
-
-    transformElement(element, full = false) {
-        if (!element) return;
-        if (element.hasAttribute(convertedTag)) return;
-        const hasEvents = element.hasAttribute(hasEventsTag);
-        element.setAttribute(hasEventsTag, 'true');
-        element.setAttribute(convertedTag, 'true');
-        const newText = this.convertElement(element, full);
-        const oldText = element.innerHTML;
-        element.classList.add('clickable');
-        if (!hasEvents) {
-            element.addEventListener('mouseout', () => mouseIsOver = null);
-            element.addEventListener('mouseover', () => mouseIsOver = element);
-        }
-
-        let isNew = false;
-        const setToOld = () => {
-            element.innerHTML = oldText;
-            isNew = false;
-        };
-        const setToNew = () => {
-            element.innerText = newText;
-            isNew = true;
-        };
-        const set = value => value ? setToNew() : setToOld();
-        const change = () => isNew ? setToOld() : setToNew();
-
-        if (!hasEvents)
-            this._conversions.push(element);
-
-        change();
-
-        element.UACCChanger = change;
-        element.UACCSetter = set;
-
-        if (!hasEvents)
-            element.addEventListener('click', () => element.UACCChanger());
-
-        if (this.engine.highlighter.isEnabled)
-            this.highlightConversion(element)
-                .catch(e => Utils.logError(e));
     }
 
     convertElements(start) {
@@ -137,7 +77,7 @@ class UACCContent {
 
             if (detector.contains(curr, true)) {
                 if (!curr.children || (curr.children.length === 1 && curr.innerText !== curr.children[0].innerText)) {
-                    this.transformElement(curr, true);
+                    this.engine.elementTransformer.transform(curr, true);
                     continue;
                 }
             }
@@ -148,7 +88,7 @@ class UACCContent {
                 continue;
             }
 
-            this.transformElement(curr);
+            this.engine.elementTransformer.transform(curr);
         }
     }
 }
@@ -210,7 +150,7 @@ chrome.runtime.onMessage.addListener(
                 }
                 runner.conversions.forEach(c => c.UACCSetter(false));
                 runner.conversions.forEach(c => c.removeAttribute(convertedTag));
-                runner.conversions.forEach(c => runner.transformElement(c));
+                runner.conversions.forEach(c => runner.engine.elementTransformer.transformElement(c));
                 return handleResponding(senderResponse);
             case 'convertAll':
                 runner.setAll(data.converted);

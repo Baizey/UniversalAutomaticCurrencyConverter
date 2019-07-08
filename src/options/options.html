@@ -26,6 +26,7 @@
     <script src="../NumberFormatter.js"></script>
     <script src="../CurrencyConverter.js"></script>
     <script src="../CurrencyDetector.js"></script>
+    <script src="../ElementTransformer.js"></script>
     <!-- UACC Runner -->
     <script src="../Engine.js"></script>
     <!-- UACC domain specific -->
@@ -313,6 +314,43 @@
                     Fx 1.25 will give a 25% increase
                 </span>
                 </div>
+            </div>
+        </div>
+        <div class="row setting-tab">
+            <h3>Advanced settings
+                <div class="circle-plus closed" style="float:left">
+                    <div class="circle">
+                        <div class="horizontal"></div>
+                        <div class="vertical"></div>
+                    </div>
+                </div>
+                <div class="circle-plus closed" style="visibility:hidden; float:right">
+                    <div class="circle">
+                        <div class="horizontal"></div>
+                        <div class="vertical"></div>
+                    </div>
+                </div>
+            </h3>
+            <div class="row innerRow">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <label class="center" for="currencyElementTransformationType">Page conversions</label>
+                    <select id="currencyElementTransformationType" name="currencyElementTransformationType" class="form-control">
+                        <option value="aggressively">Aggressively</option>
+                        <option value="carefully">Carefully</option>
+                        <option value="intelligently">Intelligently</option>
+                    </select>
+                    <span class="help-block center">
+                        How page conversions will happen
+                        <br>
+                        Aggressive - Find all currency, may break some websites
+                        <br>
+                        Carefully - Miss currency, never breaks websites
+                        <br>
+                        Intelligently - Find all currency, never breaks websites
+                    </span>
+                </div>
+                <div class="col-sm-3"></div>
             </div>
         </div>
         <div class="row setting-tab">

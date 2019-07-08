@@ -10,10 +10,11 @@ class Engine {
     }
 
     constructor(browser = undefined, detector = undefined) {
+        this.elementTransformer = new ElementTransformer(this);
         this.browser = browser ? browser : Browser.instance();
         this.currencyDetector = detector ? detector : CurrencyDetector.instance();
-        this.blacklist = new Blacklist();
-        this.whitelist = new Blacklist();
+        this.blacklist = new Blacklist(true);
+        this.whitelist = new Blacklist(false);
         this.customTag = new CustomTag();
         this.highlighter = new Highlighter();
         this.currencyConverter = new CurrencyConverter().withCustomTag(this.customTag);
@@ -45,6 +46,10 @@ class Engine {
 
     getById(id) {
         switch (id) {
+
+            case 'currencyElementTransformationType':
+                return this.elementTransformer.type;
+
             case 'currencyLocalizationDollar':
                 return this.currencyDetector.storedDefaultLocalization.dollar;
             case 'currencyLocalizationAsian':
@@ -100,6 +105,8 @@ class Engine {
         const self = this;
         return new Promise(async resolve => {
             const resp = await Browser.load(Utils.storageIds());
+
+            self.elementTransformer.withConversionType(resp['currencyElementTransformationType']);
 
             self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationDollar']);
             self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationKroner']);
