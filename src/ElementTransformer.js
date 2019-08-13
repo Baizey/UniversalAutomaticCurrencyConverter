@@ -21,6 +21,10 @@ class ElementTransformer {
         this.conversions = [];
     }
 
+    setAll(value) {
+        this.conversions.forEach(c => c.UACCSetter(value));
+    }
+
     withConversionType(type) {
         if (ConversionTypes[type])
             this.type = type;
@@ -29,41 +33,32 @@ class ElementTransformer {
     /**
      * @param {HTMLElement} element
      * @param {boolean} full
+     * @param {boolean} ignoreTags
+     * @return {ConvertedElement|undefined}
      */
-    transform(element, full = false) {
-        if (!element || element.hasAttribute(Tags.converted)) return;
+    transform(element, full = false, ignoreTags = false) {
+        if (!element || (!ignoreTags && element.hasAttribute(Tags.converted)))
+            return;
 
         const hasEvents = element.hasAttribute(Tags.hasEvents);
         element.setAttribute(Tags.converted, 'true');
         element.setAttribute(Tags.hasEvents, 'true');
         element.classList.add('clickable');
 
+        const convertedElement = this._chooseTransformType(element, full);
+
         if (!hasEvents) {
+            this.conversions.push(convertedElement);
             element.addEventListener('mouseout', () => mouseIsOver = null);
             element.addEventListener('mouseover', () => mouseIsOver = element);
-            this.conversions.push(element);
+            element.addEventListener('click', () => convertedElement.flip());
         }
 
-        let [flip, set] = [() => undefined, bool => undefined];
-        switch (this.type) {
-            case ConversionTypes.carefully:
-                [flip, set] = this.transformCarefully(element, full);
-                break;
-            case ConversionTypes.aggressively:
-                [flip, set] = this.transformAggressively(element, full);
-                break;
-            case ConversionTypes.intelligently:
-                [flip, set] = this.transformIntelligently(element, full);
-                break;
-        }
-
-        element.UACCChanger = flip;
-        element.UACCSetter = set;
-
-        set(true);
         if (this.engine.highlighter.isEnabled)
             this.highlightConversion(element)
                 .catch(e => Utils.logError(e));
+
+        return convertedElement;
     }
 
     async highlightConversion(element) {
@@ -79,15 +74,31 @@ class ElementTransformer {
         element.classList.remove('highlighted', 'hiddenHighlight');
     }
 
+    /**
+     * @param element
+     * @param full
+     * @return {ConvertedElement}
+     * @private
+     */
+    _chooseTransformType(element, full) {
+        switch (this.type) {
+            case ConversionTypes.carefully:
+                return this.transformCarefully(element, full);
+            case ConversionTypes.aggressively:
+                return this.transformAggressively(element, full);
+            case ConversionTypes.intelligently:
+                return this.transformIntelligently(element, full);
+        }
+    }
 
     /**
      * @param {HTMLElement} element
      * @param {boolean} full
-     * @return {[function(), function(boolean)]}
+     * @return {ConvertedElement}
      */
     transformCarefully(element, full) {
         const detector = this.engine.currencyDetector;
-        const textnodes = this.findTextNodes(element).filter(e => detector.contains(e));
+        const textnodes = ElementTransformer.findTextNodes(element).filter(e => detector.contains(e));
 
         const texts = textnodes.map(node => {
             const oldText = node.textContent;
@@ -107,15 +118,14 @@ class ElementTransformer {
             isNew = true;
         };
 
-        const flip = () => isNew ? setOld() : setNew();
-        const set = value => value ? setNew() : setOld();
-        return [flip, set];
+        return new ConvertedElement(element, this.engine)
+            .withSetters(setNew, setOld);
     }
 
     /**
      * @param {HTMLElement} element
      * @param {boolean} full
-     * @return {undefined|[function(), function(boolean)]}
+     * @return {ConvertedElement}
      */
     transformAggressively(element, full) {
         const detector = this.engine.currencyDetector;
@@ -134,70 +144,53 @@ class ElementTransformer {
             isNew = true;
         };
 
-        const flip = () => isNew ? setOld() : setNew();
-        const set = value => value ? setNew() : setOld();
-        return [flip, set];
+        return new ConvertedElement(element, this.engine)
+            .withSetters(setNew, setOld);
     }
 
     /**
      * @param {HTMLElement} element
      * @param {boolean} full
-     * @return {undefined|[function(), function(boolean)]}
+     * @return {ConvertedElement}
      */
     transformIntelligently(element, full) {
         const detector = this.engine.currencyDetector;
-        const textnodes = this.findTextNodes(element);
-        const text = textnodes.map(e => e.textContent).join(' ');
+        const textnodes = ElementTransformer.findTextNodes(element);
+
+        const text = textnodes.map(e => e.textContent).join('');
         const replacements = detector.findAll(text);
-
         const texts = textnodes.map(e => ({new: e.textContent, old: e.textContent}));
-        let last = 0;
-        replacements.forEach(result => {
-            last = text.indexOf(result.raw, last);
-            if (last < 0) {
-                last = text.length;
-                return;
-            }
-            const touched = this.findTouchedNodes(textnodes, last, last + result.raw.length);
 
-            switch (touched.nodes.length) {
+        const find = replacement => {
+            const start = replacement.index;
+            const end = replacement.index + replacement.raw.length;
+            let at = 0;
+            return textnodes
+                .map((e, i) => ({node: e, index: i}))
+                .filter(e => {
+                    const temp = at + e.node.textContent.length;
+                    const result = (at >= start && at < end) || (temp > start && temp <= end);
+                    at = temp;
+                    return result;
+                });
+        };
+
+        replacements.forEach(replacement => {
+            const nodes = find(replacement);
+            switch (nodes.length) {
                 case 0:
-                    // Wait what? BUT I SAW IT... oh shit boi
-                    break;
+                    throw "Not supposed to happen, turn back";
                 case 1:
-                    texts[touched.start].new =
-                        texts[touched.start].new.replace(result.raw, this.engine.transform(result));
+                    const simpleText = texts[nodes[0].index];
+                    simpleText.new = simpleText.new.replace(replacement.raw, this.engine.transform(replacement));
                     break;
                 default:
-                    const subTexts = touched.nodes.map(e => e.textContent);
-                    const number = result.originalData.neg + result.originalData.int + result.originalData.dec;
-                    const integer = result.originalData.neg + result.originalData.int;
-                    let index;
+                    // Oh shit
 
-                    // 1. find if entire currency is in 1 node
-                    if (Utils.isDefined(index = subTexts.find(e => e.indexOf(result.raw) >= 0))) {
-                        const r = texts[index + touched.start];
-                        r.new = r.new.replace(result.raw, this.engine.transform(result));
-                        break;
-                    }
-                    // 1.1 If not, find if number is in 1 node
-                    else if (Utils.isDefined(index = subTexts.find(e => e.indexOf(number) >= 0))) {
-                        const r = texts[index + touched.start];
-                        r.new = r.new.replace(number, this.engine.transform(result));
-                    }
-                    // 1.2 If not, find if integer is in 1 node
-                    else if (Utils.isDefined(index = subTexts.find(e => e.indexOf(integer) >= 0))) {
-                        const r = texts[index + touched.start];
-                        r.new = r.new.replace(integer, this.engine.transform(result));
-                    }
-                    // 1.3 If not, give up I dont even
-                    else {
-                        // Shit
-                        break;
-                    }
+                    break;
             }
-
         });
+
 
         let isNew = false;
         const setOld = () => {
@@ -208,47 +201,16 @@ class ElementTransformer {
             textnodes.forEach((node, i) => node.textContent = texts[i].new);
             isNew = true;
         };
-        const flip = () => isNew ? setOld() : setNew();
-        const set = value => value ? setNew() : setOld();
-        return [flip, set];
-    }
 
-    /**
-     * @param {Node[]} nodes
-     * @param {number} start
-     * @param {number} end
-     * @return {{nodes: Node[], start: number}}
-     */
-    findTouchedNodes(nodes, start, end) {
-        let i = 0;
-        let at = 0;
-        while (at <= start) {
-            at += nodes[i].textContent.length;
-            i++;
-            if (i >= nodes.length) break;
-        }
-
-        const startIndex = i - 1;
-        const result = [nodes[startIndex]];
-
-        while (at <= end) {
-            result.push(nodes[i]);
-            at += nodes[i].textContent.length;
-            i++;
-            if (i >= nodes.length) break;
-        }
-
-        return {
-            start: startIndex,
-            nodes: result
-        };
+        return new ConvertedElement(element, this.engine)
+            .withSetters(setNew, setOld);
     }
 
     /**
      * @param {Element} element
      * @return {Node[]}
      */
-    findTextNodes(element) {
+    static findTextNodes(element) {
         const textnodes = [];
         const queue = [element];
         while (queue.length > 0) {
@@ -260,6 +222,57 @@ class ElementTransformer {
                     queue.push(curr.childNodes[i]);
         }
         return textnodes;
+    }
+
+}
+
+class ConvertedElement {
+    constructor(element, engine) {
+        this.engine = engine;
+        this.element = element;
+        this.setOld = () => {
+        };
+        this.setNew = () => {
+        };
+        this._flip = () => {
+        };
+        this._set = () => {
+        };
+    }
+
+    withSetters(setNew, setOld = undefined) {
+        this.setOld = setOld ? setOld : this.setOld;
+        this.setNew = setNew;
+        return this;
+    }
+
+    updateUi() {
+        const setNew = this.setNew;
+        const setOld = this.setOld;
+        const self = this;
+
+        let isNew = false;
+        this._set = value => isNew = value ? (setNew() || true) : (setOld() && false);
+        this._flip = () => self._set(!isNew);
+        this.element.UACCSetter = this._set;
+        this.element.UACCChanger = this._flip;
+        this._set(true);
+        
+        return this;
+    }
+
+    set(value) {
+        this._set(value);
+    }
+
+    flip() {
+        this._flip();
+    }
+
+    updateSetters() {
+        this.set(false);
+        const result = this.engine.elementTransformer.transform(this.element);
+        this.withSetters(result.setNew).updateUi();
     }
 
 }

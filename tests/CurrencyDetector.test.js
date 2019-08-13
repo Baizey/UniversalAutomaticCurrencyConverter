@@ -8,7 +8,7 @@ describe("CurrencyDetector tests", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
         const data = '5 USD';
-        const expected = [new SearchResult(data, '', '', ' ', '', 5, 'USD')];
+        const expected = [new SearchResult(data, '', '', ' ', '', 5, 'USD', 0)];
 
         // Act
         const actual = detector.findAll(data, true);
@@ -40,7 +40,7 @@ describe("CurrencyDetector tests", () => {
         detector.localize('jp');
 
         const data = 'JP¥5';
-        const expected = [new SearchResult(data, '', '', '', '', 5, 'JPY')];
+        const expected = [new SearchResult(data, '', '', '', '', 5, 'JPY', 0)];
 
         // Act
         const actual = detector.findAll(data, true);
@@ -59,7 +59,7 @@ describe("CurrencyDetector tests", () => {
         detector.localize('dk');
 
         const data = '5,-';
-        const expected = [new SearchResult(data, '', '', '', '', 5, 'DKK')];
+        const expected = [new SearchResult(data, '', '', '', '', 5, 'DKK', 0)];
 
         // Act
         const actual = detector.findAll(data, true);
@@ -74,7 +74,7 @@ describe("CurrencyDetector tests", () => {
         const detector = new CurrencyDetector(browser);
         const data = '5-10 USD';
         const expected = [
-            new SearchResult(data, '', '', ' ', '', [5, 10], 'USD'),
+            new SearchResult(data, '', '', ' ', '', [5, 10], 'USD', 0),
         ];
 
         // Act
@@ -89,7 +89,7 @@ describe("CurrencyDetector tests", () => {
         const detector = new CurrencyDetector(browser);
         detector.localize('uk');
         const data = "£2\n.\n49";
-        const expected = [new SearchResult(data, '', '', '', '', [2.49], 'GBP')];
+        const expected = [new SearchResult(data, '', '', '', '', [2.49], 'GBP', 0)];
 
         // Act
         const actual = detector.findAll(data, true);
@@ -115,7 +115,7 @@ describe("CurrencyDetector tests", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
         const data = "0.000573USD";
-        const expected = [new SearchResult(data, '', '', '', '', 0.000573, 'USD')];
+        const expected = [new SearchResult(data, '', '', '', '', 0.000573, 'USD', 0)];
 
         // Act
         const actual = detector.findAll(data, true);

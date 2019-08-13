@@ -152,7 +152,7 @@ class CurrencyDetector {
                 end = c2 + end;
         }
 
-        return new SearchResult(raw, start, w1, w2, end, numbers, currency);
+        return new SearchResult(raw, start, w1, w2, end, numbers, currency, result.index);
     }
 
     /**
@@ -242,8 +242,10 @@ class SearchResult {
      * @param {string} end
      * @param {number|number[]} numbers
      * @param {string}  currency
+     * @param {number} index
      */
-    constructor(raw, start, w1, w2, end, numbers, currency) {
+    constructor(raw, start, w1, w2, end, numbers, currency, index) {
+        this.index = index;
         this.numbers = Array.isArray(numbers) ? numbers : [numbers];
         this.currency = currency;
         this._raw = raw;

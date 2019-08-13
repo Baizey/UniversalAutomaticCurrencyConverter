@@ -10,28 +10,7 @@ let mouseIsOver = null;
 class UACCContent {
     constructor() {
         this.engine = new Engine();
-        this.detector = this.engine.currencyDetector;
         this.loader = this.engine.loadSettings();
-        this._conversions = [];
-    }
-
-    get conversions() {
-        return this._conversions;
-    }
-
-    get conversionCount() {
-        return this._conversions.length;
-    }
-
-    setAll(converted) {
-        const self = this;
-        if (this.engine.highlighter.isEnabled)
-            this._conversions.forEach(e => {
-                e.UACCSetter(converted);
-                self.engine.elementTransformer.highlightConversion(e).finally();
-            });
-        else
-            this._conversions.forEach(e => e.UACCSetter(converted));
     }
 
     hasChildrenBeyond(element, limit, depth = 0) {
@@ -105,6 +84,7 @@ const handleResponding = (callback, data) => Browser.isFirefox() ? data : !callb
 
 chrome.runtime.onMessage.addListener(
     async function (data, sender, senderResponse) {
+        const transformer = runner.engine.elementTransformer;
         switch (data.method) {
             case 'contextMenu':
                 const text = data.text;
@@ -148,27 +128,22 @@ chrome.runtime.onMessage.addListener(
                         currencies['¥'] = to;
                         break;
                 }
-                runner.conversions.forEach(c => c.UACCSetter(false));
-                runner.conversions.forEach(c => c.removeAttribute(convertedTag));
-                runner.conversions.forEach(c => runner.engine.elementTransformer.transformElement(c));
+                transformer.setAll(false);
+                transformer.conversions.forEach(c => transformer.transform(c, false, true));
                 return handleResponding(senderResponse);
             case 'convertAll':
-                runner.setAll(data.converted);
+                transformer.setAll(data.converted);
                 return handleResponding(senderResponse);
             case 'conversionCount':
-                return handleResponding(senderResponse, runner.conversionCount);
+                return handleResponding(senderResponse, transformer.conversions.length);
             case 'getUrl':
                 return handleResponding(senderResponse, window.location.href);
         }
     }
 );
 
-runner.loader.then(r => {
-    Timer.log('Loading settings');
-    return r;
-});
-
 runner.loader.finally(() => {
+    Timer.log('Loading settings');
     const engine = runner.engine;
 
     if (!engine.isEnabled)
