@@ -91,7 +91,7 @@ class CurrencyDetector {
         const end = new RegExp(`(${s.source}|$)`);
 
         const whitespace = /(\s*)/;
-        const currency = /([¥a-zA-Z.,-]{2,3}|[$£€₺Ł元₿Ξ฿₴ɱ₽¥₩]|dollars?)?/;
+        const currency = /([¥a-zA-Z.,-]{2,3}|CDN\$|[$£€₺Ł元₿Ξ฿₴ɱ₽¥₩]|dollars?)?/;
 
         // Find normal numbers
         const normalInteger = /(?:(?:\d{1,3}?(?:[., ]\d{3})*)|\d{4,})/.source;

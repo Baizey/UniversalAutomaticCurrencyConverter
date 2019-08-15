@@ -13,24 +13,29 @@ describe('ElementTransformer tests', () => {
     engine.currencyConverter.withConversionRates({
         'GBP': 1,
         'EUR': 1,
+        'CAD': 1,
     });
 
-    const temp = `<span aria-hidden="true">
+    const _amazonCa = `<span aria-hidden="true"><span class="a-price-symbol">CDN$</span><span class="a-price-whole">2<span class="a-price-decimal">.</span></span><span class="a-price-fraction">49</span></span>`;
+    const _amazonUk = `<span aria-hidden="true">
     <span class="a-price-symbol">£</span>
     <span class="a-price-whole">2
         <span class="a-price-decimal">.</span>
     </span>
     <span class="a-price-fraction">49</span>
 </span>`;
-    const div = document.createElement('div');
-    div.innerHTML = temp;
-    const test = div.children[0];
+    let div = document.createElement('div');
+    div.innerHTML = _amazonUk;
+    const amazonUk = div.children[0];
+    div = document.createElement('div');
+    div.innerHTML = _amazonCa;
+    const amazonCa = div.children[0];
 
     it('Test finds elements in correct order', () => {
         const transformer = new ElementTransformer(engine);
         transformer.withConversionType(ConversionTypes.intelligently);
         const expected = ['£', '2', '.', '49'];
-        const textNodes = ElementTransformer.findTextNodes(test);
+        const textNodes = ElementTransformer.findTextNodes(amazonUk);
         const text = cleanResult(textNodes);
         expect(text).toEqual(expected);
     });
@@ -38,7 +43,7 @@ describe('ElementTransformer tests', () => {
     it('Test transforms correctly intelligently', () => {
         const transformer = new ElementTransformer(engine);
         transformer.withConversionType(ConversionTypes.intelligently);
-        const clone = test.cloneNode(true);
+        const clone = amazonUk.cloneNode(true);
         const textNodes = ElementTransformer.findTextNodes(clone);
         let cleanNodes = cleanResult(textNodes);
 
@@ -52,5 +57,24 @@ describe('ElementTransformer tests', () => {
         result.set(false);
         cleanNodes = cleanResult(textNodes);
         expect(cleanNodes).toEqual(['£', '2', '.', '49']);
+    });
+
+    it('Test transforms correctly intelligently', () => {
+        const transformer = new ElementTransformer(engine);
+        transformer.withConversionType(ConversionTypes.intelligently);
+        const clone = amazonCa.cloneNode(true);
+        const textNodes = ElementTransformer.findTextNodes(clone);
+        let cleanNodes = cleanResult(textNodes);
+
+        const result = transformer.transformIntelligently(clone, false);
+        result.updateUi();
+
+        result.set(true);
+        cleanNodes = cleanResult(textNodes);
+        expect(cleanNodes).toEqual(['2.5 EUR', '.']);
+
+        result.set(false);
+        cleanNodes = cleanResult(textNodes);
+        expect(cleanNodes).toEqual(['CDN$', '2', '.', '49']);
     });
 });
