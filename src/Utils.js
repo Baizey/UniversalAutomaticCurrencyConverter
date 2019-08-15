@@ -31,9 +31,14 @@ class Timer {
 
 }
 
+Array.prototype.sum = function () {
+    return this.reduce((a, b) => a + b, 0);
+};
+
 class Utils {
     static storageIds() {
         return [
+            'showNonDefaultCurrencyAlert',
             'currencyElementTransformationType',
             'currencyLocalizationDollar',
             'currencyLocalizationAsian',
@@ -57,7 +62,7 @@ class Utils {
         ];
     }
 
-    static initiateCheckboxes(){
+    static initiateCheckboxes() {
         const checkboxes = document.getElementsByClassName('custom-check');
         for (let i = 0; i < checkboxes.length; i++) {
             const box = checkboxes[i];
@@ -88,7 +93,7 @@ class Utils {
     }
 
     static log(from, data) {
-        if(from !== 'error') return;
+        if (from !== 'error') return;
         console.log(`UACC ${from}: ${data}`);
     }
 

@@ -116,6 +116,7 @@ const getUiValue = key => {
             return element.value;
 
         // Checkbox
+        case 'showNonDefaultCurrencyAlert':
         case 'currencyUsingAutomatic':
         case 'isBlacklisting':
         case 'currencyUsingHighlight':
@@ -142,6 +143,11 @@ const getUiValue = key => {
 const setUiValue = async (key, value) => {
     const element = document.getElementById(key);
     switch (key) {
+
+        case 'showNonDefaultCurrencyAlert':
+            engine.withShowNonDefaultCurrencyAlert(value);
+            element.change(engine.showNonDefaultCurrencyAlert);
+            break;
 
         case 'currencyElementTransformationType':
             engine.elementTransformer.withConversionType(value);
@@ -256,9 +262,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     engine.whitelist.urls.forEach(url => createWhitelistField(whitelistWrapper, url));
     createWhitelistField(whitelistWrapper);
 
-    Utils.storageIds().forEach(async id => {
+    for (const id of Utils.storageIds()) {
         if (Utils.manualStorageIds()[id])
-            return;
+            continue;
         const value = engine.getById(id);
         const element = document.getElementById(id);
 
@@ -281,7 +287,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             else
                 Browser.save(id, oldValue).then(() => document.getElementById(id).style.border = '1px solid green');
         });
-    });
+    }
 
     const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
     if (isFirstTime)

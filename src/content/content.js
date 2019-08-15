@@ -128,8 +128,7 @@ chrome.runtime.onMessage.addListener(
                         currencies['¥'] = to;
                         break;
                 }
-                transformer.setAll(false);
-                transformer.conversions.forEach(c => transformer.transform(c, false, true));
+                transformer.updateAll();
                 return handleResponding(senderResponse);
             case 'convertAll':
                 transformer.setAll(data.converted);
@@ -156,8 +155,38 @@ runner.loader.finally(() => {
         return;
 
     Timer.start('Localization');
-    engine.currencyDetector.localize(Browser.getHost(), document.body.innerText);
+    const replacements = engine.currencyDetector.localize(Browser.getHost(), document.body.innerText);
     Timer.log('Localization');
+
+    if (replacements.length > 0 && engine.showNonDefaultCurrencyAlert) {
+        // Alert user about replacements
+        const content = replacements
+            .map(e => `<span>${e.using} is used for conversion of ${e.symbol} default is ${e.default}</span>`)
+            .join('<br>');
+        const bodyColor = window.getComputedStyle(document.body, null).getPropertyValue('background-color');
+        const colors = bodyColor.match(/\d+/g).map(e => Number(e)).map(e => e * 0.85);
+        const backgroundColor = colors.length === 3
+            ? 'rgb(' + colors.join(',') + ')'
+            : 'rgba(' + colors.join(',') + ')';
+        const textColor = (colors.slice(0, 3).sum() / 3) > 128 ? 'black' : 'white';
+
+        const div = `<div style="
+background-color:${backgroundColor}; color: ${textColor};
+font-size: 14px; line-height: 1.1;
+padding: 10px; text-align:center;
+height: fit-content; width: fit-content;
+z-index: 1000;
+right: 0; bottom: 0; position: fixed;">
+    ${content}
+    <p style="font-size: 10px">You can turn these alerts off in UA Currency Converter settings</p>
+    <button class="uacc_removeParent" style="width:100%">Ok</button> 
+</div>`;
+        const temp = document.createElement('div');
+        temp.innerHTML = div;
+        const html = temp.children[0];
+        html.children[html.children.length - 1].addEventListener('click', () => html.remove());
+        document.body.append(html);
+    }
 
     if (engine.automaticPageConversion) {
         Timer.start('Converting page');

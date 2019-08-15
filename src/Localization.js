@@ -11,7 +11,7 @@ class Localization {
      * @param {object} defaults
      * @param {string} text
      * @param {string} host
-     * @return {*}
+     * @returns {{default:string, replacement:string}[]}
      */
     static analyze(currencies, defaults, text, host = undefined) {
         return Localization.instance().analyze(currencies, defaults, text, host);
@@ -117,7 +117,7 @@ class Localization {
      * @param {object} defaults
      * @param {string} text
      * @param {string} host
-     * @return {*}
+     * @returns {{default:string, replacement:string}[]}
      */
     analyze(currencies, defaults, text, host = undefined) {
         host = this.hostToCurrency(host);
@@ -146,8 +146,6 @@ class Localization {
                         break;
                     }
                 }
-                if (!foundDefault)
-                    currencies[key] = countries[firstMax];
             }
         });
     }

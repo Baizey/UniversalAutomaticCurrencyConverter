@@ -12,9 +12,27 @@ class CurrencyDetector {
     /**
      * @param {string} host
      * @param {string} text
+     * @returns {{symbol:string, using: string, default: string}[]}
      */
     localize(host = undefined, text = '') {
         Localization.analyze(this.currencies, this.defaultLocalization, text, host);
+        return [
+            {
+                symbol: '$',
+                using: this.currencies['$'],
+                default: this.storedDefaultLocalization.dollar,
+            },
+            {
+                symbol: 'kr',
+                using: this.currencies['kr'],
+                default: this.storedDefaultLocalization.krone,
+            },
+            {
+            symbol: '¥',
+                using: this.currencies['¥'],
+                default: this.storedDefaultLocalization.asian,
+            }
+        ].filter(e => e.using !== e.default);
     }
 
     get defaultLocalization() {

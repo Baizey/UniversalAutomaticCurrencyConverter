@@ -35,31 +35,22 @@ describe('ElementTransformer tests', () => {
         expect(text).toEqual(expected);
     });
 
-    it('Test finds touched elements correctly', () => {
-        const transformer = new ElementTransformer(engine);
-        transformer.withConversionType(ConversionTypes.intelligently);
-        const expected = ['£', '2', '.', '49'];
-        const textNodes = ElementTransformer.findTextNodes(test);
-
-        const touched = transformer.findTouchedNodes(textNodes, 0, 5);
-
-        const text = cleanResult(textNodes);
-        expect(text).toEqual(expected);
-        expect(touched.start).toEqual(0);
-    });
-
     it('Test transforms correctly intelligently', () => {
         const transformer = new ElementTransformer(engine);
         transformer.withConversionType(ConversionTypes.intelligently);
         const clone = test.cloneNode(true);
         const textNodes = ElementTransformer.findTextNodes(clone);
+        let cleanNodes = cleanResult(textNodes);
 
-        const [, set] = transformer.transformIntelligently(clone, false);
+        const result = transformer.transformIntelligently(clone, false);
+        result.updateUi();
 
-        set(true);
-        expect(cleanResult(textNodes)).toEqual(['', '2.5 EUR', '', '']);
+        result.set(true);
+        cleanNodes = cleanResult(textNodes);
+        expect(cleanNodes).toEqual(['2.5 EUR', '.']);
 
-        set(false);
-        expect(cleanResult(textNodes)).toEqual(['£', '2', '.', '49']);
+        result.set(false);
+        cleanNodes = cleanResult(textNodes);
+        expect(cleanNodes).toEqual(['£', '2', '.', '49']);
     });
 });

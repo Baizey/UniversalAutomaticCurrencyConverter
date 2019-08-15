@@ -16,13 +16,20 @@ class ElementTransformer {
      * @param {Engine} engine
      */
     constructor(engine) {
-        this.type = ConversionTypes.aggressively;
+        this.type = ConversionTypes.intelligently;
         this.engine = engine;
         this.conversions = [];
     }
 
+    updateAll() {
+        this.conversions.forEach(e => e.updateSetters());
+    }
+
+    /**
+     * @param {boolean} value
+     */
     setAll(value) {
-        this.conversions.forEach(c => c.UACCSetter(value));
+        this.conversions.forEach(c => c.set(value));
     }
 
     withConversionType(type) {
@@ -52,6 +59,7 @@ class ElementTransformer {
             element.addEventListener('mouseout', () => mouseIsOver = null);
             element.addEventListener('mouseover', () => mouseIsOver = element);
             element.addEventListener('click', () => convertedElement.flip());
+            convertedElement.updateUi();
         }
 
         if (this.engine.highlighter.isEnabled)
@@ -156,58 +164,101 @@ class ElementTransformer {
     transformIntelligently(element, full) {
         const detector = this.engine.currencyDetector;
         const textnodes = ElementTransformer.findTextNodes(element);
+        const nodes = textnodes.map((e, i) => ({node: e, index: i, pos: {start: 0, end: 0}}));
+        for (let i = 0, at = 0; i < nodes.length; i++) {
+            nodes[i].pos.start = at;
+            at += nodes[i].node.textContent.length;
+            nodes[i].pos.end = at - 1;
+        }
 
         const text = textnodes.map(e => e.textContent).join('');
         const replacements = detector.findAll(text);
         const texts = textnodes.map(e => ({new: e.textContent, old: e.textContent}));
 
-        const find = replacement => {
-            const start = replacement.index;
-            const end = replacement.index + replacement.raw.length;
-            let at = 0;
-            return textnodes
-                .map((e, i) => ({node: e, index: i}))
-                .filter(e => {
-                    const temp = at + e.node.textContent.length;
-                    const result = (at >= start && at < end) || (temp > start && temp <= end);
-                    at = temp;
-                    return result;
-                });
-        };
+        const relevantNodes = (start, end) => nodes.filter(e => {
+            const pos = e.pos;
+            return (start >= pos.start && start <= pos.end)
+                || (end >= pos.start && end <= pos.end)
+                || (start < pos.start && end > pos.end);
+        });
 
         replacements.forEach(replacement => {
-            const nodes = find(replacement);
+            if (replacement.numbers[0] === 0) {
+                console.log("");
+            }
+            const nodes = relevantNodes(replacement.index, replacement.index + replacement.raw.length - 1);
             switch (nodes.length) {
                 case 0:
-                    throw "Not supposed to happen, turn back";
+                    break;
                 case 1:
                     const simpleText = texts[nodes[0].index];
                     simpleText.new = simpleText.new.replace(replacement.raw, this.engine.transform(replacement));
                     break;
                 default:
-                    // Oh shit
+                    const regex = this.engine.currencyDetector._regex;
+                    const result = regex.exec(replacement.raw);
+                    let [raw, start, c1, w1, neg, int, dec, w2, c2, end] = result;
+                    neg = neg ? neg : '';
+                    dec = dec ? dec : '';
+                    const rawInteger = neg + int;
+                    const rawNumber = neg + int + dec;
 
+                    // Remove currency symbols
+                    if (!!this.engine.currencyDetector.currencies[c1]) {
+                        const from = replacement.index + start.length;
+                        const to = from + c1.length - 1;
+                        const toRemoveIn = relevantNodes(from, to);
+                        const simpleText = texts[toRemoveIn[0].index];
+                        simpleText.new = simpleText.new.replace(c1, '');
+                    }
+                    if (!!this.engine.currencyDetector.currencies[c2]) {
+                        const from = replacement.index + [start, c1, w1, neg, int, dec, w2]
+                            .map(e => e ? e.length : 0).sum();
+                        const to = from + c2.length - 1;
+                        const toRemoveIn = relevantNodes(from, to);
+                        const simpleText = texts[toRemoveIn[0].index];
+                        simpleText.new = simpleText.new.replace(c2, '');
+                    }
+
+                    // Add replacement if integer and decimal is together
+                    const nodesWithRawNumber = nodes.filter(e => e.node.textContent.indexOf(rawNumber) >= 0);
+                    if (nodesWithRawNumber.length > 0) {
+                        const simpleText = texts[nodesWithRawNumber[0].index];
+                        simpleText.new = simpleText.new.replace(rawNumber, this.engine.transform(replacement));
+                        return;
+                    }
+
+                    // Remove decimal parts
+                    if (dec) {
+                        const simpleDec = dec.replace(/\s/g, '').substr(1);
+                        const from = (dec.length - simpleDec.length)
+                            + replacement.index
+                            + [start, c1, w1, neg, int].map(e => e ? e.length : 0).sum();
+                        const to = from + dec.length - 1;
+                        const toRemoveIn = relevantNodes(from, to);
+                        const simpleText = texts[toRemoveIn[0].index];
+                        simpleText.new = simpleText.new.replace(simpleDec, '');
+                    }
+
+
+                    // Add replacement where integer number is
+                    const nodesWithRawInteger = nodes.filter(e => e.node.textContent.indexOf(rawInteger) >= 0);
+                    if (nodesWithRawInteger.length > 0) {
+                        const simpleText = texts[nodesWithRawInteger[0].index];
+                        simpleText.new = simpleText.new.replace(rawInteger, this.engine.transform(replacement));
+                        return;
+                    }
                     break;
             }
         });
 
-
-        let isNew = false;
-        const setOld = () => {
-            textnodes.forEach((node, i) => node.textContent = texts[i].old);
-            isNew = false;
-        };
-        const setNew = () => {
-            textnodes.forEach((node, i) => node.textContent = texts[i].new);
-            isNew = true;
-        };
-
-        return new ConvertedElement(element, this.engine)
-            .withSetters(setNew, setOld);
+        const setOld = () => textnodes.forEach((node, i) => node.textContent = texts[i].old);
+        const setNew = () => textnodes.forEach((node, i) => node.textContent = texts[i].new);
+        return new ConvertedElement(element, this.engine).withSetters(setNew, setOld);
     }
 
     /**
-     * @param {Element} element
+     * @param {Element|Node} element
      * @return {Node[]}
      */
     static findTextNodes(element) {
@@ -230,14 +281,33 @@ class ConvertedElement {
     constructor(element, engine) {
         this.engine = engine;
         this.element = element;
-        this.setOld = () => {
-        };
-        this.setNew = () => {
-        };
-        this._flip = () => {
-        };
-        this._set = () => {
-        };
+        this.setOld = null;
+        this.setNew = null;
+        this._flip = null;
+        this._set = null;
+    }
+
+    set(asNew) {
+        this._set(asNew);
+    }
+
+    flip() {
+        this._flip();
+    }
+
+    updateUi() {
+        const setNew = this.setNew;
+        const setOld = this.setOld;
+        const self = this;
+
+        this.isNew = false;
+        this._set = value => this.isNew = value ? (setNew() || true) : (setOld() && false);
+        this._flip = () => self._set(!this.isNew);
+
+        this.element.UACCSetter = this._set;
+        this.element.UACCChanger = this._flip;
+        this.set(true);
+        return this;
     }
 
     withSetters(setNew, setOld = undefined) {
@@ -246,33 +316,11 @@ class ConvertedElement {
         return this;
     }
 
-    updateUi() {
-        const setNew = this.setNew;
-        const setOld = this.setOld;
-        const self = this;
-
-        let isNew = false;
-        this._set = value => isNew = value ? (setNew() || true) : (setOld() && false);
-        this._flip = () => self._set(!isNew);
-        this.element.UACCSetter = this._set;
-        this.element.UACCChanger = this._flip;
-        this._set(true);
-        
-        return this;
-    }
-
-    set(value) {
-        this._set(value);
-    }
-
-    flip() {
-        this._flip();
-    }
-
     updateSetters() {
         this.set(false);
-        const result = this.engine.elementTransformer.transform(this.element);
+        const result = this.engine.elementTransformer.transform(this.element, false, true);
         this.withSetters(result.setNew).updateUi();
+        return this;
     }
 
 }

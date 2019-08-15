@@ -24,6 +24,13 @@ class Engine {
         this.automaticPageConversion = true;
         this.conversionShortcut = 'Shift';
         this.isEnabled = true;
+        this.showNonDefaultCurrencyAlert = true;
+    }
+
+    withShowNonDefaultCurrencyAlert(value) {
+        if (Utils.isDefined(value))
+            this.showNonDefaultCurrencyAlert = value;
+        return this.showNonDefaultCurrencyAlert;
     }
 
     withCurrencyShortcut(value) {
@@ -46,6 +53,9 @@ class Engine {
 
     getById(id) {
         switch (id) {
+
+            case 'showNonDefaultCurrencyAlert':
+                return this.showNonDefaultCurrencyAlert;
 
             case 'currencyElementTransformationType':
                 return this.elementTransformer.type;
@@ -105,6 +115,8 @@ class Engine {
         const self = this;
         return new Promise(async resolve => {
             const resp = await Browser.load(Utils.storageIds());
+
+            self.withShowNonDefaultCurrencyAlert(resp['showNonDefaultCurrencyAlert']);
 
             self.elementTransformer.withConversionType(resp['currencyElementTransformationType']);
 
@@ -169,7 +181,7 @@ class Engine {
             return formatted;
         }).join('-');
         const customized = this.customTag.converter(result, this.currencyConverter.baseCurrency);
-        return value.result(() => customized );
+        return value.result(() => customized);
     }
 
     getCurrencySymbols() {
