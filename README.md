@@ -18,9 +18,7 @@ Currency converters can act in 1 of 3 ways:
 
 - Intelligently, searches aggresively, but replaces carefully. Likely to find all currencies, never breaks websites.
 
-Most extensions will likely act carefully. This extension currently acts aggressively.
-
-Eventually I would like to have it act intelligently, or at the least let the users choose how it should approach conversion.
+Most currency conversion extensions will likely act carefully. This extension currently acts intelligently.
 
 ## Description on Firefox/Chrome stores
 
