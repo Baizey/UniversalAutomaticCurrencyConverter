@@ -17,13 +17,7 @@ describe('ElementTransformer tests', () => {
     });
 
     const _amazonCa = `<span aria-hidden="true"><span class="a-price-symbol">CDN$</span><span class="a-price-whole">2<span class="a-price-decimal">.</span></span><span class="a-price-fraction">49</span></span>`;
-    const _amazonUk = `<span aria-hidden="true">
-    <span class="a-price-symbol">£</span>
-    <span class="a-price-whole">2
-        <span class="a-price-decimal">.</span>
-    </span>
-    <span class="a-price-fraction">49</span>
-</span>`;
+    const _amazonUk = `<span aria-hidden="true"><span class="a-price-symbol">£</span><span class="a-price-whole">2<span class="a-price-decimal">.</span></span><span class="a-price-fraction">49</span></span>`;
     let div = document.createElement('div');
     div.innerHTML = _amazonUk;
     const amazonUk = div.children[0];
