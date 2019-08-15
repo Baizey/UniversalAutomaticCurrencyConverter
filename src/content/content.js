@@ -167,8 +167,8 @@ runner.loader.finally(() => {
         const colors = bodyColor.match(/\d+/g).map(e => Number(e)).map(e => e * 0.85);
         const backgroundColor = colors.length === 3
             ? 'rgb(' + colors.join(',') + ')'
-            : 'rgba(' + colors.join(',') + ')';
-        const textColor = (colors.slice(0, 3).sum() / 3) > 128 ? 'black' : 'white';
+            : 'rgba(' + colors.map(e => Math.max(e, .5)).join(',') + ')';
+        const textColor = (colors.slice(0, 3).sum() / 3) >= 128 ? 'black' : 'white';
 
         const div = `<div style="
 background-color:${backgroundColor}; color: ${textColor};
@@ -179,7 +179,7 @@ z-index: 1000;
 right: 0; bottom: 0; position: fixed;">
     ${content}
     <p style="font-size: 10px">You can turn these alerts off in UA Currency Converter settings</p>
-    <button class="uacc_removeParent" style="width:100%">Ok</button> 
+    <button style ="color: black; width:100%">Ok</button> 
 </div>`;
         const temp = document.createElement('div');
         temp.innerHTML = div;
