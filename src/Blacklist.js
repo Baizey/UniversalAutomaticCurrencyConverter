@@ -1,7 +1,8 @@
 class Blacklist {
 
-    constructor() {
-        this.isEnabled = true;
+    constructor(isBlacklisting = false) {
+        this.isWhitelist = !isBlacklisting;
+        this.isEnabled = false;
         this.urls = [];
     }
 
@@ -31,8 +32,12 @@ class Blacklist {
     }
 
     using(value) {
-        this.isEnabled = Utils.isDefined(value) ? value : this.isEnabled;
-        return value;
+        if (Utils.isUndefined(value)) return this.isEnabled;
+        if (this.isWhitelist)
+            this.isEnabled = value === 'whitelist';
+        else
+            this.isEnabled = value === true || value === 'blacklist';
+        return this.isEnabled;
     }
 
     /**

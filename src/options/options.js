@@ -118,7 +118,6 @@ const getUiValue = key => {
         // Checkbox
         case 'showNonDefaultCurrencyAlert':
         case 'currencyUsingAutomatic':
-        case 'isBlacklisting':
         case 'currencyUsingHighlight':
         case 'currencyUsingCustomTag':
         case 'usingCurrencyConverter':
@@ -165,10 +164,10 @@ const setUiValue = async (key, value) => {
             element.change(engine.automaticPageConversion);
             break;
         case 'usingBlacklist':
-            if (value === true) value = 'blacklist'; else if (value === false) value = 'none';
-            engine.blacklist.using(value === 'blacklist');
-            engine.whitelist.using(value === 'whitelist');
-
+            if (value === true) value = 'blacklist';
+            else if (value === false) value = 'none';
+            engine.blacklist.using(value);
+            engine.whitelist.using(value);
             const result =
                 engine.blacklist.isEnabled
                     ? 'blacklist'

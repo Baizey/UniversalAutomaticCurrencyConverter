@@ -14,6 +14,7 @@ class Engine {
         this.browser = browser ? browser : Browser.instance();
         this.currencyDetector = detector ? detector : CurrencyDetector.instance();
         this.blacklist = new Blacklist(true);
+        this.blacklist.isEnabled = true;
         this.whitelist = new Blacklist(false);
         this.customTag = new CustomTag();
         this.highlighter = new Highlighter();
@@ -73,7 +74,9 @@ class Engine {
                 return this.whitelist.urls;
 
             case 'usingBlacklist':
-                return this.blacklist.isEnabled;
+                return this.blacklist.isEnabled
+                    ? 'blacklist'
+                    : (this.whitelist.isEnabled ? 'whitelist' : 'none');
             case 'blacklistingurls':
                 return this.blacklist.urls;
 
@@ -126,14 +129,10 @@ class Engine {
 
             self.currencyConverter.withBaseCurrency(resp['currency']);
 
-            const usingBlacklistRaw = resp['usingBlacklist'];
-            const usingBlacklist = usingBlacklistRaw === true || usingBlacklistRaw === 'blacklist';
-            const usingWhitelist = usingBlacklistRaw === 'whitelist';
+            self.blacklist.using(resp['usingBlacklist']);
+            self.whitelist.using(resp['usingBlacklist']);
 
-            self.blacklist.using(usingBlacklist);
             self.blacklist.withUrls(resp['blacklistingurls']);
-
-            self.whitelist.using(usingWhitelist);
             self.whitelist.withUrls(resp['whitelistingurls']);
 
             self.using(resp['usingCurrencyConverter']);
