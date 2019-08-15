@@ -27,7 +27,11 @@ class Localization {
             'kr.': ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
             'kr': ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
             ',-': ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
+            // Canadian, used by amazon.ca (likely Canadian Dollar N?)
+            'CDN$': ['CAD'],
+            // EU currencies
             '€': ['EUR'],
+            // UK currencies
             '£': ['GBP'],
             // China, Japan
             '¥': ['CNY', 'JPY'],
