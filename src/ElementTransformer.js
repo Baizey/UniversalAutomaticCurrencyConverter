@@ -164,96 +164,132 @@ class ElementTransformer {
     transformIntelligently(element, full) {
         const detector = this.engine.currencyDetector;
         const textnodes = ElementTransformer.findTextNodes(element);
-        const nodes = textnodes.map((e, i) => ({node: e, index: i, pos: {start: 0, end: 0}}));
-        for (let i = 0, at = 0; i < nodes.length; i++) {
-            nodes[i].pos.start = at;
-            at += nodes[i].node.textContent.length;
-            nodes[i].pos.end = at - 1;
-        }
+        let at = 0;
+        const data = textnodes.map((e, i) => {
+            const start = at;
+            at += e.textContent.length;
+            return {
+                node: e,
+                index: i,
+                old: {
+                    text: e.textContent,
+                    start: start,
+                    end: at - 1
+                },
+                new: {
+                    text: e.textContent,
+                    start: 0,
+                    end: 0
+                }
+            }
+        });
 
         const text = textnodes.map(e => e.textContent).join('');
         const replacements = detector.findAll(text);
-        const texts = textnodes.map(e => ({new: e.textContent, old: e.textContent}));
-
-        const relevantNodes = (start, end) => nodes.filter(e => {
-            const pos = e.pos;
+        const relevantNodes = (start, end, nodes = undefined) => (nodes ? nodes : data).filter(e => {
+            const pos = nodes ? e.new : e.old;
             return (start >= pos.start && start <= pos.end)
                 || (end >= pos.start && end <= pos.end)
-                || (start < pos.start && end > pos.end);
+                || (start < pos.start && end > pos.end)
         });
+
+        Array.prototype.relevant = function (start, end, old) {
+            return this.filter(e => {
+                const pos = old ? e.old : e.new;
+                return (start >= pos.start && start <= pos.end)
+                    || (end >= pos.start && end <= pos.end)
+                    || (start < pos.start && end > pos.end)
+            });
+        };
+
+        const removePart = (touched, start, end, replaceWith = '') => {
+            const nodes = touched.relevant(start, end - 1, false);
+            if (nodes.length === 1) {
+                const temp = nodes[0].new.text;
+                const offset = nodes[0].new.start;
+                nodes[0].new.text = temp.substr(0, start - offset) + replaceWith + temp.substr(end - offset);
+            }
+        };
 
         replacements.forEach(replacement => {
-            if (replacement.numbers[0] === 0) {
-                console.log("");
+            // Find nodes this replacement crosses over
+            const oldStart = replacement.index;
+            const oldEnd = oldStart + replacement.raw.length - 1;
+            const touched = data.relevant(oldStart, oldEnd, true);
+
+            // Handle simple cases
+            if (touched.length === 0) return;
+            if (touched.length === 1)
+                return touched[0].new.text = touched[0].new.text.replace(replacement.raw, this.engine.transform(replacement));
+
+            // Update indexes of new text for relevant nodes
+            let at = 0;
+            touched.forEach(t => {
+                t.new.start = at;
+                at += t.new.text.length;
+                t.new.end = at - 1;
+            });
+
+            // Find indexes in new text
+            const newText = touched.map(e => e.new.text).join('');
+            const newStart = newText.indexOf(replacement.raw);
+
+            const regex = this.engine.currencyDetector._regex;
+            const result = regex.exec(replacement.raw);
+            let [raw, start, c1, w1, neg, int, dec, w2, c2, end] = result;
+            start = start ? start : '';
+            w1 = w1 ? w1 : '';
+            w2 = w2 ? w2 : '';
+            c1 = c1 ? c1 : '';
+            neg = neg ? neg : '';
+            dec = dec ? dec : '';
+
+            // Remove last currency
+            if (this.engine.currencyDetector.currencies[c2]) {
+                const currencyStart = newStart + [start, c1, w1, neg, int, dec, w2].map(e => e.length).sum();
+                const currencyEnd = currencyStart + c2.length;
+                removePart(touched, currencyStart, currencyEnd);
             }
-            const nodes = relevantNodes(replacement.index, replacement.index + replacement.raw.length - 1);
-            switch (nodes.length) {
-                case 0:
-                    break;
-                case 1:
-                    const simpleText = texts[nodes[0].index];
-                    simpleText.new = simpleText.new.replace(replacement.raw, this.engine.transform(replacement));
-                    break;
-                default:
-                    const regex = this.engine.currencyDetector._regex;
-                    const result = regex.exec(replacement.raw);
-                    let [raw, start, c1, w1, neg, int, dec, w2, c2, end] = result;
-                    neg = neg ? neg : '';
-                    dec = dec ? dec : '';
-                    const rawInteger = neg + int;
-                    const rawNumber = neg + int + dec;
 
-                    // Remove currency symbols
-                    if (!!this.engine.currencyDetector.currencies[c1]) {
-                        const from = replacement.index + start.length;
-                        const to = from + c1.length - 1;
-                        const toRemoveIn = relevantNodes(from, to);
-                        const simpleText = texts[toRemoveIn[0].index];
-                        simpleText.new = simpleText.new.replace(c1, '');
-                    }
-                    if (!!this.engine.currencyDetector.currencies[c2]) {
-                        const from = replacement.index + [start, c1, w1, neg, int, dec, w2]
-                            .map(e => e ? e.length : 0).sum();
-                        const to = from + c2.length - 1;
-                        const toRemoveIn = relevantNodes(from, to);
-                        const simpleText = texts[toRemoveIn[0].index];
-                        simpleText.new = simpleText.new.replace(c2, '');
-                    }
+            // Remove whole number
+            const rawNumber = neg + int + dec;
+            const numberStart = newStart + [start, c1, w1].map(e => e ? e.length : 0).sum();
+            const numberEnd = numberStart + rawNumber.length;
+            const temp = touched.relevant(numberStart, numberEnd - 1, false);
+            if (temp.length === 1) {
+                removePart(touched, numberStart, numberEnd, this.engine.transform(replacement));
+            } else {
+                if (dec) {
+                    // Remove decimal number(s)
+                    const withoutPoint = dec.replace(/^[\s,.]+/, '');
+                    const skip = dec.length - withoutPoint.length;
+                    const decimalStart = newStart + [start, c1, w1, neg, int].map(e => e ? e.length : 0).sum() + skip;
+                    const decimalEnd = decimalStart + withoutPoint.length;
+                    removePart(touched, decimalStart, decimalEnd);
+                    // Remove decimal point
+                    const pointStart = newStart
+                        + [start, c1, w1, neg, int].map(e => e ? e.length : 0).sum()
+                        + dec.search(/[,.]/);
+                    const pointEnd = pointStart + 1;
+                    removePart(touched, pointStart, pointEnd);
+                }
+                // Remove integer
+                const rawInteger = neg + int;
+                const integerStart = newStart + [start, c1, w1].map(e => e ? e.length : 0).sum();
+                const integerEnd = integerStart + rawInteger.length;
+                removePart(touched, integerStart, integerEnd , this.engine.transform(replacement));
+            }
 
-                    // Add replacement if integer and decimal is together
-                    const nodesWithRawNumber = nodes.filter(e => e.node.textContent.indexOf(rawNumber) >= 0);
-                    if (nodesWithRawNumber.length > 0) {
-                        const simpleText = texts[nodesWithRawNumber[0].index];
-                        simpleText.new = simpleText.new.replace(rawNumber, this.engine.transform(replacement));
-                        return;
-                    }
-
-                    // Remove decimal parts
-                    if (dec) {
-                        const simpleDec = dec.replace(/\s/g, '').substr(1);
-                        const from = (dec.length - simpleDec.length)
-                            + replacement.index
-                            + [start, c1, w1, neg, int].map(e => e ? e.length : 0).sum();
-                        const to = from + dec.length - 1;
-                        const toRemoveIn = relevantNodes(from, to);
-                        const simpleText = texts[toRemoveIn[0].index];
-                        simpleText.new = simpleText.new.replace(simpleDec, '');
-                    }
-
-
-                    // Add replacement where integer number is
-                    const nodesWithRawInteger = nodes.filter(e => e.node.textContent.indexOf(rawInteger) >= 0);
-                    if (nodesWithRawInteger.length > 0) {
-                        const simpleText = texts[nodesWithRawInteger[0].index];
-                        simpleText.new = simpleText.new.replace(rawInteger, this.engine.transform(replacement));
-                        return;
-                    }
-                    break;
+            // Remove first currency
+            if (this.engine.currencyDetector.currencies[c1]) {
+                const currencyStart = newStart + [start].map(e => e ? e.length : 0).sum();
+                const currencyEnd = currencyStart + c1.length;
+                removePart(touched, currencyStart, currencyEnd);
             }
         });
 
-        const setOld = () => textnodes.forEach((node, i) => node.textContent = texts[i].old);
-        const setNew = () => textnodes.forEach((node, i) => node.textContent = texts[i].new);
+        const setOld = () => data.forEach(e => e.node.textContent = e.old.text);
+        const setNew = () => data.forEach(e => e.node.textContent = e.new.text);
         return new ConvertedElement(element, this.engine).withSetters(setNew, setOld);
     }
 

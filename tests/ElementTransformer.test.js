@@ -46,7 +46,7 @@ describe('ElementTransformer tests', () => {
 
         result.set(true);
         cleanNodes = cleanResult(textNodes);
-        expect(cleanNodes).toEqual(['2.5 EUR', '.']);
+        expect(cleanNodes).toEqual(['2.5 EUR']);
 
         result.set(false);
         cleanNodes = cleanResult(textNodes);
@@ -65,7 +65,7 @@ describe('ElementTransformer tests', () => {
 
         result.set(true);
         cleanNodes = cleanResult(textNodes);
-        expect(cleanNodes).toEqual(['2.5 EUR', '.']);
+        expect(cleanNodes).toEqual(['2.5 EUR']);
 
         result.set(false);
         cleanNodes = cleanResult(textNodes);

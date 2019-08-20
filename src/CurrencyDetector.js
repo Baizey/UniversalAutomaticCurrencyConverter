@@ -95,7 +95,7 @@ class CurrencyDetector {
 
         // Find normal numbers
         const normalInteger = /(?:(?:\d{1,3}?(?:[., ]\d{3})*)|\d{4,})/.source;
-        const normalDecimal = /(?:\s*[., ]\s*(?:\d{1,2}|-{2}))/.source;
+        const normalDecimal = /(?:\s*[.,]\s*(?:\d{1,2}|-{2}))/.source;
 
         // Find small decimal numbers
         const smallInteger = /(?:0)/.source;
