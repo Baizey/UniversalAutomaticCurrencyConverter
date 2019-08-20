@@ -58,9 +58,6 @@ class Engine {
             case 'showNonDefaultCurrencyAlert':
                 return this.showNonDefaultCurrencyAlert;
 
-            case 'currencyElementTransformationType':
-                return this.elementTransformer.type;
-
             case 'currencyLocalizationDollar':
                 return this.currencyDetector.storedDefaultLocalization.dollar;
             case 'currencyLocalizationAsian':
@@ -120,8 +117,6 @@ class Engine {
             const resp = await Browser.load(Utils.storageIds());
 
             self.withShowNonDefaultCurrencyAlert(resp['showNonDefaultCurrencyAlert']);
-
-            self.elementTransformer.withConversionType(resp['currencyElementTransformationType']);
 
             self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationDollar']);
             self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationKroner']);

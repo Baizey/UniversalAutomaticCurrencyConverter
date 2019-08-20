@@ -128,7 +128,6 @@ const getUiValue = key => {
         case 'currency':
             return element.children[element.selectedIndex].value || 'EUR';
         // Selector
-        case 'currencyElementTransformationType':
         case 'usingBlacklist':
         case 'currencyLocalizationDollar':
         case 'currencyLocalizationAsian':
@@ -146,11 +145,6 @@ const setUiValue = async (key, value) => {
         case 'showNonDefaultCurrencyAlert':
             engine.withShowNonDefaultCurrencyAlert(value);
             element.change(engine.showNonDefaultCurrencyAlert);
-            break;
-
-        case 'currencyElementTransformationType':
-            engine.elementTransformer.withConversionType(value);
-            element.value = engine.elementTransformer.type;
             break;
 
         case 'currencyLocalizationDollar':

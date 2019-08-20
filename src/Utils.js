@@ -39,7 +39,6 @@ class Utils {
     static storageIds() {
         return [
             'showNonDefaultCurrencyAlert',
-            'currencyElementTransformationType',
             'currencyLocalizationDollar',
             'currencyLocalizationAsian',
             'currencyLocalizationKroner',

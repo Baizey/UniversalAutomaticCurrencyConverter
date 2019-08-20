@@ -73,3 +73,56 @@ input[type="number"] {
 .custom-check-checked {
     background-image: url(images/check-checked.png);
 }
+
+.radiobox {
+    cursor: pointer;
+    width:30px;
+    height:30px;
+    border: 1px solid grey;
+    position: relative;
+}
+
+.radiobox div {
+    position: absolute;
+    margin-top: 12px;
+    margin-left: 12px;
+    height: 6px;
+    width: 6px;
+    background-color: green;
+    transition: opacity 0.3s ease-in-out;
+    opacity:0;
+}
+
+.checkbox {
+    cursor: pointer;
+    width:30px;
+    height:30px;
+    border: 1px solid grey;
+    position: relative;
+}
+
+.checkbox div {
+    position: absolute;
+    height: 3px;
+    background-color: green;
+    transition: opacity 0.3s ease-in-out;
+    opacity:0;
+}
+
+.checkbox div:first-child {
+    margin-top: 15px;
+    margin-left: 1px;
+    width: 16px;
+    transform: rotate(45deg);
+}
+
+.checkbox div:last-child {
+    margin-top: 14px;
+    margin-left: 10px;
+    width: 20px;
+    transform: rotate(135deg);
+}
+
+.checked div {
+    opacity: 1;
+}

@@ -1,9 +1,3 @@
-const ConversionTypes = {
-    aggressively: 'aggressively',
-    carefully: 'carefully',
-    intelligently: 'intelligently'
-};
-
 const Tags = {
     converted: 'UACC_converted',
     inserted: 'UACC_inserted',
@@ -16,7 +10,6 @@ class ElementTransformer {
      * @param {Engine} engine
      */
     constructor(engine) {
-        this.type = ConversionTypes.intelligently;
         this.engine = engine;
         this.conversions = [];
     }
@@ -30,11 +23,6 @@ class ElementTransformer {
      */
     setAll(value) {
         this.conversions.forEach(c => c.set(value));
-    }
-
-    withConversionType(type) {
-        if (ConversionTypes[type])
-            this.type = type;
     }
 
     /**
@@ -52,7 +40,7 @@ class ElementTransformer {
         element.setAttribute(Tags.hasEvents, 'true');
         element.classList.add('clickable');
 
-        const convertedElement = this._chooseTransformType(element, full);
+        const convertedElement = this.transformIntelligently(element, full);
 
         if (!hasEvents) {
             this.conversions.push(convertedElement);
@@ -80,80 +68,6 @@ class ElementTransformer {
         element.style.backgroundColor = oldColor;
         await Utils.wait(5 * duration);
         element.classList.remove('highlighted', 'hiddenHighlight');
-    }
-
-    /**
-     * @param element
-     * @param full
-     * @return {ConvertedElement}
-     * @private
-     */
-    _chooseTransformType(element, full) {
-        switch (this.type) {
-            case ConversionTypes.carefully:
-                return this.transformCarefully(element, full);
-            case ConversionTypes.aggressively:
-                return this.transformAggressively(element, full);
-            case ConversionTypes.intelligently:
-                return this.transformIntelligently(element, full);
-        }
-    }
-
-    /**
-     * @param {HTMLElement} element
-     * @param {boolean} full
-     * @return {ConvertedElement}
-     */
-    transformCarefully(element, full) {
-        const detector = this.engine.currencyDetector;
-        const textnodes = ElementTransformer.findTextNodes(element).filter(e => detector.contains(e));
-
-        const texts = textnodes.map(node => {
-            const oldText = node.textContent;
-            const replacements = detector.findAll(node.textContent);
-            const newText = replacements.reduce((a, b) => a.replace(b.raw, this.engine.transform(b)), oldText);
-            return {new: newText, old: oldText}
-        });
-
-        let isNew = false;
-
-        const setOld = () => {
-            textnodes.forEach((node, i) => node.textContent = texts[i].old);
-            isNew = false;
-        };
-        const setNew = () => {
-            textnodes.forEach((node, i) => node.textContent = texts[i].new);
-            isNew = true;
-        };
-
-        return new ConvertedElement(element, this.engine)
-            .withSetters(setNew, setOld);
-    }
-
-    /**
-     * @param {HTMLElement} element
-     * @param {boolean} full
-     * @return {ConvertedElement}
-     */
-    transformAggressively(element, full) {
-        const detector = this.engine.currencyDetector;
-        const replacements = detector.findAll(element, full);
-        const newText = replacements.reduce((a, b) => a.replace(b.raw, this.engine.transform(b)), element.innerText);
-        const oldText = element.innerHTML;
-
-        let isNew = false;
-
-        const setOld = () => {
-            element.innerHTML = oldText;
-            isNew = false;
-        };
-        const setNew = () => {
-            element.innerText = newText;
-            isNew = true;
-        };
-
-        return new ConvertedElement(element, this.engine)
-            .withSetters(setNew, setOld);
     }
 
     /**
@@ -186,12 +100,6 @@ class ElementTransformer {
 
         const text = textnodes.map(e => e.textContent).join('');
         const replacements = detector.findAll(text);
-        const relevantNodes = (start, end, nodes = undefined) => (nodes ? nodes : data).filter(e => {
-            const pos = nodes ? e.new : e.old;
-            return (start >= pos.start && start <= pos.end)
-                || (end >= pos.start && end <= pos.end)
-                || (start < pos.start && end > pos.end)
-        });
 
         Array.prototype.relevant = function (start, end, old) {
             return this.filter(e => {
