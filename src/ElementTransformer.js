@@ -50,14 +50,14 @@ class ElementTransformer {
             convertedElement.updateUi();
         }
 
-        if (this.engine.highlighter.isEnabled)
-            this.highlightConversion(element)
-                .catch(e => Utils.logError(e));
+        this.highlightConversion(element).catch(e => Utils.logError(e));
 
         return convertedElement;
     }
 
     async highlightConversion(element) {
+        if (!this.engine.highlighter.isEnabled)
+            return;
         const highlighter = this.engine.highlighter;
         const duration = highlighter.duration;
         const oldColor = element.style.backgroundColor;

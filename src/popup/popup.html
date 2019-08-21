@@ -31,99 +31,104 @@
     <title>Universal Automatic Currency Converter</title>
 </head>
 <body>
-<div class="centering" style="width: 400px; padding: 10px; margin:10px">
-    <div class="row hidden" id="no_conversion">
-        <h3>
-            No site context found
-            <br>
-            refresh site to try again
-        </h3>
-    </div>
-    <div class="row" id="conversion">
-        <div class="col-xs-6">
-            <input id="conversionCount" disabled readonly class=" bottomConnected center inputDisplay">
+<div id="tab-settings">
+
+</div>
+<div id="tab-page">
+    <div class="centering" style="width: 400px; padding: 10px; margin:10px">
+        <div class="row hidden" id="no_conversion">
+            <h3>
+                No site context found
+                <br>
+                refresh site to try again
+            </h3>
         </div>
-        <div class="col-xs-6">
-            <input id="blacklistInput" disabled readonly class="bottomConnected center inputDisplay">
-        </div>
-        <div class="col-xs-6">
-            <div id="hideConversions" class="topConnected center btn btn-danger">Hide conversions</div>
-        </div>
-        <div class="col-xs-6">
-            <div id="blacklistButton" class="topConnected center btn btn-danger">Add blacklisting</div>
-        </div>
-    </div>
-    <div class="row" id="localization">
-        <br><br>
-        <div class="col-xs-12">
-            <h3 style="margin-bottom: 5px" class="center">Page localization</h3>
-        </div>
-        <div class="col-xs-4">
-            <label class="center localizationLabel bottomConnected" for="dollar">$</label>
-            <select id="dollar" class="topConnected localizationSelect">
-                <option value="USD">American</option>
-                <option value="CAD">Canadian</option>
-                <option value="AUD">Australian</option>
-                <option value="MXN">Mexican</option>
-                <option value="NZD">New Zealand</option>
-                <option value="SGP">Singapore</option>
-                <option value="HKD">Hong kong</option>
-            </select>
-        </div>
-        <div class="col-xs-4">
-            <label class="center localizationLabel bottomConnected" for="kroner">kr</label>
-            <select id="kroner" class="topConnected localizationSelect">
-                <option value="SEK">Swedish</option>
-                <option value="DKK">Danish</option>
-                <option value="NOK">Norwegian</option>
-                <option value="ISK">Icelandic</option>
-                <option value="CZK">Czechia</option>
-            </select>
-        </div>
-        <div class="col-xs-4">
-            <label class="center localizationLabel bottomConnected" for="asian">¥</label>
-            <select id="asian" class="topConnected localizationSelect">
-                <option value="CNY">Chinese</option>
-                <option value="JPY">Japanese</option>
-            </select>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-xs-12">
-            <h3 style="margin-bottom: 5px" class="center">Mini-converter</h3>
-        </div>
-        <div class="col-xs-12">
-            <div style="width:100%; height:22px">
-                <div class="col-xs-4 mini-converter-col" style="text-align: center;">Convert to</div>
-                <div class="col-xs-8 mini-converter-col">
-                    <select id="mini-converter-to" class="mini-converter-field"></select>
-                </div>
+        <div class="row" id="conversion">
+            <div class="col-xs-6">
+                <input id="conversionCount" disabled readonly class=" bottomConnected center inputDisplay">
+            </div>
+            <div class="col-xs-6">
+                <input id="blacklistInput" disabled readonly class="bottomConnected center inputDisplay">
+            </div>
+            <div class="col-xs-6">
+                <div id="hideConversions" class="topConnected center btn btn-danger">Hide conversions</div>
+            </div>
+            <div class="col-xs-6">
+                <div id="blacklistButton" class="topConnected center btn btn-danger">Add blacklisting</div>
             </div>
         </div>
-        <div id="mini-converter" class="col-xs-12"></div>
-        <div class="col-xs-12">
-            <div id="mini-converter-add" class="topConnected center btn btn-success">Add conversion</div>
+        <div class="row" id="localization">
+            <br><br>
+            <div class="col-xs-12">
+                <h3 style="margin-bottom: 5px" class="center">Page localization</h3>
+            </div>
+            <div class="col-xs-4">
+                <label class="center localizationLabel bottomConnected" for="dollar">$</label>
+                <select id="dollar" class="topConnected localizationSelect">
+                    <option value="USD">American</option>
+                    <option value="CAD">Canadian</option>
+                    <option value="AUD">Australian</option>
+                    <option value="MXN">Mexican</option>
+                    <option value="NZD">New Zealand</option>
+                    <option value="SGP">Singapore</option>
+                    <option value="HKD">Hong kong</option>
+                </select>
+            </div>
+            <div class="col-xs-4">
+                <label class="center localizationLabel bottomConnected" for="kroner">kr</label>
+                <select id="kroner" class="topConnected localizationSelect">
+                    <option value="SEK">Swedish</option>
+                    <option value="DKK">Danish</option>
+                    <option value="NOK">Norwegian</option>
+                    <option value="ISK">Icelandic</option>
+                    <option value="CZK">Czechia</option>
+                </select>
+            </div>
+            <div class="col-xs-4">
+                <label class="center localizationLabel bottomConnected" for="asian">¥</label>
+                <select id="asian" class="topConnected localizationSelect">
+                    <option value="CNY">Chinese</option>
+                    <option value="JPY">Japanese</option>
+                </select>
+            </div>
         </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-xs-12">
-            <a href="../options/options.html" target="_blank">
-                <div class="center btn btn-primary">Go to settings</div>
-            </a>
+        <br>
+        <div class="row">
+            <div class="col-xs-12">
+                <h3 style="margin-bottom: 5px" class="center">Mini-converter</h3>
+            </div>
+            <div class="col-xs-12">
+                <div style="width:100%; height:22px">
+                    <div class="col-xs-4 mini-converter-col" style="text-align: center;">Convert to</div>
+                    <div class="col-xs-8 mini-converter-col">
+                        <select id="mini-converter-to" class="mini-converter-field"></select>
+                    </div>
+                </div>
+            </div>
+            <div id="mini-converter" class="col-xs-12"></div>
+            <div class="col-xs-12">
+                <div id="mini-converter-add" class="topConnected center btn btn-success">Add conversion</div>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="infoText">Currency rates were last updated <span id="currencyLastUpdate"></span></div>
-    </div>
-    <div class="row">
-        <div class="infoText">Like or hate this extension? <a id="review">Leave a review</a> and tell me about it</div>
-    </div>
-    <div class="row">
-        <div id="footer">Version {version} Created by {author}</div>
-    </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-12">
+                <a href="../options/options.html" target="_blank">
+                    <div class="center btn btn-primary">Go to settings</div>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="infoText">Currency rates were last updated <span id="currencyLastUpdate"></span></div>
+        </div>
+        <div class="row">
+            <div class="infoText">Like or hate this extension? <a id="review">Leave a review</a> and tell me about it</div>
+        </div>
+        <div class="row">
+            <div id="footer">Version {version} Created by {author}</div>
+        </div>
 
+    </div>
 </div>
 </body>
 </html>

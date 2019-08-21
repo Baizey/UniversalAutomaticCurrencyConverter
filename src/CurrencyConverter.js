@@ -43,7 +43,13 @@ class CurrencyConverter {
      */
     convert(amount, from) {
         from = from.toUpperCase();
+        let result = this._convertWithoutCustomTag(amount, from);
+        if (this._customTag && this._customTag.enabled)
+            result /= this._customTag.value;
+        return Utils.isSafeNumber(result) ? result : amount;
+    }
 
+    _convertWithoutCustomTag(amount, from) {
         if (from === this._baseCurrency)
             return amount;
 
@@ -57,11 +63,7 @@ class CurrencyConverter {
                 return amount;
             else
                 result *= this._rates[this._baseCurrency];
-
-        if (this._customTag && this._customTag.enabled)
-            result /= this._customTag.value;
-
-        return Utils.isSafeNumber(result) ? result : amount;
+        return result;
     }
 
 }

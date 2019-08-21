@@ -62,12 +62,24 @@ const updateLists = () => {
 
 const updateExamples = () => {
     const formatter = engine.numberFormatter;
-    const formattingExample = 123456.78;
-    document.getElementById('formattingExample').value = formatter.format(formatter.round(formattingExample));
-
     const converter = engine.currencyConverter;
+    const formattingExample = 123456.78;
     const conversionExample = 100;
-    document.getElementById('displayExample').value = engine.transform(conversionExample, converter.baseCurrency);
+    document.getElementById('formattingExample').value =
+        formatter.format(formatter.round(formattingExample));
+
+    document.getElementById('displayExample').value =
+        engine.transform(conversionExample, converter.baseCurrency);
+};
+
+let lastHighLight = Date.now();
+const updateHighlightExample = () => {
+    if (Date.now() <= lastHighLight + 1000)
+        return;
+    lastHighLight = Date.now();
+    engine.elementTransformer
+        .highlightConversion(document.getElementById('highlightExample'))
+        .catch();
 };
 
 const initiateCustomElements = () => {
@@ -89,6 +101,19 @@ const initiateCustomElements = () => {
                 box.dispatchEvent(new Event('change'));
             });
         });
+
+    let mouseIsOver = null;
+    let element = document.getElementById('currencyShortcut');
+    element.addEventListener('mouseout', () => mouseIsOver = null);
+    element.addEventListener('mouseover', () => mouseIsOver = element);
+    window.addEventListener("keydown", e => {
+        if (mouseIsOver) {
+            mouseIsOver.value = e.key;
+            const evt = document.createEvent("HTMLEvents");
+            evt.initEvent("change", false, true);
+            mouseIsOver.dispatchEvent(evt);
+        }
+    }, false);
 };
 
 const getUiValue = key => {
@@ -165,18 +190,22 @@ const setUiValue = async (key, value) => {
         case 'currencyHighlightColor':
             engine.highlighter.withColor(value);
             element.value = engine.highlighter.color;
+            updateHighlightExample();
             break;
         case 'currencyHighlightDuration':
             engine.highlighter.withDuration(value);
             element.value = engine.highlighter.duration;
+            updateHighlightExample();
             break;
         case 'currencyUsingHighlight':
             engine.highlighter.using(value);
             element.change(engine.highlighter.isEnabled);
+            updateHighlightExample();
             break;
         case 'currency':
             engine.currencyConverter.withBaseCurrency(value);
             element.value = engine.currencyConverter.baseCurrency;
+            updateExamples();
             break;
         case 'currencyShortcut':
             engine.withCurrencyShortcut(value);
