@@ -29,10 +29,6 @@ input[type="color"],
 input {
     background-color: #0F171E !important;
     color: #d0d0d0;
-    border-left: 0 !important;
-    border-top: 0 !important;
-    border-right: 0 !important;
-    border-radius: 0 !important;
 }
 
 textarea:focus,

@@ -145,9 +145,6 @@ runner.loader.finally(() => {
     Timer.log('Loading settings');
     const engine = runner.engine;
 
-    if (!engine.isEnabled)
-        return Utils.log('content', 'UACC is disabled');
-
     if (engine.blacklist.isEnabled && engine.blacklist.isBlacklisted(window.location.href))
         return;
 
