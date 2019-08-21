@@ -1,9 +1,6 @@
-body, input, select {
+body {
     background-color: #0F171E !important;
     color: #d0d0d0 !important;
-}
-
-body {
     padding: 0;
     margin: 0;
     width: 100%;
@@ -47,33 +44,6 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-.custom-radio {
-    background-image: url(images/radio-unchecked.png);
-    background-size: contain;
-    content: '';
-    background-repeat: no-repeat;
-    cursor: pointer;
-    background-position: center;
-}
-
-.custom-radio-checked {
-    background-image: url(images/radio-checked.png);
-
-}
-
-.custom-check {
-    background-image: url(images/check-unchecked.png);
-    background-size: contain;
-    content: '';
-    background-repeat: no-repeat;
-    cursor: pointer;
-    background-position: center;
-}
-
-.custom-check-checked {
-    background-image: url(images/check-checked.png);
-}
-
 .radiobox {
     cursor: pointer;
     width:30px;
@@ -111,14 +81,14 @@ input[type="number"] {
 
 .checkbox div:first-child {
     margin-top: 15px;
-    margin-left: 1px;
+    margin-left: 0px;
     width: 16px;
     transform: rotate(45deg);
 }
 
 .checkbox div:last-child {
     margin-top: 14px;
-    margin-left: 10px;
+    margin-left: 9px;
     width: 20px;
     transform: rotate(135deg);
 }

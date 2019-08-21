@@ -1,94 +1,100 @@
 const engine = new Engine();
+const collapseState = {};
 
-const Ids = {
-    'currency': 'currency',
-    'currencyLastUpdate': 'currencyLastUpdate',
+let collapseItems;
+collapseItems = tag => {
+    const elements = document.getElementsByTagName(tag);
+    for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        const id = `${tag}-${i}`;
+        element.classList.add('clickable');
+        const parent = element.parentElement;
+        const targets = parent.children;
+        element.children[0].classList.add('opened');
+        element.children[1].classList.add('opened');
+        element.addEventListener('click', () => {
+                const state = (collapseState[id] = !collapseState[id]);
+                if (state) {
+                    element.children[0].classList.remove('opened');
+                    element.children[1].classList.remove('opened');
+                    parent.classList.add('setting-tab-no-padding');
+                    element.classList.add('setting-title-extra-padding');
+                    for (let j = 1; j < targets.length; j++)
+                        targets[j].classList.add('hidden');
+                } else {
+                    element.children[0].classList.add('opened');
+                    element.children[1].classList.add('opened');
+                    parent.classList.remove('setting-tab-no-padding');
+                    element.classList.remove('setting-title-extra-padding');
+                    for (let j = 1; j < targets.length; j++)
+                        targets[j].classList.remove('hidden');
+                }
+            }
+        );
+    }
 };
 
-/**
- * @returns {Promise<string>}
- */
 const updateCurrencyLists = async () => {
-    const symbols = (await Browser.httpGet('symbols')).symbols;
-    document.getElementById(Ids.currency).innerHTML = Object.keys(symbols)
+    const rates = engine.getConversionRates();
+    const symbols = await engine.getCurrencySymbols().catch(() => ({}));
+    const selectables = Object.keys(symbols.symbols)
         .sort()
-        .map(tag => `<option value="${tag}">${symbols ? `${tag} (${symbols[tag]})` : tag}</option>`)
+        .map(tag => `<option value="${tag}">${symbols.symbols ? `${tag} (${symbols.symbols[tag]})` : tag}</option>`)
         .join('');
+    const atCurrency = getUiValue('currency');
+    document.getElementById('currency').innerHTML = selectables;
+    await rates;
+    await setUiValue('currency', atCurrency);
+}
+
+const updateWhitelist = wrapper => {
+    const children = wrapper.children;
+    const urls = [];
+    for (let i = 0; i < children.length; i++) {
+        const value = children[i].value;
+        if (value)
+            urls.push(children[i].value);
+        else
+            wrapper.removeChild(children[i--]);
+    }
+    engine.whitelist.withUrls(urls);
+    Browser.save('whitelistingurls', engine.whitelist.urls);
+    createWhitelistField(wrapper);
 };
 
-const createListField = (wrapper, value = '') => {
+const createWhitelistField = (wrapper, value = '') => {
     const element = document.createElement(`input`);
     element.classList.add('url', 'form-control');
     element.placeholder = 'https://...';
     element.style.borderRadius = '0';
     element.value = value;
-    element.addEventListener('change', () => updateLists());
+    element.addEventListener('change', () => updateWhitelist(wrapper));
     wrapper.appendChild(element);
 };
 
-const updateListChildren = (wrapper) => {
+const updateBlacklist = wrapper => {
     const children = wrapper.children;
     const urls = [];
-    for (let i = 0; i < children.length; i++)
-        if (children[i].value) urls.push(children[i].value);
-        else wrapper.removeChild(children[i--]);
-    createListField(wrapper);
-    return urls;
-};
-
-const updateLists = () => {
-    // Update whitelist
-    const whitelistWrapper = document.getElementById('currencyWhitelistUrls');
-    if (whitelistWrapper.children.length === 0) {
-        engine.whitelist.urls.forEach(url => createListField(whitelistWrapper, url));
-        createListField(whitelistWrapper);
-    } else {
-        const urls = updateListChildren(whitelistWrapper);
-        engine.whitelist.withUrls(urls);
-        Browser.save('whitelistingurls', engine.whitelist.urls).catch();
+    for (let i = 0; i < children.length; i++) {
+        const value = children[i].value;
+        if (value)
+            urls.push(children[i].value);
+        else
+            wrapper.removeChild(children[i--]);
     }
-
-    // Update blacklist
-    const blacklistWrapper = document.getElementById('currencyBlacklistUrls');
-    if (blacklistWrapper.children.length === 0) {
-        engine.blacklist.urls.forEach(url => createListField(blacklistWrapper, url));
-        createListField(blacklistWrapper);
-    } else {
-        const urls = updateListChildren(blacklistWrapper);
-        engine.blacklist.withUrls(urls);
-        Browser.save('blacklistingurls', engine.blacklist.urls).catch();
-    }
+    engine.blacklist.withUrls(urls);
+    Browser.save('blacklistingurls', engine.blacklist.urls);
+    createBlacklistField(wrapper);
 };
 
-const updateExamples = () => {
-    const formatter = engine.numberFormatter;
-    const formattingExample = 123456.78;
-    document.getElementById('formattingExample').value = formatter.format(formatter.round(formattingExample));
-
-    const converter = engine.currencyConverter;
-    const conversionExample = 100;
-    document.getElementById('displayExample').value = engine.transform(conversionExample, converter.baseCurrency);
-};
-
-const initiateCustomElements = () => {
-    Utils.getByClass('checkbox')
-        .filter(e => Utils.isUndefined(e.checked))
-        .forEach(box => {
-            box.checked = box.classList.contains('checked');
-            const check = () => {
-                box.checked = true;
-                box.classList.add('checked');
-            };
-            const uncheck = () => {
-                box.checked = false;
-                box.classList.remove('checked');
-            };
-            box.change = (value = !box.checked) => value ? check() : uncheck();
-            box.addEventListener('click', () => {
-                box.change();
-                box.dispatchEvent(new Event('change'));
-            });
-        });
+const createBlacklistField = (wrapper, value = '') => {
+    const element = document.createElement(`input`);
+    element.classList.add('url', 'form-control');
+    element.placeholder = 'https://...';
+    element.style.borderRadius = '0';
+    element.value = value;
+    element.addEventListener('change', () => updateBlacklist(wrapper));
+    wrapper.appendChild(element);
 };
 
 const getUiValue = key => {
@@ -114,6 +120,7 @@ const getUiValue = key => {
         case 'currencyUsingAutomatic':
         case 'currencyUsingHighlight':
         case 'currencyUsingCustomTag':
+        case 'usingCurrencyConverter':
         case 'intelligentRounding':
             return element.checked;
 
@@ -185,55 +192,69 @@ const setUiValue = async (key, value) => {
         case 'currencyCustomTagValue':
             engine.customTag.withValue(value);
             element.value = engine.customTag.value;
-            updateExamples();
             break;
         case 'currencyCustomTag':
             engine.customTag.withTag(value);
             element.value = engine.customTag.tag;
-            updateExamples();
             break;
         case 'currencyUsingCustomTag':
             engine.customTag.using(value);
             element.change(engine.customTag.enabled);
-            updateExamples();
+            break;
+        case 'usingCurrencyConverter':
+            engine.using(value);
+            element.change(engine.isEnabled);
             break;
         case 'thousandDisplay':
             engine.numberFormatter.withThousand(value);
             element.value = engine.numberFormatter.thousand;
-            updateExamples();
             break;
         case 'decimalDisplay':
             engine.numberFormatter.withDecimal(value);
             element.value = engine.numberFormatter.decimal;
-            updateExamples();
             break;
         case 'decimalAmount':
             engine.numberFormatter.withRounding(Math.round(value));
             element.value = engine.numberFormatter.rounding;
-            updateExamples();
             break;
         default:
             throw 'Unknown element';
     }
 };
 
-
 document.addEventListener("DOMContentLoaded", async function () {
-    // Initiate UI elements
-    initiateCustomElements();
+    Utils.initiateCheckboxes();
+    collapseItems('h2');
+    collapseItems('h3');
     Browser.updateFooter();
-    await updateCurrencyLists();
 
-    // Load engine data
-    await engine.getConversionRates();
+    await updateCurrencyLists().catch(e => console.error(e));
     await engine.loadSettings();
-    await setUiValue(Ids.currency, engine.currencyConverter.baseCurrency);
-    document.getElementById(Ids.currencyLastUpdate).innerText = engine.lastCurrencyUpdate;
 
-    // Blacklist fields
-    updateLists();
+    document.getElementById('currencyLastUpdate').innerText = engine.lastCurrencyUpdate;
 
-    // Normal fields
+    // Conversion shortcut
+    let mouseIsOver = null;
+    let element = document.getElementById('currencyShortcut');
+    element.addEventListener('mouseout', () => mouseIsOver = null);
+    element.addEventListener('mouseover', () => mouseIsOver = element);
+    window.addEventListener("keydown", e => {
+        if (mouseIsOver) {
+            mouseIsOver.value = e.key;
+            const evt = document.createEvent("HTMLEvents");
+            evt.initEvent("change", false, true);
+            mouseIsOver.dispatchEvent(evt);
+        }
+    }, false);
+
+    // Blacklist
+    const blacklistWrapper = document.getElementById('currencyBlacklistUrls');
+    engine.blacklist.urls.forEach(url => createBlacklistField(blacklistWrapper, url));
+    createBlacklistField(blacklistWrapper);
+    const whitelistWrapper = document.getElementById('currencyWhitelistUrls');
+    engine.whitelist.urls.forEach(url => createWhitelistField(whitelistWrapper, url));
+    createWhitelistField(whitelistWrapper);
+
     for (const id of Utils.storageIds()) {
         if (Utils.manualStorageIds()[id])
             continue;
@@ -242,10 +263,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         await setUiValue(id, value);
 
-        element.addEventListener('focus', () => element.style.border = '1px solid #f0ad4e');
-        element.addEventListener('focusout', () => element.style.border = '');
+        element.addEventListener('focus', function () {
+            document.getElementById(this.id).style.border = '1px solid #f0ad4e';
+        });
+        element.addEventListener('focusout', function () {
+            document.getElementById(this.id).style.border = '';
+        });
 
-        element.addEventListener('change', async function () {
+        document.getElementById(id).addEventListener('change', async function () {
             const oldValue = getUiValue(id);
             await setUiValue(id, oldValue);
             const newValue = getUiValue(id);
@@ -257,8 +282,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    // Newly installed banner
     const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
     if (isFirstTime)
         document.getElementById('firstime_message').classList.remove('hidden');
+
 });

@@ -24,7 +24,6 @@ class Engine {
         this.lastCurrencyUpdate = 'never';
         this.automaticPageConversion = true;
         this.conversionShortcut = 'Shift';
-        this.isEnabled = true;
         this.showNonDefaultCurrencyAlert = true;
     }
 
@@ -38,12 +37,6 @@ class Engine {
         if (Utils.isDefined(value))
             this.conversionShortcut = value;
         return this.conversionShortcut;
-    }
-
-    using(isEnabled) {
-        if (Utils.isDefined(isEnabled))
-            this.isEnabled = isEnabled;
-        return this.isEnabled;
     }
 
     shouldAutoconvert(value) {
@@ -80,8 +73,6 @@ class Engine {
             case 'currency':
                 return this.currencyConverter.baseCurrency;
 
-            case 'usingCurrencyConverter':
-                return this.isEnabled;
             case 'currencyUsingAutomatic':
                 return this.automaticPageConversion;
             case 'currencyShortcut':
@@ -130,7 +121,6 @@ class Engine {
             self.blacklist.withUrls(resp['blacklistingurls']);
             self.whitelist.withUrls(resp['whitelistingurls']);
 
-            self.using(resp['usingCurrencyConverter']);
             self.shouldAutoconvert(resp['currencyUsingAutomatic']);
             self.withCurrencyShortcut(resp['currencyShortcut']);
 

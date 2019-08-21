@@ -46,7 +46,6 @@ class Utils {
             'currencyHighlightDuration',
             'currencyUsingHighlight',
             'currencyShortcut',
-            'usingCurrencyConverter',
             'thousandDisplay',
             'decimalDisplay',
             'decimalAmount',
@@ -61,23 +60,16 @@ class Utils {
         ];
     }
 
-    static initiateCheckboxes() {
-        const checkboxes = document.getElementsByClassName('custom-check');
-        for (let i = 0; i < checkboxes.length; i++) {
-            const box = checkboxes[i];
-            if (Utils.isDefined(box.checked)) return;
-            box.checked = false;
-            box.change = (value = !box.checked) => {
-                if (value === box.checked) return;
-                box.checked = !!value;
-                if (box.checked)
-                    box.classList.add('custom-check-checked');
-                else
-                    box.classList.remove('custom-check-checked');
-                box.dispatchEvent(new Event('change'));
-            };
-            box.addEventListener('click', () => box.change());
-        }
+    /**
+     * @param {string} className
+     * @returns {HTMLElement[]}
+     */
+    static getByClass(className) {
+        const temp = document.getElementsByClassName(className);
+        const result = [];
+        for (let i = 0; i < temp.length; i++)
+            result.push(temp[i]);
+        return result;
     }
 
     static manualStorageIds() {
