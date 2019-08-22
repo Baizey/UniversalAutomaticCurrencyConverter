@@ -27,7 +27,6 @@ describe('ElementTransformer tests', () => {
 
     it('Test finds elements in correct order', () => {
         const transformer = new ElementTransformer(engine);
-        transformer.withConversionType(ConversionTypes.intelligently);
         const expected = ['£', '2', '.', '49'];
         const textNodes = ElementTransformer.findTextNodes(amazonUk);
         const text = cleanResult(textNodes);
@@ -36,7 +35,6 @@ describe('ElementTransformer tests', () => {
 
     it('Test transforms correctly intelligently', () => {
         const transformer = new ElementTransformer(engine);
-        transformer.withConversionType(ConversionTypes.intelligently);
         const clone = amazonUk.cloneNode(true);
         const textNodes = ElementTransformer.findTextNodes(clone);
         let cleanNodes = cleanResult(textNodes);
@@ -55,7 +53,6 @@ describe('ElementTransformer tests', () => {
 
     it('Test transforms correctly intelligently', () => {
         const transformer = new ElementTransformer(engine);
-        transformer.withConversionType(ConversionTypes.intelligently);
         const clone = amazonCa.cloneNode(true);
         const textNodes = ElementTransformer.findTextNodes(clone);
         let cleanNodes = cleanResult(textNodes);
@@ -71,4 +68,27 @@ describe('ElementTransformer tests', () => {
         cleanNodes = cleanResult(textNodes);
         expect(cleanNodes).toEqual(['CDN$', '2', '.', '49']);
     });
+
+    it('Test', () => {
+        const transformer = new ElementTransformer(engine);
+        const html = `<div class="a-row a-size-base a-color-secondary"><div class="a-row"><span>2 for </span><span>£10.00</span><span> on Blu-ray</span></div></div>`;
+        div = document.createElement('div');
+        div.innerHTML = html;
+        const clone = div.children[0];
+
+        const textNodes = ElementTransformer.findTextNodes(clone);
+        let cleanNodes = cleanResult(textNodes);
+
+        const result = transformer.transformIntelligently(clone, false);
+        result.updateUi();
+
+        result.set(true);
+        cleanNodes = cleanResult(textNodes);
+        expect(cleanNodes).toEqual(['2 for', '10 EUR', 'on Blu-ray']);
+
+        result.set(false);
+        cleanNodes = cleanResult(textNodes);
+        expect(cleanNodes).toEqual(['2 for', '£10.00', 'on Blu-ray']);
+
+    })
 });

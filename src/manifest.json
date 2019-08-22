@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Universal Automatic Currency Converter",
   "short_name": "UA Currency Converter",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Your new currency converter.",
   "author": "Baizey",
   "icons": {

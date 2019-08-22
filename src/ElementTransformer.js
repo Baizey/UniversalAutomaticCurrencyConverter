@@ -127,8 +127,6 @@ class ElementTransformer {
 
             // Handle simple cases
             if (touched.length === 0) return;
-            if (touched.length === 1)
-                return touched[0].new.text = touched[0].new.text.replace(replacement.raw, this.engine.transform(replacement));
 
             // Update indexes of new text for relevant nodes
             let at = 0;

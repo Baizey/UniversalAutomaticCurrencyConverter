@@ -176,7 +176,7 @@ z-index: 1000;
 right: 0; bottom: 0; position: fixed;">
     ${content}
     <p style="font-size: 10px">You can turn these alerts off in UA Currency Converter settings</p>
-    <button style ="color: black; width:100%">Ok</button> 
+    <div class="popupButton">Ok</div> 
 </div>`;
         const temp = document.createElement('div');
         temp.innerHTML = div;
