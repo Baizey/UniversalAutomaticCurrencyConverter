@@ -111,6 +111,22 @@ describe("CurrencyDetector tests", () => {
         expect(actual).toEqual(expected);
     });
 
+    it("Detect currencies side by side", () => {
+        // Setup
+        const detector = new CurrencyDetector(browser);
+        const data = "5 USD 5 USD";
+        const expected = [
+            new SearchResult('5 USD ', '', '', ' ', ' ', 5, 'USD', 0),
+            new SearchResult(' 5 USD', ' ', '', ' ', '', 5, 'USD', 5),
+        ];
+
+        // Act
+        const actual = detector.findAll(data, false);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
     it("Detect small numbers", () => {
         // Setup
         const detector = new CurrencyDetector(browser);

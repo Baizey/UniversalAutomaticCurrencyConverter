@@ -200,7 +200,7 @@ class CurrencyDetector {
             if (!r) break;
             if (r.currency)
                 result.push(r);
-            index = this._regex.lastIndex;
+            index = this._regex.lastIndex - 1;
         }
         return result;
     }
