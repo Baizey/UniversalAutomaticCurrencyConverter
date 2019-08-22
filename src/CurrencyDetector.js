@@ -87,11 +87,18 @@ class CurrencyDetector {
         };
 
         const s = /["+\-',.<>()\/\s]/;
-        const start = new RegExp(`(${s.source}|^)`);
-        const end = new RegExp(`(${s.source}|$)`);
+        const start = new RegExp(`(${s.source}|^)`).source;
+        const end = new RegExp(`(${s.source}|$)`).source;
 
-        const whitespace = /(\s*)/;
-        const currency = /([¥A-Z]{3}|,-{1,2}|kr\.?|CDN\$|[$£€₺Ł元₿Ξ฿₴ɱ₽¥₩]|dollars?)?/;
+        const whitespace = /(\s*)/.source;
+
+        const currency = '(' + [
+            /[¥A-Z]{3}/.source,
+            /,-{1,2}|kr\.?/.source,
+            /CDN\$/.source,
+            /dollars?/.source,
+            /[$£€₺Ł元₿Ξ฿₴ɱ₽¥₩]/.source,
+        ].join('|') + ')?';
 
         // Find normal numbers
         const normalInteger = /(?:(?:\d{1,3}?(?:[., ]\d{3})*)|\d{4,})/.source;
@@ -110,21 +117,21 @@ class CurrencyDetector {
         const numberSource = `(\-)?${integers}${decimals}`;
 
         const rawRegex = [
-            start.source,
-            currency.source,
-            whitespace.source,
+            start,
+            currency,
+            whitespace,
             numberSource,
-            whitespace.source,
-            currency.source,
-            end.source
+            whitespace,
+            currency,
+            end
         ].join('');
         const rawOnlyRegex = [
             /(^)/.source,
-            currency.source,
-            whitespace.source,
+            currency,
+            whitespace,
             numberSource,
-            whitespace.source,
-            currency.source,
+            whitespace,
+            currency,
             /($)/.source].join('');
 
         this._regex =
