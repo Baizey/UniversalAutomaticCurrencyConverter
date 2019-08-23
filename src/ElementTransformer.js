@@ -12,6 +12,15 @@ class ElementTransformer {
     constructor(engine) {
         this.engine = engine;
         this.conversions = [];
+        this._regex = null;
+    }
+
+    get regex() {
+        if (!this._regex)
+            this._regex = this.engine.currencyDetector.regex;
+        else
+            this._regex.lastIndex = 0;
+        return this._regex;
     }
 
     updateAll() {
@@ -141,8 +150,7 @@ class ElementTransformer {
             const rawReplacement = replacement.raw;
             const newStart = newText.indexOf(rawReplacement);
 
-            const regex = this.engine.currencyDetector._regex;
-            const result = regex.exec(rawReplacement);
+            const result = this.regex.exec(rawReplacement);
             let [raw, start, c1, w1, neg, int, dec, w2, c2, end] = result;
             start = start ? start : '';
             w1 = w1 ? w1 : '';
@@ -184,7 +192,7 @@ class ElementTransformer {
                 const rawInteger = neg + int;
                 const integerStart = newStart + [start, c1, w1].map(e => e ? e.length : 0).sum();
                 const integerEnd = integerStart + rawInteger.length;
-                removePart(touched, integerStart, integerEnd , this.engine.transform(replacement));
+                removePart(touched, integerStart, integerEnd, this.engine.transform(replacement));
             }
 
             // Remove first currency

@@ -133,13 +133,21 @@ class CurrencyDetector {
             whitespace,
             currency,
             /($)/.source].join('');
+        this._regex = this.regex;
+        this._fullRegex = this.fullRegex;
     }
 
-    get _regex() {
+    /**
+     * @returns {RegExp|XRegExp}
+     */
+    get regex() {
         return this._browser.isFirefox() ? XRegExp.cache(this.rawRegex, 'gm') : new RegExp(this.rawRegex, 'gm');
     }
 
-    get _fullRegex() {
+    /**
+     * @returns {RegExp|XRegExp}
+     */
+    get fullRegex() {
         return this._browser.isFirefox() ? XRegExp.cache(this.rawOnlyRegex, 'gs') : new RegExp(this.rawOnlyRegex, 'gs');
     }
 
@@ -204,7 +212,8 @@ class CurrencyDetector {
             if (!r) break;
             if (r.currency)
                 result.push(r);
-            index = regex.lastIndex - 1;
+            // Always move forward at least 1 position
+            index = Math.max(index + 1, regex.lastIndex - 1);
         }
         return result;
     }
@@ -228,7 +237,8 @@ class CurrencyDetector {
             const r = this.findResult(text, regex, index);
             if (!r) return false;
             if (r.currency) return true;
-            index = regex.lastIndex;
+            // Always move forward at least 1 position
+            index = Math.max(index + 1, regex.lastIndex - 1);
         }
     }
 
