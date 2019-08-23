@@ -94,7 +94,7 @@ describe('ElementTransformer tests', () => {
     });
 
 
-    it("Odd test", () => {
+    it("Test for currencies with only a single character separating them in the same node", () => {
         // Setup
         const transformer = new ElementTransformer(engine);
         const data = 'pick up a $50/£50 words';
