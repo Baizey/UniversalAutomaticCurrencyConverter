@@ -86,7 +86,7 @@ class CurrencyDetector {
             NOK: 'NOK'
         };
 
-        const s = /["+\-',.<>()\/\s]/;
+        const s = /["+\-' ,.<>()\/\s]/;
         const start = new RegExp(`(${s.source}|^)`).source;
         const end = new RegExp(`(${s.source}|$)`).source;
 
