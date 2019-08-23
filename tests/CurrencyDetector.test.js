@@ -127,21 +127,6 @@ describe("CurrencyDetector tests", () => {
         expect(actual).toEqual(expected);
     });
 
-    it("Odd test", () => {
-        // Setup
-        const detector = new CurrencyDetector(browser);
-        detector.localize();
-        const data = ' $31)';
-        const expected = [new SearchResult(data, ' ', '', '', ')', 31, 'USD', 0)];
-
-        // Act
-        const actual = detector._regex.exec(data);
-
-        // Assert
-        expect(actual).toEqual(expected);
-
-    });
-
     it("Detect small numbers", () => {
         // Setup
         const detector = new CurrencyDetector(browser);

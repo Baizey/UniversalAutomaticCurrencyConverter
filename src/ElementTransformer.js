@@ -138,10 +138,11 @@ class ElementTransformer {
 
             // Find indexes in new text
             const newText = touched.map(e => e.new.text).join('');
-            const newStart = newText.indexOf(replacement.raw);
+            const rawReplacement = replacement.raw;
+            const newStart = newText.indexOf(rawReplacement);
 
             const regex = this.engine.currencyDetector._regex;
-            const result = regex.exec(replacement.raw);
+            const result = regex.exec(rawReplacement);
             let [raw, start, c1, w1, neg, int, dec, w2, c2, end] = result;
             start = start ? start : '';
             w1 = w1 ? w1 : '';

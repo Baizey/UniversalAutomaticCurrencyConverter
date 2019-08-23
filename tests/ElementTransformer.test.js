@@ -13,6 +13,7 @@ describe('ElementTransformer tests', () => {
     engine.currencyConverter.withConversionRates({
         'GBP': 1,
         'EUR': 1,
+        'USD': 1,
         'CAD': 1,
     });
 
@@ -90,5 +91,33 @@ describe('ElementTransformer tests', () => {
         cleanNodes = cleanResult(textNodes);
         expect(cleanNodes).toEqual(['2 for', '£10.00', 'on Blu-ray']);
 
-    })
+    });
+
+
+    it("Odd test", () => {
+        // Setup
+        const transformer = new ElementTransformer(engine);
+        const data = 'pick up a $50/£50 words';
+        div = document.createElement('div');
+        div.innerHTML = '<span>pick up a $50/£50 words</span>';
+        const clone = div.children[0];
+        const expected = [
+            new SearchResult(data, ' ', '', '', '/', 50, 'USD', 0),
+            new SearchResult(data, '/', '', '', ' ', 50, 'GBP', 0),
+        ];
+        const textNodes = ElementTransformer.findTextNodes(clone);
+        let cleanNodes = cleanResult(textNodes);
+
+        // Act
+        const result = transformer.transform(clone, false);
+        result.updateUi();
+
+        result.set(true);
+        cleanNodes = cleanResult(textNodes);
+        expect(cleanNodes).toEqual(['pick up a 50 EUR/50 EUR words']);
+
+        result.set(false);
+        cleanNodes = cleanResult(textNodes);
+        expect(cleanNodes).toEqual(['pick up a $50/£50 words']);
+    });
 });

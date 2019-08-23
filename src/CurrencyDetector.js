@@ -28,7 +28,7 @@ class CurrencyDetector {
                 default: this.storedDefaultLocalization.krone,
             },
             {
-            symbol: '¥',
+                symbol: '¥',
                 using: this.currencies['¥'],
                 default: this.storedDefaultLocalization.asian,
             }
@@ -86,7 +86,7 @@ class CurrencyDetector {
             NOK: 'NOK'
         };
 
-        const s = /["+\-' ,.<>()\/\s]/;
+        const s = /["+\-' ,.<>()\\/\s]/;
         const start = new RegExp(`(${s.source}|^)`).source;
         const end = new RegExp(`(${s.source}|$)`).source;
 
@@ -116,7 +116,7 @@ class CurrencyDetector {
 
         const numberSource = `(\-)?${integers}${decimals}`;
 
-        const rawRegex = [
+        this.rawRegex = [
             start,
             currency,
             whitespace,
@@ -125,7 +125,7 @@ class CurrencyDetector {
             currency,
             end
         ].join('');
-        const rawOnlyRegex = [
+        this.rawOnlyRegex = [
             /(^)/.source,
             currency,
             whitespace,
@@ -133,11 +133,14 @@ class CurrencyDetector {
             whitespace,
             currency,
             /($)/.source].join('');
+    }
 
-        this._regex =
-            this._browser.isFirefox() ? XRegExp.cache(rawRegex, 'gm') : new RegExp(rawRegex, 'gm');
-        this._fullRegex =
-            this._browser.isFirefox() ? XRegExp.cache(rawOnlyRegex, 'gs') : new RegExp(rawOnlyRegex, 'gs');
+    get _regex() {
+        return this._browser.isFirefox() ? XRegExp.cache(this.rawRegex, 'gm') : new RegExp(this.rawRegex, 'gm');
+    }
+
+    get _fullRegex() {
+        return this._browser.isFirefox() ? XRegExp.cache(this.rawOnlyRegex, 'gs') : new RegExp(this.rawOnlyRegex, 'gs');
     }
 
     /**
@@ -195,12 +198,13 @@ class CurrencyDetector {
         const result = [];
         let index = 0;
         const found = true;
+        const regex = this._regex;
         while (found) {
-            const r = this.findResult(text, this._regex, index);
+            const r = this.findResult(text, regex, index);
             if (!r) break;
             if (r.currency)
                 result.push(r);
-            index = this._regex.lastIndex - 1;
+            index = regex.lastIndex - 1;
         }
         return result;
     }
@@ -219,11 +223,12 @@ class CurrencyDetector {
             return resp && !!resp.currency;
         }
         let index = 0;
+        const regex = this._regex;
         while (true) {
-            const r = this.findResult(text, this._regex, index);
+            const r = this.findResult(text, regex, index);
             if (!r) return false;
             if (r.currency) return true;
-            index = this._regex.lastIndex;
+            index = regex.lastIndex;
         }
     }
 
