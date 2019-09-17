@@ -40,7 +40,7 @@ This extension aims to solve these issues!
 
 - Intelligent rounding of prices to your desired precision
 
-- Mini converted available everywhere top right. Can convert and remember up to 5 conversions across tabs.
+- Mini converter available everywhere from the popup windows accessible in the top right extension icon.
 
 - Flip between original and converted prices on pages either by clicking, using the shortcut or using the button in the popup.
 
