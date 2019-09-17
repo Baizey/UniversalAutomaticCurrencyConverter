@@ -16,7 +16,7 @@ Currency converters can act in 1 of 3 ways:
 
 - Aggressively, searches across html tags and replaces across html tags. Likely to find all currencies, might break websites.
 
-- Intelligently, searches aggresively, but replaces carefully. Likely to find all currencies, never breaks websites.
+- Intelligently, searches aggressively, but replaces carefully. Likely to find all currencies, never breaks websites.
 
 Most currency conversion extensions will likely act carefully. This extension currently acts intelligently.
 
