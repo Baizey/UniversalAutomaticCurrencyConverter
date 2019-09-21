@@ -109,7 +109,7 @@ class CurrencyDetector {
         const smallDecimal = /(?:[,.]\d+)/.source;
 
         // Find numbers in ranges, like 10-50, ONLY WHOLE NUMBERS
-        const rangeInteger = `${normalInteger}-${normalInteger}`;
+        const rangeInteger = `${normalInteger}\\s*-\\s*${normalInteger}`;
 
         const integers = `(${[rangeInteger, normalInteger, smallInteger].join('|')})`;
         const decimals = `(${[normalDecimal, smallDecimal].join('|')})?`;
@@ -173,7 +173,7 @@ class CurrencyDetector {
         dec = dec.replace(/[^\d]+/g, '');
         let numbers = [Number(neg + int + '.' + dec)];
         if (int.indexOf('-') >= 0)
-            numbers = int.split('-').map(e => Number(e));
+            numbers = int.split(/\s*-\s*/g).map(e => Number(e));
 
         let currency;
         if (this.currencies[c2]) {

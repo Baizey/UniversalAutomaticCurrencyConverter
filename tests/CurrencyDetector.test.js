@@ -69,12 +69,42 @@ describe("CurrencyDetector tests", () => {
     });
 
     // TODO: make it handle this with both values being seen as USD
-    it("Test X-Y currency", () => {
+    it("Test X-Y USD currency", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
         const data = '5-10 USD';
         const expected = [
             new SearchResult(data, '', '', ' ', '', [5, 10], 'USD', 0),
+        ];
+
+        // Act
+        const actual = detector.findAll(data);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+    it("Test USD X-Y currency", () => {
+        // Setup
+        const detector = new CurrencyDetector(browser);
+        const data = 'USD 5-10';
+        const expected = [
+            new SearchResult(data, '', ' ', '', '', [5, 10], 'USD', 0),
+        ];
+
+        // Act
+        const actual = detector.findAll(data);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+    it("Test USD X - Y currency with whitespace", () => {
+        // Setup
+        const detector = new CurrencyDetector(browser);
+        const data = 'USD 5 - 10';
+        const expected = [
+            new SearchResult(data, '', ' ', '', '', [5, 10], 'USD', 0),
         ];
 
         // Act
