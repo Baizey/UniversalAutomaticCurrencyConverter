@@ -5,6 +5,18 @@ const ignoredElements = {
     'rect': true,
     'svg': true
 };
+
+/**
+ * Hint for future developers:
+ * DO NOT DO WHAT THESE WEBSITES DO
+ * @type {{"taobao.com": {delay: number}}}
+ */
+const shittyWebsites = {
+    'taobao.com': {
+        delay: 3000,
+    }
+};
+
 let mouseIsOver = null;
 
 class UACCContent {
@@ -141,7 +153,11 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-runner.loader.finally(() => {
+runner.loader.finally(async () => {
+    const shittySite = shittyWebsites[Browser.absoluteHostname()];
+    if (shittySite)
+        await Utils.wait(shittySite.delay);
+
     Timer.log('Loading settings');
     const engine = runner.engine;
 

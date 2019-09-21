@@ -69,7 +69,7 @@ describe("CurrencyDetector tests", () => {
     });
 
     // TODO: make it handle this with both values being seen as USD
-    it("Test X-Y USD currency", () => {
+    it("Test range with currency last", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
         const data = '5-10 USD';
@@ -84,7 +84,7 @@ describe("CurrencyDetector tests", () => {
         expect(actual).toEqual(expected);
     });
 
-    it("Test USD X-Y currency", () => {
+    it("Test range with currency first", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
         const data = 'USD 5-10';
@@ -99,7 +99,22 @@ describe("CurrencyDetector tests", () => {
         expect(actual).toEqual(expected);
     });
 
-    it("Test USD X - Y currency with whitespace", () => {
+    it("Test range with decimals", () => {
+        // Setup
+        const detector = new CurrencyDetector(browser);
+        const data = 'USD 5.5 - 10.55';
+        const expected = [
+            new SearchResult(data, '', ' ', '', '', [5.5, 10.55], 'USD', 0),
+        ];
+
+        // Act
+        const actual = detector.findAll(data);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+    it("Test range with spacing", () => {
         // Setup
         const detector = new CurrencyDetector(browser);
         const data = 'USD 5 - 10';

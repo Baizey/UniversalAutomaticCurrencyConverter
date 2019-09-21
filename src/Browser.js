@@ -17,6 +17,13 @@ class Browser {
                 .replace('{author}', Browser.author);
     }
 
+    static absoluteHostname() {
+        const host = window.location.hostname;
+        const parts = host.split('.');
+        if (parts.length <= 1) return parts[0];
+        return parts[parts.length - 2] + '.' + parts[parts.length - 1];
+    }
+
     static getHost() {
         const hostname = window.location.hostname;
         const index = hostname.lastIndexOf('.');

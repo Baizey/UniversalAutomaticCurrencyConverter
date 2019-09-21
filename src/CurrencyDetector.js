@@ -109,7 +109,7 @@ class CurrencyDetector {
         const smallDecimal = /(?:[,.]\d+)/.source;
 
         // Find numbers in ranges, like 10-50, ONLY WHOLE NUMBERS
-        const rangeInteger = `${normalInteger}\\s*-\\s*${normalInteger}`;
+        const rangeInteger = `${normalInteger}${normalDecimal}?\\s*-\\s*${normalInteger}${normalDecimal}?`;
 
         const integers = `(${[rangeInteger, normalInteger, smallInteger].join('|')})`;
         const decimals = `(${[normalDecimal, smallDecimal].join('|')})?`;
@@ -169,11 +169,27 @@ class CurrencyDetector {
         neg = neg ? neg : '';
         dec = dec ? dec : '';
 
-        int = int.replace(/[ ,.]*/g, '');
-        dec = dec.replace(/[^\d]+/g, '');
-        let numbers = [Number(neg + int + '.' + dec)];
-        if (int.indexOf('-') >= 0)
-            numbers = int.split(/\s*-\s*/g).map(e => Number(e));
+        let numbers = [];
+
+        if (int.indexOf('-') >= 0) {
+            numbers = int.split(/\s*-\s*/g)
+                .map(e => {
+                    const fullEnd = e.slice(-3);
+                    const cutEnd = e.slice(-2);
+                    let result;
+                    if (/^[,.]\d$/.test(cutEnd))
+                        result = `${e.substr(0, e.length - 2).replace(/[ ,.]*/g, '')}.${cutEnd.substr(1)}`;
+                    else if (/^[,.]\d{2}$/.test(fullEnd))
+                        result = `${e.substr(0, e.length - 3).replace(/[ ,.]*/g, '')}.${fullEnd.substr(1)}`;
+                    else
+                        result = e.replace(/[ ,.]*/g, '');
+                    return result;
+                }).map(e => Number(e));
+        } else {
+            int = int.replace(/[ ,.]*/g, '');
+            dec = dec.replace(/[^\d]+/g, '');
+            numbers = [Number(neg + int + '.' + dec)];
+        }
 
         let currency;
         if (this.currencies[c2]) {
