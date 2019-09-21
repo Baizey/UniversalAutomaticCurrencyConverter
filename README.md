@@ -16,7 +16,7 @@ Currency converters can act in 1 of 3 ways:
 
 - Aggressively, searches across html tags and replaces across html tags. Likely to find all currencies, might break websites.
 
-- Intelligently, searches aggresively, but replaces carefully. Likely to find all currencies, never breaks websites.
+- Intelligently, searches aggressively, but replaces carefully. Likely to find all currencies, never breaks websites.
 
 Most currency conversion extensions will likely act carefully. This extension currently acts intelligently.
 
@@ -40,7 +40,7 @@ This extension aims to solve these issues!
 
 - Intelligent rounding of prices to your desired precision
 
-- Mini converted available everywhere top right. Can convert and remember up to 5 conversions across tabs.
+- Mini converter available everywhere from the popup windows accessible in the top right extension icon.
 
 - Flip between original and converted prices on pages either by clicking, using the shortcut or using the button in the popup.
 
