@@ -9,6 +9,19 @@
     -ms-transition: background-color 0.5s linear;
 }
 
+.alertWrapper{
+    font-size: 14px;
+    line-height: 1.1;
+    padding: 10px;
+    text-align:center;
+    height: fit-content;
+    width: fit-content;
+    z-index: 1000;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+}
+
 .hiddenHighlight {
     background-color: transparent;
 }
@@ -25,18 +38,33 @@
     border-top-right-radius: 10px;
 }
 
-.popupButton {
+.popupButton, .saveLocalizationButton, .revertLocalizationButton {
     padding-top: 5px;
     padding-bottom: 5px;
     margin-top: 5px;
     width: 100%;
     cursor: pointer;
     background-color: #204d74;
-    color: white;
     border-color: #122b40;
+    color: white;
     border-radius: 5px;
 }
 
 .popupButton:hover {
     background-color: #103d64;
+}
+
+.saveLocalizationButton {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.saveLocalizationButton:hover {
+    background-color: #189735;
+}
+.revertLocalizationButton {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+.revertLocalizationButton:hover {
+    background-color: #cc2535;
 }

@@ -20,7 +20,7 @@ class Engine {
         this.highlighter = new Highlighter();
         this.currencyConverter = new CurrencyConverter().withCustomTag(this.customTag);
         this.numberFormatter = new NumberFormatter();
-
+        this.siteSpecificSettings = undefined;
         this.lastCurrencyUpdate = 'never';
         this.automaticPageConversion = true;
         this.conversionShortcut = 'Shift';
@@ -102,9 +102,24 @@ class Engine {
         Utils.logError(`Unknown id to get value for ${id}`);
     }
 
+    /**
+     * @returns {Promise<void>}
+     */
+    async saveSiteSpecificSettings() {
+        if (!this.siteSpecificSettings)
+            this.siteSpecificSettings = new SiteSpecificSettings(this.currencyDetector.storedDefaultLocalization);
+        else
+            this.siteSpecificSettings.localization = this.currencyDetector.storedDefaultLocalization;
+        await Browser.save(window.location.hostname, this.siteSpecificSettings.forStorage, false);
+    }
+
+
     loadSettings() {
         const self = this;
         return new Promise(async resolve => {
+            const siteSpecificSettings = await Browser.load(window.location.hostname, false);
+            this.siteSpecificSettings = SiteSpecificSettings.createFrom(siteSpecificSettings[window.location.hostname]);
+
             const resp = await Browser.load(Utils.storageIds());
 
             self.withShowNonDefaultCurrencyAlert(resp['showNonDefaultCurrencyAlert']);
@@ -112,6 +127,14 @@ class Engine {
             self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationDollar']);
             self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationKroner']);
             self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationAsian']);
+
+            // If we got localization stored for this specific site, use it instead of default
+            if (this.siteSpecificSettings) {
+                const localization = this.siteSpecificSettings.localization;
+                self.currencyDetector.withDefaultLocalization(localization.dollar);
+                self.currencyDetector.withDefaultLocalization(localization.krone);
+                self.currencyDetector.withDefaultLocalization(localization.asian);
+            }
 
             self.currencyConverter.withBaseCurrency(resp['currency']);
 

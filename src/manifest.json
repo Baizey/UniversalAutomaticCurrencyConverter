@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Universal Automatic Currency Converter",
   "short_name": "UA Currency Converter",
-  "version": "2.7.5",
+  "version": "2.8.0",
   "description": "Your new currency converter.",
   "author": "Baizey",
   "icons": {
@@ -25,6 +25,7 @@
         "XRegExp.js",
         "Utils.js",
         "Browser.js",
+        "SiteSpecificSettings.js",
         "CustomTag.js",
         "Blacklist.js",
         "Highlighter.js",

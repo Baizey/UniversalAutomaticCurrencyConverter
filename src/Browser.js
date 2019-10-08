@@ -18,14 +18,18 @@ class Browser {
     }
 
     static absoluteHostname() {
-        const host = window.location.hostname;
+        const host = Browser.hostname;
         const parts = host.split('.');
         if (parts.length <= 1) return parts[0];
         return parts[parts.length - 2] + '.' + parts[parts.length - 1];
     }
 
+    static get hostname() {
+        return window.location.hostname;
+    }
+
     static getHost() {
-        const hostname = window.location.hostname;
+        const hostname = Browser.hostname;
         const index = hostname.lastIndexOf('.');
         return index < 0 ? '' : hostname.substr(index + 1);
     }
@@ -59,20 +63,28 @@ class Browser {
     }
 
     /**
-     * @param key
+     * @param {string|string[]} key
+     * @param {boolean} sync
      * @return {Promise<any>}
      */
-    static load(key) {
-        return Browser.instance().load(key);
+    static load(key, sync = true) {
+        if (sync)
+            return Browser.instance().loadSync(key);
+        else
+            return Browser.instance().loadLocal(key);
     }
 
     /**
      * @param key
      * @param value
+     * @param {boolean} sync
      * @return {Promise<any>}
      */
-    static save(key, value) {
-        return Browser.instance().save(key, value);
+    static save(key, value, sync = true) {
+        if (sync)
+            return Browser.instance().saveSync(key, value);
+        else
+            return Browser.instance().saveLocal(key, value);
     }
 
     /**
@@ -182,10 +194,43 @@ class Browser {
      * @param {string|string[]} key
      * @return {Promise<object>}
      */
-    load(key) {
+    loadSync(key) {
+        return this._load(this.access.storage.sync, key);
+    }
+
+    /**
+     * @param {string|object} key
+     * @param {*} value
+     */
+    saveSync(key, value) {
+        return this._save(this.access.storage.sync, key, value);
+    }
+
+    /**
+     * @param {string|string[]} key
+     * @return {Promise<object>}
+     */
+    loadLocal(key) {
+        return this._load(this.access.storage.local, key);
+    }
+
+    /**
+     * @param {string|object} key
+     * @param {*} value
+     */
+    saveLocal(key, value) {
+        return this._save(this.access.storage.local, key, value);
+    }
+
+    /**
+     * @param storage
+     * @param {string|string[]} key
+     * @return {Promise<object>}
+     */
+    _load(storage, key) {
         return new Promise((resolve, reject) => {
             if (!Array.isArray(key)) key = [key];
-            this.access.storage.sync.get(key, function (resp) {
+            storage.get(key, function (resp) {
                 if (Utils.isUndefined(resp))
                     return reject(resp);
 
@@ -203,14 +248,14 @@ class Browser {
     }
 
     /**
+     * @param storage
      * @param {string|object} key
      * @param {*} value
      */
-    save(key, value) {
+    _save(storage, key, value) {
         const toStore = ((typeof key) === 'string') ? {[key]: value} : key;
-        const self = this;
         return new Promise(resolve => {
-            self.access.storage.sync.set(toStore, () => {
+            storage.set(toStore, () => {
                 Utils.log('SAVE', JSON.stringify(toStore));
                 resolve();
             });

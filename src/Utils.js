@@ -60,6 +60,10 @@ class Utils {
         ];
     }
 
+    static get backgroundSettings() {
+        return ['urlSpecificDefaultLocalization'];
+    }
+
     /**
      * @param {string} className
      * @returns {HTMLElement[]}

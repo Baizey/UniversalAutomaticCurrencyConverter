@@ -140,6 +140,8 @@ chrome.runtime.onMessage.addListener(
                         currencies['¥'] = to;
                         break;
                 }
+                runner.engine.currencyDetector.withDefaultLocalization(to);
+                await runner.engine.saveSiteSpecificSettings();
                 transformer.updateAll();
                 return handleResponding(senderResponse);
             case 'convertAll':
@@ -173,9 +175,8 @@ runner.loader.finally(async () => {
 
     if (replacements.length > 0 && engine.showNonDefaultCurrencyAlert) {
         // Alert user about replacements
-        const content = replacements
-            .map(e => `<span>${e.using} is used for conversion of ${e.symbol} default is ${e.default}</span>`)
-            .join('<br>');
+        const content = replacements.map(e => `<span style="width: 100%; padding-top:5px; padding-bottom: 5px; float: left">${e.using} is used for ${e.symbol}, default is ${e.default}</span>`).join('<br>');
+
         const bodyColor = window.getComputedStyle(document.body, null).getPropertyValue('background-color');
         const colors = bodyColor.match(/\d+/g).map(e => Number(e)).map(e => e * 0.85);
         const backgroundColor = colors.length === 3
@@ -183,21 +184,22 @@ runner.loader.finally(async () => {
             : 'rgba(' + colors.map(e => Math.max(e, .5)).join(',') + ')';
         const textColor = (colors.slice(0, 3).sum() / 3) >= 128 ? 'black' : 'white';
 
-        const div = `<div style="
-background-color:${backgroundColor}; color: ${textColor};
-font-size: 14px; line-height: 1.1;
-padding: 10px; text-align:center;
-height: fit-content; width: fit-content;
-z-index: 1000;
-right: 0; bottom: 0; position: fixed;">
+        const div = `<div class="alertWrapper" style="background-color:${backgroundColor}; color: ${textColor};">
+    <h3 style="width:100%">${window.location.hostname} localization</h3>
     ${content}
-    <p style="font-size: 10px">You can turn these alerts off in UA Currency Converter settings</p>
-    <div class="popupButton">Ok</div> 
+    <p style="font-size:12px; max-width: 300px;">You can always change site specific localization in the mini-converter popup</p>
+    <div class="saveLocalizationButton">Use this onwards for this site</div> 
+    <div class="popupButton">Dismiss alert</div> 
 </div>`;
         const temp = document.createElement('div');
         temp.innerHTML = div;
         const html = temp.children[0];
         html.children[html.children.length - 1].addEventListener('click', () => html.remove());
+        html.children[html.children.length - 2].addEventListener('click', async () => {
+            replacements.forEach(e => engine.currencyDetector.withDefaultLocalization(e.using));
+            await engine.saveSiteSpecificSettings();
+            html.remove();
+        });
         document.body.append(html);
     }
 
