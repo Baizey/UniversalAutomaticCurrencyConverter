@@ -2,6 +2,16 @@
     cursor: pointer;
 }
 
+.line {
+    display: block;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: 100%;
+    text-align: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
 .highlighted {
     transition: background-color 0.5s linear;
     -moz-transition: background-color 0.5s linear;
@@ -9,11 +19,13 @@
     -ms-transition: background-color 0.5s linear;
 }
 
-.alertWrapper{
+.alertWrapper {
+    margin: 5px;
+    border-radius: 5px;
     font-size: 14px;
     line-height: 1.1;
-    padding: 10px;
-    text-align:center;
+    padding: 5px;
+    text-align: center;
     height: fit-content;
     width: fit-content;
     z-index: 1000;
@@ -38,33 +50,60 @@
     border-top-right-radius: 10px;
 }
 
-.popupButton, .saveLocalizationButton, .revertLocalizationButton {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-top: 5px;
+.buttonFiller {
+    height: 5px;
+    width: 2%;
+    float: left;
+}
+
+.saveAndDismissLocalizationButton, .dismissLocalizationButton, .saveLocalizationButton, .revertLocalizationButton {
+    padding-top: 10px;
+    padding-bottom: 10px;
     width: 100%;
     cursor: pointer;
-    background-color: #204d74;
-    border-color: #122b40;
     color: white;
     border-radius: 5px;
 }
 
-.popupButton:hover {
+.disabledLocalizationButton {
+    background-color: grey;
+    border-color: grey;
+}
+
+.saveAndDismissLocalizationButton {
+    margin-top: 5px;
+    background-color: #204d74;
+    border-color: #204d74;
+}
+
+.saveAndDismissLocalizationButton:hover {
     background-color: #103d64;
+}
+
+.dismissLocalizationButton {
+    margin-top: 5px;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.dismissLocalizationButton:hover {
+    background-color: #5c656d;
 }
 
 .saveLocalizationButton {
     background-color: #28a745;
     border-color: #28a745;
 }
+
 .saveLocalizationButton:hover {
     background-color: #189735;
 }
+
 .revertLocalizationButton {
     background-color: #dc3545;
     border-color: #dc3545;
 }
+
 .revertLocalizationButton:hover {
     background-color: #cc2535;
 }

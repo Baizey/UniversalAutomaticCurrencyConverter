@@ -498,7 +498,7 @@ describe('Localization tests', () => {
         };
 
         // Act
-        local.analyze(currencies, {}, text);
+        local.analyze(currencies, text);
 
         // Assert
         expect(currencies['kr']).toBe('SEK');
@@ -516,7 +516,7 @@ describe('Localization tests', () => {
         const text = 'DKK SEK MOTHERFUCKER';
 
         // Act
-        local.analyze(currencies, {}, text, 'dk');
+        local.analyze(currencies, text, 'dk');
 
         // Assert
         expect(currencies['kr']).toBe('DKK');
@@ -532,7 +532,7 @@ describe('Localization tests', () => {
             'CAD': 'CAD'
         };
         // Act
-        local.analyze(currencies, {}, googleCadPage);
+        local.analyze(currencies, googleCadPage);
 
         // Assert
         expect(currencies['dollar']).toBe('CAD');
@@ -549,7 +549,8 @@ describe('Localization tests', () => {
         };
 
         // Act
-        local.analyze(currencies, {'DKK': true}, '');
+        local.site.setDefaultLocalization('DKK');
+        local.analyze(currencies, '');
 
         // Assert
         expect(currencies['kr']).toBe('DKK');

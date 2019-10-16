@@ -114,6 +114,16 @@ class Utils {
     }
 
     /**
+     * @param {string} html
+     * @returns {Element}
+     */
+    static parseHtml(html) {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        return temp.children[0];
+    }
+
+    /**
      * @param item
      * @return {boolean}
      */

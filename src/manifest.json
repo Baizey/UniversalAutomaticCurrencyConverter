@@ -25,7 +25,7 @@
         "XRegExp.js",
         "Utils.js",
         "Browser.js",
-        "SiteSpecificSettings.js",
+        "SiteLocalization.js",
         "CustomTag.js",
         "Blacklist.js",
         "Highlighter.js",

@@ -168,7 +168,7 @@ const setUiValue = async (key, value) => {
         case 'currencyLocalizationDollar':
         case 'currencyLocalizationKroner':
         case 'currencyLocalizationAsian':
-            engine.currencyDetector.withDefaultLocalization(value);
+            engine.localization.site.setDefaultLocalization(value);
             element.value = engine.getById(key);
             break;
         case 'currencyUsingAutomatic':

@@ -5,11 +5,12 @@ class Engine {
     /**
      * @returns {Engine}
      */
-    static instance() {
+    static get instance() {
         return _EngineInstance ? _EngineInstance : (_EngineInstance = new Engine());
     }
 
     constructor(browser = undefined, detector = undefined) {
+        this.localization = Localization.instance;
         this.elementTransformer = new ElementTransformer(this);
         this.browser = browser ? browser : Browser.instance();
         this.currencyDetector = detector ? detector : CurrencyDetector.instance();
@@ -20,7 +21,6 @@ class Engine {
         this.highlighter = new Highlighter();
         this.currencyConverter = new CurrencyConverter().withCustomTag(this.customTag);
         this.numberFormatter = new NumberFormatter();
-        this.siteSpecificSettings = undefined;
         this.lastCurrencyUpdate = 'never';
         this.automaticPageConversion = true;
         this.conversionShortcut = 'Shift';
@@ -52,11 +52,11 @@ class Engine {
                 return this.showNonDefaultCurrencyAlert;
 
             case 'currencyLocalizationDollar':
-                return this.currencyDetector.storedDefaultLocalization.dollar;
+                return this.localization.site.dollar;
             case 'currencyLocalizationAsian':
-                return this.currencyDetector.storedDefaultLocalization.asian;
+                return this.localization.site.asian;
             case 'currencyLocalizationKroner':
-                return this.currencyDetector.storedDefaultLocalization.krone;
+                return this.localization.site.krone;
 
             case 'usingWhitelist':
                 return this.whitelist.isEnabled;
@@ -102,38 +102,28 @@ class Engine {
         Utils.logError(`Unknown id to get value for ${id}`);
     }
 
-    /**
-     * @returns {Promise<void>}
-     */
     async saveSiteSpecificSettings() {
-        if (!this.siteSpecificSettings)
-            this.siteSpecificSettings = new SiteSpecificSettings(this.currencyDetector.storedDefaultLocalization);
-        else
-            this.siteSpecificSettings.localization = this.currencyDetector.storedDefaultLocalization;
-        await Browser.save(window.location.hostname, this.siteSpecificSettings.forStorage, false);
+        const data = {
+            localization: this.localization.site.forStorage
+        };
+        await Browser.save(Browser.hostname, data, false);
     }
-
 
     loadSettings() {
         const self = this;
         return new Promise(async resolve => {
-            const siteSpecificSettings = await Browser.load(window.location.hostname, false);
-            this.siteSpecificSettings = SiteSpecificSettings.createFrom(siteSpecificSettings[window.location.hostname]);
+            const siteSpecificSettings = (await Browser.load(Browser.hostname, false))[Browser.hostname];
 
             const resp = await Browser.load(Utils.storageIds());
 
             self.withShowNonDefaultCurrencyAlert(resp['showNonDefaultCurrencyAlert']);
 
-            self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationDollar']);
-            self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationKroner']);
-            self.currencyDetector.withDefaultLocalization(resp['currencyLocalizationAsian']);
-
-            // If we got localization stored for this specific site, use it instead of default
-            if (this.siteSpecificSettings) {
-                const localization = this.siteSpecificSettings.localization;
-                self.currencyDetector.withDefaultLocalization(localization.dollar);
-                self.currencyDetector.withDefaultLocalization(localization.krone);
-                self.currencyDetector.withDefaultLocalization(localization.asian);
+            if (siteSpecificSettings) {
+                self.localization.site.fillFrom(siteSpecificSettings.localization);
+            } else {
+                self.localization.site.setDefaultLocalization(resp['currencyLocalizationDollar']);
+                self.localization.site.setDefaultLocalization(resp['currencyLocalizationKroner']);
+                self.localization.site.setDefaultLocalization(resp['currencyLocalizationAsian']);
             }
 
             self.currencyConverter.withBaseCurrency(resp['currency']);

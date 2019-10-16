@@ -1,7 +1,5 @@
-let url;
 const engine = new Engine();
 const loader = engine.loadSettings();
-
 const asList = (elements) => {
     const list = [];
     for (let i = 0; i < elements.length; i++)
@@ -36,7 +34,6 @@ const createMiniConverterRow = (currencies, amount, currency) => {
     result.children[2].children[0].value = currency;
     return result;
 };
-
 const makeFunctional = (row, onChange) => {
     row.children[0].children[0].addEventListener('click', () => {
         row.remove();
@@ -47,7 +44,6 @@ const makeFunctional = (row, onChange) => {
     row.children[1].children[0].addEventListener('change', () => onChange());
     row.children[2].children[0].addEventListener('change', () => onChange());
 };
-
 const initiateMiniConverter = async (engine) => {
     const settings = await Browser.load(['popupCurrencies', 'popupAmounts', 'popupConvertTo']);
     const loadCurrencies = settings['popupCurrencies'] || [];
@@ -104,19 +100,18 @@ const initiateMiniConverter = async (engine) => {
     curr.forEach(row => wrapper.appendChild(row));
     onChange();
 };
-
-const initiateBlacklisting = async (url, engine) => {
+const initiateBlacklisting = async (engine) => {
     const field = document.getElementById('blacklistInput');
-    field.value = url ? url : '';
+    field.value = Browser.hostname;
     const button = document.getElementById('blacklistButton');
-    if (!url) {
+    if (!Browser.hostname) {
         document.getElementById('conversion').classList.add('hidden');
         document.getElementById('localization').classList.add('hidden');
         document.getElementById('no_conversion').classList.remove('hidden');
         return;
     }
 
-    field.value = url;
+    field.value = Browser.hostname;
     const blacklist = engine.blacklist;
     const whitelist = engine.whitelist;
     const isBlacklisting = !whitelist.isEnabled;
@@ -125,23 +120,24 @@ const initiateBlacklisting = async (url, engine) => {
     const text = isBlacklisting ? 'blacklisting' : 'whitelisting';
     const urlStorage = isBlacklisting ? 'blacklistingurls' : 'whitelistingurls';
 
-    const onList = list.isBlacklisted(url);
+    const onList = list.isBlacklisted(Browser.hostname);
     button.innerText = onList ? `Remove ${text}` : `Add ${text}`;
     button.classList.remove(onList ? 'btn-danger' : 'btn-success');
     button.classList.add(onList ? 'btn-success' : 'btn-danger');
 
     button.addEventListener('click', async () => {
-        const onList = list.isBlacklisted(url);
+        const onList = list.isBlacklisted(Browser.hostname);
         button.innerText = onList ? `Add ${text}` : `Remove ${text}`;
         button.classList.remove(onList ? 'btn-success' : 'btn-danger');
         button.classList.add(onList ? 'btn-danger' : 'btn-success');
-        if (!onList) list.withUrl(url);
-        else list.whitelist(url);
+        if (!onList) list.withUrl(Browser.hostname);
+        else list.whitelist(Browser.hostname);
         await Browser.save(urlStorage, list.urls);
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await Browser.messageTab({method: 'getUrl'}).then(resp => Browser.setHostname(resp));
     Browser.updateFooter();
     document.getElementById('review').addEventListener('click', () => Browser.updateReviewLink());
 
@@ -172,19 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 Browser.messageTab({method: 'setLocalization', symbol: data.symbol, to: value}).finally();
             })));
 
-    // Get current url
-    const loadingUrl = Browser.messageTab({method: 'getUrl'})
-        .then(resp => {
-            if (!resp) return;
-            if (typeof resp !== 'string') return;
-            resp = resp.replace(/^(https?:\/\/)?(www\.)?/, '');
-            return resp.split('/')[0];
-        });
-
     loader.finally(async () => {
         document.getElementById('currencyLastUpdate').innerText = engine.lastCurrencyUpdate;
         initiateMiniConverter(engine).catch(e => console.error(e));
-        url = await loadingUrl;
-        initiateBlacklisting(url, engine).catch(e => console.error(e));
+        initiateBlacklisting(engine).catch(e => console.error(e));
     });
 });

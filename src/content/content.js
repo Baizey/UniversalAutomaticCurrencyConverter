@@ -124,23 +124,9 @@ chrome.runtime.onMessage.addListener(
                 const to = data.to;
                 if (!(/^[A-Z]{3}$/.test(to)))
                     return handleResponding(senderResponse);
-                const currencies = runner.engine.currencyDetector.currencies;
-                switch (data.symbol) {
-                    case '$':
-                        currencies['$'] = to;
-                        currencies['dollar'] = to;
-                        currencies['dollars'] = to;
-                        break;
-                    case 'kr':
-                        currencies['kr.'] = to;
-                        currencies['kr'] = to;
-                        currencies[',-'] = to;
-                        break;
-                    case '¥':
-                        currencies['¥'] = to;
-                        break;
-                }
-                runner.engine.currencyDetector.withDefaultLocalization(to);
+                runner.engine.localization.site.setOverrideable(true);
+                runner.engine.localization.site.setDefaultLocalization(to);
+                runner.engine.currencyDetector.updateLocalizationCurrencies();
                 await runner.engine.saveSiteSpecificSettings();
                 transformer.updateAll();
                 return handleResponding(senderResponse);
@@ -150,7 +136,7 @@ chrome.runtime.onMessage.addListener(
             case 'conversionCount':
                 return handleResponding(senderResponse, transformer.conversions.length);
             case 'getUrl':
-                return handleResponding(senderResponse, window.location.href);
+                return handleResponding(senderResponse, Browser.hostname);
         }
     }
 );
@@ -175,7 +161,9 @@ runner.loader.finally(async () => {
 
     if (replacements.length > 0 && engine.showNonDefaultCurrencyAlert) {
         // Alert user about replacements
-        const content = replacements.map(e => `<span style="width: 100%; padding-top:5px; padding-bottom: 5px; float: left">${e.using} is used for ${e.symbol}, default is ${e.default}</span>`).join('<br>');
+        const content = replacements.map(e =>
+            `<span class="line">${e.detected} is detected for ${e.symbol}, your default is ${e.default}</span>`
+        ).join('');
 
         const bodyColor = window.getComputedStyle(document.body, null).getPropertyValue('background-color');
         const colors = bodyColor.match(/\d+/g).map(e => Number(e)).map(e => e * 0.85);
@@ -184,23 +172,58 @@ runner.loader.finally(async () => {
             : 'rgba(' + colors.map(e => Math.max(e, .5)).join(',') + ')';
         const textColor = (colors.slice(0, 3).sum() / 3) >= 128 ? 'black' : 'white';
 
-        const div = `<div class="alertWrapper" style="background-color:${backgroundColor}; color: ${textColor};">
-    <h3 style="width:100%">${window.location.hostname} localization</h3>
-    ${content}
-    <p style="font-size:12px; max-width: 300px;">You can always change site specific localization in the mini-converter popup</p>
-    <div class="saveLocalizationButton">Use this onwards for this site</div> 
-    <div class="popupButton">Dismiss alert</div> 
+        const html = `<div class="alertWrapper" style="background-color:${backgroundColor}; color: ${textColor};">
+    <span class="line" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">Universal Automatic Currency Converter</span>
+    <h2 class="line" style="margin-top: 0; padding-top: 0">${Browser.hostname}</h2>
+    <div class="line">${content}</div>
+    <p class="line" style="font-size:12px;">You can always change site specific localization in the mini-converter popup</p>
+    <div class="saveLocalizationButton" id="uacc-switch">Use detected</div>
+    <div class="saveAndDismissLocalizationButton" id="uacc-save">Save site localization and dont ask again</div>
+    <div class="dismissLocalizationButton" id="uacc-dismiss">Dismiss alert</div>
+    <p class="line" style="font-size:12px;">This alert self destructs in <span id="uacc-countdown">60</span> seconds</p>
 </div>`;
-        const temp = document.createElement('div');
-        temp.innerHTML = div;
-        const html = temp.children[0];
-        html.children[html.children.length - 1].addEventListener('click', () => html.remove());
-        html.children[html.children.length - 2].addEventListener('click', async () => {
-            replacements.forEach(e => engine.currencyDetector.withDefaultLocalization(e.using));
+        const element = Utils.parseHtml(html);
+        document.body.append(element);
+        document.getElementById('uacc-dismiss').addEventListener('click', async () => {
+            engine.localization.site.setOverrideable(true);
             await engine.saveSiteSpecificSettings();
-            html.remove();
+            element.remove();
         });
-        document.body.append(html);
+        document.getElementById('uacc-save').addEventListener('click', async () => {
+            engine.localization.site.setOverrideable(false);
+            await engine.saveSiteSpecificSettings();
+            element.remove();
+        });
+        const detected = document.getElementById('uacc-switch');
+        detected.addEventListener('click', async () => {
+            if (detected.className === 'revertLocalizationButton') {
+                replacements.forEach(e => engine.localization.site.setDefaultLocalization(e.default));
+                detected.className = 'saveLocalizationButton';
+                detected.innerText = 'Use detected';
+            } else {
+                replacements.forEach(e => engine.localization.site.setDefaultLocalization(e.detected));
+                detected.className = 'revertLocalizationButton';
+                detected.innerText = 'Use my defaults';
+            }
+            engine.localization.site.setOverrideable(true);
+            await engine.saveSiteSpecificSettings();
+            engine.currencyDetector.updateLocalizationCurrencies();
+            engine.elementTransformer.updateAll();
+        });
+        document.body.append(element);
+
+        const expire = Date.now() + 60000;
+        const countdown = document.getElementById('uacc-countdown');
+        const timer = setInterval(() => {
+            const now = Date.now();
+            if (now > expire) {
+                element.remove();
+                clearInterval(timer);
+            }
+            countdown.innerText = Math.round((expire - now) / 1000) + '';
+        }, 1000);
+
+        detected.click();
     }
 
     if (engine.automaticPageConversion) {

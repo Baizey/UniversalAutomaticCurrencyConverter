@@ -12,43 +12,14 @@ class CurrencyDetector {
     /**
      * @param {string} host
      * @param {string} text
-     * @returns {{symbol:string, using: string, default: string}[]}
+     * @returns {{symbol:string, default: string, detected: string}[]}
      */
     localize(host = undefined, text = '') {
-        Localization.analyze(this.currencies, this.defaultLocalization, text, host);
-        return [
-            {
-                symbol: '$',
-                using: this.currencies['$'],
-                default: this.storedDefaultLocalization.dollar,
-            },
-            {
-                symbol: 'kr',
-                using: this.currencies['kr'],
-                default: this.storedDefaultLocalization.krone,
-            },
-            {
-                symbol: '¥',
-                using: this.currencies['¥'],
-                default: this.storedDefaultLocalization.asian,
-            }
-        ].filter(e => e.using !== e.default);
-    }
-
-    get defaultLocalization() {
-        const obj = {};
-        obj[this.storedDefaultLocalization.dollar] = true;
-        obj[this.storedDefaultLocalization.asian] = true;
-        obj[this.storedDefaultLocalization.krone] = true;
-        return obj;
+        return Localization.instance.analyze(this.currencies, text, host)
+            .filter(e => e.default !== e.detected);
     }
 
     constructor(browser = null) {
-        this.storedDefaultLocalization = {
-            dollar: 'USD',
-            asian: 'CNY',
-            krone: 'SEK'
-        };
         this._browser = browser ? browser : Browser.instance();
         this._currencies = {
             HRK: 'HRK',
@@ -86,16 +57,17 @@ class CurrencyDetector {
             NOK: 'NOK'
         };
 
-        const s = /["+\-' ,.<>()\\/\s]/;
+        const s = /["+\-'& ,.<>()\\/\s]/;
         const start = new RegExp(`(${s.source}|^)`).source;
         const end = new RegExp(`(${s.source}|$)`).source;
 
         const whitespace = /(\s*)/.source;
 
         const currency = '(' + [
-            /[¥A-Z]{3}/.source,
+            /[¥A-Z]{3}\$?/.source,
             /,-{1,2}|kr\.?/.source,
             /CDN\$/.source,
+            /US ?\$/.source,
             /dollars?/.source,
             /[$£€₺Ł元₿Ξ฿₴ɱ₽¥₩]/.source,
         ].join('|') + ')?';
@@ -149,6 +121,17 @@ class CurrencyDetector {
      */
     get fullRegex() {
         return this._browser.isFirefox() ? XRegExp.cache(this.rawOnlyRegex, 'gs') : new RegExp(this.rawOnlyRegex, 'gs');
+    }
+
+    updateLocalizationCurrencies() {
+        const site = Localization.instance.site;
+        this.currencies['$'] = site.dollar;
+        this.currencies['dollar'] = site.dollar;
+        this.currencies['dollars'] = site.dollar;
+        this.currencies['kr.'] = site.krone;
+        this.currencies['kr'] = site.krone;
+        this.currencies[',-'] = site.krone;
+        this.currencies['¥'] = site.asian;
     }
 
     /**
@@ -265,21 +248,6 @@ class CurrencyDetector {
     updateWithMoreCurrencies(currencies) {
         Object.keys(currencies).forEach(key => this._currencies[key] = currencies[key]);
         return this;
-    }
-
-    withDefaultLocalization(currency) {
-        if (Utils.isUndefined(currency)) return;
-        const isDollar = ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'].indexOf(currency) >= 0;
-        if (isDollar)
-            return this.storedDefaultLocalization.dollar = currency;
-
-        const isKrone = ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'].indexOf(currency) >= 0;
-        if (isKrone)
-            return this.storedDefaultLocalization.krone = currency;
-
-        const isAsian = ['CNY', 'JPY'].indexOf(currency) >= 0;
-        if (isAsian)
-            return this.storedDefaultLocalization.asian = currency;
     }
 
     get currencies() {

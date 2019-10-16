@@ -24,8 +24,12 @@ class Browser {
         return parts[parts.length - 2] + '.' + parts[parts.length - 1];
     }
 
+    static setHostname(hostname) {
+        Browser.instance().fullHostName = hostname;
+    }
+
     static get hostname() {
-        return window.location.hostname;
+        return Browser.instance().fullHostName || window.location.hostname;
     }
 
     static getHost() {
@@ -104,6 +108,7 @@ class Browser {
     }
 
     constructor(dummy = null) {
+        this.fullHostName = undefined;
         if (dummy) {
             this.type = dummy.type;
             this.access = dummy.access;
