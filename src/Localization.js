@@ -26,7 +26,7 @@ class Localization {
             // Denmark, Sweden,  Norway, Island, Czechia
             'kr.':  ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
             'kr':   ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
-            ',-':   ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
+            ',-':   ['SEK', 'DKK', 'NOK', 'ISK'],
             // China, Japan
             '¥': ['CNY', 'JPY']
         };
