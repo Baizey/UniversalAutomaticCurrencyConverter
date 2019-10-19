@@ -29,7 +29,10 @@ class Browser {
     }
 
     static get hostname() {
-        return Browser.instance().fullHostName || window.location.hostname;
+        const name = Browser.instance().fullHostName;
+        if (Utils.isDefined(name))
+            return name;
+        return window.location.hostname;
     }
 
     static getHost() {

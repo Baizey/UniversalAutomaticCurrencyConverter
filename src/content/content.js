@@ -162,31 +162,32 @@ runner.loader.finally(async () => {
     if (replacements.length > 0 && engine.showNonDefaultCurrencyAlert) {
         // Alert user about replacements
         const content = replacements.map(e =>
-            `<span class="line">${e.detected} is detected for ${e.symbol}, your default is ${e.default}</span>`
+            `<span class="line">${e.detected} was detected, ${e.default} is your default for ${e.symbol}</span>`
         ).join('');
 
         const bodyColor = window.getComputedStyle(document.body, null).getPropertyValue('background-color');
         const colors = bodyColor.match(/\d+/g).map(e => Number(e)).map(e => e * 0.85);
         const backgroundColor = colors.length === 3
             ? 'rgb(' + colors.join(',') + ')'
-            : 'rgba(' + colors.map(e => Math.max(e, .5)).join(',') + ')';
+            : 'rgba(' + colors.map(e => Math.max(e, .9)).join(',') + ')';
+        const borderColor = colors.length === 3
+            ? 'rgb(' + colors.map(e => e * 0.85).join(',') + ')'
+            : 'rgba(' + colors.map(e => e * 0.85).map(e => Math.max(e, .9)).join(',') + ')';
         const textColor = (colors.slice(0, 3).sum() / 3) >= 128 ? 'black' : 'white';
 
-        const html = `<div class="alertWrapper" style="background-color:${backgroundColor}; color: ${textColor};">
+        const html = `<div class="alertWrapper" style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
     <span class="line" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">Universal Automatic Currency Converter</span>
     <h2 class="line" style="margin-top: 0; padding-top: 0">${Browser.hostname}</h2>
     <div class="line">${content}</div>
-    <p class="line" style="font-size:12px;">You can always change site specific localization in the mini-converter popup</p>
-    <div class="saveLocalizationButton" id="uacc-switch">Use detected</div>
-    <div class="saveAndDismissLocalizationButton" id="uacc-save">Save site localization and dont ask again</div>
+    <div class="saveLocalizationButton" id="uacc-switch">Placeholder text... you shouldn't see this</div>
+    <div class="saveAndDismissLocalizationButton" id="uacc-save">Save <span id="uacc-using"></span> as site defaults and dont ask again</div>
     <div class="dismissLocalizationButton" id="uacc-dismiss">Dismiss alert</div>
+    <p class="line" style="font-size:12px;">You can always change site specific localization in the mini-converter popup</p>
     <p class="line" style="font-size:12px;">This alert self destructs in <span id="uacc-countdown">60</span> seconds</p>
 </div>`;
         const element = Utils.parseHtml(html);
         document.body.append(element);
         document.getElementById('uacc-dismiss').addEventListener('click', async () => {
-            engine.localization.site.setOverrideable(true);
-            await engine.saveSiteSpecificSettings();
             element.remove();
         });
         document.getElementById('uacc-save').addEventListener('click', async () => {
@@ -194,25 +195,28 @@ runner.loader.finally(async () => {
             await engine.saveSiteSpecificSettings();
             element.remove();
         });
+
+        const using = document.getElementById('uacc-using');
+
         const detected = document.getElementById('uacc-switch');
         detected.addEventListener('click', async () => {
             if (detected.className === 'revertLocalizationButton') {
                 replacements.forEach(e => engine.localization.site.setDefaultLocalization(e.default));
+                using.innerText = 'your defaults';
                 detected.className = 'saveLocalizationButton';
-                detected.innerText = 'Use detected';
+                detected.innerText = 'Using your defaults';
             } else {
                 replacements.forEach(e => engine.localization.site.setDefaultLocalization(e.detected));
                 detected.className = 'revertLocalizationButton';
-                detected.innerText = 'Use my defaults';
+                using.innerText = 'detected currencies';
+                detected.innerText = 'Using detected currencies';
             }
-            engine.localization.site.setOverrideable(true);
-            await engine.saveSiteSpecificSettings();
             engine.currencyDetector.updateLocalizationCurrencies();
             engine.elementTransformer.updateAll();
         });
         document.body.append(element);
 
-        const expire = Date.now() + 60000;
+        const expire = Date.now() * 2 + 60000;
         const countdown = document.getElementById('uacc-countdown');
         const timer = setInterval(() => {
             const now = Date.now();

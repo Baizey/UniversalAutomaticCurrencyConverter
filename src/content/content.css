@@ -22,6 +22,7 @@
 .alertWrapper {
     margin: 5px;
     border-radius: 5px;
+    border: 1px solid black;
     font-size: 14px;
     line-height: 1.1;
     padding: 5px;
@@ -61,7 +62,7 @@
     padding-bottom: 10px;
     width: 100%;
     cursor: pointer;
-    color: white;
+    color: #efefef;
     border-radius: 5px;
 }
 
@@ -91,19 +92,19 @@
 }
 
 .saveLocalizationButton {
+    background-color: #bc1525;
+    border-color: #bc1525;
+}
+
+.saveLocalizationButton:hover {
+    background-color: #ac0515;
+}
+
+.revertLocalizationButton {
     background-color: #28a745;
     border-color: #28a745;
 }
 
-.saveLocalizationButton:hover {
-    background-color: #189735;
-}
-
-.revertLocalizationButton {
-    background-color: #dc3545;
-    border-color: #dc3545;
-}
-
 .revertLocalizationButton:hover {
-    background-color: #cc2535;
+    background-color: #189735;
 }

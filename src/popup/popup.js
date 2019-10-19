@@ -137,7 +137,9 @@ const initiateBlacklisting = async (engine) => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await Browser.messageTab({method: 'getUrl'}).then(resp => Browser.setHostname(resp));
+    await Browser.messageTab({method: 'getUrl'})
+        .then(resp => Browser.setHostname(resp))
+        .catch(() => Browser.setHostname(''));
     Browser.updateFooter();
     document.getElementById('review').addEventListener('click', () => Browser.updateReviewLink());
 
