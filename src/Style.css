@@ -46,37 +46,38 @@ input[type="number"] {
 
 .radiobox {
     cursor: pointer;
-    width:30px;
-    height:30px;
-    border: 1px solid grey;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
     position: relative;
 }
 
 .radiobox div {
     position: absolute;
-    margin-top: 12px;
-    margin-left: 12px;
-    height: 6px;
-    width: 6px;
+    margin-top: 7px;
+    margin-left: 7px;
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
     background-color: green;
-    transition: opacity 0.3s ease-in-out;
-    opacity:0;
+    transition: opacity 0.1s ease-in-out;
+    opacity: 0;
 }
 
 .checkbox {
     cursor: pointer;
-    width:30px;
-    height:30px;
+    width: 30px;
+    height: 30px;
     border: 1px solid grey;
     position: relative;
 }
 
 .checkbox div {
     position: absolute;
-    height: 3px;
+    height: 10px;
     background-color: green;
     transition: opacity 0.3s ease-in-out;
-    opacity:0;
+    opacity: 0;
 }
 
 .checkbox div:first-child {

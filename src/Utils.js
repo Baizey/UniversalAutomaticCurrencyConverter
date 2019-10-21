@@ -65,6 +65,28 @@ class Utils {
     }
 
     /**
+     * @param {Element[]} boxes
+     */
+    static initializeRadioBoxes(boxes) {
+        const clear = () => boxes.forEach(e => {
+            e.checked = false;
+            e.classList.remove('checked');
+        });
+        boxes.forEach(radio => {
+            radio.addEventListener('click', () => {
+                if (radio.checked) return;
+                clear();
+                radio.checked = true;
+                radio.classList.add('checked');
+                radio.dispatchEvent(new Event('change'));
+            });
+        });
+        const checked = boxes.filter(e => e.classList.contains('checked'))[0];
+        if (checked)
+            checked.click();
+    }
+
+    /**
      * @param {string} className
      * @returns {HTMLElement[]}
      */

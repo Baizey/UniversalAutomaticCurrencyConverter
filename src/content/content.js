@@ -162,72 +162,96 @@ runner.loader.finally(async () => {
     if (replacements.length > 0 && engine.showNonDefaultCurrencyAlert) {
         // Alert user about replacements
         const content = replacements.map(e =>
-            `<span class="line">${e.detected} was detected, ${e.default} is your default for ${e.symbol}</span>`
-        ).join('');
+            `<div style="text-align: center" class="line">
+    <span style="width:50%; float: left">Detected ${e.detected}</span>
+    <span style="width:50%; float: left">Default's ${e.default}</span>
+</div>`).join('');
 
         const bodyColor = window.getComputedStyle(document.body, null).getPropertyValue('background-color');
-        const colors = bodyColor.match(/\d+/g).map(e => Number(e)).map(e => e * 0.85);
+        const rawColors = bodyColor.match(/\d+/g).map(e => Number(e));
+        const reverseColors = rawColors.slice(0, 3).map(e => (e + 128) % 255);
+        const colors = rawColors.map(e => e * 0.85);
         const backgroundColor = colors.length === 3
             ? 'rgb(' + colors.join(',') + ')'
             : 'rgba(' + colors.map(e => Math.max(e, .9)).join(',') + ')';
         const borderColor = colors.length === 3
             ? 'rgb(' + colors.map(e => e * 0.85).join(',') + ')'
             : 'rgba(' + colors.map(e => e * 0.85).map(e => Math.max(e, .9)).join(',') + ')';
-        const textColor = (colors.slice(0, 3).sum() / 3) >= 128 ? 'black' : 'white';
+        const textColor = (colors.slice(0, 3).sum() / 3) >= 128 ? '#111' : '#eee';
+
+        const reverseBorderColor = 'rgb(' + reverseColors.join(',') + ')';
+        const reverseBackgroundColor = 'rgb(' + reverseColors.map(e => e * 0.85).join(',') + ')';
+        const reverseTextColor = textColor === '#eee' ? '#111' : '#eee';
 
         const html = `<div class="alertWrapper" style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
     <span class="line" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">Universal Automatic Currency Converter</span>
     <h2 class="line" style="margin-top: 0; padding-top: 0">${Browser.hostname}</h2>
     <div class="line">${content}</div>
-    <div class="saveLocalizationButton" id="uacc-switch">Placeholder text... you shouldn't see this</div>
-    <div class="saveAndDismissLocalizationButton" id="uacc-save">Save <span id="uacc-using"></span> as site defaults and dont ask again</div>
+    
+    <div class="line" style="height:55px">
+        <div style="width:50%; float: left">
+            <label class="center" style="font-weight: bold" for="uacc-using-detected">Use detected</label>
+            <div style="margin:auto; background-color: ${reverseBackgroundColor}; border-color: ${reverseBorderColor}" class="radiobox checked" id="uacc-using-detected">
+                <div></div>
+            </div>
+        </div>
+        <div style="width:50%; float: left">
+            <label class="center" style="font-weight: bold" for="uacc-using-defaults">Use defaults</label>
+            <div style="margin:auto; background-color: ${reverseBackgroundColor}; border-color: ${reverseBorderColor}" class="radiobox" id="uacc-using-defaults">
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <div class="saveAndDismissLocalizationButton" id="uacc-save">Save as site defaults and dont ask again</div>
     <div class="dismissLocalizationButton" id="uacc-dismiss">Dismiss alert</div>
     <p class="line" style="font-size:12px;">You can always change site specific localization in the mini-converter popup</p>
     <p class="line" style="font-size:12px;">This alert self destructs in <span id="uacc-countdown">60</span> seconds</p>
 </div>`;
         const element = Utils.parseHtml(html);
         document.body.append(element);
+
+        const removeAlert = (fast = false) => {
+            if (fast) element.classList.add('fastRemove');
+            element.style.opacity = '0';
+            setTimeout(() => element.remove(), 1000);
+        };
+
         document.getElementById('uacc-dismiss').addEventListener('click', async () => {
-            element.remove();
+            removeAlert(true);
         });
+
         document.getElementById('uacc-save').addEventListener('click', async () => {
             engine.localization.site.setOverrideable(false);
             await engine.saveSiteSpecificSettings();
-            element.remove();
+            removeAlert(true);
         });
 
-        const using = document.getElementById('uacc-using');
-
-        const detected = document.getElementById('uacc-switch');
-        detected.addEventListener('click', async () => {
-            if (detected.className === 'revertLocalizationButton') {
-                replacements.forEach(e => engine.localization.site.setDefaultLocalization(e.default));
-                using.innerText = 'your defaults';
-                detected.className = 'saveLocalizationButton';
-                detected.innerText = 'Using your defaults';
-            } else {
-                replacements.forEach(e => engine.localization.site.setDefaultLocalization(e.detected));
-                detected.className = 'revertLocalizationButton';
-                using.innerText = 'detected currencies';
-                detected.innerText = 'Using detected currencies';
-            }
+        const detected = document.getElementById('uacc-using-detected');
+        const defaults = document.getElementById('uacc-using-defaults');
+        Utils.initializeRadioBoxes([detected, defaults]);
+        detected.addEventListener('change', () => {
+            replacements.forEach(e => engine.localization.site.setDefaultLocalization(e.detected));
             engine.currencyDetector.updateLocalizationCurrencies();
             engine.elementTransformer.updateAll();
         });
-        document.body.append(element);
+        defaults.addEventListener('change', () => {
+            replacements.forEach(e => engine.localization.site.setDefaultLocalization(e.default));
+            engine.currencyDetector.updateLocalizationCurrencies();
+            engine.elementTransformer.updateAll();
+        });
 
-        const expire = Date.now() * 2 + 60000;
+        const expire = Date.now() + 60000;
         const countdown = document.getElementById('uacc-countdown');
         const timer = setInterval(() => {
             const now = Date.now();
             if (now > expire) {
-                element.remove();
                 clearInterval(timer);
-            }
-            countdown.innerText = Math.round((expire - now) / 1000) + '';
+                removeAlert();
+                countdown.innerText = '0';
+            } else
+                countdown.innerText = Math.round((expire - now) / 1000) + '';
         }, 1000);
-
-        detected.click();
+        element.style.opacity = '1';
     }
 
     if (engine.automaticPageConversion) {

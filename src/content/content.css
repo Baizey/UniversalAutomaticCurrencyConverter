@@ -20,6 +20,7 @@
 }
 
 .alertWrapper {
+    opacity: 0;
     margin: 5px;
     border-radius: 5px;
     border: 1px solid black;
@@ -33,6 +34,17 @@
     right: 0;
     bottom: 0;
     position: fixed;
+    transition: opacity 0.5s linear;
+    -moz-transition: opacity 0.5s linear;
+    -webkit-transition: opacity 0.5s linear;
+    -ms-transition: opacity 0.5s linear;
+}
+
+.fastRemove {
+    transition: opacity 0.25s linear;
+    -moz-transition: opacity 0.25s linear;
+    -webkit-transition: opacity 0.25s linear;
+    -ms-transition: opacity 0.25s linear;
 }
 
 .hiddenHighlight {
@@ -108,3 +120,27 @@
 .revertLocalizationButton:hover {
     background-color: #189735;
 }
+
+.radiobox {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.radiobox div {
+    position: absolute;
+    margin-top: 7px;
+    margin-left: 7px;
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+    background-color: #204d74;
+    transition: opacity 0.1s ease-in-out;
+    opacity: 0;
+}
+
+.checked div {
+     opacity: 1;
+ }
