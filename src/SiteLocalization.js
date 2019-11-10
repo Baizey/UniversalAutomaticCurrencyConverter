@@ -11,7 +11,7 @@ class SiteLocalization {
     constructor() {
         this._localization = {
             dollar: 'USD',
-            krone: 'SWE',
+            krone: 'SEK',
             asian: 'CNY'
         };
         this.symbols = {

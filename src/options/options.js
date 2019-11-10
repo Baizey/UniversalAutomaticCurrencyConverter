@@ -65,11 +65,11 @@ const updateExamples = () => {
     const converter = engine.currencyConverter;
     const formattingExample = 123456.78;
     const conversionExample = 100;
-    document.getElementById('formattingExample').value =
-        formatter.format(formatter.round(formattingExample));
+    const formattingDiv = document.getElementById('formattingExample');
+    if (formattingDiv) formattingDiv.value = formatter.format(formatter.round(formattingExample));
 
-    document.getElementById('displayExample').value =
-        engine.transform(conversionExample, converter.baseCurrency);
+    const displayExample = document.getElementById('displayExample');
+    if (displayExample) displayExample.value = engine.transform(conversionExample, converter.baseCurrency);
 };
 
 let lastHighLight = Date.now();
@@ -288,6 +288,49 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Newly installed banner
     const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
-    if (isFirstTime)
-        document.getElementById('firstime_message').classList.remove('hidden');
+    const options = document.getElementById('options-wrapper');
+    if (isFirstTime) {
+        const progressBarBlue = document.getElementById('firsttime-progress-blue');
+        const progressBarGreen = document.getElementById('firsttime-progress-green');
+        options.classList.add('hidden');
+        document.getElementById('firstime-overlay').classList.remove('hidden');
+        document.getElementById('firsttime-title').append(options.children[0]);
+
+        const todo = options.children.length;
+
+        const done = document.getElementById('firsttime-button-done');
+        done.addEventListener('click', () => done.classList.contains('disabled') || location.reload());
+
+        const wrapper = document.getElementById('firsttime-wrapper');
+        const next = document.getElementById('firsttime-button-next');
+        next.addEventListener('click', () => {
+            if (next.classList.contains('disabled')) return;
+            wrapper.children[0].classList.add('fadeout');
+            wrapper.children[0].style.opacity = '0';
+            const progress = Math.round((1 - (options.children.length - 1) / todo) * 100);
+            progressBarBlue.style.width = progress >= 100 ? '0%' : Math.min(50, progress) + '%';
+            progressBarGreen.style.width = progress >= 100 ? '100%' : Math.max(progress - 50, 0) + '%';
+            setTimeout(() => {
+                wrapper.children[0].remove();
+                options.children[0].classList.add('firsttimeFadein');
+                options.children[0].classList.add('fadein');
+                wrapper.append(options.children[0]);
+                if (options.children.length === 0) {
+                    next.remove();
+                    done.style.width = '100%';
+                }
+            }, 250);
+        });
+        document.getElementById('currency').addEventListener('click', () => {
+            document.getElementById('firsttime-currency').classList.add('hidden');
+            next.classList.remove('disabled');
+            done.classList.remove('disabled');
+        });
+        options.children[0].classList.add('firsttimeFadein');
+        options.children[0].classList.add('fadein');
+        wrapper.append(options.children[0]);
+        const progress = Math.round((1 - (options.children.length) / todo) * 100);
+        progressBarBlue.style.width = progress >= 100 ? '0%' : Math.min(50, progress) + '%';
+        progressBarGreen.style.width = progress >= 100 ? '100%' : Math.max(progress - 50, 0) + '%';
+    }
 });

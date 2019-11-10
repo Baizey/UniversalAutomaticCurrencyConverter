@@ -34,15 +34,30 @@
     <script src="options.js"></script>
 </head>
 <body>
-<div class="centering" style="margin-top: 10px">
-    <div id="firstime_message" class="hidden row setting-tab">
+<div id="firstime-overlay" class="centering hidden">
+    <div id="firsttime-title"></div>
+    <div class="row">
         <h1 class="center">Thank you for installing my extension :)</h1>
         <br>
-        <p class="center">You just need to select your preferred currency below and you're ready to go!</p>
+        <p class="center">To help ease you into the options available you will get them in groups. All options are available afterwards.</p>
         <br>
-        <p class="center">If you did not newly install this extension, just change some setting back and forth to save
-            it and this wont show again</p>
+        <p class="center">You need to change at least one option such that it highlights with green border to not see this anymore.</p>
     </div>
+    <div id="firsttime-wrapper" style="min-width:300px; min-height: 180px"></div>
+    <div class="row">
+        <p id="firsttime-currency" class="center">You need to select a currency before progressing</p>
+        <div id="firsttime-buttons" class="btn-group" style="width:100%; border-bottom-left-radius: 0; border-bottom-right-radius: 0" role="group">
+            <div id="firsttime-button-next" class="btn btn-primary column disabled" style="width:50%; border-bottom-left-radius: 0; border-bottom-right-radius: 0">Next options</div>
+            <div id="firsttime-button-done" class="btn btn-success disabled" style="width:50%; border-bottom-left-radius: 0; border-bottom-right-radius: 0">I am done</div>
+        </div>
+        <div class="progress" style="background-color: #0F171E; background-image: none; height: 5px; border-radius: 0">
+            <div id="firsttime-progress-blue" class="progress-bar bg-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            <div id="firsttime-progress-green" class="progress-bar progress-bar-green"role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+</div>
+
+<div id="options-wrapper" class="centering" style="margin-top: 10px">
     <!-- Title -->
     <div class="row setting-tab">
         <div class="col-sm">
