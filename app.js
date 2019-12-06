@@ -159,14 +159,14 @@ update().finally(() => {
     });
 
     // Currency rates endpoint
-    api.get('/api/rates/:apikey', (request, response) => {
+    api.get('/api/v2/rates/:apikey', (request, response) => {
         Tracker.in(request, response);
         return data.rates
             ? response.status(200).send(data.rates)
             : response.status(500).send('Dont have any rates');
     });
     // Currency symbols endpoint
-    api.get('/api/symbols/:apikey', (request, response) => {
+    api.get('/api/v2/symbols/:apikey', (request, response) => {
         Tracker.in(request, response);
         return data.symbols
             ? response.status(200).send(data.symbols)
