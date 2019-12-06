@@ -24,9 +24,9 @@ const Ajax = {
 const constructUrl = request => {
     switch (request.type) {
         case 'symbols':
-            return 'https://fixer-middle-endpoint.azurewebsites.net/api/symbols';
+            return 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/symbols/ba0974d4-e0a4-4fdf-9631-29cdcf363134';
         case 'rates':
-            return 'https://fixer-middle-endpoint.azurewebsites.net/api/rates';
+            return 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/rates/ba0974d4-e0a4-4fdf-9631-29cdcf363134';
     }
 };
 
