@@ -2,6 +2,53 @@ const express = require('express');
 const fetch = require('node-fetch');
 const AppInsight = require("applicationinsights");
 
+/**
+ * @param keyMap
+ * @param valueMap
+ * @returns {object}
+ */
+Array.prototype.toObject = function (keyMap = e => e.key, valueMap = e => e.value) {
+    return this.reduce((a, b) => {
+        a[keyMap(b)] = valueMap(b);
+        return a;
+    }, {});
+};
+
+/**
+ * @returns {number}
+ */
+Array.prototype.sum = function () {
+    return this.reduce((a, b) => a + b, 0);
+};
+
+/**
+ * @returns {number}
+ */
+Array.prototype.avg = function () {
+    return this.sum() / this.length;
+};
+
+/**
+ * @returns {string[]}
+ */
+Object.prototype.keys = function () {
+    return Object.keys(this).filter(e => this.hasOwnProperty(e));
+};
+
+/**
+ * @returns {*[]}
+ */
+Object.prototype.values = function () {
+    return this.keys().map(e => this[e]);
+};
+
+/**
+ * @returns {{value: *, key: string}[]}
+ */
+Object.prototype.pairs = function () {
+    return this.keys().map(e => ({key: e, value: this[e]}))
+};
+
 let _TrackerInstance;
 let _ConfigInstance;
 
@@ -94,8 +141,15 @@ class Config {
     /**
      * @returns {string}
      */
-    static get currencyApiKey() {
-        return Config.instance()._currencyApiKey;
+    static get openExchangeApiKey() {
+        return Config.instance()._openExchangeApiKey;
+    }
+
+    /**
+     * @returns {string}
+     */
+    static get fixerApiKey() {
+        return Config.instance()._fixerApiKey;
     }
 
     static get port() {
@@ -105,7 +159,8 @@ class Config {
     constructor(env) {
         this._ownApiKey = env.ownApiKey;
         this._port = env.PORT || 3000;
-        this._currencyApiKey = env.apikey;
+        this._fixerApiKey = env.fixerApiKey;
+        this._openExchangeApiKey = env.openExchangeApiKey;
         Tracker.instance(env.insightkey);
     }
 }
@@ -117,81 +172,165 @@ const data = {
     rates: null
 };
 
-const urls = {
-    symbols: `http://data.fixer.io/api/symbols?access_key=${encodeURIComponent(Config.currencyApiKey)}`,
-    rates: `http://data.fixer.io/api/latest?access_key=${encodeURIComponent(Config.currencyApiKey)}`
-};
+class CurrencyApi {
+    constructor(apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    /**
+     * @returns object, map currency tag to rate for EUR
+     */
+    async rates(){};
+
+    /**
+     * @returns object, map currency tag to currency name (string => string)
+     */
+    async symbols(){};
+}
+
+class OpenExchangeApi extends CurrencyApi {
+    constructor(apiKey) {
+        super(apiKey);
+    }
+
+    async rates() {
+        return await Tracker.out(`https://openexchangerates.org/api/latest.json?app_id=${encodeURIComponent(this.apiKey)}`)
+            .then(resp => {
+                const rate = resp.rates.EUR;
+                resp.rates = resp.rates.pairs().map(e => ({key: e.key, value: e.value / rate})).toObject();
+                resp.rates.USD = 1 / rate;
+                resp.rates.EUR = 1;
+                return resp.rates;
+            });
+    }
+
+    async symbols() {
+        return await Tracker.out(`https://openexchangerates.org/api/currencies.json`)
+            .then(resp => {
+                return resp;
+            });
+    }
+}
+
+class FixerApi extends CurrencyApi {
+    constructor(apiKey) {
+        super(apiKey);
+    }
+
+    async rates() {
+        return await Tracker.out(`http://data.fixer.io/api/latest?access_key=${encodeURIComponent(this.apiKey)}`)
+            .then(resp => {
+                if (resp.success)
+                    return resp.rates;
+                throw resp;
+            });
+    }
+
+    async symbols() {
+        return await Tracker.out(`http://data.fixer.io/api/symbols?access_key=${encodeURIComponent(this.apiKey)}`)
+            .then(resp => {
+                if (resp.success)
+                    return resp.symbols;
+                throw resp;
+            });
+    }
+}
+
+const apis = [
+    new FixerApi(Config.fixerApiKey),
+    new OpenExchangeApi(Config.openExchangeApiKey)
+];
 
 const update = async () => {
-    const rates = await Tracker.out(urls.rates).catch(console.error);
-    const symbols = await Tracker.out(urls.symbols).catch(console.error);
-    data.rates = rates && rates.success ? rates : data.rates;
-    data.symbols = symbols && symbols.success ? symbols : data.symbols;
-    if (data.rates && data.rates.rates) {
-        delete data.rates.rates['AMD'];
-        delete data.rates.rates['ALL'];
-    }
-    if (data.symbols && data.symbols.symbols) {
-        delete data.rates.rates['AMD'];
-        delete data.symbols.symbols['ALL'];
-    }
+    const rates = (await Promise.all(apis.map(e => e.rates())).catch(e => {
+        console.error(e);
+        return [];
+    }))
+        .filter(e => e)
+        .reduce((a, b) => {
+            b.pairs().forEach(pair => {
+                if (!a[pair.key]) a[pair.key] = [];
+                a[pair.key].push(pair.value);
+            });
+            return a;
+        }, {})
+        .pairs().map(e => {
+            e.value = e.value.avg();
+            return e;
+        })
+        .toObject();
+
+    const symbols = (await Promise.all(apis.map(e => e.symbols())).catch(e => {
+        console.error(e);
+        return [];
+    }))
+        .filter(e => e)
+        .reduce((a, b) => ({...a, ...b}), {});
+
+    delete rates['AMD'];
+    delete rates['ALL'];
+    delete symbols['AMD'];
+    delete symbols['ALL'];
+
+    data.rates = {
+        base: 'EUR',
+        rates: rates,
+        timestamp: Date.now()
+    };
+    data.symbols = symbols;
 };
 
 const api = express();
 
 console.log('Initiating');
-update().finally(() => {
-    console.log('Starting');
 
-    // Update occasionally
-    setInterval(() => update(), 1000 * 60 * 60 * 12);
+// Update occasionally
+update().catch(console.error);
+setInterval(() => update(), 1000 * 60 * 60 * 6);
 
-    const handleRobots = resp => resp.type('text/plain').status(200).send('User-agent: *\nDisallow: /');
+const handleRobots = resp => resp.type('text/plain').status(200).send('User-agent: *\nDisallow: /');
 
-    // Handle robots
-    api.get('/robots.txt', (request, response) => handleRobots(response));
-    api.get('/robots933456.txt', (request, response) => handleRobots(response));
-    api.get('/', (request, response) => response.status(200).send(`You're not supposed to be here`));
+// Handle robots
+api.get('/robots.txt', (request, response) => handleRobots(response));
+api.get('/robots933456.txt', (request, response) => handleRobots(response));
+api.get('/', (request, response) => response.status(200).send(`You're not supposed to be here`));
 
-    api.param('apikey', (request, response, next, key) => {
-        if (Config.isValidApiKey(key)) next();
-        else response.status(401).send('This endpoint requires a valid API key');
-    });
+api.param('apikey', (request, response, next, key) => {
+    if (Config.isValidApiKey(key)) next();
+    else response.status(401).send('This endpoint requires a valid API key');
+});
 
-    // Currency rates endpoint
-    api.get('/api/v2/rates/:apikey', (request, response) => {
-        Tracker.in(request, response);
-        return data.rates
-            ? response.status(200).send(data.rates)
-            : response.status(500).send('Dont have any rates');
-    });
-    // Currency symbols endpoint
-    api.get('/api/v2/symbols/:apikey', (request, response) => {
-        Tracker.in(request, response);
-        return data.symbols
-            ? response.status(200).send(data.symbols)
-            : response.status(500).send('Dont have any symbols');
-    });
+// Currency rates endpoint
+api.get('/api/rates', (request, response) => {
+    Tracker.in(request, response);
+    return data.rates
+        ? response.status(200).send(data.rates)
+        : response.status(500).send('Dont have any rates');
+});
+// Currency symbols endpoint
+api.get('/api/symbols', (request, response) => {
+    Tracker.in(request, response);
+    return data.symbols
+        ? response.status(200).send(data.symbols)
+        : response.status(500).send('Dont have any symbols');
+});
 
-    // TODO: phase out when most users has updated to a version with API key included
-    // Currency rates endpoint
-    api.get('/api/rates', (request, response) => {
-        Tracker.in(request, response);
-        return data.rates
-            ? response.status(200).send(data.rates)
-            : response.status(500).send('Dont have any rates');
-    });
-    // Currency symbols endpoint
-    api.get('/api/symbols', (request, response) => {
-        Tracker.in(request, response);
-        return data.symbols
-            ? response.status(200).send(data.symbols)
-            : response.status(500).send('Dont have any symbols');
-    });
+// Currency rates endpoint
+api.get('/api/v2/rates/:apikey', (request, response) => {
+    Tracker.in(request, response);
+    return data.rates
+        ? response.status(200).send(data.rates)
+        : response.status(500).send('Dont have any rates');
+});
+// Currency symbols endpoint
+api.get('/api/v2/symbols/:apikey', (request, response) => {
+    Tracker.in(request, response);
+    return data.symbols
+        ? response.status(200).send(data.symbols)
+        : response.status(500).send('Dont have any symbols');
+});
 
-    api.listen(Config.port, () => {
-        console.log('Started');
-        console.log(`Port: ${Config.port}`);
-    });
-})
-;
+api.listen(Config.port, () => {
+    console.log('Started');
+    console.log(`Port: ${Config.port}`);
+});
