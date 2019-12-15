@@ -274,7 +274,7 @@ const update = async () => {
         base: 'EUR',
         rates: rates,
         timestamp: now.getTime(),
-        // date is here for legacy, new versions use the timestamp
+        // date is here for legacy, new versions should rely on timestamp
         date: `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()} ${now.getUTCHours()}:${now.getUTCMinutes()} UTC`
     };
     // Use this structure for legacy
