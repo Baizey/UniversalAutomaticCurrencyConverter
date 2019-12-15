@@ -178,14 +178,16 @@ class CurrencyApi {
     }
 
     /**
-     * @returns object, map currency tag to rate for EUR
+     * @returns Promise<object>, map currency tag to rate for EUR
      */
-    async rates(){};
+    async rates() {
+    };
 
     /**
-     * @returns object, map currency tag to currency name (string => string)
+     * @returns Promise<object>, map currency tag to currency name (string => string)
      */
-    async symbols(){};
+    async symbols() {
+    };
 }
 
 class OpenExchangeApi extends CurrencyApi {
@@ -242,10 +244,7 @@ const apis = [
 ];
 
 const update = async () => {
-    const rates = (await Promise.all(apis.map(e => e.rates())).catch(e => {
-        console.error(e);
-        return [];
-    }))
+    const rates = (await Promise.all(apis.map(e => e.rates())))
         .filter(e => e)
         .reduce((a, b) => {
             b.pairs().forEach(pair => {
@@ -260,10 +259,7 @@ const update = async () => {
         })
         .toObject();
 
-    const symbols = (await Promise.all(apis.map(e => e.symbols())).catch(e => {
-        console.error(e);
-        return [];
-    }))
+    const symbols = (await Promise.all(apis.map(e => e.symbols())))
         .filter(e => e)
         .reduce((a, b) => ({...a, ...b}), {});
 
@@ -272,21 +268,32 @@ const update = async () => {
     delete symbols['AMD'];
     delete symbols['ALL'];
 
+    const now = new Date();
+
     data.rates = {
         base: 'EUR',
         rates: rates,
-        timestamp: Date.now()
+        timestamp: now.getTime(),
+        // date is here for legacy, new versions use the timestamp
+        date: `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()} ${now.getUTCHours()}:${now.getUTCMinutes()} UTC`
     };
-    data.symbols = symbols;
+    // Use this structure for legacy
+    data.symbols = {
+        symbols: symbols
+    };
 };
 
 const api = express();
 
 console.log('Initiating');
 
-// Update occasionally
+// Update currency rates every X hour
+const milliToSeconds = 1000;
+const secondsToMinutes = 60;
+const minutesToHours = 60;
+const updateInterval = milliToSeconds * secondsToMinutes * minutesToHours * 6;
 update().catch(console.error);
-setInterval(() => update(), 1000 * 60 * 60 * 6);
+setInterval(() => update().catch(console.error), updateInterval);
 
 const handleRobots = resp => resp.type('text/plain').status(200).send('User-agent: *\nDisallow: /');
 
@@ -298,21 +305,6 @@ api.get('/', (request, response) => response.status(200).send(`You're not suppos
 api.param('apikey', (request, response, next, key) => {
     if (Config.isValidApiKey(key)) next();
     else response.status(401).send('This endpoint requires a valid API key');
-});
-
-// Currency rates endpoint
-api.get('/api/rates', (request, response) => {
-    Tracker.in(request, response);
-    return data.rates
-        ? response.status(200).send(data.rates)
-        : response.status(500).send('Dont have any rates');
-});
-// Currency symbols endpoint
-api.get('/api/symbols', (request, response) => {
-    Tracker.in(request, response);
-    return data.symbols
-        ? response.status(200).send(data.symbols)
-        : response.status(500).send('Dont have any symbols');
 });
 
 // Currency rates endpoint
