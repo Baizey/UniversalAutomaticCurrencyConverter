@@ -16,8 +16,9 @@ const Ajax = {
 
 describe('Integration tests', () => {
 
+    /*
     it('fixer-middle-endpoint/api/rates', async () => {
-        const url = 'https://fixer-middle-endpoint.azurewebsites.net/api/rates';
+        const url = 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/rates/';
 
         const actual = await Ajax.get(url).then(e => JSON.parse(e));
 
@@ -26,12 +27,12 @@ describe('Integration tests', () => {
     });
 
     it('fixer-middle-endpoint/api/symbols', async () => {
-        const url = 'https://fixer-middle-endpoint.azurewebsites.net/api/symbols';
+        const url = 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/symbols/';
 
         const actual = await Ajax.get(url).then(e => JSON.parse(e));
 
         expect(actual).toBeTruthy();
         expect(actual.success).toBeTruthy();
     });
-
+     */
 });
