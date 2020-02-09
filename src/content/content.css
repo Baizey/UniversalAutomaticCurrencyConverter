@@ -1,8 +1,8 @@
-.clickable {
+.uacc-clickable {
     cursor: pointer;
 }
 
-.line {
+.uacc-line {
     display: block;
     margin-top: 2px;
     margin-bottom: 2px;
@@ -12,14 +12,14 @@
     padding-bottom: 3px;
 }
 
-.highlighted {
+.uacc-highlighted {
     transition: background-color 0.5s linear;
     -moz-transition: background-color 0.5s linear;
     -webkit-transition: background-color 0.5s linear;
     -ms-transition: background-color 0.5s linear;
 }
 
-.alertWrapper {
+.uacc-alertWrapper {
     opacity: 0;
     margin: 5px;
     border-radius: 5px;
@@ -40,18 +40,18 @@
     -ms-transition: opacity 0.5s linear;
 }
 
-.fastRemove {
+.uacc-fastRemove {
     transition: opacity 0.25s linear;
     -moz-transition: opacity 0.25s linear;
     -webkit-transition: opacity 0.25s linear;
     -ms-transition: opacity 0.25s linear;
 }
 
-.hiddenHighlight {
+.uacc-hiddenHighlight {
     background-color: transparent;
 }
 
-.popup {
+.uacc-popup {
     position: absolute;
     width: 60%;
     height: 10%;
@@ -63,13 +63,13 @@
     border-top-right-radius: 10px;
 }
 
-.buttonFiller {
+.uacc-buttonFiller {
     height: 5px;
     width: 2%;
     float: left;
 }
 
-.saveAndDismissLocalizationButton, .dismissLocalizationButton, .saveLocalizationButton, .revertLocalizationButton {
+.uacc-saveAndDismissLocalizationButton, .uacc-dismissLocalizationButton, .uacc-saveLocalizationButton, .uacc-revertLocalizationButton {
     padding-top: 10px;
     padding-bottom: 10px;
     width: 100%;
@@ -78,50 +78,50 @@
     border-radius: 5px;
 }
 
-.disabledLocalizationButton {
+.uacc-disabledLocalizationButton {
     background-color: grey;
     border-color: grey;
 }
 
-.saveAndDismissLocalizationButton {
+.uacc-saveAndDismissLocalizationButton {
     margin-top: 5px;
     background-color: #204d74;
     border-color: #204d74;
 }
 
-.saveAndDismissLocalizationButton:hover {
+.uacc-saveAndDismissLocalizationButton:hover {
     background-color: #103d64;
 }
 
-.dismissLocalizationButton {
+.uacc-dismissLocalizationButton {
     margin-top: 5px;
     background-color: #6c757d;
     border-color: #6c757d;
 }
 
-.dismissLocalizationButton:hover {
+.uacc-dismissLocalizationButton:hover {
     background-color: #5c656d;
 }
 
-.saveLocalizationButton {
+.uacc-saveLocalizationButton {
     background-color: #bc1525;
     border-color: #bc1525;
 }
 
-.saveLocalizationButton:hover {
+.uacc-saveLocalizationButton:hover {
     background-color: #ac0515;
 }
 
-.revertLocalizationButton {
+.uacc-revertLocalizationButton {
     background-color: #28a745;
     border-color: #28a745;
 }
 
-.revertLocalizationButton:hover {
+.uacc-revertLocalizationButton:hover {
     background-color: #189735;
 }
 
-.radiobox {
+.uacc-radiobox {
     cursor: pointer;
     width: 30px;
     height: 30px;
@@ -129,7 +129,7 @@
     position: relative;
 }
 
-.radiobox div {
+.uacc-radiobox div {
     position: absolute;
     margin-top: 7px;
     margin-left: 7px;

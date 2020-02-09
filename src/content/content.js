@@ -162,7 +162,7 @@ runner.loader.finally(async () => {
     if (replacements.length > 0 && engine.showNonDefaultCurrencyAlert) {
         // Alert user about replacements
         const content = replacements.map(e =>
-            `<div style="text-align: center" class="line">
+            `<div style="text-align: center" class="uacc-line">
     <span style="width:50%; float: left">Detected ${e.detected}</span>
     <span style="width:50%; float: left">Default's ${e.default}</span>
 </div>`).join('');
@@ -183,35 +183,35 @@ runner.loader.finally(async () => {
         const reverseBackgroundColor = 'rgb(' + reverseColors.map(e => e * 0.85).join(',') + ')';
         const reverseTextColor = textColor === '#eee' ? '#111' : '#eee';
 
-        const html = `<div class="alertWrapper" style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
-    <span class="line" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">Universal Automatic Currency Converter</span>
-    <h2 class="line" style="margin-top: 0; padding-top: 0">${Browser.hostname}</h2>
-    <div class="line">${content}</div>
+        const html = `<div class="uacc-alertWrapper" style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
+    <span class="uacc-line" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">Universal Automatic Currency Converter</span>
+    <h2 class="uacc-line" style="margin-top: 0; padding-top: 0">${Browser.hostname}</h2>
+    <div class="uacc-line">${content}</div>
     
-    <div class="line" style="height:55px">
+    <div class="uacc-line" style="height:55px">
         <div style="width:50%; float: left">
-            <label class="center" style="font-weight: bold" for="uacc-using-detected">Use detected</label>
-            <div style="margin:auto; background-color: ${reverseBackgroundColor}; border-color: ${reverseBorderColor}" class="radiobox checked" id="uacc-using-detected">
+            <label class="uacc-center" style="font-weight: bold" for="uacc-using-detected">Use detected</label>
+            <div style="margin:auto; background-color: ${reverseBackgroundColor}; border-color: ${reverseBorderColor}" class="uacc-radiobox checked" id="uacc-using-detected">
                 <div></div>
             </div>
         </div>
         <div style="width:50%; float: left">
-            <label class="center" style="font-weight: bold" for="uacc-using-defaults">Use defaults</label>
-            <div style="margin:auto; background-color: ${reverseBackgroundColor}; border-color: ${reverseBorderColor}" class="radiobox" id="uacc-using-defaults">
+            <label class="uacc-center" style="font-weight: bold" for="uacc-using-defaults">Use defaults</label>
+            <div style="margin:auto; background-color: ${reverseBackgroundColor}; border-color: ${reverseBorderColor}" class="uacc-radiobox" id="uacc-using-defaults">
                 <div></div>
             </div>
         </div>
     </div>
-    <div class="saveAndDismissLocalizationButton" id="uacc-save">Save as site defaults and dont ask again</div>
-    <div class="dismissLocalizationButton" id="uacc-dismiss">Dismiss alert</div>
-    <p class="line" style="font-size:12px;">You can always change site specific localization in the mini-converter popup</p>
-    <p class="line" style="font-size:12px;">This alert self destructs in <span id="uacc-countdown">60</span> seconds</p>
+    <div class="uacc-saveAndDismissLocalizationButton" id="uacc-save">Save as site defaults and dont ask again</div>
+    <div class="uacc-dismissLocalizationButton" id="uacc-dismiss">Dismiss alert</div>
+    <p class="uacc-line" style="font-size:12px;">You can always change site specific localization in the mini-converter popup</p>
+    <p class="uacc-line" style="font-size:12px;">This alert self destructs in <span id="uacc-countdown">60</span> seconds</p>
 </div>`;
         const element = Utils.parseHtml(html);
         document.body.append(element);
 
         const removeAlert = (fast = false) => {
-            if (fast) element.classList.add('fastRemove');
+            if (fast) element.classList.add('uacc-fastRemove');
             element.style.opacity = '0';
             setTimeout(() => element.remove(), 1000);
         };
