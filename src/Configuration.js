@@ -274,13 +274,6 @@ class Setting {
     /**
      * @returns {string}
      */
-    get name() {
-        return this._name;
-    }
-
-    /**
-     * @returns {string}
-     */
     get htmlId() {
         return this._htmlId;
     }
@@ -290,13 +283,6 @@ class Setting {
      */
     get storageKey() {
         return this._storageKey;
-    }
-
-    /**
-     * @returns {string}
-     */
-    get group() {
-        return this._group;
     }
 
     /**
