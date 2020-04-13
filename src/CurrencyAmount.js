@@ -6,7 +6,7 @@ class CurrencyAmount {
      */
     constructor(tag, amount = 0, services = {}) {
         this._config = services.config || Configuration.instance;
-        this._converter = services.currencies || null;
+        this._converter = services.currencies || Currencies.instance;
         this._tag = tag.toUpperCase();
         this._amount = amount;
     }
