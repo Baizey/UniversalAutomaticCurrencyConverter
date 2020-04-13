@@ -171,30 +171,17 @@ class Browser {
         });
     }
 
-    get cors() {
+    get background() {
         return {
-            call: (type, data = {}) => {
-                data = data || ({});
-                data.type = type;
-                data.method = 'HttpGet';
-                return new Promise((resolve, reject) => {
-                    chrome.runtime.sendMessage(data, function (resp) {
-                        return resp.success ? resolve(resp.data) : reject(resp.data);
-                    });
-                }).then(e => {
-                    Utils.log('GET', JSON.stringify(e));
-                    return e;
-                })
-                    .catch(error => Utils.logError(error));
-            },
-            getSelectedText: () => {
-                const data = {method: 'getSelectedText'};
-                return new Promise((resolve, reject) => {
-                    chrome.runtime.sendMessage(data, function (resp) {
-                        return resp.success ? resolve(resp.data) : reject(resp.data);
-                    });
-                }).catch(error => Utils.logError(error));
-            }
+            getRate: (from, to) => new Promise((resolve, reject) =>
+                chrome.runtime.sendMessage({type: 'rate', from: from, to: to},
+                    resp => resp.success ? resolve(resp.data) : reject(resp.data))),
+            getSymbols: () => new Promise((resolve, reject) =>
+                chrome.runtime.sendMessage({type: 'symbols'},
+                    resp => resp.success ? resolve(resp.data) : reject(resp.data))),
+            openPopup: () => new Promise((resolve, reject) =>
+                chrome.runtime.sendMessage({type: 'openPopup'},
+                    resp => resp.success ? resolve(resp.data) : reject(resp.data))),
         }
     }
 

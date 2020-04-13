@@ -3,13 +3,13 @@ class CurrencyRate {
      * @param {string} from
      * @param {string} to
      * @param {number} rate
-     * @param {Date} timestamp
+     * @param {Date|number} timestamp
      */
     constructor(from, to, rate, timestamp) {
         this.from = from;
         this.to = to;
         this.rate = rate;
-        this.timestamp = timestamp;
+        this.timestamp = typeof (timestamp) === 'number' ? new Date(timestamp) : timestamp;
     }
 
     /**

@@ -9,8 +9,6 @@ const hasLength = (e, length) => isString(e) && e.length === length;
 const isStringArray = e => Array.isArray(e) && e.every(isString);
 
 class Configuration {
-
-
     /**
      * @returns {Configuration}
      */
@@ -22,23 +20,9 @@ class Configuration {
     /**
      * @returns {Promise<void>}
      */
-    static async load() {
-        await Configuration.instance.load();
-    }
-
-    /**
-     * @returns {Promise<void>}
-     */
-    static async save() {
-        await Configuration.instance.save();
-    }
-
-    /**
-     * @returns {Promise<void>}
-     */
     async load() {
         const keys = this.settings.map(e => e.storageKey);
-        const data = await Browser.instance().loadSync(keys);
+        const data = await this._browser.loadSync(keys);
         if (!data) return;
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
@@ -55,10 +39,14 @@ class Configuration {
             const setting = this.settings[i];
             data[setting.storageKey] = setting.value;
         }
-        await Browser.instance().saveSync(data, null);
+        await this._browser.saveSync(data, null);
     }
 
-    constructor() {
+    /**
+     * @param {{browser: Browser}} services
+     */
+    constructor(services = {}) {
+        this._browser = services.browser || Browser.instance();
         this.alert = new ConfigurationAlert();
         this.localization = new ConfigurationLocalisation();
         this.whitelist = new ConfigurationWhitelist();

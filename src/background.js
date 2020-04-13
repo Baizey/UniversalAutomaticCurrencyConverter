@@ -17,49 +17,45 @@ const Ajax = {
     })
 };
 
-/**
- * @param request
- * @return {string|undefined}
- */
-const constructUrl = request => {
-    switch (request.type) {
-        case 'symbols':
-            return 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/symbols/ba0974d4-e0a4-4fdf-9631-29cdcf363134';
-        case 'rates':
-            return 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/rates/ba0974d4-e0a4-4fdf-9631-29cdcf363134';
+function rate(request, senderResponse) {
+    if (!isCurrencyTag(request.from)) {
+        senderResponse({
+            success: false,
+            data: `error in rate, from '${request.from}' is not valid currency tag`
+        });
+    } else if (!isCurrencyTag(request.to)) {
+        senderResponse({success: false, data: `error in rate, to '${request.to}' is not valid currency tag`});
+    } else {
+        const url = `https://fixer-middle-endpoint.azurewebsites.net/api/v3/rate?apikey=ba0974d4-e0a4-4fdf-9631-29cdcf363134&from=${request.from}&to=${request.to}`;
+        Ajax.get(url).then(JSON.parse)
+            .then(r => senderResponse({success: true, data: r}))
+            .catch(r => senderResponse({success: false, data: JSON.stringify(r)}));
     }
-};
-
-/**
- * @param {{type:string, base:undefined|string}} request
- * @param sender
- * @param senderResponse
- * @return {boolean}
- */
-function corsHandler(request, sender, senderResponse) {
-    Ajax.get(constructUrl(request))
-        .then(JSON.parse)
-        .then(r => senderResponse({success: true, data: r}))
-        .catch(error => senderResponse({success: false, data: JSON.stringify(error)}));
-    return true;
 }
 
-function getSelectedText(request, sender, senderResponse) {
-    senderResponse({success: true, data: window.getSelection().toString()});
-    return true;
+function symbols(senderResponse) {
+    const url = 'https://fixer-middle-endpoint.azurewebsites.net/api/v3/symbols?apikey=ba0974d4-e0a4-4fdf-9631-29cdcf363134';
+    Ajax.get(url).then(JSON.parse)
+        .then(r => senderResponse({success: true, data: r.symbols}))
+        .catch(r => senderResponse({success: false, data: JSON.stringify(r)}));
 }
 
-function handleError(request, senderResponse) {
-    senderResponse({success: false, data: `Unknown method ${request.method}`});
-    return true;
+function isCurrencyTag(value) {
+    return typeof (value) === 'string' && /^[A-Z]{3}$/.test(value);
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
-    switch (request.method) {
+    switch (request.type) {
+        case 'rate':
+            rate(request, senderResponse);
+            break;
+        case 'symbols':
+            symbols(senderResponse);
+            break;
         case 'openPopup':
             chrome.tabs.create({
-               url: 'popup/popup.html',
-               active: false
+                url: 'popup/popup.html',
+                active: false
             }, tab => {
                 chrome.windows.create({
                     tabId: tab.id,
@@ -70,17 +66,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) 
                 }, window => senderResponse({success: true, data: window}));
             });
             break;
-        case 'getSelectedText':
-            return getSelectedText(request, sender, senderResponse);
-        case 'HttpGet':
-            return corsHandler(request, sender, senderResponse);
         default:
-            return handleError(request, senderResponse);
+            senderResponse({success: false, data: `Unknown type '${request.type}' for background`});
+            break;
     }
-
     return true;
 });
 
+
+// TODO: re-implement this
+/*
+function getSelectedText(request, sender, senderResponse) {
+    senderResponse({success: true, data: window.getSelection().toString()});
+    return true;
+}
 
 const openOptionsIfNew = async () => {
     const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
@@ -104,3 +103,4 @@ chrome.contextMenus.create({
         }).finally();
     }
 });
+ */
