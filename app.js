@@ -306,6 +306,33 @@ api.param('apikey', (request, response, next, key) => {
     if (Config.isValidApiKey(key)) next();
     else response.status(401).send('This endpoint requires a valid API key');
 });
+api.param('from', (request, response, next, key) => {
+    if (/^[A-Z]{3}$/.test(key)) next();
+    else response.status(400).send(`From '${key}' is invalid currency tag`);
+});
+api.param('to', (request, response, next, key) => {
+    if (/^[A-Z]{3}$/.test(key)) next();
+    else response.status(400).send(`To '${key}' is invalid currency tag`);
+});
+
+// Currency rates endpoint
+api.get('/api/v3/rate/:from/:to/:apikey', (request, response) => {
+    Tracker.in(request, response);
+    if (!data || !data.rates) return response.status(500).send(`Dont have any rates`)
+    const from = request.params.from;
+    const to = request.params.to;
+    if (from === to) return response.status(200).send({rate: 1});
+
+    const toRate = data.rates.rates[to];
+    const fromRate = data.rates.rates[from];
+    if (!toRate) return response.status(404).send(`Rate for '${to}' not found`)
+    if (!fromRate) return response.status(404).send(`Rate for '${from}' not found`)
+
+    const base = data.rates.base;
+    if (base === from) return response.status(200).send({rate: toRate})
+    if (base === to) return response.status(200).send({rate: 1 / fromRate})
+    return response.status(200).send({rate: toRate / fromRate})
+});
 
 // Currency rates endpoint
 api.get('/api/v2/rates/:apikey', (request, response) => {
