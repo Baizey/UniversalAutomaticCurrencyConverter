@@ -1,8 +1,14 @@
 {
   "name": "uacc",
   "version": "3.0.0",
+  "scripts": {
+    "test": "karma start karma.conf.js"
+  },
   "dependencies": {
+    "@babel/preset-env": "^7.9.5",
+    "@babel/core": "^7.9.0",
     "babel-loader": "^8.1.0",
+    "karma-babel-preprocessor": "^8.0.1",
     "chai": "^4.2.0",
     "copy-webpack-plugin": "^5.1.1",
     "expect": "^25.3.0",
@@ -11,8 +17,8 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "^3.1.1",
     "karma-spec-reporter": "0.0.32",
-    "karma-webpack": "^4.0.2",
+    "karma-webpack": "5.0.0-alpha.3.0",
     "require-context": "^1.1.0",
-    "webpack": "^4.42.1"
+    "webpack": "5.0.0-beta.14"
   }
 }

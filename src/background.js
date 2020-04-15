@@ -26,7 +26,7 @@ function rate(request, senderResponse) {
     } else if (!isCurrencyTag(request.to)) {
         senderResponse({success: false, data: `error in rate, to '${request.to}' is not valid currency tag`});
     } else {
-        const url = `https://fixer-middle-endpoint.azurewebsites.net/api/v3/rate?apikey=ba0974d4-e0a4-4fdf-9631-29cdcf363134&from=${request.from}&to=${request.to}`;
+        const url = `https://fixer-middle-endpoint.azurewebsites.net/api/v3/rate/${request.from}/${request.to}/ba0974d4-e0a4-4fdf-9631-29cdcf363134`;
         Ajax.get(url).then(JSON.parse)
             .then(r => senderResponse({success: true, data: r}))
             .catch(r => senderResponse({success: false, data: JSON.stringify(r)}));
@@ -34,7 +34,7 @@ function rate(request, senderResponse) {
 }
 
 function symbols(senderResponse) {
-    const url = 'https://fixer-middle-endpoint.azurewebsites.net/api/v3/symbols?apikey=ba0974d4-e0a4-4fdf-9631-29cdcf363134';
+    const url = 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/symbols/ba0974d4-e0a4-4fdf-9631-29cdcf363134';
     Ajax.get(url).then(JSON.parse)
         .then(r => senderResponse({success: true, data: r.symbols}))
         .catch(r => senderResponse({success: false, data: JSON.stringify(r)}));

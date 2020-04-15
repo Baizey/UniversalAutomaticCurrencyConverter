@@ -5,8 +5,11 @@ class CurrencyAmount {
      * @param {{config: Configuration, currencies: Currencies}} services
      */
     constructor(tag, amount = 0, services = {}) {
-        this._config = services.config || Configuration.instance;
+        const config = services.config || Configuration.instance;
+        this._display = config.display;
+        this._tag = config.tag;
         this._converter = services.currencies || Currencies.instance;
+        this._services = services;
         this._tag = tag.toUpperCase();
         this._amount = amount;
     }
@@ -29,15 +32,15 @@ class CurrencyAmount {
      * @returns {string}
      */
     get roundedAmount() {
-        const significant = this._config.display.rounding.value;
+        const significant = this._display.rounding.value;
         let fixed = this.amount;
 
         // TODO: custom tag value
-        const usingCustom = this._config.tag.using.value;
+        const usingCustom = this._tag.using.value;
         if (usingCustom) {
-            const factor = this._config.tag.value.value;
+            const factor = this._tag.value.value;
             if (factor !== 1) {
-                fixed *= this._config.tag.value.value;
+                fixed *= this._tag.value.value;
             }
         }
 
@@ -76,28 +79,30 @@ class CurrencyAmount {
 
     /**
      * @param {string} tag
+     * @returns {Promise<CurrencyAmount>}
      */
     async convertTo(tag) {
         tag = tag.toUpperCase();
         const rate = await this._converter.getRate(this.tag, tag);
-        this._amount *= rate.rate;
-        this._tag = tag;
+        if (!rate) return null;
+        const amount = this.amount * rate.rate;
+        return new CurrencyAmount(tag, amount, this._services);
     }
 
     /**
      * @returns {string}
      */
     toString() {
-        const [integers, digits] = this.roundedAmount;
-        const decimal = this._config.display.decimal.value;
-        const thousands = this._config.display.thousands.value;
+        const [integers, digits] = this.roundedAmount.split('.');
+        const decimal = this._display.decimal.value;
+        const thousands = this._display.thousands.value;
         const leftSide = integers.split(/(?=(?:.{3})*$)/).join(thousands);
         const value = leftSide + (digits ? (decimal + digits) : '')
 
-        const usingCustom = this._config.tag.using.value;
+        const usingCustom = this._tag.using.value;
         if (!usingCustom) return `${value} ${this.tag}`;
 
-        const customTag = this._config.tag.display.value;
-        return customTag.value.replace('¤', value);
+        const customTag = this._tag.display.value;
+        return customTag.replace('¤', value);
     }
 }

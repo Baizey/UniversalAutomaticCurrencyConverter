@@ -50,5 +50,86 @@ describe('CurrencyAmount', () => {
             });
         });
     });
+    describe('Converting', () => {
+        const tests = [
+            {amount: 1, expect: 1, rate: 1},
+            {amount: 1, expect: 2, rate: 2},
+            {amount: 1, expect: 1.5, rate: 1.5},
+            {amount: 1, expect: 0.5, rate: 0.5},
+            {amount: 2, expect: 1, rate: 0.5},
+            {amount: 1.5, expect: 1, rate: 0.6666666666666666},
+            {amount: 0.5, expect: 1, rate: 2},
+        ];
+        tests.forEach(test => {
+            it(`Input: ${test.amount}, Expected: ${test.expect}, Rate: ${test.rate}`, async () => {
+                // Setup
+                const currencies = new Currencies();
+                currencies._rates['AAA'] = {'BBB': new CurrencyRate('AAA', 'BBB', test.rate, Date.now())};
+                const original = new CurrencyAmount('AAA', test.amount, {currencies: currencies});
 
+                // Act
+                const actual = await original.convertTo('BBB');
+
+                // Assert
+                expect(original.amount).toEqual(test.amount);
+                expect(original.tag).toEqual('AAA');
+                expect(actual.amount).toEqual(test.expect);
+                expect(actual.tag).toEqual('BBB');
+            });
+        });
+
+        it(`Unknown currency`, async () => {
+            // Setup
+            const browser = new Browser();
+            browser.loadLocal = async () => ({});
+            browser.background = {
+                getRate: async () => {
+                    throw 'failure'
+                }
+            }
+            const currencies = new Currencies({browser: browser});
+            const original = new CurrencyAmount('UNK', 0, {currencies: currencies});
+
+            // Act
+            const actual = await original.convertTo('UNK');
+
+            // Assert
+            expect(original.amount).toEqual(0);
+            expect(original.tag).toEqual('UNK');
+            expect(actual).toEqual(null);
+        });
+    });
+
+
+    describe('Display', () => {
+        const tests = [
+            {rounding: 3, amount: 123, currency: 'UNK', expect: '123 UNK'},
+            {rounding: 2, amount: 123, currency: 'UNK', expect: '120 UNK'},
+            {rounding: 8, amount: 123.456, currency: 'UNK', expect: '123.46 UNK'},
+            {rounding: 8, amount: 123456, currency: 'UNK', expect: '123 456 UNK'},
+            {rounding: 8, amount: 123.456, currency: 'UNK', expect: '123,46 UNK', decimal: ','},
+            {rounding: 8, amount: 123456, currency: 'UNK', expect: '123.456 UNK', thousands: '.'},
+            {rounding: 8, amount: 123456, currency: 'UNK', expect: 'a 123 456 a', using: true, tag: 'a ¤ a'},
+            {rounding: 8, amount: 0.25, currency: 'UNK', expect: 'a 0.50 a', using: true, tag: 'a ¤ a', value: 2},
+        ];
+        tests.forEach(test => {
+            it(`Rounding: ${test.rounding}, amount: ${test.amount}, currency: ${test.currency}, expect: ${test.expect}`, async () => {
+                // Setup
+                const config = new Configuration();
+                config.display.rounding.setValue(test.rounding);
+                config.display.decimal.setValue(test.decimal);
+                config.display.thousands.setValue(test.thousands);
+                config.tag.using.setValue(test.using);
+                config.tag.value.setValue(test.value);
+                config.tag.display.setValue(test.tag)
+                const original = new CurrencyAmount(test.currency, test.amount, {config: config});
+
+                // Act
+                const actual = original.toString();
+
+                // Assert
+                expect(actual).toEqual(test.expect);
+            });
+        })
+    });
 });

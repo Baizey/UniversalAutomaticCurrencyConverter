@@ -46,7 +46,7 @@ class Configuration {
      * @param {{browser: Browser}} services
      */
     constructor(services = {}) {
-        this._browser = services.browser || Browser.instance();
+        this._browser = services.browser || Browser.instance;
         this.alert = new ConfigurationAlert();
         this.localization = new ConfigurationLocalisation();
         this.whitelist = new ConfigurationWhitelist();
@@ -89,7 +89,7 @@ class ConfigurationDisplay {
             '',
             'thousandDisplay',
             ' ',
-            e => hasLength(e, 1));
+            e => hasLength(e, 1) || hasLength(e, 0));
         this.decimal = new Setting(
             '',
             'decimalDisplay',

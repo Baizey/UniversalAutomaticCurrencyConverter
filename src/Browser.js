@@ -18,21 +18,10 @@ class Browser {
     }
 
     static absoluteHostname() {
-        const host = Browser.hostname;
+        const host = Browser.instance.hostname;
         const parts = host.split('.');
         if (parts.length <= 1) return parts[0];
         return parts[parts.length - 2] + '.' + parts[parts.length - 1];
-    }
-
-    static setHostname(hostname) {
-        Browser.instance().fullHostName = hostname;
-    }
-
-    static get hostname() {
-        const name = Browser.instance().fullHostName;
-        if (Utils.isDefined(name))
-            return name;
-        return window.location.hostname;
     }
 
     static getHost() {
@@ -41,16 +30,8 @@ class Browser {
         return index < 0 ? '' : hostname.substr(index + 1);
     }
 
-    static isChrome() {
-        return Browser.instance().isChrome();
-    }
-
-    static isFirefox() {
-        return Browser.instance().isFirefox();
-    }
-
     static updateReviewLink() {
-        const url = Browser.isChrome()
+        const url = Browser.instance.isChrome()
             ? 'https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli'
             : 'https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/';
         chrome.tabs.create({url: url});
@@ -64,9 +45,18 @@ class Browser {
         return chrome.runtime.getManifest().version;
     }
 
-    static instance(dummy) {
-        if (dummy) return (_browserInstance = new Browser(dummy));
-        return _browserInstance ? _browserInstance : (_browserInstance = new Browser(dummy));
+    /**
+     * @param {Browser} instance
+     */
+    static setInstance(instance) {
+        _browserInstance = instance;
+    }
+
+    /**
+     * @returns {Browser}
+     */
+    static get instance() {
+        return _browserInstance ? _browserInstance : (_browserInstance = new Browser());
     }
 
     /**
@@ -76,9 +66,9 @@ class Browser {
      */
     static load(key, sync = true) {
         if (sync)
-            return Browser.instance().loadSync(key);
+            return Browser.instance.loadSync(key);
         else
-            return Browser.instance().loadLocal(key);
+            return Browser.instance.loadLocal(key);
     }
 
     /**
@@ -89,29 +79,13 @@ class Browser {
      */
     static save(key, value, sync = true) {
         if (sync)
-            return Browser.instance().saveSync(key, value);
+            return Browser.instance.saveSync(key, value);
         else
-            return Browser.instance().saveLocal(key, value);
-    }
-
-    /**
-     * @param type
-     * @param data
-     * @return {Promise<any>}
-     */
-    static httpGet(type, data = {}) {
-        return Browser.instance().cors.call(type, data);
-    }
-
-    /**
-     * @return {Promise<any>}
-     */
-    static selectedText() {
-        return Browser.instance().cors.getSelectedText();
+            return Browser.instance.saveLocal(key, value);
     }
 
     constructor(dummy = null) {
-        this.fullHostName = undefined;
+        this._fullHostName = undefined;
         if (dummy) {
             this.type = dummy.type;
             this.access = dummy.access;
@@ -124,6 +98,12 @@ class Browser {
                 : Browsers.Chrome)
             : Browsers.Edge;
         this.access = this.type === Browsers.Firefox ? browser : chrome;
+    }
+
+    get hostname() {
+        if (!this._fullHostName)
+            this._fullHostName = window.location.hostname;
+        return this._fullHostName;
     }
 
     isFirefox() {
@@ -161,14 +141,6 @@ class Browser {
                 return resolve(resp);
             });
         }).catch(error => Utils.logError(error));
-    }
-
-    static messageBackground(data) {
-        return new Promise((resolve, reject) => {
-            chrome.runtime.sendMessage(data, function (resp) {
-                return resp.success ? resolve(resp.data) : reject(resp.data);
-            });
-        });
     }
 
     get background() {

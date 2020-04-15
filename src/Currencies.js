@@ -1,5 +1,4 @@
 let _currenciesInstance = null;
-
 class Currencies {
     /**
      * @returns {Currencies}
@@ -15,13 +14,13 @@ class Currencies {
     constructor(services = {}) {
         this._rates = {}
         this._symbols = null;
-        this._browser = services.browser || Browser.instance();
+        this._browser = services.browser || Browser.instance;
     }
 
     /**
      * @returns {Promise<string[]>}
      */
-    async get symbols() {
+    async symbols() {
         if (!this._symbols) await this._fetchSymbols();
         return this._symbols;
     }
@@ -58,7 +57,7 @@ class Currencies {
 
         // Otherwise call API to get new rate
         // TODO: handle error better
-        const resp = await this._browser.background.getRate(from, to).catch(error => null);
+        const resp = await this._browser.background.getRate(from, to).then(e => e.rate).catch(error => null);
         if (!resp) return;
 
         this._rates[from][to] = new CurrencyRate(from, to, Number(resp), Date.now());
