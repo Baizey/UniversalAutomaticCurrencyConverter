@@ -85,10 +85,9 @@ const updateExamples = () => {
 
 let lastHighLight = Date.now();
 const updateHighlightExample = () => {
-    if (Date.now() <= lastHighLight + 1000)
-        return;
-    lastHighLight = Date.now();
-    throw 'not implemented updateHighlightExample'
+    const element = document.getElementById('highlightExample');
+    const currencyElement = new CurrencyElement(element);
+    currencyElement.highlight();
 };
 
 const initiateCustomElements = () => {
@@ -178,10 +177,10 @@ const setUiValue = async (key, value) => {
     else
         element.value = setting.value;
 
-    if (key.indexOf('currency') >= 0 || key.indexOf('Display') >= 0 || key === 'decimalAmount')
-        updateExamples();
-    else if (key.indexOf('Highlight') >= 0)
+    if (key.indexOf('Highlight') >= 0)
         updateHighlightExample();
+    else if (key.indexOf('currency') >= 0 || key.indexOf('Display') >= 0 || key === 'decimalAmount')
+        updateExamples();
 };
 
 
@@ -229,8 +228,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Newly installed banner
     const options = document.getElementById('options-wrapper');
-    if (false) {
-        const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
+    const firstTimeKey = 'uacc:global:oldUser'
+    const isOldUser  = (await Browser.instance.loadSync(firstTimeKey))[firstTimeKey];
+    await Browser.instance.saveSync(firstTimeKey, true);
+    if (!isOldUser) {
         const progressBarBlue = document.getElementById('firsttime-progress-blue');
         const progressBarGreen = document.getElementById('firsttime-progress-green');
         options.classList.add('hidden');

@@ -74,17 +74,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) 
     return true;
 });
 
-
-// TODO: re-implement this
-/*
-function getSelectedText(request, sender, senderResponse) {
-    senderResponse({success: true, data: window.getSelection().toString()});
-    return true;
-}
-
 const openOptionsIfNew = async () => {
-    const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
-    if (isFirstTime) {
+    const firstTimeKey = 'uacc:global:oldUser'
+    const isOldUser  = (await Browser.instance.loadSync(firstTimeKey))[firstTimeKey];
+    if (!isOldUser) {
         chrome.tabs.create({
             url: 'options/options.html',
             active: true
@@ -93,6 +86,13 @@ const openOptionsIfNew = async () => {
 };
 
 openOptionsIfNew().finally();
+
+// TODO: re-implement this
+/*
+function getSelectedText(request, sender, senderResponse) {
+    senderResponse({success: true, data: window.getSelection().toString()});
+    return true;
+}
 
 chrome.contextMenus.create({
     title: `Add to mini converter`,
