@@ -32,17 +32,5 @@ class Engine {
         timer.log('Determined localization...').reset();
         this._allowance.updateFromConfig();
         timer.log('Pre-processed white/black listing...').reset();
-    }
-
-    /**
-     * @returns {Promise<void>}
-     * @private
-     */
-    async _loadSiteLocalization() {
-        const canShowAlert = this._config.alert.localization.value;
-        if (canShowAlert && await this._activeLocalization.hasConflict()) {
-            // TODO: show alert
-        }
-    }
-
+    }s
 }

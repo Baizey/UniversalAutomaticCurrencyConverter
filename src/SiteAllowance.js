@@ -65,6 +65,7 @@ class Trie {
         if (hosts[0] === 'www') hosts.shift();
         while (hosts.length > 0) {
             const part = hosts.pop();
+            if (!part) continue;
             at = at.hosts[part];
             if (!at) return result;
             if (at.isSet) result = at._isAllowed;
@@ -72,6 +73,7 @@ class Trie {
         const paths = url.pathname.split('/').reverse();
         while (paths.length > 0) {
             const part = paths.pop();
+            if (!part) continue;
             at = at.paths[part];
             if (!at) return result;
             if (at.isSet) result = at._isAllowed;
@@ -99,12 +101,14 @@ class Trie {
         if (hosts[0] === 'www') hosts.shift();
         while (hosts.length > 0) {
             const part = hosts.pop();
+            if (!part) continue;
             if (!at.hosts[part]) at.hosts[part] = new Trie();
             at = at.hosts[part];
         }
         const paths = url.pathname.split('/').reverse();
         while (paths.length > 0) {
             const part = paths.pop();
+            if (!part) continue;
             if (!at.paths[part]) at.paths[part] = new Trie();
             at = at.paths[part];
         }
