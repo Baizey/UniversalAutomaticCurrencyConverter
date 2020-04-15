@@ -264,9 +264,11 @@ const update = async () => {
         .reduce((a, b) => ({...a, ...b}), {});
 
     delete rates['AMD'];
-    delete rates['ALL'];
     delete symbols['AMD'];
+    delete rates['ALL'];
     delete symbols['ALL'];
+    delete rates['AWG'];
+    delete symbols['AWG'];
 
     const now = new Date();
 
