@@ -71,7 +71,7 @@ class Currencies {
         // Get symbols from local storage if valid
         const storage = await this._browser.loadLocal([symbolsKey, dateKey]);
         const symbols = storage[symbolsKey];
-        const diff = Date.now() - storage[dateKey];
+        const diff = Date.now() - (storage[dateKey] || 1);
         // Symbols rarely changes, but they do change, force update once a week
         if (diff < 1000 * 60 * 60 * 24 * 7) {
             this._symbols = symbols;
@@ -81,9 +81,9 @@ class Currencies {
         // Otherwise call API to get new symbols list
         // TODO: handle error better
         const resp = await this._browser.background.getSymbols().catch(error => null);
+        console.log(resp)
         if (!resp) return;
-
-        await this._browser.saveLocal({[symbolsKey]: resp, [dateKey]: Date.now()}, null);
         this._symbols = resp;
+        await this._browser.saveLocal({[symbolsKey]: this._symbols, [dateKey]: Date.now()}, null);
     }
 }

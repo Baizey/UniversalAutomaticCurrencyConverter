@@ -56,6 +56,22 @@ class ActiveLocalization {
     }
 
     /**
+     * @returns {boolean}
+     */
+    async hasConflict() {
+        if (this.krone === this._defaultKrone && this.dollar === this._defaultDollar && this.yen === this._defaultYen)
+            return false;
+        return !(await this.isLocked());
+    }
+
+    /**
+     * @returns {Promise<boolean>}
+     */
+    async isLocked() {
+        return !!(await this._browser.loadLocal([this._lockedKey]))[this._lockedKey];
+    }
+
+    /**
      * @param {boolean} bool
      * @returns {Promise<void>}
      */
@@ -67,11 +83,10 @@ class ActiveLocalization {
      * @returns {Promise<void>}
      */
     async determineForSite() {
-        const isLocked = (await this._browser.loadLocal([this._lockedKey]))[this._lockedKey];
-        // If user has set the site to not be dynamically determined
-        if (isLocked) return;
-
-        throw 'unimplemented'
+        // If the user has locked localization for site, do nothing
+        if (await this.isLocked()) return;
+        // TODO:
+        //throw 'unimplemented'
 
     }
 

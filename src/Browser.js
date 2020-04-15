@@ -128,7 +128,7 @@ class Browser {
                     return resolve(resp);
                 });
             })
-        ).catch(error => Utils.logError(error));
+        ).catch(error => console.error(error));
     }
 
     /**
@@ -140,7 +140,7 @@ class Browser {
             return chrome.runtime.sendMessage(data, function (resp) {
                 return resolve(resp);
             });
-        }).catch(error => Utils.logError(error));
+        }).catch(error => console.error(error));
     }
 
     get background() {
@@ -198,10 +198,10 @@ class Browser {
         return new Promise((resolve, reject) => {
             if (!Array.isArray(key)) key = [key];
             storage.get(key, function (resp) {
-                if (Utils.isUndefined(resp))
+                if (!resp)
                     return reject(resp);
 
-                Utils.log('LOAD', `From keys: ${key.join(', ')}\nGot: ${JSON.stringify(resp)}`);
+                console.log(`LOAD From keys: ${key.join(', ')}\nGot: ${JSON.stringify(resp)}`);
 
                 Object.keys(resp).forEach(key => {
                     try {
@@ -223,7 +223,7 @@ class Browser {
         const toStore = ((typeof key) === 'string') ? {[key]: value} : key;
         return new Promise(resolve => {
             storage.set(toStore, () => {
-                Utils.log('SAVE', JSON.stringify(toStore));
+                console.log(`SAVE ${JSON.stringify(toStore)}`);
                 resolve();
             });
         });

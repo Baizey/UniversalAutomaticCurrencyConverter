@@ -1,6 +1,3 @@
-/**
- * @type {{get: (function(string): Promise<*>)}}
- */
 const Ajax = {
     get: url => new Promise((resolve, reject) => {
         if (!url) return reject('No url given');
@@ -44,6 +41,21 @@ function isCurrencyTag(value) {
     return typeof (value) === 'string' && /^[A-Z]{3}$/.test(value);
 }
 
+function openPopup(senderResponse) {
+    chrome.tabs.create({
+        url: 'popup/popup.html',
+        active: false
+    }, tab => {
+        chrome.windows.create({
+            tabId: tab.id,
+            focused: true,
+            type: 'popup',
+            width: 440,
+            height: 500,
+        }, window => senderResponse({success: true, data: window}));
+    });
+}
+
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
     switch (request.type) {
         case 'rate':
@@ -53,18 +65,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) 
             symbols(senderResponse);
             break;
         case 'openPopup':
-            chrome.tabs.create({
-                url: 'popup/popup.html',
-                active: false
-            }, tab => {
-                chrome.windows.create({
-                    tabId: tab.id,
-                    focused: true,
-                    type: 'popup',
-                    width: 440,
-                    height: 500,
-                }, window => senderResponse({success: true, data: window}));
-            });
+            openPopup(senderResponse);
             break;
         default:
             senderResponse({success: false, data: `Unknown type '${request.type}' for background`});

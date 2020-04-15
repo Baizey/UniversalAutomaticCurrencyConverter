@@ -23,20 +23,19 @@
       ],
       "js": [
         "XRegExp.js",
-        "Utils.js",
+        "Timer.js",
         "Browser.js",
+        "Localizations.js",
         "Configuration.js",
+
+        "CurrencyAmount.js",
+        "CurrencyRate.js",
+
+        "ActiveLocalization.js",
         "Currencies.js",
 
-        "SiteLocalization.js",
-        "CustomTag.js",
-        "Blacklist.js",
-        "Highlighter.js",
-        "Localization.js",
-        "CurrencyDetector.js",
-        "CurrencyConverter.js",
-        "NumberFormatter.js",
-        "ElementTransformer.js",
+        "Detector.js",
+
         "Engine.js",
         "content/content.js"
       ],
@@ -47,7 +46,6 @@
   ],
   "background": {
     "scripts": [
-      "Utils.js",
       "Browser.js",
       "background.js"
     ],

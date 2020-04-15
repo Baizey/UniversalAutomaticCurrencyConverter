@@ -102,17 +102,15 @@ class Localizations {
         }
     }
 
-    static get allLocalizationMappings() {
+    static get allUniqueLocalizationMappings() {
         if (!_currencySymbolsCache) {
             const result = {};
-            const shared = Localizations.shared;
-            for (let i in shared) result[i] = shared[i];
             const unique = Localizations.unique;
             for (let i in unique) {
                 const symbols = unique[i];
                 for (let s in symbols)
                     if (symbols.hasOwnProperty(s))
-                        result[symbols[s]] = [i]
+                        result[symbols[s]] = i
             }
             _currencySymbolsCache = result;
         }
