@@ -2,9 +2,9 @@ let _configurationInstance = null;
 
 const isBool = e => typeof (e) === 'boolean';
 const isString = e => typeof (e) === 'string';
-const isNumber = e => typeof (e) === 'number' && !isNaN(e) && Number.isFinite(e);
-const isInt = e => isNumber(e) && Math.floor(e) === e;
-const isPositive = e => isNumber(e) && e >= 0;
+const isNumber = e => !isNaN(Number(e)) && Number.isFinite(Number(e));
+const isInt = e => isNumber(e) && Math.floor(Number(e)) === Number(e);
+const isPositive = e => isNumber(e) && Number(e) >= 0;
 const hasLength = (e, length) => isString(e) && e.length === length;
 const isStringArray = e => Array.isArray(e) && e.every(isString);
 
@@ -294,7 +294,10 @@ class Setting {
      */
     setValue(value) {
         if (!this._validation(value)) return false;
-        this._value = value;
+        if (typeof (this._defaultValue) === 'number')
+            this._value = Number(value);
+        else
+            this._value = value;
         return true;
     }
 
@@ -302,7 +305,7 @@ class Setting {
      * @returns {Promise<boolean>}
      */
     async save() {
-        const browser = Browser.instance();
+        const browser = Browser.instance;
         await browser.saveSync(this.storageKey, this.value);
     }
 
@@ -311,7 +314,7 @@ class Setting {
      * @returns {Promise<boolean>}
      */
     async load() {
-        const browser = Browser.instance();
+        const browser = Browser.instance;
         const loaded = await browser.loadSync(this.storageKey);
         if (!loaded) return false;
         return this.setValue(loaded[this.storageKey]);

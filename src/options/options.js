@@ -1,5 +1,3 @@
-const engine = new Engine();
-
 const Ids = {
     'currency': 'currency',
     'currencyLastUpdate': 'currencyLastUpdate',
@@ -9,7 +7,7 @@ const Ids = {
  * @returns {Promise<string>}
  */
 const updateCurrencyLists = async () => {
-    const symbols = (await Browser.httpGet('symbols')).symbols;
+    const symbols = await Currencies.instance.symbols();
     document.getElementById(Ids.currency).innerHTML = Object.keys(symbols)
         .sort()
         .map(tag => `<option value="${tag}">${symbols ? `${tag} (${symbols[tag]})` : tag}</option>`)
@@ -61,15 +59,24 @@ const updateLists = () => {
 };
 
 const updateExamples = () => {
-    const formatter = engine.numberFormatter;
-    const converter = engine.currencyConverter;
-    const formattingExample = 123456.78;
-    const conversionExample = 100;
+    const tag = Configuration.instance.currency.tag.value;
+
+    const formatConfig = new Configuration();
+    formatConfig.display = Configuration.instance.display;
+    formatConfig.currency = Configuration.instance.currency;
+    const formatExample = new CurrencyAmount(tag, 123456.78, {config: formatConfig});
+
     const formattingDiv = document.getElementById('formattingExample');
-    if (formattingDiv) formattingDiv.value = formatter.format(formatter.round(formattingExample));
+    if (formattingDiv) formattingDiv.value = formatExample.toString();
+
+    const customConfig = new Configuration();
+    customConfig.display = Configuration.instance.display;
+    formatConfig.currency = Configuration.instance.currency;
+    customConfig.tag = Configuration.instance.tag;
+    const customExample = new CurrencyAmount(tag, 100, {config: customConfig});
 
     const displayExample = document.getElementById('displayExample');
-    if (displayExample) displayExample.value = engine.transform(conversionExample, converter.baseCurrency);
+    if (displayExample) displayExample.value = customExample.toString();
 };
 
 let lastHighLight = Date.now();
@@ -77,14 +84,12 @@ const updateHighlightExample = () => {
     if (Date.now() <= lastHighLight + 1000)
         return;
     lastHighLight = Date.now();
-    engine.elementTransformer
-        .highlightConversion(document.getElementById('highlightExample'))
-        .catch();
+    throw 'not implemented updateHighlightExample'
 };
 
 const initiateCustomElements = () => {
     Utils.getByClass('checkbox')
-        .filter(e => Utils.isUndefined(e.checked))
+        .filter(e => e.checked !== false && e.checked !== true)
         .forEach(box => {
             box.checked = box.classList.contains('checked');
             const check = () => {
@@ -135,6 +140,9 @@ const getUiValue = key => {
             return element.value;
 
         // Checkbox
+        case 'utilityHoverConvert':
+        case 'usingWhitelist':
+        case 'usingBlacklist':
         case 'showNonDefaultCurrencyAlert':
         case 'currencyUsingAutomatic':
         case 'currencyUsingHighlight':
@@ -146,7 +154,6 @@ const getUiValue = key => {
         case 'currency':
             return element.children[element.selectedIndex].value || 'EUR';
         // Selector
-        case 'usingBlacklist':
         case 'currencyLocalizationDollar':
         case 'currencyLocalizationAsian':
         case 'currencyLocalizationKroner':
@@ -158,138 +165,70 @@ const getUiValue = key => {
 
 const setUiValue = async (key, value) => {
     const element = document.getElementById(key);
-    switch (key) {
+    const setting = Configuration.instance.byStorageKey[key];
+    if (!setting) throw `Unknown key '${key}'`;
+    setting.setValue(value);
+    if (key.indexOf('urls') >= 0) {
+    } else if (typeof (element.change) === 'function')
+        element.change(setting.value)
+    else
+        element.value = setting.value;
 
-        case 'showNonDefaultCurrencyAlert':
-            engine.withShowNonDefaultCurrencyAlert(value);
-            element.change(engine.showNonDefaultCurrencyAlert);
-            break;
-
-        case 'currencyLocalizationDollar':
-        case 'currencyLocalizationKroner':
-        case 'currencyLocalizationAsian':
-            engine.localization.site.setDefaultLocalization(value);
-            element.value = engine.getById(key);
-            break;
-        case 'currencyUsingAutomatic':
-            engine.shouldAutoconvert(value);
-            element.change(engine.automaticPageConversion);
-            break;
-        case 'usingBlacklist':
-            if (value === true) value = 'blacklist';
-            else if (value === false) value = 'none';
-            engine.blacklist.using(value);
-            engine.whitelist.using(value);
-            const result =
-                engine.blacklist.isEnabled
-                    ? 'blacklist'
-                    : (engine.whitelist.isEnabled ? 'whitelist' : 'none');
-            element.value = result;
-            break;
-
-        case 'currencyHighlightColor':
-            engine.highlighter.withColor(value);
-            element.value = engine.highlighter.color;
-            updateHighlightExample();
-            break;
-        case 'currencyHighlightDuration':
-            engine.highlighter.withDuration(value);
-            element.value = engine.highlighter.duration;
-            updateHighlightExample();
-            break;
-        case 'currencyUsingHighlight':
-            engine.highlighter.using(value);
-            element.change(engine.highlighter.isEnabled);
-            updateHighlightExample();
-            break;
-        case 'currency':
-            engine.currencyConverter.withBaseCurrency(value);
-            element.value = engine.currencyConverter.baseCurrency;
-            updateExamples();
-            break;
-        case 'currencyShortcut':
-            engine.withCurrencyShortcut(value);
-            element.value = engine.conversionShortcut;
-            break;
-        case 'currencyCustomTagValue':
-            engine.customTag.withValue(value);
-            element.value = engine.customTag.value;
-            updateExamples();
-            break;
-        case 'currencyCustomTag':
-            engine.customTag.withTag(value);
-            element.value = engine.customTag.tag;
-            updateExamples();
-            break;
-        case 'currencyUsingCustomTag':
-            engine.customTag.using(value);
-            element.change(engine.customTag.enabled);
-            updateExamples();
-            break;
-        case 'thousandDisplay':
-            engine.numberFormatter.withThousand(value);
-            element.value = engine.numberFormatter.thousand;
-            updateExamples();
-            break;
-        case 'decimalDisplay':
-            engine.numberFormatter.withDecimal(value);
-            element.value = engine.numberFormatter.decimal;
-            updateExamples();
-            break;
-        case 'decimalAmount':
-            engine.numberFormatter.withRounding(Math.round(value));
-            element.value = engine.numberFormatter.rounding;
-            updateExamples();
-            break;
-        default:
-            throw 'Unknown element';
-    }
+    if (key.indexOf('currency') >= 0 || key.indexOf('Display') >= 0 || key === 'decimalAmount')
+        updateExamples();
+    else if (key.indexOf('Highlight') >= 0)
+        updateHighlightExample();
 };
 
 
 document.addEventListener("DOMContentLoaded", async function () {
-    // Initiate UI elements
-    initiateCustomElements();
-    Browser.updateFooter();
+    const config = Configuration.instance;
+    await config.load();
+
+    await setUiValue(Ids.currency, config.currency.tag.value);
     await updateCurrencyLists();
 
-    // Load engine data
-    await engine.getConversionRates();
-    await engine.loadSettings();
-    await setUiValue(Ids.currency, engine.currencyConverter.baseCurrency);
-    document.getElementById(Ids.currencyLastUpdate).innerText = engine.lastCurrencyUpdate;
+    initiateCustomElements();
 
-    // Blacklist fields
-    updateLists();
+    // TODO: Browser.updateFooter();
+    // TODO: document.getElementById(Ids.currencyLastUpdate).innerText = engine.lastCurrencyUpdate;
+
+    // TODO: Blacklist fields
+    // updateLists();
 
     // Normal fields
-    for (const id of Utils.storageIds()) {
-        if (Utils.manualStorageIds()[id])
-            continue;
-        const value = engine.getById(id);
-        const element = document.getElementById(id);
+    const settings = Configuration.instance.settings;
+    for (let i = 0; i < settings.length; i++) {
+        const setting = settings[i];
+        const value = setting.value;
+        const key = setting.storageKey;
+        // TODO: use setting.htmlId
+        const htmlId = setting.storageKey;
+        const element = document.getElementById(htmlId);
+        await setUiValue(key, value);
 
-        await setUiValue(id, value);
+        if (!element) continue;
 
         element.addEventListener('focus', () => element.style.border = '1px solid #f0ad4e');
         element.addEventListener('focusout', () => element.style.border = '');
 
         element.addEventListener('change', async function () {
-            const oldValue = getUiValue(id);
-            await setUiValue(id, oldValue);
-            const newValue = getUiValue(id);
+            const oldValue = getUiValue(key);
+            await setUiValue(key, oldValue);
+            const newValue = getUiValue(key);
 
             if (newValue !== oldValue)
-                document.getElementById(id).style.border = '1px solid red';
+                document.getElementById(key).style.border = '1px solid red';
             else
-                Browser.save(id, oldValue).then(() => document.getElementById(id).style.border = '1px solid green');
+                setting.save()
+                    .then(() => document.getElementById(key).style.border = '1px solid green');
         });
     }
 
     // Newly installed banner
-    const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
     const options = document.getElementById('options-wrapper');
-    if (isFirstTime) {
+    if (false) {
+        const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
         const progressBarBlue = document.getElementById('firsttime-progress-blue');
         const progressBarGreen = document.getElementById('firsttime-progress-green');
         options.classList.add('hidden');

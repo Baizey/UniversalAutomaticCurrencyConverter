@@ -7,7 +7,7 @@ class CurrencyAmount {
     constructor(tag, amount = 0, services = {}) {
         const config = services.config || Configuration.instance;
         this._display = config.display;
-        this._tag = config.tag;
+        this._tagConfig = config.tag;
         this._converter = services.currencies || Currencies.instance;
         this._services = services;
         this._tag = tag.toUpperCase();
@@ -36,11 +36,11 @@ class CurrencyAmount {
         let fixed = this.amount;
 
         // TODO: custom tag value
-        const usingCustom = this._tag.using.value;
+        const usingCustom = this._tagConfig.using.value;
         if (usingCustom) {
-            const factor = this._tag.value.value;
+            const factor = this._tagConfig.value.value;
             if (factor !== 1) {
-                fixed *= this._tag.value.value;
+                fixed *= this._tagConfig.value.value;
             }
         }
 
@@ -99,10 +99,10 @@ class CurrencyAmount {
         const leftSide = integers.split(/(?=(?:.{3})*$)/).join(thousands);
         const value = leftSide + (digits ? (decimal + digits) : '')
 
-        const usingCustom = this._tag.using.value;
+        const usingCustom = this._tagConfig.using.value;
         if (!usingCustom) return `${value} ${this.tag}`;
 
-        const customTag = this._tag.display.value;
+        const customTag = this._tagConfig.display.value;
         return customTag.replace('¤', value);
     }
 }

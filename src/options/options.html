@@ -15,20 +15,15 @@
     <script src="../XRegExp.js"></script>
     <!-- UACC Need -->
     <script src="../Utils.js"></script>
+    <script src="../Timer.js"></script>
     <script src="../Browser.js"></script>
-    <!-- UACC Data holders -->
-    <script src="../SiteLocalization.js"></script>
-    <script src="../Highlighter.js"></script>
-    <script src="../CustomTag.js"></script>
-    <script src="../Blacklist.js"></script>
-    <!-- Helpers -->
-    <script src="../Localization.js"></script>
+    <script src="../Configuration.js"></script>
+    <script src="../Localizations.js"></script>
     <!-- UACC Mini-services -->
-    <script src="../NumberFormatter.js"></script>
-    <script src="../CurrencyConverter.js"></script>
-    <script src="../CurrencyDetector.js"></script>
-    <script src="../ElementTransformer.js"></script>
-    <!-- UACC Runner -->
+    <script src="../CurrencyAmount.js"></script>
+    <script src="../CurrencyRate.js"></script>
+    <script src="../ActiveLocalization.js"></script>
+    <script src="../Currencies.js"></script>
     <script src="../Engine.js"></script>
     <!-- UACC domain specific -->
     <script src="options.js"></script>
@@ -74,15 +69,26 @@
             <label class="center" for="currency">Convert to</label>
             <select id="currency" name="currency" class="form-control"></select>
         </div>
+    </div>
+    <!-- Utilities -->
+    <div class="row">
+        <h2 class="centering">Utilities</h2>
         <div>
-            <div style="width:50%; float:left">
-                <label class="center" for="currencyShortcut">Hover conversion shortcut</label>
+            <div style="width:33.33%; float:left">
+                <label class="center" for="currencyShortcut">Hover and click shortcut to convert</label>
                 <input id="currencyShortcut" class="form-control clickable center" name="currencyShortcut"
                        type="text"
                        readonly="readonly" value="Shift">
                 <span class="help-block center">Hold your mouse over to change</span>
             </div>
-            <div style="width:50%; float:left">
+            <div style="width:33.33%; float:left">
+                <label class="center" for="utilityHoverConvert">Convert prices on hover over</label>
+                <div id="utilityHoverConvert" class="centering checkbox">
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div style="width:33.33%; float:left">
                 <label class="center" for="currencyUsingAutomatic">Automatic page conversion</label>
                 <div id="currencyUsingAutomatic" class="centering checkbox">
                     <div></div>
@@ -218,17 +224,19 @@
     <!-- Black/White-listing -->
     <div class="row">
         <h2 class="centering">Black/White-listing</h2>
-        <div class="col-sm-4">
+        <div style="width:50%; float:left">
+            <label class="center" for="usingBlacklist">Use blacklist</label>
+            <div id="usingBlacklist" class="centering checkbox">
+                <div></div>
+                <div></div>
+            </div>
         </div>
-        <div class="col-sm-4">
-            <label class="center" for="usingBlacklist">Using</label>
-            <select id="usingBlacklist" class="form-control">
-                <option value="blacklist">Blacklisting</option>
-                <option value="whitelist">Whitelisting</option>
-                <option value="none">None</option>
-            </select>
-        </div>
-        <div class="col-sm-4">
+        <div style="width:50%; float:left">
+            <label class="center" for="usingWhitelist">Use whitelist</label>
+            <div id="usingWhitelist" class="centering checkbox">
+                <div></div>
+                <div></div>
+            </div>
         </div>
         <div class="col-sm-6">
             <label class="center" for="currencyBlacklistUrls">Blacklist</label>
