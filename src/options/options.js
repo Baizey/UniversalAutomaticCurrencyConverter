@@ -27,35 +27,39 @@ const createListField = (wrapper, value = '') => {
 const updateListChildren = (wrapper) => {
     const children = wrapper.children;
     const urls = [];
-    for (let i = 0; i < children.length; i++)
-        if (children[i].value) urls.push(children[i].value);
-        else wrapper.removeChild(children[i--]);
+    for (let i = 0; i < children.length; i++) {
+        if (children[i].value) {
+            if (!children[i].value.startsWith('http://') && !children[i].value.startsWith('https://'))
+                children[i].value = `https://${children[i].value}`;
+            const value = children[i].value;
+            const url = new URL(value);
+            urls.push(url.href);
+        } else
+            wrapper.removeChild(children[i--]);
+    }
     createListField(wrapper);
     return urls;
 };
 
 const updateLists = () => {
+    const config = Configuration.instance;
     // Update whitelist
     const whitelistWrapper = document.getElementById('currencyWhitelistUrls');
-    if (whitelistWrapper.children.length === 0) {
-        engine.whitelist.urls.forEach(url => createListField(whitelistWrapper, url));
-        createListField(whitelistWrapper);
-    } else {
-        const urls = updateListChildren(whitelistWrapper);
-        engine.whitelist.withUrls(urls);
-        Browser.save('whitelistingurls', engine.whitelist.urls).catch();
-    }
-
-    // Update blacklist
     const blacklistWrapper = document.getElementById('currencyBlacklistUrls');
-    if (blacklistWrapper.children.length === 0) {
-        engine.blacklist.urls.forEach(url => createListField(blacklistWrapper, url));
-        createListField(blacklistWrapper);
-    } else {
-        const urls = updateListChildren(blacklistWrapper);
-        engine.blacklist.withUrls(urls);
-        Browser.save('blacklistingurls', engine.blacklist.urls).catch();
+    const blacklist = config.blacklist;
+    const whitelist = config.whitelist;
+    const updateList = (wrapper, list) => {
+        if (wrapper.children.length === 0) {
+            list.urls.value.forEach(url => createListField(wrapper, url));
+            createListField(wrapper);
+        } else {
+            const urls = updateListChildren(wrapper);
+            list.urls.setValue(urls);
+            list.urls.save().catch();
+        }
     }
+    updateList(whitelistWrapper, whitelist);
+    updateList(blacklistWrapper, blacklist);
 };
 
 const updateExamples = () => {
@@ -190,11 +194,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     initiateCustomElements();
 
-    // TODO: Browser.updateFooter();
-    // TODO: document.getElementById(Ids.currencyLastUpdate).innerText = engine.lastCurrencyUpdate;
+    Browser.updateFooter();
 
-    // TODO: Blacklist fields
-    // updateLists();
+    updateLists();
 
     // Normal fields
     const settings = Configuration.instance.settings;

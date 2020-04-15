@@ -1,4 +1,5 @@
 let _currenciesInstance = null;
+
 class Currencies {
     /**
      * @returns {Currencies}
@@ -18,10 +19,11 @@ class Currencies {
     }
 
     /**
+     * @param {boolean} forceUpdate
      * @returns {Promise<string[]>}
      */
-    async symbols() {
-        if (!this._symbols) await this._fetchSymbols();
+    async symbols(forceUpdate = false) {
+        if (forceUpdate || !this._symbols) await this._fetchSymbols(forceUpdate);
         return this._symbols;
     }
 
@@ -64,7 +66,12 @@ class Currencies {
         await this._browser.saveLocal({[rateKey]: Number(resp), [dateKey]: Date.now()}, null);
     }
 
-    async _fetchSymbols() {
+    /**
+     * @param {boolean} forceUpdate
+     * @returns {Promise<void>}
+     * @private
+     */
+    async _fetchSymbols(forceUpdate) {
         const symbolsKey = `uacc:symbols`;
         const dateKey = `uacc:symbols:date`;
 
@@ -73,7 +80,7 @@ class Currencies {
         const symbols = storage[symbolsKey];
         const diff = Date.now() - (storage[dateKey] || 1);
         // Symbols rarely changes, but they do change, force update once a week
-        if (diff < 1000 * 60 * 60 * 24 * 7) {
+        if (!forceUpdate && diff < 1000 * 60 * 60 * 24 * 7) {
             this._symbols = symbols;
             return;
         }

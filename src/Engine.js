@@ -10,9 +10,10 @@ class Engine {
     }
 
     /**
-     * @param {{detector: Detector, config: Configuration, activeLocalization: ActiveLocalization}} services
+     * @param {{allowance: SiteAllowance, detector: Detector, config: Configuration, activeLocalization: ActiveLocalization}} services
      */
     constructor(services = {}) {
+        this._allowance = services.allowance || SiteAllowance.instance;
         this._detector = services.detector || Detector.instance;
         this._config = services.config || Configuration.instance;
         this._activeLocalization = services.activeLocalization || ActiveLocalization.instance;
@@ -29,6 +30,8 @@ class Engine {
         await this._activeLocalization.determineForSite();
         this._detector.updateSharedLocalizations();
         timer.log('Determined localization...').reset();
+        this._allowance.updateFromConfig();
+        timer.log('Pre-processed white/black listing...').reset();
     }
 
     /**

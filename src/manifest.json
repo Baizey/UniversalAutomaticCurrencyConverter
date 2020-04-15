@@ -28,6 +28,7 @@
         "Localizations.js",
         "Configuration.js",
 
+        "SiteAllowance.js",
         "CurrencyAmount.js",
         "CurrencyRate.js",
 
