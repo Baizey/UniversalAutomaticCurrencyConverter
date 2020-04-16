@@ -2,7 +2,7 @@ Engine.instance.load().finally(() => {
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
             case 'getHref':
-                senderResponse({success: true, data: Browser.instance.hostname});
+                senderResponse({success: true, data: Browser.instance.href});
                 break;
             case 'getConversionCount':
                 senderResponse({success: true, data: NaN});

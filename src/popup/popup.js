@@ -4,10 +4,15 @@ const asList = (elements) => {
         list.push(elements[i]);
     return list;
 };
-const createMiniConverterRow = (currencies, amount, currency) => {
+/**
+ * @param {MiniConverterRow} row
+ * @returns {Promise<void>}
+ */
+const createMiniConverterRow = async (row) => {
+    const currencies = await Currencies.instance.symbols();
     const select = Object.keys(currencies).sort().map(tag => `<option value="${tag}">${tag}</option>`).join('');
     const temp = document.createElement('div');
-    temp.innerHTML = `<div style="border: solid 1px #0F171E; width:100%; height:22px">
+    temp.innerHTML = `<div class="mini-converter-row" style="border: solid 1px #0F171E; width:100%; height:22px">
         <div class="col-xs-1 mini-converter-col">
                 <div class="circle-plus closed">
                     <div class="circle">
@@ -23,149 +28,89 @@ const createMiniConverterRow = (currencies, amount, currency) => {
             <select class="mini-converter-field">${select}</select>
         </div>
         <div class="col-xs-1 mini-converter-col" style="text-align: center;"> = </div>
-        <div class="col-xs-5 mini-converter-col">
-            <input class="mini-converter-field" type="text" readonly/>
+        <div class="col-xs-3 mini-converter-col">
+            <input class="mini-converter-field" style="text-align-last:right" type="text" readonly/>
+        </div>
+        <div class="col-xs-2 mini-converter-col">
+            <select class="mini-converter-field">${select}</select>
         </div>
 </div>`.trim();
     const result = temp.children[0];
-    result.children[1].children[0].value = amount;
-    result.children[2].children[0].value = currency;
-    return result;
-};
-const makeFunctional = (row, onChange) => {
-    row.children[0].children[0].addEventListener('click', () => {
-        row.remove();
-        onChange();
+    result.children[1].children[0].value = row.amount;
+    result.children[2].children[0].value = row.from;
+    result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue);
+    result.children[5].children[0].value = row.to;
+    result.children[0].children[0].addEventListener('mouseover', () => result.classList.add('delete-focus'));
+    result.children[0].children[0].addEventListener('mouseout', () => result.classList.remove('delete-focus'));
+    result.children[0].children[0].addEventListener('click', () => {
+        result.remove();
+        MiniConverter.instance.remove(row);
     });
-    row.children[0].children[0].addEventListener('mouseover', () => row.classList.add('delete-focus'));
-    row.children[0].children[0].addEventListener('mouseout', () => row.classList.remove('delete-focus'));
-    row.children[1].children[0].addEventListener('change', () => onChange());
-    row.children[2].children[0].addEventListener('change', () => onChange());
-};
-const initiateMiniConverter = async (engine) => {
-    const settings = await Browser.load(['popupCurrencies', 'popupAmounts', 'popupConvertTo']);
-    const loadCurrencies = settings['popupCurrencies'] || [];
-    let loadAmounts = settings['popupAmounts'] || [];
-    let convertTo = settings['popupConvertTo'] || engine.currencyConverter.baseCurrency;
-
-    if (!Array.isArray(loadAmounts)) loadAmounts = [loadAmounts];
-
-    const selectedCurrency = document.getElementById('mini-converter-to');
-    const addCurrency = document.getElementById('mini-converter-add');
-    const wrapper = document.getElementById('mini-converter');
-    const rows = () => asList(wrapper.children);
-
-    const onChange = () => {
-        const data = rows();
-        const currencies = [];
-        const amounts = [];
-        engine.customTag.using(false);
-        data.forEach(row => {
-            const amount = row.children[1].children[0].value;
-            const element = row.children[2].children[0];
-            const currency = element.children[element.selectedIndex].value;
-            amounts.push(amount);
-            currencies.push(currency);
-            row.children[4].children[0].value = engine.transform(amount, currency);
-        });
-        Browser.save({
-            popupCurrencies: currencies,
-            popupAmounts: amounts,
-        }).catch(e => console.error(e));
-    };
-
-    const symbols = (await Browser.httpGet('symbols')).symbols;
-    selectedCurrency.innerHTML = Object.keys(symbols).sort().map(tag => `<option value="${tag}">${tag} (${symbols[tag]})</option>`).join('');
-    selectedCurrency.value = convertTo;
-    selectedCurrency.addEventListener('change', () => {
-        const currency = selectedCurrency.children[selectedCurrency.selectedIndex].value;
-        engine.currencyConverter.withBaseCurrency(currency);
-        Browser.save('popupConvertTo', currency).finally();
-        convertTo = currency;
-        onChange();
+    result.children[1].children[0].addEventListener('change', async () => {
+        row.amount = result.children[1].children[0].value;
+        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue);
+        await MiniConverter.instance.save();
     });
-
-    const curr = loadAmounts.map((amount, i) => createMiniConverterRow(engine.currencyDetector.currencies, amount, loadCurrencies[i]));
-    curr.forEach(row => makeFunctional(row, onChange));
-
-    addCurrency.addEventListener('click', () => {
-        const row = createMiniConverterRow(engine.currencyDetector.currencies, 1, convertTo);
-        makeFunctional(row, onChange);
-        wrapper.appendChild(row);
-        onChange();
+    result.children[2].children[0].addEventListener('change', async () => {
+        row.from = result.children[2].children[0].children[result.children[2].children[0].selectedIndex].value;
+        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue);
+        await MiniConverter.instance.save();
     });
-
-    curr.forEach(row => wrapper.appendChild(row));
-    onChange();
-};
-const initiateBlacklisting = async (engine) => {
-    const field = document.getElementById('blacklistInput');
-    field.value = Browser.hostname;
-    const button = document.getElementById('blacklistButton');
-    if (!Browser.hostname) {
-        document.getElementById('conversion').classList.add('hidden');
-        document.getElementById('localization').classList.add('hidden');
-        document.getElementById('no_conversion').classList.remove('hidden');
-        return;
-    }
-
-    field.value = Browser.hostname;
-    const blacklist = engine.blacklist;
-    const whitelist = engine.whitelist;
-    const isBlacklisting = !whitelist.isEnabled;
-
-    const list = isBlacklisting ? blacklist : whitelist;
-    const text = isBlacklisting ? 'blacklisting' : 'whitelisting';
-    const urlStorage = isBlacklisting ? 'blacklistingurls' : 'whitelistingurls';
-
-    const onList = list.isBlacklisted(Browser.hostname);
-    button.innerText = onList ? `Remove ${text}` : `Add ${text}`;
-    button.classList.remove(onList ? 'btn-danger' : 'btn-success');
-    button.classList.add(onList ? 'btn-success' : 'btn-danger');
-
-    button.addEventListener('click', async () => {
-        const onList = list.isBlacklisted(Browser.hostname);
-        button.innerText = onList ? `Add ${text}` : `Remove ${text}`;
-        button.classList.remove(onList ? 'btn-success' : 'btn-danger');
-        button.classList.add(onList ? 'btn-danger' : 'btn-success');
-        if (!onList) list.withUrl(Browser.hostname);
-        else list.whitelist(Browser.hostname);
-        await Browser.save(urlStorage, list.urls);
+    result.children[5].children[0].addEventListener('change', async () => {
+        row.to = result.children[5].children[0].children[result.children[5].children[0].selectedIndex].value;
+        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue);
+        await MiniConverter.instance.save();
     });
+    document.getElementById('mini-converter').appendChild(result);
 };
 
 const isLegitUrl = url => {
     try {
-        new URL(url);
-        return true;
+        return new URL(url);
     } catch (e) {
-        return false;
+        return null;
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     const browser = Browser.instance;
-    const url = await browser.tab.getHref();
-    browser.hostname = url;
-    await Engine.instance.load();
-    const localization = ActiveLocalization.instance;
-    console.log(url);
-    const isLegitWebsite = isLegitUrl(url);
-    if (isLegitWebsite) {
-        document.getElementById('blacklistInput').value = url;
-        browser.tab.getConversionCount().then(r => document.getElementById('conversionCount').value = `${r || '0'} conversions`);
-        await localization.overload(await browser.tab.getLocalization());
-        Detector.instance.updateSharedLocalizations();
-        document.getElementById('kroner').value = localization.krone;
-        document.getElementById('asian').value = localization.yen;
+    Browser.updateFooter();
+    document.getElementById('review').addEventListener('click', () => Browser.updateReviewLink());
+    browser._fullHref = await browser.tab.getHref().catch(() => 'unknown');
+    const url = isLegitUrl(browser.href);
+    if (url) {
+        browser._fullHostName = url.hostname;
+        const localization = ActiveLocalization.instance;
+        await Engine.instance.load().catch();
+        document.getElementById('blacklistInput').value = browser.hostname;
+        const conversionCount = await browser.tab.getConversionCount().catch(() => 0);
+        document.getElementById('conversionCount').value = `${conversionCount || 0} conversions`;
+        document.getElementById('krone').value = localization.krone;
+        document.getElementById('yen').value = localization.yen;
         document.getElementById('dollar').value = localization.dollar;
+        ['krone', 'yen', 'dollar'].forEach(htmlId => {
+            const element = document.getElementById(htmlId);
+            if (!element) return;
+            element.addEventListener('change', async () => {
+                const update = {[htmlId]: element.children[element.selectedIndex].value}
+                await localization.overload(update);
+                await browser.tab.setLocalization(localization.compact);
+            });
+        })
+
     } else {
+        document.getElementById('localization').classList.add('hidden');
         document.getElementById('conversion').classList.add('hidden');
         document.getElementById('no_conversion').classList.remove('hidden');
     }
 
-    Browser.updateFooter();
-    document.getElementById('review').addEventListener('click', () => Browser.updateReviewLink());
+    const converter = MiniConverter.instance;
+    await converter.load();
+    for (let i in converter.conversions) await createMiniConverterRow(converter.conversions[i]);
+    document.getElementById('mini-converter-add').addEventListener('click', async () => {
+        const row = await converter.addNewRow();
+        await createMiniConverterRow(row);
+    });
 
     const hideButton = document.getElementById('hideConversions');
     /*
@@ -179,24 +124,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         hideButton.classList.remove(isConverted ? 'btn-success' : 'btn-danger');
         hideButton.classList.add(isConverted ? 'btn-danger' : 'btn-success');
         isConverted = !isConverted;
-    });
-     */
-
-    /*
-    // Get current localization settings
-    [{symbol: '$', id: 'dollar'}, {symbol: 'kr', id: 'kroner'}, {symbol: '¥', id: 'asian'}]
-        .forEach(data => Browser.messageTab({method: 'activeLocalization', symbol: data.symbol})
-            .then(resp => document.getElementById(data.id).value = Utils.isDefined(resp) ? resp : '?')
-            .then(() => document.getElementById(data.id))
-            .then(selector => selector.addEventListener('change', () => {
-                const value = selector.children[selector.selectedIndex].value;
-                Browser.messageTab({method: 'setLocalization', symbol: data.symbol, to: value}).finally();
-            })));
-
-    loader.finally(async () => {
-        document.getElementById('currencyLastUpdate').innerText = engine.lastCurrencyUpdate;
-        initiateMiniConverter(engine).catch(e => console.error(e));
-        initiateBlacklisting(engine).catch(e => console.error(e));
     });
      */
 });

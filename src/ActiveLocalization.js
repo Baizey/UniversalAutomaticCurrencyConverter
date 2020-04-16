@@ -55,6 +55,10 @@ class ActiveLocalization {
         this._defaultDollar = this.dollar;
     }
 
+    /**
+     * @param {{krone: string, yen: string, dollar: string}} input
+     * @returns {Promise<void>}
+     */
     async overload(input) {
         if (!input) return;
         if (input.krone && /^[A-Z]{3}$/.test(input.krone))

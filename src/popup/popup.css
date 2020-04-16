@@ -1,5 +1,6 @@
 body {
     font: normal 12px/160% Verdana, Arial, Helvetica, sans-serif;
+    background-color: #192028 !important;
 }
 
 input {
@@ -146,6 +147,14 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
     border: solid 1px #f0ad4e;
 }
 
+.mini-converter-add {
+    height: 22px;
+    font-size: 14px;
+    line-height: 1.5em;
+    padding: 0;
+    margin-top: 10px;
+}
+
 .mini-converter-field {
     height: 20px;
     width: 100%;
@@ -159,7 +168,8 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
     margin-left: 0;
     margin-right: 0;
 }
-input[type="number"]{
+
+input[type="number"] {
     text-align: right;
 }
 
@@ -178,7 +188,7 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
 }
 
 .circle {
-    cursor:pointer;
+    cursor: pointer;
     position: relative;
     width: 20px;
     height: 20px;

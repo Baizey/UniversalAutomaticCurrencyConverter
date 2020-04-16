@@ -92,12 +92,19 @@ class CurrencyAmount {
     /**
      * @returns {string}
      */
-    toString() {
+    get displayValue() {
         const [integers, digits] = this.roundedAmount.split('.');
         const decimal = this._display.decimal.value;
         const thousands = this._display.thousands.value;
         const leftSide = integers.split(/(?=(?:.{3})*$)/).join(thousands);
-        const value = leftSide + (digits ? (decimal + digits) : '')
+        return leftSide + (digits ? (decimal + digits) : '')
+    }
+
+    /**
+     * @returns {string}
+     */
+    toString() {
+        const value = this.displayValue;
 
         const usingCustom = this._tagConfig.using.value;
         if (!usingCustom) return `${value} ${this.tag}`;

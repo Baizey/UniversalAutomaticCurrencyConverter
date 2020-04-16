@@ -85,6 +85,7 @@ class Browser {
     }
 
     constructor(dummy = null) {
+        this._fullHref = undefined;
         this._fullHostName = undefined;
         if (dummy) {
             this.type = dummy.type;
@@ -100,9 +101,15 @@ class Browser {
         this.access = this.type === Browsers.Firefox ? browser : chrome;
     }
 
+    get href() {
+        if (!this._fullHref)
+            this._fullHref = window.location.href;
+        return this._fullHref;
+    }
+
     get hostname() {
         if (!this._fullHostName)
-            this._fullHostName = window.location.href;
+            this._fullHostName = window.location.hostname;
         return this._fullHostName;
     }
 
@@ -131,10 +138,35 @@ class Browser {
      * @returns {Promise<*>}
      * @private
      */
+    _messageBackground(data) {
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.runtime.sendMessage(data, resp => {
+                    if (!resp) return reject('No response');
+                    resp.success ? resolve(resp.data) : reject(resp.data)
+                })
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    /**
+     * @param data
+     * @returns {Promise<*>}
+     * @private
+     */
     _messagePopup(data) {
-        return new Promise((resolve, reject) => chrome.runtime.sendMessage(data, function (resp) {
-            return resp.success ? resolve(resp.data) : reject(resp.data);
-        }));
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.runtime.sendMessage(data, function (resp) {
+                    if (!resp) return reject('No response');
+                    return resp.success ? resolve(resp.data) : reject(resp.data);
+                })
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
     /**
@@ -143,16 +175,21 @@ class Browser {
      * @private
      */
     _messageTab(data) {
-        return new Promise((resolve, reject) =>
-            chrome.tabs.query({
-                active: true,
-                currentWindow: true
-            }, function (tabs) {
-                return chrome.tabs.sendMessage(tabs[0].id, data, function (resp) {
-                    return resp.success ? resolve(resp.data) : reject(resp.data);
-                });
-            })
-        )
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function (tabs) {
+                    return chrome.tabs.sendMessage(tabs[0].id, data, function (resp) {
+                        if (!resp) return reject('No response');
+                        return resp.success ? resolve(resp.data) : reject(resp.data);
+                    });
+                })
+            } catch (e) {
+                reject(e);
+            }
+        })
     }
 
     /**
@@ -183,15 +220,9 @@ class Browser {
      */
     get background() {
         return {
-            getRate: (from, to) => new Promise((resolve, reject) =>
-                chrome.runtime.sendMessage({type: 'rate', from: from, to: to},
-                    resp => resp.success ? resolve(resp.data) : reject(resp.data))),
-            getSymbols: () => new Promise((resolve, reject) =>
-                chrome.runtime.sendMessage({type: 'symbols'},
-                    resp => resp.success ? resolve(resp.data) : reject(resp.data))),
-            openPopup: () => new Promise((resolve, reject) =>
-                chrome.runtime.sendMessage({type: 'openPopup'},
-                    resp => resp.success ? resolve(resp.data) : reject(resp.data))),
+            getRate: (from, to) => this._messageBackground({type: 'rate', from: from, to: to}),
+            getSymbols: () => this._messageBackground({type: 'symbols'}),
+            openPopup: () => this._messageBackground({type: 'openPopup'}),
         }
     }
 
