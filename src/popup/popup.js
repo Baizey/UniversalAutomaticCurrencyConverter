@@ -1,5 +1,3 @@
-const engine = new Engine();
-const loader = engine.loadSettings();
 const asList = (elements) => {
     const list = [];
     for (let i = 0; i < elements.length; i++)
@@ -136,14 +134,41 @@ const initiateBlacklisting = async (engine) => {
     });
 };
 
+const isLegitUrl = url => {
+    try {
+        new URL(url);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
-    await Browser.messageTab({method: 'getUrl'})
-        .then(resp => Browser.setHostname(resp))
-        .catch(() => Browser.setHostname(''));
+    const browser = Browser.instance;
+    const url = await browser.tab.getHref();
+    browser.hostname = url;
+    await Engine.instance.load();
+    const localization = ActiveLocalization.instance;
+    console.log(url);
+    const isLegitWebsite = isLegitUrl(url);
+    if (isLegitWebsite) {
+        document.getElementById('blacklistInput').value = url;
+        browser.tab.getConversionCount().then(r => document.getElementById('conversionCount').value = `${r || '0'} conversions`);
+        await localization.overload(await browser.tab.getLocalization());
+        Detector.instance.updateSharedLocalizations();
+        document.getElementById('kroner').value = localization.krone;
+        document.getElementById('asian').value = localization.yen;
+        document.getElementById('dollar').value = localization.dollar;
+    } else {
+        document.getElementById('conversion').classList.add('hidden');
+        document.getElementById('no_conversion').classList.remove('hidden');
+    }
+
     Browser.updateFooter();
     document.getElementById('review').addEventListener('click', () => Browser.updateReviewLink());
 
     const hideButton = document.getElementById('hideConversions');
+    /*
     let isConverted = false;
     hideButton.addEventListener('click', () => {
         Browser.messageTab({
@@ -155,14 +180,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         hideButton.classList.add(isConverted ? 'btn-danger' : 'btn-success');
         isConverted = !isConverted;
     });
+     */
 
-    // Get conversion count
-    Browser.messageTab({method: 'conversionCount'})
-        .then(resp => document.getElementById('conversionCount').value = (Utils.isDefined(resp) ? resp : 0) + ' conversions');
-
+    /*
     // Get current localization settings
     [{symbol: '$', id: 'dollar'}, {symbol: 'kr', id: 'kroner'}, {symbol: '¥', id: 'asian'}]
-        .forEach(data => Browser.messageTab({method: 'getLocalization', symbol: data.symbol})
+        .forEach(data => Browser.messageTab({method: 'activeLocalization', symbol: data.symbol})
             .then(resp => document.getElementById(data.id).value = Utils.isDefined(resp) ? resp : '?')
             .then(() => document.getElementById(data.id))
             .then(selector => selector.addEventListener('change', () => {
@@ -175,4 +198,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         initiateMiniConverter(engine).catch(e => console.error(e));
         initiateBlacklisting(engine).catch(e => console.error(e));
     });
+     */
 });

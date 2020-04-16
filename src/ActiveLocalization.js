@@ -29,6 +29,17 @@ class ActiveLocalization {
     }
 
     /**
+     * @returns {{yen: string, krone: string, dollar: string}}
+     */
+    get compact() {
+        return {
+            dollar: this.dollar,
+            yen: this.yen,
+            krone: this.krone
+        }
+    }
+
+    /**
      * @returns {Promise<void>}
      */
     async load() {
@@ -42,6 +53,17 @@ class ActiveLocalization {
         this._defaultKrone = this.krone;
         this._defaultYen = this.yen;
         this._defaultDollar = this.dollar;
+    }
+
+    async overload(input) {
+        if (!input) return;
+        if (input.krone && /^[A-Z]{3}$/.test(input.krone))
+            this.krone = input.krone || this.krone;
+        if (input.yen && /^[A-Z]{3}$/.test(input.yen))
+            this.yen = input.yen || this.yen;
+        if (input.dollar && /^[A-Z]{3}$/.test(input.dollar))
+            this.dollar = input.dollar || this.dollar;
+        await this.lockSite(false);
     }
 
     /**

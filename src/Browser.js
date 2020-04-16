@@ -102,7 +102,7 @@ class Browser {
 
     get hostname() {
         if (!this._fullHostName)
-            this._fullHostName = window.location.hostname;
+            this._fullHostName = window.location.href;
         return this._fullHostName;
     }
 
@@ -118,23 +118,6 @@ class Browser {
      * @param data
      * @return {Promise<any>}
      */
-    static messageTab(data) {
-        return new Promise(resolve =>
-            chrome.tabs.query({
-                active: true,
-                currentWindow: true
-            }, function (tabs) {
-                return chrome.tabs.sendMessage(tabs[0].id, data, function (resp) {
-                    return resolve(resp);
-                });
-            })
-        ).catch(error => console.error(error));
-    }
-
-    /**
-     * @param data
-     * @return {Promise<any>}
-     */
     static messagePopup(data) {
         return new Promise(function (resolve) {
             return chrome.runtime.sendMessage(data, function (resp) {
@@ -143,6 +126,61 @@ class Browser {
         }).catch(error => console.error(error));
     }
 
+    /**
+     * @param data
+     * @returns {Promise<*>}
+     * @private
+     */
+    _messagePopup(data) {
+        return new Promise((resolve, reject) => chrome.runtime.sendMessage(data, function (resp) {
+            return resp.success ? resolve(resp.data) : reject(resp.data);
+        }));
+    }
+
+    /**
+     * @param data
+     * @returns {Promise<*>}
+     * @private
+     */
+    _messageTab(data) {
+        return new Promise((resolve, reject) =>
+            chrome.tabs.query({
+                active: true,
+                currentWindow: true
+            }, function (tabs) {
+                return chrome.tabs.sendMessage(tabs[0].id, data, function (resp) {
+                    return resp.success ? resolve(resp.data) : reject(resp.data);
+                });
+            })
+        )
+    }
+
+    /**
+     * @returns {{}}
+     */
+    get popup() {
+        return {}
+    }
+
+    /**
+     * @returns {{
+     * getHref: (function(): Promise<string>),
+     * getLocalization: (function(): Promise<{dollar: string, yen: string, krone: string}>),
+     * getConversionCount: (function(): Promise<number>),
+     * setLocalization: (function({dollar: string, yen: string, krone: string}): Promise<void>)}}
+     */
+    get tab() {
+        return {
+            getConversionCount: () => this._messageTab({type: 'getConversionCount'}),
+            getHref: () => this._messageTab({type: 'getHref'}),
+            setLocalization: (data) => this._messageTab({type: 'setActiveLocalization', data: data}),
+            getLocalization: () => this._messageTab({type: 'getActiveLocalization'}),
+        }
+    }
+
+    /**
+     * @returns {{getRate: (function(string, string): Promise<{rate: number}>), getSymbols: (function(): Promise<object>), openPopup: (function(): Promise<void>)}}
+     */
     get background() {
         return {
             getRate: (from, to) => new Promise((resolve, reject) =>
