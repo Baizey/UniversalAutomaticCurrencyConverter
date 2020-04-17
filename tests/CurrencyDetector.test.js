@@ -49,6 +49,25 @@ describe("CurrencyDetector tests", () => {
         expect(actual).toEqual(expected);
     });
 
+    it("Detects brazilian currency with symbol", () => {
+        // Setup
+        const detector = new CurrencyDetector(
+            Browser.instance({
+                type: Browsers.Chrome,
+                access: null
+            }));
+        detector.localize('pt-br');
+
+        const data = 'R$ 279';
+        const expected = [new SearchResult(data, '', ' ', '', '', 279, 'BRL', 0)];
+
+        // Act
+        const actual = detector.findAll(data, true);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
     it("Test scandinavian special currency", () => {
         // Setup
         const detector = new CurrencyDetector(
