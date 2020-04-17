@@ -27,7 +27,7 @@ const createMiniConverterRow = async (row) => {
         <div class="col-xs-2 mini-converter-col">
             <select class="mini-converter-field">${select}</select>
         </div>
-        <div class="col-xs-1 mini-converter-col" style="text-align: center;"> = </div>
+        <div class="col-xs-1 mini-converter-col" style="text-align: center;"> ⇒ </div>
         <div class="col-xs-3 mini-converter-col">
             <input class="mini-converter-field" style="text-align-last:right" type="text" readonly/>
         </div>
