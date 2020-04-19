@@ -17,13 +17,6 @@ class Browser {
                 .replace('{author}', Browser.author);
     }
 
-    static absoluteHostname() {
-        const host = Browser.instance.hostname;
-        const parts = host.split('.');
-        if (parts.length <= 1) return parts[0];
-        return parts[parts.length - 2] + '.' + parts[parts.length - 1];
-    }
-
     static getHost() {
         const hostname = Browser.hostname;
         const index = hostname.lastIndexOf('.');
@@ -101,16 +94,30 @@ class Browser {
         this.access = this.type === Browsers.Firefox ? browser : chrome;
     }
 
+    /**
+     * @returns {string}
+     */
     get href() {
         if (!this._fullHref)
             this._fullHref = window.location.href;
         return this._fullHref;
     }
 
+    /**
+     * @returns {string}
+     */
     get hostname() {
         if (!this._fullHostName)
             this._fullHostName = window.location.hostname;
         return this._fullHostName;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get host() {
+        const index = this.hostname.lastIndexOf('.');
+        return index < 0 ? '' : this.hostname.substr(index + 1);
     }
 
     isFirefox() {

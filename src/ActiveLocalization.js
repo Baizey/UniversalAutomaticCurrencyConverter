@@ -106,14 +106,35 @@ class ActiveLocalization {
     }
 
     /**
+     * @param {string} text
      * @returns {Promise<void>}
      */
-    async determineForSite() {
+    async determineForSite(text) {
         // If the user has locked localization for site, do nothing
         if (await this.isLocked()) return;
-        // TODO:
-        //throw 'unimplemented'
+        const shared = Localizations.shared;
+        this.yen = this._determine(this.yen, text, shared['¥']);
+        this.dollar = this._determine(this.dollar, text, shared['$']);
+        this.krone = this._determine(this.krone, text, shared['kr']);
+    }
 
+    /**
+     * @param {string} currentTag
+     * @param {string} text
+     * @param {[string]} tags
+     * @returns {string}
+     * @private
+     */
+    _determine(currentTag, text, tags) {
+        const host = this._browser.host;
+        const hostCurrency = Localizations.hostCurrency[host];
+        // Add 1 to counter if host is same as currency and add 1 if current default is same
+        tags = tags.map(t => ({tag: t, count: (hostCurrency === t) + (currentTag === t)}));
+        tags.forEach(tag => {
+            const re = new RegExp('(^\\W_)' + tag + '($\\W_)', 'g')
+            tag.count += ((text || '').match(re) || []).length
+        });
+        return tags.reduce((p, n) => p.count > n.count ? p : n).tag
     }
 
 }

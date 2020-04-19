@@ -27,8 +27,6 @@ class Engine {
         await Promise.all([this._config.load(), this._detector.updateSymbols()]);
         timer.log('Loaded settings and symbols...').reset();
         await this._activeLocalization.load();
-        await this._activeLocalization.determineForSite();
-        this._detector.updateSharedLocalizations();
         timer.log('Determined localization...').reset();
         this._allowance.updateFromConfig();
         timer.log('Pre-processed white/black listing...').reset();

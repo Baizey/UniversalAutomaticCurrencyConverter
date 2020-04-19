@@ -6,6 +6,10 @@ class Browser {
         return _browserMockInstance;
     }
 
+    async saveLocal(key, value = null) {
+        throw 'unimplemented mock async Browser.saveLocal(...)'
+    }
+
     async loadLocal(keys) {
         throw 'unimplemented mock async Browser.loadLocal(...)'
     }

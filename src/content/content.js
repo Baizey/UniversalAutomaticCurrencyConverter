@@ -1,4 +1,6 @@
-Engine.instance.load().finally(() => {
+Engine.instance.load().finally(async () => {
+    await this._activeLocalization.determineForSite(document.body.innerText);
+    this._detector.updateSharedLocalizations();
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
             case 'getHref':
