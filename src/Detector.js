@@ -28,6 +28,7 @@ class Detector {
             /[¥A-Z]{3}\$?/.source,
             /,-{1,2}|kr\.?/.source,
             /CDN\$/.source,
+            /R\$/.source,
             /US ?\$/.source,
             /dollars?/.source,
             'Kč',

@@ -27,6 +27,8 @@ class Localizations {
         return {
             // Australia
             'AUD': ['AUD$'],
+            // Brazil
+            'BRL': ['R$'],
             // New Zealand
             'NZD': ['NZD$'],
             // USA
