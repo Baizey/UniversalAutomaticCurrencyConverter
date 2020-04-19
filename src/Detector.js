@@ -10,20 +10,20 @@ class Detector {
     }
 
     /**
-     * @param {{browser: Browser, currencies: Currencies, activeLocalization: ActiveLocalization}} services
+     * @param {{config: Configuration, browser: Browser, currencies: Currencies, activeLocalization: ActiveLocalization}} services
      */
     constructor(services = {}) {
+        this._config = services.config || Configuration.instance;
         this._browser = services.browser || Browser.instance;
         this._activeLocalization = services.activeLocalization || ActiveLocalization.instance;
         this._currencies = services.currencies || Currencies.instance;
         this._regex = null;
         this._currencyTags = null;
         this._localizationMapping = Localizations.allUniqueLocalizationMappings;
-        this._detectionRegex();
     }
 
     _currencyRegex() {
-        // Simplification of Localizations complete lookup
+        // Simplification of Localizations' symbols
         return '(' + [
             /[¥A-Z]{3}\$?/.source,
             /,-{1,2}|kr\.?/.source,
@@ -55,7 +55,7 @@ class Detector {
         return `(\-)?${integers}${decimals}`;
     }
 
-    _detectionRegex() {
+    get regex() {
         if (this._regex) return this._regex;
         const s = /["+\-:|`^'& ,.<>()\\/\s*]/;
         const start = new RegExp(`(${s.source}|^)`).source;
@@ -76,6 +76,42 @@ class Detector {
             this._regex = new RegExp(regex, 'gm');
 
         return this._regex;
+    }
+
+    /**
+     * @param {*} element
+     * @returns {[CurrencyElement]}
+     */
+    detectAll(element) {
+        // Return empty list when not found
+        const raw = element.innerText;
+        if (!this.regex.test(raw)) return [];
+
+        // Find currencies detectable in child nodes
+        const children = element.children
+        let result = [];
+        for (let i = 0; i < children.length; i++)
+            result = result.concat(this.detectAll(children[i]));
+
+        // If no child contains full currency and we're at most 3 d
+        if (result.length === 0 && !this._hasChildDeeperThan(element, 3))
+            return [new CurrencyElement(element, {currencies: this._currencies, config: this._config})];
+        return result;
+    }
+
+    /**
+     * @param {*} element
+     * @param {number} maxDepth
+     * @returns {boolean}
+     * @private
+     */
+    _hasChildDeeperThan(element, maxDepth) {
+        if (!element) return maxDepth >= 0;
+        const children = element.children
+        for (let i = 0; i < children.length; i++)
+            if (this._hasChildDeeperThan(children[i], maxDepth - 1))
+                return true;
+        return false;
     }
 
     // Has to be called EVERY time localization changes for a site
