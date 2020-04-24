@@ -38,7 +38,7 @@ const createMiniConverterRow = async (row) => {
     const result = temp.children[0];
     result.children[1].children[0].value = row.amount;
     result.children[2].children[0].value = row.from;
-    result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue);
+    result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue[0]);
     result.children[5].children[0].value = row.to;
     result.children[0].children[0].addEventListener('mouseover', () => result.classList.add('delete-focus'));
     result.children[0].children[0].addEventListener('mouseout', () => result.classList.remove('delete-focus'));
@@ -48,17 +48,17 @@ const createMiniConverterRow = async (row) => {
     });
     result.children[1].children[0].addEventListener('change', async () => {
         row.amount = result.children[1].children[0].value;
-        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue);
+        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue[0]);
         await MiniConverter.instance.save();
     });
     result.children[2].children[0].addEventListener('change', async () => {
         row.from = result.children[2].children[0].children[result.children[2].children[0].selectedIndex].value;
-        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue);
+        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue[0]);
         await MiniConverter.instance.save();
     });
     result.children[5].children[0].addEventListener('change', async () => {
         row.to = result.children[5].children[0].children[result.children[5].children[0].selectedIndex].value;
-        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue);
+        result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue[0]);
         await MiniConverter.instance.save();
     });
     document.getElementById('mini-converter').appendChild(result);

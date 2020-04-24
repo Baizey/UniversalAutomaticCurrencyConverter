@@ -31,6 +31,7 @@
         "SiteAllowance.js",
         "CurrencyAmount.js",
         "CurrencyRate.js",
+        "CurrencyElement.js",
 
         "ActiveLocalization.js",
         "Currencies.js",

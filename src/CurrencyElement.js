@@ -1,14 +1,29 @@
 class CurrencyElement {
     /**
      * @param {HTMLElement} element
-     * @param {{config: Configuration}} services
+     * @param {{config: Configuration, detector: Detector}} services
      */
     constructor(element, services = {}) {
         this._config = services.config || Configuration.instance;
+        this._detector = services.detector || Detector.instance;
         this._element = element;
         this._element.setAttribute('uacc:watched', 'true');
         this._original = null;
         this._converted = null;
+        this._convertedTag = null;
+    }
+
+    /**
+     * @param {string} currency
+     * @returns {Promise<void>}
+     */
+    showOriginal(currency) {
+        this.updateSnapshot();
+        const original = this._original;
+        const nodes = original.nodes;
+        const texts = original.texts;
+        for (let i = 0; i < nodes.length; i++)
+            nodes[i].textContent = texts[i];
     }
 
     /**
@@ -16,8 +31,40 @@ class CurrencyElement {
      * @returns {Promise<void>}
      */
     async convertTo(currency) {
-        this.updateSnapshot();
-        // TODO: convert currencies in text nodes
+        this._element.classList.add('uacc:converted')
+        this._element.uacc = this;
+        this._convertedTag = currency;
+        this._original = new ElementSnapshot(this._element);
+        this._converted = this._original.clone();
+        const converted = this._converted.texts;
+        const text = this._converted.texts.join(' ');
+
+        let result = await this._detector.detectResult(text);
+        result.forEach(e => e.data.reverse());
+        for (const e of result) {
+            const converted = await e.amount.convertTo(currency);
+            e.data.filter(e => e.replace).forEach(e => e.text = converted.toString());
+        }
+        result = result.reverse();
+        const data = result.flatMap(e => e.data);
+
+        let at = converted.length - 1;
+        let index = text.length - converted[at].length;
+        for (let d of data) {
+            while (d.start < index) {
+                at--;
+                index -= converted[at].length + 1;
+            }
+            const relativeStart = d.start - index;
+            const relativeEnd = d.end - index;
+            const old = converted[at];
+            converted[at] = old.substr(0, relativeStart)
+                + (d.text || '')
+                + old.substr(relativeEnd, old.length)
+        }
+
+        this._converted.display();
+        this.highlight();
     }
 
     /**
@@ -55,6 +102,7 @@ class ElementSnapshot {
      * @param {Node} element
      */
     constructor(element) {
+        if (!element) return;
         const textnodes = [];
         const texts = [];
         const queue = [element];
@@ -62,13 +110,22 @@ class ElementSnapshot {
             const curr = queue.pop();
             if (curr.nodeType === Node.TEXT_NODE) {
                 textnodes.unshift(curr);
-                texts.unshift(curr.text);
             } else if (curr.hasChildNodes())
                 for (let i = 0; i < curr.childNodes.length; i++)
                     queue.push(curr.childNodes[i]);
         }
         this._nodes = textnodes;
-        this._texts = texts;
+        this._texts = textnodes.map(e => e.textContent);
+    }
+
+    /**
+     * @returns {ElementSnapshot}
+     */
+    clone() {
+        const copy = new ElementSnapshot(null);
+        copy._nodes = this.nodes.map(e => e);
+        copy._texts = this.texts.map(e => e);
+        return copy;
     }
 
     /**
@@ -83,6 +140,11 @@ class ElementSnapshot {
      */
     get nodes() {
         return this._nodes;
+    }
+
+    display() {
+        for (let i = 0; i < this.texts.length; i++)
+            this.nodes[i].textContent = this.texts[i];
     }
 
     /**

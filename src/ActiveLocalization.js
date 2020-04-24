@@ -131,7 +131,7 @@ class ActiveLocalization {
         // Add 1 to counter if host is same as currency and add 1 if current default is same
         tags = tags.map(t => ({tag: t, count: (hostCurrency === t) + (currentTag === t)}));
         tags.forEach(tag => {
-            const re = new RegExp('(^\\W_)' + tag + '($\\W_)', 'g')
+            const re = new RegExp('(^|[\\W_])' + tag.tag + '($|[\\W_])', 'gm');
             tag.count += ((text || '').match(re) || []).length
         });
         return tags.reduce((p, n) => p.count > n.count ? p : n).tag

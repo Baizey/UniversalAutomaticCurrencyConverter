@@ -46,6 +46,7 @@ describe('CurrencyAmount', () => {
                 const actual = amount.roundedAmount;
 
                 // Assert
+                if (!Array.isArray(test.expect)) test.expect = [test.expect]
                 expect(actual).toEqual(test.expect);
             });
         });
@@ -71,8 +72,10 @@ describe('CurrencyAmount', () => {
                 const actual = await original.convertTo('BBB');
 
                 // Assert
+                if (!Array.isArray(test.amount)) test.amount = [test.amount]
                 expect(original.amount).toEqual(test.amount);
                 expect(original.tag).toEqual('AAA');
+                if (!Array.isArray(test.expect)) test.expect = [test.expect]
                 expect(actual.amount).toEqual(test.expect);
                 expect(actual.tag).toEqual('BBB');
             });
@@ -81,6 +84,7 @@ describe('CurrencyAmount', () => {
         it(`Unknown currency`, async () => {
             // Setup
             const browser = new Browser();
+            // If it quacks like a browser, it's a browser
             browser.loadLocal = async () => ({});
             browser.background = {
                 getRate: async () => {
@@ -94,7 +98,7 @@ describe('CurrencyAmount', () => {
             const actual = await original.convertTo('UNK');
 
             // Assert
-            expect(original.amount).toEqual(0);
+            expect(original.amount).toEqual([0]);
             expect(original.tag).toEqual('UNK');
             expect(actual).toEqual(null);
         });
