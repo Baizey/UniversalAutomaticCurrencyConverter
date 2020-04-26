@@ -23,6 +23,7 @@
       ],
       "js": [
         "XRegExp.js",
+        "Utils.js",
         "Timer.js",
         "Browser.js",
         "Localizations.js",

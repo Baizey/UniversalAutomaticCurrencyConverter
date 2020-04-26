@@ -6,7 +6,9 @@ describe('CurrencyElement', () => {
     }
     describe('Convert', () => {
         const tests = [
-            {name: 'amazon', element: create(`<span aria-hidden="true" id="aaa"><span class="a-price-symbol">$</span><span class="a-price-whole">3<span class="a-price-decimal">.</span></span><span class="a-price-fraction">99</span></span>`), expect: [1]}
+            {name: 'amazon', expect: ' 4 USD . ', element: create(`<span aria-hidden="true" id="aaa"><span class="a-price-symbol">$</span><span class="a-price-whole">3<span class="a-price-decimal">.</span></span><span class="a-price-fraction">99</span></span>`)},
+            {name: 'aliexpress', expect: '280 - 360 USD', element: create(`<span class="product-price-value uacc-clickable" itemprop="price" style="" data-spm-anchor-id="a2g0o.detail.1000016.i2.132937d7JS6Tjc">US $282.98 - 361.08</span>`)}
+
         ];
         tests.forEach(test => {
             it(`${test.name}`, async () => {
@@ -15,13 +17,13 @@ describe('CurrencyElement', () => {
                 localization.dollar = 'USD'
                 const detector = new Detector({activeLocalization: localization});
                 detector.updateSharedLocalizations();
-                const element = new CurrencyElement(test.element, {detector: detector});
+                const actual = new CurrencyElement(test.element, {detector: detector});
 
                 // Act
-                await element.convertTo('USD');
+                await actual.convertTo('USD');
 
                 // Assert
-                expect(actual.length).toEqual(test.expect.length)
+                expect(actual._converted.texts.join(' ')).toEqual(test.expect)
             });
         })
     });

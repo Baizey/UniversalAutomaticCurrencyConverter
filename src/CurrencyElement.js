@@ -1,48 +1,74 @@
+let _currencyElementNextId = 1;
+
 class CurrencyElement {
     /**
      * @param {HTMLElement} element
      * @param {{config: Configuration, detector: Detector}} services
      */
     constructor(element, services = {}) {
+        this.id = ++_currencyElementNextId;
         this._config = services.config || Configuration.instance;
         this._detector = services.detector || Detector.instance;
         this._element = element;
-        this._element.setAttribute('uacc:watched', 'true');
+        this._element.setAttribute('uacc:watched', this.id + '');
         this._original = null;
         this._converted = null;
-        this._convertedTag = null;
+        this._conversionTo = null;
+        this._isShowingConversion = false;
+        this.selected = false;
     }
 
-    /**
-     * @param {string} currency
-     * @returns {Promise<void>}
-     */
-    showOriginal(currency) {
-        this.updateSnapshot();
-        const original = this._original;
-        const nodes = original.nodes;
-        const texts = original.texts;
-        for (let i = 0; i < nodes.length; i++)
-            nodes[i].textContent = texts[i];
-    }
-
-    /**
-     * @param {string} currency
-     * @returns {Promise<void>}
-     */
     async convertTo(currency) {
-        this._element.classList.add('uacc:converted')
-        this._element.uacc = this;
-        this._convertedTag = currency;
-        this._original = new ElementSnapshot(this._element);
-        this._converted = this._original.clone();
+        this._conversionTo = currency;
+        this.updateSnapshot();
+        await this.convert();
+    }
+
+    async showConverted() {
+        this._isShowingConversion = true;
+        if (this.updateSnapshot()) await this.convert();
+        this._converted.display();
+    }
+
+    async showOriginal() {
+        this._isShowingConversion = false;
+        if (this.updateSnapshot()) await this.convert();
+        this._original.display();
+    }
+
+    async updateDisplay() {
+        if (this._isShowingConversion) await this.showConverted();
+    }
+
+    async flipDisplay() {
+        if (this._isShowingConversion) await this.showOriginal(); else await this.showConverted();
+    }
+
+    async setupListener() {
+        this._element.classList.add('uacc-clickable');
+        this._element.addEventListener('mouseover', () => {
+            if (this._config.utility.hover.value) this.flipDisplay();
+            this.selected = true;
+        });
+        this._element.addEventListener('mouseout', () => {
+            if (this._config.utility.hover.value) this.flipDisplay();
+            this.selected = false;
+        });
+        this._element.addEventListener('click', () => this.flipDisplay());
+    }
+
+    /**
+     * @returns {Promise<void>}
+     */
+    async convert() {
+        if (!this._conversionTo) return;
         const converted = this._converted.texts;
         const text = this._converted.texts.join(' ');
 
         let result = await this._detector.detectResult(text);
         result.forEach(e => e.data.reverse());
         for (const e of result) {
-            const converted = await e.amount.convertTo(currency);
+            const converted = await e.amount.convertTo(this._conversionTo);
             e.data.filter(e => e.replace).forEach(e => e.text = converted.toString());
         }
         result = result.reverse();
@@ -62,9 +88,6 @@ class CurrencyElement {
                 converted[at] = old.substr(0, relativeStart) + d.text + old.substr(relativeStart + d.length, old.length)
             else converted[at] = old.substr(0, relativeStart) + old.substr(relativeStart + d.length, old.length)
         }
-
-        this._converted.display();
-        this.highlight();
     }
 
     /**
@@ -72,20 +95,12 @@ class CurrencyElement {
      * @returns {boolean}
      */
     updateSnapshot() {
-        // If no conversion exist, we can assume this is clean and we should snapshot whatever is here
-        if (!this._converted) {
-            this._original = new ElementSnapshot(this._element);
-            return true;
-        }
-
-        // Otherwise only update snapshot if it's different from both stored snapshots
         const snapshot = new ElementSnapshot(this._element);
-        if (!snapshot.isEqual(this._converted) && !snapshot.isEqual(this._original)) {
-            this._original = snapshot;
-            return true;
-        }
-
-        return false;
+        if (snapshot.isEqual(this._original)) return false;
+        if (snapshot.isEqual(this._converted)) return false;
+        this._original = snapshot;
+        this._converted = snapshot.clone();
+        return true;
     }
 
     highlight() {

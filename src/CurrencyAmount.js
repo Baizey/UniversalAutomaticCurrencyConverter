@@ -50,9 +50,11 @@ class CurrencyAmount {
                 if (i === decimals.length) return '0';
                 const toKeep = i + Math.min(2, significant);
                 const rounded = String(this._round(decimals, toKeep));
+                // If we rounded something like 0.999 we got 999, which rounded from 99.9 to 100
                 const zeroes = rounded.length === toKeep - i ? i : i - 1;
-                if (zeroes < 0) return "1." + rounded.substr(1);
-                return '0.' + '0'.repeat(zeroes) + rounded;
+                // In cases like 0.99 we have to round up to whole numbers
+                if (zeroes < 0) return `1.${rounded.substr(1)}`;
+                return `0.${'0'.repeat(zeroes)}${rounded}`;
             } else {
                 const keep = fixed < 0 ? significant + 1 : significant;
                 if (keep > integers.length) {

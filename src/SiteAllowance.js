@@ -26,6 +26,8 @@ class SiteAllowance {
     isAllowed(url) {
         // Only false when whitelist is on but blacklist is not
         const defaultResult = this._blacklist.using.value || !this._whitelist.using.value;
+        console.log('UACC: Site allowance layers found for domain...')
+        console.log(`UACC: Default site allowance: ${defaultResult}`);
         return this._allowance.isAllowed(url, defaultResult);
     }
 
@@ -68,7 +70,10 @@ class Trie {
             if (!part) continue;
             at = at.hosts[part];
             if (!at) return result;
-            if (at.isSet) result = at._isAllowed;
+            if (at.isSet) {
+                result = at._isAllowed;
+                console.log(`UACC: ${at._url} allowance: ${at._isAllowed}`);
+            }
         }
         const paths = url.pathname.split('/').reverse();
         while (paths.length > 0) {
@@ -76,7 +81,10 @@ class Trie {
             if (!part) continue;
             at = at.paths[part];
             if (!at) return result;
-            if (at.isSet) result = at._isAllowed;
+            if (at.isSet) {
+                result = at._isAllowed;
+                console.log(`UACC: ${at._url} allowance: ${at._isAllowed}`);
+            }
         }
     }
 
@@ -113,6 +121,7 @@ class Trie {
             at = at.paths[part];
         }
         at._isAllowed = isAllowed;
+        at._url = url;
         at.isSet = true;
     }
 

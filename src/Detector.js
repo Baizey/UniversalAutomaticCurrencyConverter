@@ -119,12 +119,10 @@ class Detector {
     async detectAllElements(element) {
         // Return empty list when not found
         const raw = element.innerText;
-        const html = element.innerHTML;
         // First stop if we're in an invalid element type
         if (element.tagName.toLowerCase() === 'script') return [];
         // Stop if we cannot detect any currencies at all
-        const c = this.regex();
-        if (!c.test(raw)) {
+        if (!this.regex().test(raw)) {
             return [];
         }
         // Stop if we cannot find any valid currencies
@@ -164,7 +162,7 @@ class Detector {
                 'integerLeft',
                 'decimalPointLeft',
                 'decimalLeft',
-                'rangeInner',
+                'range_inner',
                 'negRight',
                 'integerRight',
                 'decimalPointRight',
@@ -208,7 +206,7 @@ class Detector {
             keys.forEach(key => {
                 const group = regexResult.groups[key];
                 if (!group) return;
-                data.data.push({start: at, length: group.length, original: regexResult[0], replace: key === 'integerLeft'});
+                data.data.push({start: at, length: group.length, original: group, replace: key === 'integerLeft'});
                 at += group.length;
             });
             result.push(data);

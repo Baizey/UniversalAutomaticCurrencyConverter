@@ -84,13 +84,6 @@ describe('CurrencyAmount', () => {
         it(`Unknown currency`, async () => {
             // Setup
             const browser = new Browser();
-            // If it quacks like a browser, it's a browser
-            browser.loadLocal = async () => ({});
-            browser.background = {
-                getRate: async () => {
-                    throw 'failure'
-                }
-            }
             const currencies = new Currencies({browser: browser});
             const original = new CurrencyAmount('UNK', 0, {currencies: currencies});
 

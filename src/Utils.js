@@ -10,4 +10,12 @@ class Utils {
             result.push(temp[i]);
         return result;
     }
+
+    /**
+     * @param time
+     * @returns {Promise<void>}
+     */
+    static wait(time) {
+        return new Promise(resolve => setTimeout(() => resolve(), time));
+    }
 }

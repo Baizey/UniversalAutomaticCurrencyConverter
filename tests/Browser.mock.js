@@ -12,7 +12,6 @@ class Browser {
      * @returns {Promise<void>}
      */
     async saveLocal(key, value = null) {
-        return;
     }
 
     /**
@@ -34,7 +33,7 @@ class Browser {
         return {
             getRate: async (from, to) => {
                 if (from === to) return {rate: 1};
-                throw 'unimplemented getRate mock for different currencies'
+                throw 'unimplemented getRate mock for different currencies through api'
             },
             getSymbols: async () => ({
                 'USD': 'USD'
