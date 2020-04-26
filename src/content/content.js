@@ -2,14 +2,7 @@ Engine.instance.load().finally(async () => {
     await ActiveLocalization.instance.determineForSite(document.body.innerText);
     await Detector.instance.updateSharedLocalizations();
 
-    const allElements = Detector.instance.detectAllElements(document.body);
-
-    const elements = [];
-    for (let element of allElements) {
-        element.updateSnapshot()
-        const r = await Detector.instance.detectResult(element._original.texts.join(' '))
-        if (r.length > 0) elements.push(element);
-    }
+    const elements = await Detector.instance.detectAllElements(document.body);
 
     const currency = Configuration.instance.currency.tag.value;
     elements.forEach(element => element.convertTo(currency));

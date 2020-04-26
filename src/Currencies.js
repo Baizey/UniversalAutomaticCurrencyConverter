@@ -44,6 +44,12 @@ class Currencies {
      */
     async _fetchRate(from, to) {
         this._rates[from] = this._rates[from] || {};
+        // No conversion is really needed for these cases
+        if (from === to) {
+            this._rates[from][to] = new CurrencyRate(from, to, 1, Date.now());
+            return;
+        }
+
         const rateKey = `uacc:rate:${from}:${to}`;
         const dateKey = `uacc:rate:date:${from}:${to}`;
 

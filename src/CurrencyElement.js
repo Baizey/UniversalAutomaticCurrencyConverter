@@ -56,11 +56,11 @@ class CurrencyElement {
                 index -= converted[at].length + 1;
             }
             const relativeStart = d.start - index;
-            const relativeEnd = d.end - index;
             const old = converted[at];
-            converted[at] = old.substr(0, relativeStart)
-                + (d.text || '')
-                + old.substr(relativeEnd, old.length)
+
+            if (d.replace)
+                converted[at] = old.substr(0, relativeStart) + d.text + old.substr(relativeStart + d.length, old.length)
+            else converted[at] = old.substr(0, relativeStart) + old.substr(relativeStart + d.length, old.length)
         }
 
         this._converted.display();

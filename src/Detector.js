@@ -74,8 +74,17 @@ class Detector {
         return `(?<full_range>${this._amountRegex('Left')}${range})`;
     }
 
+    /**
+     * If forceNew is false, a shared cached instance is used
+     * shared instance should only be used in one place at a time
+     * @param {boolean} forceNew
+     * @returns {RegExp|XRegExp}
+     */
     regex(forceNew = false) {
-        if (this._regex && !forceNew) return this._regex;
+        if (this._regex && !forceNew) {
+            this._regex.lastIndex = 0;
+            return this._regex;
+        }
         const s = /["+\-:|\`^'& ,.<>()\\/\s*]/.source;
         const start = new RegExp(`(?<start>${s}|^)`).source;
         const end = new RegExp(`(?<end>${s}|$)`).source;
@@ -92,6 +101,7 @@ class Detector {
 
         if (forceNew) return this._constructRegex(regex);
         this._regex = this._constructRegex(regex);
+        this._regex.lastIndex = 0;
         return this._regex;
     }
 
@@ -104,19 +114,27 @@ class Detector {
 
     /**
      * @param {*} element
-     * @returns {[CurrencyElement]}
+     * @returns {Promise<[CurrencyElement]>}
      */
-    detectAllElements(element) {
+    async detectAllElements(element) {
         // Return empty list when not found
         const raw = element.innerText;
+        const html = element.innerHTML;
+        // First stop if we're in an invalid element type
         if (element.tagName.toLowerCase() === 'script') return [];
-        if (!this.regex().test(raw)) return [];
+        // Stop if we cannot detect any currencies at all
+        const c = this.regex();
+        if (!c.test(raw)) {
+            return [];
+        }
+        // Stop if we cannot find any valid currencies
+        if ((await this.detectResult(raw)).length === 0) return [];
 
         // Find currencies detectable in child nodes
         const children = element.children
         let result = [];
         for (let i = 0; i < children.length; i++)
-            result = result.concat(this.detectAllElements(children[i]));
+            result = result.concat(await this.detectAllElements(children[i]));
 
         // If no child contains full currency and we're at most 3 d
         if (result.length === 0 && !this._hasChildDeeperThan(element, 4))
@@ -128,7 +146,7 @@ class Detector {
      * @param {string} text
      * @returns {Promise<[{
             amount: CurrencyAmount,
-            data: [{start: number, end: number, replace: boolean}]
+            data: [{start: number, length: number, replace: boolean}]
         }]>}
      */
     async detectResult(text) {
@@ -168,21 +186,21 @@ class Detector {
             if (amounts.length === 0) continue;
 
             // Determine which sides of the amount has currency symbol (both can have, but then right side is prioritized)
-            let currency = '';
             const currencyLeft = regexResult.groups['currencyLeft'];
             let at = regexResult.index + (regexResult.groups.start || '').length;
-            if (await this._determineCurrency(currencyLeft)) {
+            let currency = await this._determineCurrency(currencyLeft);
+            if (currency) {
                 // If currency tag, add for removal
                 keys.unshift('whitespaceLeft');
                 keys.unshift('currencyLeft');
-                currency = await this._determineCurrency(currencyLeft);
             } else at += regexResult.groups['whitespaceLeft'].length + (regexResult.groups['currencyLeft'] || '').length;
             const currencyRight = regexResult.groups['currencyRight'];
-            if (await this._determineCurrency(currencyRight)) {
+            const tempCurrency = await this._determineCurrency(currencyRight);
+            if (tempCurrency) {
                 // If currency tag, add for removal
                 keys.push('whitespaceRight');
                 keys.push('currencyRight');
-                currency = await this._determineCurrency(currencyRight);
+                currency = tempCurrency;
             }
             if (!currency) continue;
 
@@ -190,7 +208,7 @@ class Detector {
             keys.forEach(key => {
                 const group = regexResult.groups[key];
                 if (!group) return;
-                data.data.push({start: at, end: at + group.length, replace: key === 'integerLeft'});
+                data.data.push({start: at, length: group.length, original: regexResult[0], replace: key === 'integerLeft'});
                 at += group.length;
             });
             result.push(data);
@@ -227,6 +245,7 @@ class Detector {
                     return found;
             }
         }
+        return null;
     }
 
     /**

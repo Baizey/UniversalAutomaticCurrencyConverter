@@ -119,12 +119,4 @@ class Localizations {
 
         return _currencySymbolsCache;
     }
-
-    /**
-     * @param {string} localizedCurrency
-     * @returns {string[]}
-     */
-    static mapToCurrency(localizedCurrency) {
-        return Localizations.allLocalizationMappings[localizedCurrency] || [localizedCurrency];
-    }
 }

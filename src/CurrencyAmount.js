@@ -5,10 +5,12 @@ class CurrencyAmount {
      * @param {{config: Configuration, currencies: Currencies}} services
      */
     constructor(tag, amount = 0, services = {}) {
-        const config = services.config || Configuration.instance;
+        services.config = services.config || Configuration.instance
+        services.currencies = services.currencies || Currencies.instance
+        const config = services.config;
         this._display = config.display;
         this._tagConfig = config.tag;
-        this._converter = services.currencies || Currencies.instance;
+        this._converter = services.currencies;
         this._services = services;
         this._tag = tag.toUpperCase();
         this._amount = Array.isArray(amount) ? amount : [amount];
@@ -41,17 +43,27 @@ class CurrencyAmount {
             // Limit at 15 decimals, as anything more causes issues with .toFixed
             if (Math.abs(fixed) < 1e-15) return '0';
             const original = fixed.toFixed(15);
-            const [integers, decimals] = original.split('.');
+            let [integers, decimals] = original.split('.');
             if (integers === '0' || integers === '-0') {
                 let i = 0;
                 while (i < decimals.length && decimals[i] === '0') i++;
                 if (i === decimals.length) return '0';
-                return '0.' + '0'.repeat(i) + this._round(decimals, i + Math.min(2, significant));
+                const toKeep = i + Math.min(2, significant);
+                const rounded = String(this._round(decimals, toKeep));
+                const zeroes = rounded.length === toKeep - i ? i : i - 1;
+                if (zeroes < 0) return "1." + rounded.substr(1);
+                return '0.' + '0'.repeat(zeroes) + rounded;
             } else {
                 const keep = fixed < 0 ? significant + 1 : significant;
                 if (keep > integers.length) {
-                    const rounded = this._round(decimals, Math.min(2, keep - integers.length));
-                    return rounded === 0 ? integers : `${integers}.${rounded}`;
+                    const toKeep = Math.min(2, keep - integers.length);
+                    let rounded = String(this._round(decimals, toKeep));
+                    // Handle decimal overflow into integers
+                    if (rounded.length > toKeep) {
+                       rounded = rounded.substr(1);
+                       integers = String(Number(integers) + 1);
+                    }
+                    return rounded === '0' ? integers : `${integers}.${rounded}`;
                 } else if (keep === integers.length)
                     return String(Math.round(Number(original)));
                 else
