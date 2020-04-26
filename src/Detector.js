@@ -121,6 +121,7 @@ class Detector {
         const raw = element.innerText;
         // First stop if we're in an invalid element type
         if (element.tagName.toLowerCase() === 'script') return [];
+        if (element.hasAttribute('uacc:watched')) return null;
         // Stop if we cannot detect any currencies at all
         if (!this.regex().test(raw)) {
             return [];
@@ -131,8 +132,11 @@ class Detector {
         // Find currencies detectable in child nodes
         const children = element.children
         let result = [];
-        for (let i = 0; i < children.length; i++)
-            result = result.concat(await this.detectAllElements(children[i]));
+        for (let i = 0; i < children.length; i++) {
+            const found = await this.detectAllElements(children[i]);
+            if (!found) return null;
+            result = result.concat(found);
+        }
 
         // If no child contains full currency and we're at most 3 d
         if (result.length === 0 && !this._hasChildDeeperThan(element, 4))

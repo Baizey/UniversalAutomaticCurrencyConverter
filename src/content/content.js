@@ -1,18 +1,9 @@
 const everything = new Timer();
 
-/**
- * @param time
- * @returns {Promise<CurrencyElement[]>}
- */
-async function convertOrTryAgain(time = 500) {
-    if (time > 5000) return [];
+async function detectAllElements(parent) {
     const currency = Configuration.instance.currency.tag.value;
     const autoConvert = Configuration.instance.utility.using.value;
-    const elements = await Detector.instance.detectAllElements(document.body);
-    if (elements.length === 0) {
-        await Utils.wait(time);
-        return await convertOrTryAgain(time * 2);
-    }
+    const elements = (await Detector.instance.detectAllElements(parent)) || [];
     for (let element of elements) {
         await element.convertTo(currency);
         await element.setupListener();
@@ -20,6 +11,20 @@ async function convertOrTryAgain(time = 500) {
             await element.showConverted();
             element.highlight();
         }
+    }
+    return elements;
+}
+
+/**
+ * @param time
+ * @returns {Promise<CurrencyElement[]>}
+ */
+async function convertOrTryAgain(time = 500) {
+    if (time > 5000) return [];
+    const elements = await detectAllElements(document.body);
+    if (elements.length === 0) {
+        await Utils.wait(time);
+        return await convertOrTryAgain(time * 2);
     }
     return elements;
 }
@@ -50,7 +55,7 @@ Engine.instance.load().finally(async () => {
 
     // Convert currencies
     timer.reset();
-    const elements = await convertOrTryAgain();
+    let elements = await convertOrTryAgain();
     timer.log(`Converted page, ${elements.length} conversions...`).reset();
 
     // Shortcut activation
@@ -68,17 +73,16 @@ Engine.instance.load().finally(async () => {
 
     // TODO: listen for newly added elements for conversion
     const observerConfig = {attributes: true, childList: true, subtree: true}
-    const observer = new MutationObserver((list, self) => {
+    const observer = new MutationObserver(async list => {
         for (let data of list) {
-            const target = data.target;
-            if (hasWatchedParent(target)) {
-                const id = hasWatchedParent(target) - 0;
-                const element = elements.filter(e => e.id === id)[0];
-                element.updateDisplay();
-                console.log(element);
+            let target = data.target;
+            if (!target) continue;
+            if (!hasWatchedParent(target)) {
+                for (let i = 0; i < 4; i++) target = target.parent || target;
+                const e = await detectAllElements(target)
+                elements = elements.concat(e);
             }
         }
-        console.log(list);
     });
     observer.observe(document.body, observerConfig);
 
