@@ -57,7 +57,6 @@ class MiniConverter {
      */
     async load() {
         this._conversions = (await this._browser.loadLocal(this._converterKey).then(e => e[this._converterKey])) || [];
-        console.log(this._conversions);
         this._conversions = this._conversions.map(e => new MiniConverterRow(e.from, e.to, e.amount));
     }
 

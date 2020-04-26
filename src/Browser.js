@@ -94,6 +94,14 @@ class Browser {
         this.access = this.type === Browsers.Firefox ? browser : chrome;
     }
 
+    get document() {
+        return document;
+    }
+
+    get window() {
+        return window;
+    }
+
     /**
      * @returns {string}
      */
@@ -277,7 +285,7 @@ class Browser {
                 if (!resp)
                     return reject(resp);
 
-                console.log(`LOAD From keys: ${key.join(', ')}\nGot: ${JSON.stringify(resp)}`);
+                //console.log(`LOAD From keys: ${key.join(', ')}\nGot: ${JSON.stringify(resp)}`);
 
                 Object.keys(resp).forEach(key => {
                     try {
@@ -299,7 +307,7 @@ class Browser {
         const toStore = ((typeof key) === 'string') ? {[key]: value} : key;
         return new Promise(resolve => {
             storage.set(toStore, () => {
-                console.log(`SAVE ${JSON.stringify(toStore)}`);
+                //console.log(`SAVE ${JSON.stringify(toStore)}`);
                 resolve();
             });
         });

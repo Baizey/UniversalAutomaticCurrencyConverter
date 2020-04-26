@@ -278,6 +278,5 @@ class Detector {
 
     async updateSymbols() {
         this._currencyTags = await this._currencies.symbols();
-        console.log(this._currencyTags);
     }
 }

@@ -100,8 +100,10 @@ describe('CurrencyAmount', () => {
 
     describe('Display', () => {
         const tests = [
-            {rounding: 1, amount: 0.99, currency: 'UNK', expect: '1.0 UNK'},
             {rounding: 1, amount: 0.099, currency: 'UNK', expect: '0.10 UNK'},
+            {rounding: 1, amount: 0.99, currency: 'UNK', expect: '1.0 UNK'},
+            {rounding: 2, amount: 0.0999, currency: 'UNK', expect: '0.100 UNK'},
+            {rounding: 2, amount: 0.999, currency: 'UNK', expect: '1.00 UNK'},
             {rounding: 2, amount: 3.99, currency: 'UNK', expect: '4 UNK'},
             {rounding: 3, amount: 123, currency: 'UNK', expect: '123 UNK'},
             {rounding: 2, amount: 123, currency: 'UNK', expect: '120 UNK'},

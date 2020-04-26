@@ -36,15 +36,15 @@
 
         "ActiveLocalization.js",
         "Currencies.js",
-
         "Detector.js",
-
         "Engine.js",
+
         "content/content.js"
       ],
       "css": [
         "content/content.css"
-      ]
+      ],
+      "all_frames": false
     }
   ],
   "background": {
