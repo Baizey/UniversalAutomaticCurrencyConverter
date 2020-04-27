@@ -56,8 +56,18 @@ function openPopup(senderResponse) {
     });
 }
 
+function localizationAlert(senderResponse) {
+    const url = chrome.extension.getURL('html/localizationAlert.html');
+    Ajax.get(url)
+        .then(html => senderResponse({success: true, data: html}))
+        .catch(e => senderResponse({success: false, data: e}));
+}
+
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
     switch (request.type) {
+        case 'localizationAlert':
+            localizationAlert(senderResponse);
+            break;
         case 'rate':
             rate(request, senderResponse);
             break;
@@ -76,7 +86,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) 
 
 const openOptionsIfNew = async () => {
     const firstTimeKey = 'uacc:global:oldUser'
-    const isOldUser  = (await Browser.instance.loadSync(firstTimeKey))[firstTimeKey];
+    const isOldUser = (await Browser.instance.loadSync(firstTimeKey))[firstTimeKey];
     if (!isOldUser) {
         chrome.tabs.create({
             url: 'options/options.html',
@@ -93,15 +103,19 @@ function getSelectedText(request, sender, senderResponse) {
     senderResponse({success: true, data: window.getSelection().toString()});
     return true;
 }
+*/
 
 chrome.contextMenus.create({
-    title: `Add to mini converter`,
+    title: `Convert selected`,
     contexts: ["selection"],
-    onclick: data => {
-        Browser.messageTab({
-            method: 'contextMenu',
-            text: data.selectionText
-        }).finally();
+    onclick: function () {
+        return Browser.instance.tab.convertSelected().finally();
     }
 });
- */
+chrome.contextMenus.create({
+    title: `Interact with site`,
+    contexts: ["page"],
+    onclick: function () {
+        return Browser.instance.tab.interactAlert().finally();
+    }
+});

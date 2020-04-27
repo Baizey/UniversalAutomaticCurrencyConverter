@@ -247,6 +247,7 @@ describe('Detector', () => {
             {text: `$3.99`, expect: [new CurrencyAmount('USD', 3.99)]},
             {text: `$3.99 . $3.99`, expect: [new CurrencyAmount('USD', 3.99), new CurrencyAmount('USD', 3.99)]},
             {text: `$3.99 $3.99`, expect: [new CurrencyAmount('USD', 3.99)]},
+            {text: "‎$34.99", expect: [new CurrencyAmount('USD', 34.99)]}
         ];
         tests.forEach(async test => {
             it(`${test.text}`, async () => {

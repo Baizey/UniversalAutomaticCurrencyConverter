@@ -88,7 +88,7 @@ describe('CurrencyAmount', () => {
             const original = new CurrencyAmount('UNK', 0, {currencies: currencies});
 
             // Act
-            const actual = await original.convertTo('UNK');
+            const actual = await original.convertTo('UNK4');
 
             // Assert
             expect(original.amount).toEqual([0]);

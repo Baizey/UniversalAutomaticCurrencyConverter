@@ -114,6 +114,14 @@ class Browser {
     /**
      * @returns {string}
      */
+    get hostAndPath() {
+        const url = new URL(this.href);
+        return url.hostname + url.pathname;
+    }
+
+    /**
+     * @returns {string}
+     */
     get hostname() {
         if (!this._fullHostName)
             this._fullHostName = window.location.hostname;
@@ -215,26 +223,25 @@ class Browser {
     }
 
     /**
-     * @returns {{
-     * getHref: (function(): Promise<string>),
-     * getLocalization: (function(): Promise<{dollar: string, yen: string, krone: string}>),
-     * getConversionCount: (function(): Promise<number>),
-     * setLocalization: (function({dollar: string, yen: string, krone: string}): Promise<void>)}}
+     * @returns {{getHref: (function(): Promise<*>), hideConversions: (function(): Promise<*>), getLocalization: (function(): Promise<*>), showConversions: (function(): Promise<*>), getConversionCount: (function(): Promise<*>), convertSelected: (function(): Promise<*>), interactAlert: (function(): Promise<*>), setLocalization: (function(*=): Promise<*>)}}
      */
     get tab() {
         return {
-            getConversionCount: () => this._messageTab({type: 'getConversionCount'}),
+            interactAlert: () => this._messageTab({type: 'interactAlert'}),
+            convertSelected: () => this._messageTab({type: 'convertSelected'}),
+            showConversions: () => this._messageTab({type: 'showConversions'}),
+            hideConversions: () => this._messageTab({type: 'hideConversions'}),
             getHref: () => this._messageTab({type: 'getHref'}),
             setLocalization: (data) => this._messageTab({type: 'setActiveLocalization', data: data}),
-            getLocalization: () => this._messageTab({type: 'getActiveLocalization'}),
         }
     }
 
     /**
-     * @returns {{getRate: (function(string, string): Promise<{rate: number}>), getSymbols: (function(): Promise<object>), openPopup: (function(): Promise<void>)}}
+     * @returns {{getRate: (function(*=, *=): Promise<*>), getSymbols: (function(): Promise<*>), openPopup: (function(): Promise<*>), localizationAlert: (function(): Promise<*>)}}
      */
     get background() {
         return {
+            localizationAlert: () => this._messageBackground({type: 'localizationAlert'}),
             getRate: (from, to) => this._messageBackground({type: 'rate', from: from, to: to}),
             getSymbols: () => this._messageBackground({type: 'symbols'}),
             openPopup: () => this._messageBackground({type: 'openPopup'}),

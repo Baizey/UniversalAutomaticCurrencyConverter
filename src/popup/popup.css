@@ -114,18 +114,36 @@ h3 {
     font-size: 1.5em;
 }
 
-.bottomConnected {
+.border {
     border-top: solid 1px #2F373E;
     border-left: solid 1px #2F373E;
     border-right: solid 1px #2F373E;
-    border-radius: 3px 3px 0 0;
+    border-bottom: solid 1px #2F373E;
+    border-radius: 3px 3px 3px 3px;
+}
+
+.bottomConnected {
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .topConnected {
-    border-bottom: solid 1px #2F373E;
-    border-left: solid 1px #2F373E;
-    border-right: solid 1px #2F373E;
-    border-radius: 0 0 3px 3px;
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.leftConnected {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.rightConnected {
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .localizationSelect {

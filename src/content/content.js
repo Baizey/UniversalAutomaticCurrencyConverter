@@ -54,33 +54,19 @@ async function createLocalizationAlert(elements) {
     const reverseBorderColor = 'rgb(' + reverseColors.join(',') + ')';
     const reverseBackgroundColor = 'rgb(' + reverseColors.map(e => e * 0.85).join(',') + ')';
     const reverseTextColor = textColor === '#eee' ? '#111' : '#eee';
-    const html = `<div class="uacc-alertWrapper" style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
-    <span class="uacc-line" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">Universal Automatic Currency Converter</span>
-    <h2 class="uacc-line" style="margin-top: 0; padding-top: 0">${browser.hostname}</h2>
-    <div class="uacc-line">${content}</div>
-    
-    <div class="uacc-line" style="height:55px">
-        <div style="width:50%; float: left">
-            <label class="uacc-center" style="font-weight: bold" for="uacc-using-detected">Use detected</label>
-            <div style="margin:auto; background-color: ${reverseBackgroundColor}; border-color: ${reverseBorderColor}" class="uacc-radiobox checked" id="uacc-using-detected">
-                <div></div>
-            </div>
-        </div>
-        <div style="width:50%; float: left">
-            <label class="uacc-center" style="font-weight: bold" for="uacc-using-defaults">Use defaults</label>
-            <div style="margin:auto; background-color: ${reverseBackgroundColor}; border-color: ${reverseBorderColor}" class="uacc-radiobox" id="uacc-using-defaults">
-                <div></div>
-            </div>
-        </div>
-    </div>
-    <div class="uacc-saveAndDismissLocalizationButton" id="uacc-save">Save as site defaults and dont ask again</div>
-    <div class="uacc-dismissLocalizationButton" id="uacc-dismiss">Dismiss alert</div>
-    <p class="uacc-line" style="font-size:12px;">You can always change site specific localization in the mini-converter popup</p>
-    <p class="uacc-line" style="font-size:12px;">This alert self destructs in <span id="uacc-countdown">60</span> seconds</p>
-</div>`;
+
     const div = browser.document.createElement('div')
+    const html = (await browser.background.localizationAlert())
+        .replace('${backgroundColor}', backgroundColor)
+        .replace('${borderColor}', borderColor)
+        .replace('${textColor}', textColor)
+        .replace(/\${reverseBorderColor}/g, reverseBorderColor)
+        .replace(/\${reverseBackgroundColor}/g, reverseBackgroundColor)
+        .replace(/\${reverseTextColor}/g, reverseTextColor)
+        .replace('${content}', content)
+        .replace('${hostname}', browser.hostname)
     div.innerHTML = html;
-    const alert = div.children[0];
+    const alert = div.firstChild;
     browser.document.body.appendChild(alert);
     const removeAlert = (fast = false) => {
         if (fast) alert.classList.add('uacc-fastRemove');
@@ -88,8 +74,7 @@ async function createLocalizationAlert(elements) {
         setTimeout(() => alert.remove(), 1000);
     };
 
-    browser.document.getElementById('uacc-dismiss')
-        .addEventListener('click', () => removeAlert(true));
+    browser.document.getElementById('uacc-dismiss').addEventListener('click', () => removeAlert(true));
     browser.document.getElementById('uacc-save').addEventListener('click', async () => {
         await localization.lockSite(true);
         removeAlert(true);
@@ -129,7 +114,7 @@ async function createLocalizationAlert(elements) {
  * @param {Timer} timer
  * @returns {Promise<CurrencyElement[]>}
  */
-async function convertOrTryAgain(time = 500, timer) {
+async function convertOrTryAgain(time, timer) {
     if (time > 5000) return [];
     await Utils.wait(time);
     timer.reset();
@@ -139,6 +124,9 @@ async function convertOrTryAgain(time = 500, timer) {
     return elements;
 }
 
+/**
+ * @returns {Promise<CurrencyElement[]>}
+ */
 async function main() {
     await Engine.instance.load();
     const browser = Browser.instance;
@@ -146,13 +134,13 @@ async function main() {
     const config = Configuration.instance;
     const localization = ActiveLocalization.instance;
     const siteAllowance = SiteAllowance.instance;
-    const currency = config.currency.tag.value;
     const shortcut = config.utility.shortcut.value;
-    const alert = config.alert.localization.value;
 
     // Handle allowance by black/white listing
-    if (!siteAllowance.isAllowed(browser.href))
-        return console.log('UACC: Site is blacklisted, goodbye');
+    if (!siteAllowance.isAllowed(browser.href)) {
+        console.log('UACC: Site is blacklisted, goodbye');
+        return [];
+    }
 
     // Detect localization for website
     const timer = new Timer();
@@ -161,17 +149,20 @@ async function main() {
     timer.log('Checked localization...').reset();
 
     // Convert currencies
-    let elements = await convertOrTryAgain(1000, timer);
+    let elements = await detectAllElements(browser.document.body);
+    if (elements.length === 0) elements = await convertOrTryAgain(500, timer);
     timer.log(`Converted page, ${elements.length} conversions...`).reset();
+
+    // Create alert if needed
+    await createLocalizationAlert(elements);
 
     // Shortcut activation
     browser.window.addEventListener('keyup', e => {
         if (e.key !== shortcut) return;
-        // TODO: Maybe optimize? this could be costly on sites with a lot of conversions
         elements.filter(e => e.selected).forEach(e => e.flipDisplay());
     });
 
-    // TODO: listen for newly added elements for conversion
+    // Update on changes and additions to site
     const observerConfig = {attributes: true, childList: true, subtree: true}
     const observer = new MutationObserver(async list => {
         for (let data of list) {
@@ -179,7 +170,7 @@ async function main() {
             if (!target) continue;
             if (!hasWatchedParent(target)) {
                 for (let i = 0; i < 4; i++) target = target.parent || target;
-                const e = await detectAllElements(target)
+                const e = await detectAllElements(target);
                 elements = elements.concat(e);
             }
         }
@@ -189,18 +180,37 @@ async function main() {
     await createLocalizationAlert(elements);
 
     // Setup listener for messages from popup
+    timer.log('Started listeners for shortcut & new currencies...').reset();
+    return elements;
+}
+
+main().then(elements => {
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
+        console.log(data);
         switch (data.type) {
+            case 'convertSelected':
+                senderResponse({success: true});
+                break;
+            case 'showConversions':
+                elements.forEach(e => e.showConverted());
+                senderResponse({success: true});
+                break;
+            case 'hideConversions':
+                elements.forEach(e => e.showOriginal());
+                senderResponse({success: true});
+                break;
             case 'getHref':
                 senderResponse({success: true, data: Browser.instance.href});
                 break;
             case 'getConversionCount':
                 senderResponse({success: true, data: elements.length});
                 break;
-            case 'setActiveLocalizations':
+            case 'setActiveLocalization':
+                await ActiveLocalization.instance.lockSite(false);
                 await ActiveLocalization.instance.overload(data.data);
                 Detector.instance.updateSharedLocalizations();
-                elements.forEach(element => element.convertTo(currency));
+                elements.forEach(element => element.convert().then(() => element.updateDisplay()));
+                await ActiveLocalization.instance.save();
                 senderResponse({success: true})
                 break;
             case 'getActiveLocalizations':
@@ -209,7 +219,4 @@ async function main() {
         }
         return true;
     });
-    timer.log('Started listeners for shortcut & new currencies...').reset();
-}
-
-main().catch(e => console.error(e));
+}).catch(e => console.error(e));

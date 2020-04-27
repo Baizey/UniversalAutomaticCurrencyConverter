@@ -85,7 +85,7 @@ class Detector {
             this._regex.lastIndex = 0;
             return this._regex;
         }
-        const s = /["+\-:|\`^'& ,.<>()\\/\s*]/.source;
+        const s = /["‎+\-:|\`^'& ,.<>()\\/\s*]/.source;
         const start = new RegExp(`(?<start>${s}|^)`).source;
         const end = new RegExp(`(?<end>${s}|$)`).source;
         const whitespace = /\s*/.source;
@@ -156,7 +156,6 @@ class Detector {
         const result = [];
         let regexResult;
         while (regexResult = regex.exec(text)) {
-            regex.lastIndex = regexResult.index + regexResult[0].length
             const data = {
                 amount: null,
                 data: []
@@ -195,7 +194,7 @@ class Detector {
                 // If currency tag, add for removal
                 keys.unshift('whitespaceLeft');
                 keys.unshift('currencyLeft');
-            } else at += regexResult.groups['whitespaceLeft'].length + (regexResult.groups['currencyLeft'] || '').length;
+            }
             const currencyRight = regexResult.groups['currencyRight'];
             const tempCurrency = await this._determineCurrency(currencyRight);
             if (tempCurrency) {

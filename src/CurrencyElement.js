@@ -62,6 +62,7 @@ class CurrencyElement {
      */
     async convert() {
         if (!this._conversionTo) return;
+        this._converted = this._original.clone();
         const converted = this._converted.texts;
         const text = this._converted.texts.join(' ');
 

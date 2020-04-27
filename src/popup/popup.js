@@ -82,9 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         browser._fullHostName = url.hostname;
         const localization = ActiveLocalization.instance;
         await Engine.instance.load().catch();
-        document.getElementById('blacklistInput').value = browser.hostname;
-        const conversionCount = await browser.tab.getConversionCount().catch(() => 0);
-        document.getElementById('conversionCount').value = `${conversionCount || 0} conversions`;
+        document.getElementById('blacklistInput').value = browser.hostAndPath;
         document.getElementById('krone').value = localization.krone;
         document.getElementById('yen').value = localization.yen;
         document.getElementById('dollar').value = localization.dollar;
@@ -112,7 +110,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         await createMiniConverterRow(row);
     });
 
-    const hideButton = document.getElementById('hideConversions');
+    const blacklistbutton = document.getElementById('blacklistButton');
+    const whitelistbutton = document.getElementById('whitelistbutton');
+    const whitelist = Configuration.instance.whitelist;
+    const blacklist = Configuration.instance.blacklist;
+    blacklistbutton.addEventListener('click', () => {
+        const url = document.getElementById('blacklistInput').value;
+        blacklist.urls.value.push(url);
+        blacklist.urls.save();
+        whitelist.urls.setValue(blacklist.urls.value.filter(e => e !== url));
+        whitelist.urls.save();
+    })
+    whitelistbutton.addEventListener('click', () => {
+        const url = document.getElementById('blacklistInput').value;
+        whitelist.urls.value.push(url);
+        whitelist.urls.save();
+        blacklist.urls.setValue(blacklist.urls.value.filter(e => e !== url));
+        blacklist.urls.save();
+    })
+
     /*
     let isConverted = false;
     hideButton.addEventListener('click', () => {

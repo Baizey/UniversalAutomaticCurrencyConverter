@@ -126,8 +126,7 @@ class ActiveLocalization {
         this.yen = this._determine(this.yen, text, shared['¥']);
         this.dollar = this._determine(this.dollar, text, shared['$']);
         this.krone = this._determine(this.krone, text, shared['kr']);
-        console.log(`UACC: Determined yen: ${this.yen}, krone: ${this.krone}, dollar: ${this.dollar}`)
-        console.log(await this.hasConflict());
+        console.log(`UACC: Found localization conflict ${await this.hasConflict()}...`);
     }
 
     /**
@@ -146,7 +145,6 @@ class ActiveLocalization {
             const re = new RegExp('(^|[\\W_])' + tag.tag + '($|[\\W_])', 'gm');
             tag.count += ((text || '').match(re) || []).length
         });
-        console.log(tags);
         return tags.reduce((p, n) => p.count > n.count ? p : n).tag
     }
 
