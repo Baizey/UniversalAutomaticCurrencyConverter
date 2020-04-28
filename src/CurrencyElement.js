@@ -68,9 +68,14 @@ class CurrencyElement {
 
         let result = await this._detector.detectResult(text);
         result.forEach(e => e.data.reverse());
-        for (const e of result) {
-            const converted = await e.amount.convertTo(this._conversionTo);
-            e.data.filter(e => e.replace).forEach(e => e.text = converted.toString());
+        for (const element of result) {
+            const converted = await element.amount.convertTo(this._conversionTo);
+            element.data.filter(e => e.replace).forEach(e => {
+                if (this._config.currency.showInBrackets.value)
+                    e.text = `${element.amount.amount} ${element.amount.tag} (${converted.toString()})`
+                else
+                    e.text = converted.toString()
+            });
         }
         result = result.reverse();
         const data = result.flatMap(e => e.data);

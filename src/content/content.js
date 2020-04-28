@@ -17,6 +17,38 @@ async function detectAllElements(parent) {
     return elements;
 }
 
+/**
+ * @param text
+ * @param template
+ * @returns {Promise<string>}
+ */
+async function createAlert(text, template = 'generalAlert') {
+    const browser = Browser.instance;
+    const bodyColor = browser.window.getComputedStyle(browser.document.body, null).getPropertyValue('background-color');
+    const rawColors = bodyColor.match(/\d+/g).map(e => Number(e));
+    const reverseColors = rawColors.slice(0, 3).map(e => (e + 128) % 255);
+    const colors = rawColors.map(e => e * 0.85);
+    const backgroundColor = colors.length === 3
+        ? 'rgb(' + colors.join(',') + ')'
+        : 'rgba(' + colors.map(e => Math.max(e, .9)).join(',') + ')';
+    const borderColor = colors.length === 3
+        ? 'rgb(' + colors.map(e => e * 0.85).join(',') + ')'
+        : 'rgba(' + colors.map(e => e * 0.85).map(e => Math.max(e, .9)).join(',') + ')';
+    const textColor = (colors.slice(0, 3).reduce((a, b) => a + b) / 3) >= 128 ? '#111' : '#eee';
+    const reverseBorderColor = 'rgb(' + reverseColors.join(',') + ')';
+    const reverseBackgroundColor = 'rgb(' + reverseColors.map(e => e * 0.85).join(',') + ')';
+    const reverseTextColor = textColor === '#eee' ? '#111' : '#eee';
+    const html = (await browser.background.getHtml(template))
+        .replace(/\${backgroundColor}/g, backgroundColor)
+        .replace(/\${borderColor}/g, borderColor)
+        .replace(/\${textColor}/g, textColor)
+        .replace(/\${reverseBorderColor}/g, reverseBorderColor)
+        .replace(/\${reverseBackgroundColor}/g, reverseBackgroundColor)
+        .replace(/\${reverseTextColor}/g, reverseTextColor)
+        .replace('${content}', text);
+    return html;
+}
+
 
 function hasWatchedParent(target) {
     if (!target) return false;
@@ -36,39 +68,20 @@ async function createLocalizationAlert(elements) {
         {detected: localization.dollar, default: localization._defaultDollar},
     ].filter(e => e.default !== e.detected).map(e =>
         `<div style="text-align: center" class="uacc-line">
-    <span style="width:50%; float: left">Detected ${e.detected}</span>
-    <span style="width:50%; float: left">Default's ${e.default}</span>
-</div>`).join('');
+<span style="width:50%; float: left">Detected ${e.detected}</span>
+<span style="width:50%; float: left">Default's ${e.default}</span>
+</div>`)
+        .join('');
 
-    const bodyColor = browser.window.getComputedStyle(browser.document.body, null).getPropertyValue('background-color');
-    const rawColors = bodyColor.match(/\d+/g).map(e => Number(e));
-    const reverseColors = rawColors.slice(0, 3).map(e => (e + 128) % 255);
-    const colors = rawColors.map(e => e * 0.85);
-    const backgroundColor = colors.length === 3
-        ? 'rgb(' + colors.join(',') + ')'
-        : 'rgba(' + colors.map(e => Math.max(e, .9)).join(',') + ')';
-    const borderColor = colors.length === 3
-        ? 'rgb(' + colors.map(e => e * 0.85).join(',') + ')'
-        : 'rgba(' + colors.map(e => e * 0.85).map(e => Math.max(e, .9)).join(',') + ')';
-    const textColor = (colors.slice(0, 3).reduce((a, b) => a + b) / 3) >= 128 ? '#111' : '#eee';
-    const reverseBorderColor = 'rgb(' + reverseColors.join(',') + ')';
-    const reverseBackgroundColor = 'rgb(' + reverseColors.map(e => e * 0.85).join(',') + ')';
-    const reverseTextColor = textColor === '#eee' ? '#111' : '#eee';
+    const html = (await createAlert(content, 'localizationAlert'))
+        .replace('${hostname}', browser.hostname)
 
     const div = browser.document.createElement('div')
-    const html = (await browser.background.localizationAlert())
-        .replace('${backgroundColor}', backgroundColor)
-        .replace('${borderColor}', borderColor)
-        .replace('${textColor}', textColor)
-        .replace(/\${reverseBorderColor}/g, reverseBorderColor)
-        .replace(/\${reverseBackgroundColor}/g, reverseBackgroundColor)
-        .replace(/\${reverseTextColor}/g, reverseTextColor)
-        .replace('${content}', content)
-        .replace('${hostname}', browser.hostname)
     div.innerHTML = html;
-    const alert = div.firstChild;
+    const alert = div.children[0];
     browser.document.body.appendChild(alert);
     const removeAlert = (fast = false) => {
+        console.log('removing alert')
         if (fast) alert.classList.add('uacc-fastRemove');
         alert.style.opacity = '0';
         setTimeout(() => alert.remove(), 1000);
@@ -76,6 +89,7 @@ async function createLocalizationAlert(elements) {
 
     browser.document.getElementById('uacc-dismiss').addEventListener('click', () => removeAlert(true));
     browser.document.getElementById('uacc-save').addEventListener('click', async () => {
+        console.log('locking alert')
         await localization.lockSite(true);
         removeAlert(true);
     });
@@ -84,6 +98,7 @@ async function createLocalizationAlert(elements) {
     Utils.initializeRadioBoxes([detectedButton, defaultsButton]);
     const detected = localization.compact;
     detectedButton.addEventListener('change', async () => {
+        console.log('change alert')
         await localization.overload(detected);
         detector.updateSharedLocalizations();
         await localization.save();
@@ -98,6 +113,7 @@ async function createLocalizationAlert(elements) {
     const expire = Date.now() + 60000;
     const countdown = browser.document.getElementById('uacc-countdown');
     const timer = setInterval(() => {
+        console.log('countdown alert')
         const now = Date.now();
         if (now > expire) {
             clearInterval(timer);
@@ -122,6 +138,13 @@ async function convertOrTryAgain(time, timer) {
     if (elements.length === 0)
         return await convertOrTryAgain(time * 2, timer);
     return elements;
+}
+
+async function displayOrTryAgain(time = 500, elements) {
+    if (time > 5000) return [];
+    await Utils.wait(time);
+    elements.forEach(e => e.updateDisplay());
+    await displayOrTryAgain(time * 2, elements);
 }
 
 /**
@@ -150,7 +173,9 @@ async function main() {
 
     // Convert currencies
     let elements = await detectAllElements(browser.document.body);
-    if (elements.length === 0) elements = await convertOrTryAgain(500, timer);
+    if (elements.length === 0)
+        elements = await convertOrTryAgain(500, timer);
+
     timer.log(`Converted page, ${elements.length} conversions...`).reset();
 
     // Create alert if needed
@@ -177,8 +202,6 @@ async function main() {
     });
     observer.observe(browser.document.body, observerConfig);
 
-    await createLocalizationAlert(elements);
-
     // Setup listener for messages from popup
     timer.log('Started listeners for shortcut & new currencies...').reset();
     return elements;
@@ -186,11 +209,7 @@ async function main() {
 
 main().then(elements => {
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
-        console.log(data);
         switch (data.type) {
-            case 'convertSelected':
-                senderResponse({success: true});
-                break;
             case 'showConversions':
                 elements.forEach(e => e.showConverted());
                 senderResponse({success: true});
@@ -202,9 +221,6 @@ main().then(elements => {
             case 'getHref':
                 senderResponse({success: true, data: Browser.instance.href});
                 break;
-            case 'getConversionCount':
-                senderResponse({success: true, data: elements.length});
-                break;
             case 'setActiveLocalization':
                 await ActiveLocalization.instance.lockSite(false);
                 await ActiveLocalization.instance.overload(data.data);
@@ -213,9 +229,8 @@ main().then(elements => {
                 await ActiveLocalization.instance.save();
                 senderResponse({success: true})
                 break;
-            case 'getActiveLocalizations':
-                senderResponse({success: true, data: ActiveLocalization.instance.compact});
-                break;
+            default:
+                senderResponse({success: false, data: `${data.type} did not match anything`})
         }
         return true;
     });

@@ -94,7 +94,6 @@ class Currencies {
         // Otherwise call API to get new symbols list
         // TODO: handle error better
         const resp = await this._browser.background.getSymbols().catch(error => null);
-        console.log(resp)
         if (!resp) return;
         this._symbols = resp;
         await this._browser.saveLocal({[symbolsKey]: this._symbols, [dateKey]: Date.now()}, null);

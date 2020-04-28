@@ -36,7 +36,51 @@ class Browser {
                 throw 'unimplemented getRate mock for different currencies through api'
             },
             getSymbols: async () => ({
-                'USD': 'USD'
+                'USD': 'USD',
+                'AUD': 'AUD',
+                'SEK': 'SEK',
+                // Brazil
+                'BRL': 'BRL',
+                // New Zealand
+                'NZD': 'NZD',
+                // Canada
+                'CAD': 'CAD',
+                // Mexico
+                'MXN': 'MXN',
+                // EU
+                'EUR': 'EUR',
+                // UK
+                'GBP': 'GBP',
+                // Japan
+                'JPY': 'JPY',
+                // China
+                'CNY': 'CNY',
+                // India
+                'INR': 'INR',
+                // Russia
+                'RUB': 'RUB',
+                // Turkey
+                'TRY': 'TRY',
+                // Ukraine
+                'UAH': 'UAH',
+                // Thailand
+                'THB': 'THB',
+                // Poland
+                'PLN': 'PLN',
+                // South Korea
+                'KRW': 'KRW',
+                // Bulgaria
+                'BGN': 'BGN',
+                // Czechia
+                'CZK': 'CZK',
+                // Bitcoin
+                'BTC': 'BTC',
+                // Monero
+                'XMR': 'XMR',
+                // Ethereum
+                'ETH': 'ETH',
+                // Litecoin
+                'LTC': 'LTC'
             })
 
         }

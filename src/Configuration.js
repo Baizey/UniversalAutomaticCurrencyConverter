@@ -219,7 +219,13 @@ class ConfigurationCurrency {
             'currency',
             'USD',
             e => hasLength(e, 3));
-        this.settings = [this.tag];
+        this.showInBrackets = new Setting(
+            '',
+            'uacc:currency:brackets',
+            false,
+            isBool
+        );
+        this.settings = [this.tag, this.showInBrackets];
     }
 }
 

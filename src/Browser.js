@@ -227,8 +227,6 @@ class Browser {
      */
     get tab() {
         return {
-            interactAlert: () => this._messageTab({type: 'interactAlert'}),
-            convertSelected: () => this._messageTab({type: 'convertSelected'}),
             showConversions: () => this._messageTab({type: 'showConversions'}),
             hideConversions: () => this._messageTab({type: 'hideConversions'}),
             getHref: () => this._messageTab({type: 'getHref'}),
@@ -241,7 +239,7 @@ class Browser {
      */
     get background() {
         return {
-            localizationAlert: () => this._messageBackground({type: 'localizationAlert'}),
+            getHtml: template => this._messageBackground({type: 'getHtml', template: template}),
             getRate: (from, to) => this._messageBackground({type: 'rate', from: from, to: to}),
             getSymbols: () => this._messageBackground({type: 'symbols'}),
             openPopup: () => this._messageBackground({type: 'openPopup'}),

@@ -53,6 +53,12 @@
             <div id="firsttime-progress-green" class="progress-bar progress-bar-green"role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
     </div>
+    <div class="row">
+        <h2 class="center">Things you may not initially notice</h2>
+        <p class="center">You can right-click when selecting text to add the conversion to the mini converter</p>
+        <p class="center">You can right-click without a selection to get the mini-converter in the bottom right of your tab</p>
+        <p class="center">You can both blacklist and whitelist at the same time. Fx blacklist google.com but whitelist google.com/stuff, This will stop the extension on any google domain, except if it starts with '/stuff' in its path<p>
+    </div>
 </div>
 
 <div id="options-wrapper" class="centering" style="margin-top: 10px">
@@ -69,6 +75,13 @@
         <div>
             <label class="center" for="currency">Convert to</label>
             <select id="currency" name="currency" class="form-control"></select>
+        </div>
+        <div style="width: 100%;">
+            <label class="center" for="uacc:currency:brackets">Display conversion in brackets beside original price</label>
+            <div id="uacc:currency:brackets" class="centering checkbox">
+                <div></div>
+                <div></div>
+            </div>
         </div>
     </div>
     <!-- Accessibility -->

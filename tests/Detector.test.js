@@ -6,7 +6,8 @@ describe('Detector', () => {
             return div;
         }
         const tests = [
-            {name: 'amazon_full', expect: 3, element: create(`<div class="sg-col-4-of-12 sg-col-8-of-16 sg-col-16-of-24 sg-col-12-of-20 sg-col-24-of-32 sg-col sg-col-28-of-36 sg-col-20-of-28"><div class="sg-col-inner">
+            {
+                name: 'amazon_full', expect: 3, element: create(`<div class="sg-col-4-of-12 sg-col-8-of-16 sg-col-16-of-24 sg-col-12-of-20 sg-col-24-of-32 sg-col sg-col-28-of-36 sg-col-20-of-28"><div class="sg-col-inner">
         
         <div class="sg-row">
           <div class="sg-col-4-of-12 sg-col-8-of-16 sg-col-12-of-32 sg-col-12-of-20 sg-col-12-of-36 sg-col sg-col-12-of-24 sg-col-12-of-28"><div class="sg-col-inner">
@@ -223,7 +224,8 @@ describe('Detector', () => {
             
           </div></div>
         </div>
-      </div></div>`)}
+      </div></div>`)
+            }
         ];
         tests.forEach(test => {
             it(`${test.name}`, async () => {
@@ -242,15 +244,44 @@ describe('Detector', () => {
             });
         })
     });
+    describe('Detect localizations', () => {
+        const tests =
+            Object.values(Localizations.unique)
+                .flatMap(e => e)
+                .map(e => ({symbol: e, expect: Localizations.allUniqueLocalizationMappings[e]}))
+                .concat(
+                    Object.entries(Localizations.shared)
+                        .map(e => ({expect: e[1][0], symbol: e[0]}))
+                        .flatMap(e => e))
+        tests.forEach(async test => {
+            it(`${test.symbol} -> ${test.expect}`, async () => {
+                // Setup
+                const localization = new ActiveLocalization();
+                localization.dollar = 'USD';
+                localization.yen = 'CNY';
+                localization.krone = 'SEK';
+                const detector = new Detector({activeLocalization: localization});
+                detector.updateSharedLocalizations();
+                const text = `1 ${test.symbol}`;
+
+                // Act
+                const actual = await detector.detectResult(text).then(e => e.map(e => e.amount));
+
+                // Assert
+                expect(actual).toEqual([new CurrencyAmount(test.expect, 1)]);
+            })
+        });
+    });
+
     describe('Find CurrencyResults', () => {
         const tests = [
             {text: `$3.99`, expect: [new CurrencyAmount('USD', 3.99)]},
             {text: `$3.99 . $3.99`, expect: [new CurrencyAmount('USD', 3.99), new CurrencyAmount('USD', 3.99)]},
             {text: `$3.99 $3.99`, expect: [new CurrencyAmount('USD', 3.99)]},
-            {text: "‎$34.99", expect: [new CurrencyAmount('USD', 34.99)]}
+            {name: 'invis char', text: "‎$34.99", expect: [new CurrencyAmount('USD', 34.99)]}
         ];
         tests.forEach(async test => {
-            it(`${test.text}`, async () => {
+            it(`${test.name || test.text}`, async () => {
                 // Setup
                 const localization = new ActiveLocalization();
                 localization.dollar = 'USD'

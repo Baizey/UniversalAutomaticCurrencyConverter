@@ -56,8 +56,10 @@ function openPopup(senderResponse) {
     });
 }
 
-function localizationAlert(senderResponse) {
-    const url = chrome.extension.getURL('html/localizationAlert.html');
+function getHtml(senderResponse, template) {
+    if (['generalAlert', 'localizationAlert'].indexOf(template) < 0)
+        return senderResponse({status: false, data: `'${template}' is invalid template name`})
+    const url = chrome.extension.getURL(`html/${template}.html`);
     Ajax.get(url)
         .then(html => senderResponse({success: true, data: html}))
         .catch(e => senderResponse({success: false, data: e}));
@@ -65,8 +67,8 @@ function localizationAlert(senderResponse) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
     switch (request.type) {
-        case 'localizationAlert':
-            localizationAlert(senderResponse);
+        case 'getHtml':
+            getHtml(senderResponse, request.template);
             break;
         case 'rate':
             rate(request, senderResponse);
@@ -106,16 +108,16 @@ function getSelectedText(request, sender, senderResponse) {
 */
 
 chrome.contextMenus.create({
-    title: `Convert selected`,
-    contexts: ["selection"],
+    title: `Show conversions`,
+    contexts: ["page"],
     onclick: function () {
-        return Browser.instance.tab.convertSelected().finally();
+        return Browser.instance.tab.showConversions().finally();
     }
 });
 chrome.contextMenus.create({
-    title: `Interact with site`,
+    title: `Hide conversions...`,
     contexts: ["page"],
     onclick: function () {
-        return Browser.instance.tab.interactAlert().finally();
+        return Browser.instance.tab.hideConversions().finally();
     }
 });

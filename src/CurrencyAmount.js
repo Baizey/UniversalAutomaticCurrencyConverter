@@ -8,6 +8,7 @@ class CurrencyAmount {
         services.config = services.config || Configuration.instance
         services.currencies = services.currencies || Currencies.instance
         const config = services.config;
+        this._config = config;
         this._display = config.display;
         this._tagConfig = config.tag;
         this._converter = services.currencies;

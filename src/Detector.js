@@ -24,17 +24,18 @@ class Detector {
 
     _currencyRegex(name) {
         // Simplification of Localizations' symbols
-        return `(?<currency${name}>${[
-            /[¥A-Z]{3}\$?/.source,
-            /,-{1,2}|kr\.?/.source,
-            /CDN\$/.source,
-            /R\$/.source,
-            /US ?\$/.source,
-            /dollars?/.source,
-            'Kč',
-            'zł',
-            /[$£€₺Ł元₿Ξ฿₴ɱ₽¥₩]/.source,
-        ].join('|')})?`;
+        return `(?<currency${name}>${Object.values(Localizations.unique)
+            .flatMap(e => e)
+            .map(e => e.replace('$', '\\$'))
+            .concat([
+                /[A-Z]{3}/.source,
+                /,-{1,2}/.source,
+                /kr\.?/.source,
+                '¥',
+                /\$/.source,
+                'dollar',
+                'dollars',
+            ]).join('|')})?`;
     }
 
     _integerRegex(number) {

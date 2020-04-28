@@ -143,6 +143,7 @@ const getUiValue = key => {
             return element.value;
 
         // Checkbox
+        case 'uacc:currency:brackets':
         case 'utilityHoverConvert':
         case 'usingWhitelist':
         case 'usingBlacklist':
@@ -241,12 +242,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         const todo = options.children.length;
 
         const done = document.getElementById('firsttime-button-done');
-        done.addEventListener('click', () => done.classList.contains('disabled') || location.reload());
+        done.addEventListener('click', () => location.reload());
 
         const wrapper = document.getElementById('firsttime-wrapper');
         const next = document.getElementById('firsttime-button-next');
         next.addEventListener('click', () => {
-            if (next.classList.contains('disabled')) return;
             wrapper.children[0].classList.add('fadeout');
             wrapper.children[0].style.opacity = '0';
             const progress = Math.round((1 - (options.children.length - 1) / todo) * 100);
@@ -265,8 +265,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
         document.getElementById('currency').addEventListener('click', () => {
             document.getElementById('firsttime-currency').classList.add('hidden');
-            next.classList.remove('disabled');
-            done.classList.remove('disabled');
         });
         options.children[0].classList.add('firsttimeFadein');
         options.children[0].classList.add('fadein');
