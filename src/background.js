@@ -57,7 +57,7 @@ function openPopup(senderResponse) {
 }
 
 function getHtml(senderResponse, template) {
-    if (['generalAlert', 'localizationAlert'].indexOf(template) < 0)
+    if (['contextMenu', 'localizationAlert'].indexOf(template) < 0)
         return senderResponse({status: false, data: `'${template}' is invalid template name`})
     const url = chrome.extension.getURL(`html/${template}.html`);
     Ajax.get(url)
@@ -65,8 +65,15 @@ function getHtml(senderResponse, template) {
         .catch(e => senderResponse({success: false, data: e}));
 }
 
+function getSelectedText(senderResponse) {
+    senderResponse({success: true, data: window.getSelection().toString()});
+}
+
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
     switch (request.type) {
+        case 'getSelected':
+            getSelectedText(senderResponse);
+            break;
         case 'getHtml':
             getHtml(senderResponse, request.template);
             break;
@@ -108,12 +115,22 @@ function getSelectedText(request, sender, senderResponse) {
 */
 
 chrome.contextMenus.create({
-    title: `Show conversions`,
-    contexts: ["page"],
+    title: `Convert selected...`,
+    contexts: ["selection"],
     onclick: function () {
-        return Browser.instance.tab.showConversions().finally();
+        return Browser.instance.tab.contextMenu().finally();
     }
 });
+
+chrome.contextMenus.create({
+    title: `Handle site conversions...`,
+    contexts: ["page"],
+    onclick: function () {
+        return Browser.instance.tab.contextMenu().finally();
+    }
+});
+
+/*
 chrome.contextMenus.create({
     title: `Hide conversions...`,
     contexts: ["page"],
@@ -121,3 +138,4 @@ chrome.contextMenus.create({
         return Browser.instance.tab.hideConversions().finally();
     }
 });
+ */

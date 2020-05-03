@@ -52,6 +52,8 @@ async function createAlert(text, template = 'generalAlert') {
 
 function hasWatchedParent(target) {
     if (!target) return false;
+    if (!target.hasAttribute) return false;
+    if (typeof target.hasAttribute !== 'function') return false;
     if (target.hasAttribute('uacc:watched')) return target.getAttribute('uacc:watched');
     return hasWatchedParent(target.parent);
 }
@@ -190,26 +192,85 @@ async function main() {
     // Update on changes and additions to site
     const observerConfig = {attributes: true, childList: true, subtree: true}
     const observer = new MutationObserver(async list => {
+        console.log(list);
         for (let data of list) {
-            let target = data.target;
-            if (!target) continue;
-            if (!hasWatchedParent(target)) {
+            const targets = [data.target];
+            for (let i = 0; i < data.addedNodes.length; i++)
+                targets.push(data.addedNodes[i]);
+            for (let target of targets) {
+                if (!target) continue;
+                const watched = hasWatchedParent(target);
+                console.log(target);
+                console.log(watched);
+                if (watched) {
+                    const watcher = elements.filter(e => e.id === watched - 0)[0];
+                    if (watcher) await watcher.updateDisplay();
+                    return;
+                }
                 for (let i = 0; i < 4; i++) target = target.parent || target;
                 const e = await detectAllElements(target);
                 elements = elements.concat(e);
             }
         }
     });
-    observer.observe(browser.document.body, observerConfig);
-
+    //observer.observe(browser.document.body, {childList: true, subtree: true, attributes: false, characterData: false});
+    observer.observe(browser.document.body, {childList: true, subtree: false, attributes: false, characterData: true});
     // Setup listener for messages from popup
     timer.log('Started listeners for shortcut & new currencies...').reset();
     return elements;
 }
 
-main().then(elements => {
+async function showContextMenu(elements) {
+    const browser = Browser.instance;
+    const html = (await createAlert('', 'contextMenu'))
+        .replace('${hostname}', browser.hostname);
+    const div = browser.document.createElement('div')
+    div.innerHTML = html;
+    const menu = div.children[0];
+    menu.style.opacity = '1';
+
+    let selectedText = '';
+    const currency = Configuration.instance.currency.tag.value;
+    let paused = {value: false};
+    const interval = setInterval(async function () {
+        const filler = document.getElementById('uacc-context-selected');
+        if (!filler) return clearInterval(interval);
+        if (paused.value) return;
+        const text = window.getSelection().toString().trim();
+        if (!text || text === selectedText) return;
+        selectedText = text;
+        filler.value = text;
+        const amounts = await Detector.instance.detectResult(text).then(e => e.map(e => e.amount));
+        const result = [];
+        for (let e of amounts)
+            result.push(`${e.amount} ${e.tag} ⇒ ${(await e.convertTo(currency)).toString()}`);
+        const resultDiv = document.getElementById('uacc-context-selected-conversions');
+        if (!resultDiv) return clearInterval(interval);
+        resultDiv.innerHTML = `<h3>Currencies found in selection</h3>${result.join('<br>')}`;
+    }, 1000);
+
+    if (browser.document.getElementById('uacc-context')) return;
+    browser.document.body.appendChild(menu);
+    document.getElementById('uacc-context-pause').addEventListener('change', e => {
+        paused.value = !document.getElementById('uacc-context-pause').checked
+    })
+    document.getElementById('uacc-context-show').addEventListener('click', () => elements.forEach(e => e.showConverted()))
+    document.getElementById('uacc-context-hide').addEventListener('click', () => elements.forEach(e => e.showOriginal()))
+    document.getElementById('uacc-context-dismiss').addEventListener('click', () => {
+        clearInterval(interval);
+        menu.remove();
+    })
+
+}
+
+main().then(async elements => {
+    await showContextMenu(elements);
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
+            case 'contextMenu':
+                await showContextMenu(elements);
+                senderResponse({success: true});
+                break;
             case 'showConversions':
                 elements.forEach(e => e.showConverted());
                 senderResponse({success: true});

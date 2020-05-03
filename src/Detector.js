@@ -121,7 +121,7 @@ class Detector {
         // Return empty list when not found
         const raw = element.innerText;
         // First stop if we're in an invalid element type
-        if (element.tagName.toLowerCase() === 'script') return [];
+        if (!element.tagName || element.tagName.toLowerCase() === 'script') return [];
         if (element.hasAttribute('uacc:watched')) return null;
         // Stop if we cannot detect any currencies at all
         if (!this.regex().test(raw)) {

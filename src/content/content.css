@@ -69,10 +69,62 @@
     float: left;
 }
 
-.uacc-saveAndDismissLocalizationButton, .uacc-dismissLocalizationButton, .uacc-saveLocalizationButton, .uacc-revertLocalizationButton {
+.uacc-alert-wrapper {
+    min-width: fit-content;
+}
+
+.uacc-button {
     padding-top: 10px;
     padding-bottom: 10px;
     width: 100%;
+    cursor: pointer;
+    color: #efefef;
+    border-radius: 5px;
+    background-color: #053050;
+}
+
+.uacc-button:hover {
+    background-color: #204d74;
+}
+
+.uacc-button-good {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.uacc-button-good:hover {
+    background-color: #189735;
+}
+
+.uacc-button-bad {
+    background-color: #bc1525;
+    border-color: #bc1525;
+}
+
+.uacc-button-bad:hover {
+    background-color: #ac0515;
+}
+
+.uacc-row {
+    display: table-row;
+    min-width: fit-content;
+    margin: auto;
+    width: 100%;
+    float: none;
+}
+
+.uacc-column {
+    float: left;
+    height: 100%;
+}
+
+.uacc-input {
+
+}
+
+.uacc-saveAndDismissLocalizationButton, .uacc-dismissLocalizationButton, .uacc-saveLocalizationButton, .uacc-revertLocalizationButton {
+    padding-top: 10px;
+    padding-bottom: 10px;
     cursor: pointer;
     color: #efefef;
     border-radius: 5px;
@@ -142,5 +194,5 @@
 }
 
 .checked div {
-     opacity: 1;
- }
+    opacity: 1;
+}

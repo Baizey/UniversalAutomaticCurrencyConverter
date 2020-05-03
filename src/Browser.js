@@ -227,6 +227,7 @@ class Browser {
      */
     get tab() {
         return {
+            contextMenu: () => this._messageTab({type: 'contextMenu'}),
             showConversions: () => this._messageTab({type: 'showConversions'}),
             hideConversions: () => this._messageTab({type: 'hideConversions'}),
             getHref: () => this._messageTab({type: 'getHref'}),
@@ -239,6 +240,7 @@ class Browser {
      */
     get background() {
         return {
+            getSelectedText: () => this._messageBackground({type: 'getSelected'}),
             getHtml: template => this._messageBackground({type: 'getHtml', template: template}),
             getRate: (from, to) => this._messageBackground({type: 'rate', from: from, to: to}),
             getSymbols: () => this._messageBackground({type: 'symbols'}),

@@ -1,0 +1,27 @@
+<div id="uacc-context" class="uacc-alertWrapper uacc-alert-wrapper"
+     style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
+    <span class="uacc-row" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">UACC context menu</span>
+    <h2 class="uacc-row" style="margin-top: 0; padding-top: 0">${hostname}</h2>
+    <div class="uacc-row" style="margin-top: 0; padding-top: 0">
+        <div class="uacc-button uacc-button-good uacc-column" id="uacc-context-show" style="width:50%;">Show<br>conversions
+        </div>
+        <div class="uacc-button uacc-button-bad uacc-column" id="uacc-context-hide" style="width:50%">Hide<br>conversions
+        </div>
+    </div>
+    <div class="uacc-row" style="margin-top: 0; padding-top: 0">
+        <h3>Selected text</h3>
+        <label style="width:100%" for="uacc-context-pause">Convert selected</label>
+        <input type="checkbox" id="uacc-context-pause" name="uacc-context-pause"
+               value="Pause selection conversion" checked="true">
+        <br>
+        <input id="uacc-context-selected" class="uacc-input" style="text-align: center" readonly
+               placeholder="Nothing selected...">
+    </div>
+    <div class="uacc-row" style="max-height:400px; overflow: auto" id="uacc-context-selected-conversions">
+
+    </div>
+
+    <div class="uacc-row" style="margin-top: 0; padding-top: 0">
+        <div class="uacc-button uacc-column" id="uacc-context-dismiss" style="width:100%">Dismiss</div>
+    </div>
+</div>
