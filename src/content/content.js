@@ -264,7 +264,6 @@ async function showContextMenu(elements) {
 }
 
 main().then(async elements => {
-    await showContextMenu(elements);
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
             case 'contextMenu':
