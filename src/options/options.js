@@ -143,6 +143,7 @@ const getUiValue = key => {
             return element.value;
 
         // Checkbox
+        case 'utilityClickConvert':
         case 'uacc:currency:brackets':
         case 'utilityHoverConvert':
         case 'usingWhitelist':

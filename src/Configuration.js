@@ -231,6 +231,12 @@ class ConfigurationCurrency {
 
 class ConfigurationUtility {
     constructor() {
+        this.click = new Setting(
+            '',
+            'utilityClickConvert',
+            true,
+            isBool
+        );
         this.using = new Setting(
             '',
             'currencyUsingAutomatic',
@@ -246,7 +252,7 @@ class ConfigurationUtility {
             'utilityHoverConvert',
             false,
             isBool);
-        this.settings = [this.using, this.shortcut, this.hover];
+        this.settings = [this.using, this.shortcut, this.hover, this.click];
     }
 }
 

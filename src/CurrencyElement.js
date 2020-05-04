@@ -46,6 +46,8 @@ class CurrencyElement {
 
     async setupListener() {
         this._element.classList.add('uacc-clickable');
+        if (this._config.utility.click.value)
+            this._element.addEventListener('click', () => this.flipDisplay());
         this._element.addEventListener('mouseover', () => {
             if (this._config.utility.hover.value) this.flipDisplay();
             this.selected = true;
@@ -54,7 +56,6 @@ class CurrencyElement {
             if (this._config.utility.hover.value) this.flipDisplay();
             this.selected = false;
         });
-        this._element.addEventListener('click', () => this.flipDisplay());
     }
 
     /**

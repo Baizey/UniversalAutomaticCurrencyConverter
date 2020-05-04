@@ -88,12 +88,30 @@
     <div class="row">
         <h2 class="centering">Accessibility</h2>
         <div>
-            <div style="width:33.33%; float:left">
+            <div style="width:100%; float:left">
                 <label class="center" for="currencyShortcut">Hover and click shortcut to convert</label>
                 <input id="currencyShortcut" class="form-control clickable center" name="currencyShortcut"
                        type="text"
                        readonly="readonly" value="Shift">
                 <span class="help-block center">Hold your mouse over to change</span>
+            </div>
+        </div>
+        <div>
+            <div style="width:33.33%; float:left">
+                <label class="center" for="currencyUsingAutomatic">Convert pages automatically on load</label>
+                <div id="currencyUsingAutomatic" class="centering checkbox">
+                    <div></div>
+                    <div></div>
+                </div>
+                <span class="help-block center"></span>
+            </div>
+            <div style="width:33.33%; float:left">
+                <label class="center" for="utilityClickConvert">Convert prices by left clicking</label>
+                <div id="utilityClickConvert" class="centering checkbox">
+                    <div></div>
+                    <div></div>
+                </div>
+                <span class="help-block center"></span>
             </div>
             <div style="width:33.33%; float:left">
                 <label class="center" for="utilityHoverConvert">Convert prices on hover over</label>
@@ -101,14 +119,7 @@
                     <div></div>
                     <div></div>
                 </div>
-                <span class="help-block center">Works in reverse if automatic page conversion is on</span>
-            </div>
-            <div style="width:33.33%; float:left">
-                <label class="center" for="currencyUsingAutomatic">Automatic page conversion</label>
-                <div id="currencyUsingAutomatic" class="centering checkbox">
-                    <div></div>
-                    <div></div>
-                </div>
+                <span class="help-block center"></span>
             </div>
         </div>
     </div>
