@@ -95,7 +95,9 @@ class Trie {
      */
     _addUrls(urls, isAllowed) {
         if (!urls) return;
-        urls.forEach(url => this._addUrl(new URL(url), isAllowed));
+        urls
+            .map(url => url.startsWith('https://') || url.startsWith('http://') ? url : `https://${url}`)
+            .forEach(url => this._addUrl(new URL(url), isAllowed));
     }
 
     /**

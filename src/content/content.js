@@ -198,7 +198,6 @@ async function main() {
     // Update on changes and additions to site
     const observerConfig = {attributes: true, childList: true, subtree: true}
     const observer = new MutationObserver(async list => {
-        console.log(list);
         for (let data of list) {
             const targets = [data.target];
             for (let i = 0; i < data.addedNodes.length; i++)
@@ -206,8 +205,6 @@ async function main() {
             for (let target of targets) {
                 if (!target) continue;
                 const watched = hasWatchedParent(target);
-                console.log(target);
-                console.log(watched);
                 if (watched) {
                     const watcher = elements.filter(e => e.id === watched - 0)[0];
                     if (watcher) await watcher.updateDisplay();
