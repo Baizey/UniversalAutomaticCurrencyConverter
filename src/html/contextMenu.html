@@ -1,8 +1,8 @@
-<div id="uacc-context" class="uacc-alertWrapper uacc-alert-wrapper"
+<div id="uacc-context" class="uacc-alertWrapper"
      style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
     <span class="uacc-row" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">UACC context menu</span>
-    <h2 class="uacc-row" style="margin-top: 0; padding-top: 0">${hostname}</h2>
-    <div class="uacc-row" style="margin-top: 0; padding-top: 0">
+    <div class="uacc-header uacc-row" style="margin-top: 0; padding-top: 0">${hostname}</div>
+    <div class="uacc-row uacc-list" style="margin-top: 0; padding-top: 0">
         <div class="uacc-button uacc-button-good uacc-column" id="uacc-context-show" style="width:50%;">Show<br>conversions
         </div>
         <div class="uacc-button uacc-button-bad uacc-column" id="uacc-context-hide" style="width:50%">Hide<br>conversions
@@ -19,7 +19,7 @@
     <div class="uacc-row" style="max-height:400px; overflow: auto" id="uacc-context-selected-conversions">
 
     </div>
-    <div class="uacc-row" style="margin-top: 0; padding-top: 0">
+    <div class="uacc-row" style="padding-top: 0; margin-top: 5px">
         <div class="uacc-button uacc-column" id="uacc-context-dismiss" style="width:100%">Dismiss</div>
     </div>
 </div>

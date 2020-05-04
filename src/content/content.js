@@ -1,3 +1,8 @@
+const uaccWrapper = document.createElement('div');
+uaccWrapper.setAttribute('id', 'uacc-window');
+uaccWrapper.classList.add('uacc-window');
+uaccWrapper.style.opacity = '1';
+
 /**
  * @param parent
  * @returns {Promise<CurrencyElement[]|*[]>}
@@ -69,7 +74,7 @@ async function createLocalizationAlert(elements) {
         {detected: localization.yen, default: localization._defaultYen},
         {detected: localization.dollar, default: localization._defaultDollar},
     ].filter(e => e.default !== e.detected).map(e =>
-        `<div style="text-align: center" class="uacc-line">
+        `<div style="text-align: center; width:100%; min-height: 15px">
 <span style="width:50%; float: left">Detected ${e.detected}</span>
 <span style="width:50%; float: left">Default's ${e.default}</span>
 </div>`)
@@ -81,7 +86,7 @@ async function createLocalizationAlert(elements) {
     const div = browser.document.createElement('div')
     div.innerHTML = html;
     const alert = div.children[0];
-    browser.document.body.appendChild(alert);
+    uaccWrapper.appendChild(alert);
     const removeAlert = (fast = false) => {
         console.log('removing alert')
         if (fast) alert.classList.add('uacc-fastRemove');
@@ -89,14 +94,14 @@ async function createLocalizationAlert(elements) {
         setTimeout(() => alert.remove(), 1000);
     };
 
-    browser.document.getElementById('uacc-dismiss').addEventListener('click', () => removeAlert(true));
-    browser.document.getElementById('uacc-save').addEventListener('click', async () => {
+    browser.document.getElementById('uacc-localization-dismiss').addEventListener('click', () => removeAlert(true));
+    browser.document.getElementById('uacc-localization-save').addEventListener('click', async () => {
         console.log('locking alert')
         await localization.lockSite(true);
         removeAlert(true);
     });
-    const detectedButton = browser.document.getElementById('uacc-using-detected');
-    const defaultsButton = browser.document.getElementById('uacc-using-defaults');
+    const detectedButton = browser.document.getElementById('uacc-localization-using-detected');
+    const defaultsButton = browser.document.getElementById('uacc-localization-using-defaults');
     Utils.initializeRadioBoxes([detectedButton, defaultsButton]);
     const detected = localization.compact;
     detectedButton.addEventListener('change', async () => {
@@ -112,8 +117,8 @@ async function createLocalizationAlert(elements) {
         await localization.save();
         elements.forEach(e => e.updateDisplay());
     });
-    const expire = Date.now() + 60000;
-    const countdown = browser.document.getElementById('uacc-countdown');
+    const expire = Date.now() + 60000 * 20;
+    const countdown = browser.document.getElementById('uacc-localization-countdown');
     const timer = setInterval(() => {
         console.log('countdown alert')
         const now = Date.now();
@@ -153,6 +158,7 @@ async function displayOrTryAgain(time = 500, elements) {
  * @returns {Promise<CurrencyElement[]>}
  */
 async function main() {
+    document.body.appendChild(uaccWrapper);
     await Engine.instance.load();
     const browser = Browser.instance;
     const detector = Detector.instance;
@@ -250,7 +256,7 @@ async function showContextMenu(elements) {
     }, 1000);
 
     if (browser.document.getElementById('uacc-context')) return;
-    browser.document.body.appendChild(menu);
+    uaccWrapper.appendChild(menu);
     document.getElementById('uacc-context-pause').addEventListener('change', e => {
         paused.value = !document.getElementById('uacc-context-pause').checked
     })

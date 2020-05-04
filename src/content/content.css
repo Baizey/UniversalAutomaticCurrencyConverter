@@ -2,24 +2,28 @@
     cursor: pointer;
 }
 
-.uacc-line {
+.uacc-header {
+    font-size: 1.5em;
     display: block;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    width: 100%;
-    text-align: center;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    font-weight: bold;
 }
 
-.uacc-highlighted {
-    transition: background-color 0.5s linear;
-    -moz-transition: background-color 0.5s linear;
-    -webkit-transition: background-color 0.5s linear;
-    -ms-transition: background-color 0.5s linear;
+.uacc-center {
+    text-align: center;
+    margin: auto;
+}
+
+.uacc-window {
+    width: 350px;
+    height: fit-content;
+    z-index: 1000;
+    right: 25px;
+    bottom: 0;
+    position: fixed;
 }
 
 .uacc-alertWrapper {
+    width: 350px;
     opacity: 0;
     margin: 5px;
     border-radius: 5px;
@@ -29,11 +33,6 @@
     padding: 5px;
     text-align: center;
     height: fit-content;
-    width: fit-content;
-    z-index: 1000;
-    right: 0;
-    bottom: 0;
-    position: fixed;
     transition: opacity 0.5s linear;
     -moz-transition: opacity 0.5s linear;
     -webkit-transition: opacity 0.5s linear;
@@ -69,10 +68,6 @@
     float: left;
 }
 
-.uacc-alert-wrapper {
-    min-width: fit-content;
-}
-
 .uacc-button {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -96,6 +91,15 @@
     background-color: #189735;
 }
 
+.uacc-button-ignore {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.uacc-button-ignore:hover {
+    background-color: #5c656d;
+}
+
 .uacc-button-bad {
     background-color: #bc1525;
     border-color: #bc1525;
@@ -106,71 +110,32 @@
 }
 
 .uacc-row {
-    display: table-row;
-    min-width: fit-content;
+    height: fit-content;
     margin: auto;
     width: 100%;
     float: none;
 }
 
-.uacc-column {
+.uacc-list > div {
     float: left;
-    height: 100%;
+}
+
+.uacc-list > div:first-child {
+    -moz-border-radius-topright: 0;
+    -moz-border-radius-bottomright: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.uacc-list > div:last-child {
+    -moz-border-radius-topleft: 0;
+    -moz-border-radius-bottomleft: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 .uacc-input {
-
-}
-
-.uacc-saveAndDismissLocalizationButton, .uacc-dismissLocalizationButton, .uacc-saveLocalizationButton, .uacc-revertLocalizationButton {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    cursor: pointer;
-    color: #efefef;
-    border-radius: 5px;
-}
-
-.uacc-disabledLocalizationButton {
-    background-color: grey;
-    border-color: grey;
-}
-
-.uacc-saveAndDismissLocalizationButton {
-    margin-top: 5px;
-    background-color: #204d74;
-    border-color: #204d74;
-}
-
-.uacc-saveAndDismissLocalizationButton:hover {
-    background-color: #103d64;
-}
-
-.uacc-dismissLocalizationButton {
-    margin-top: 5px;
-    background-color: #6c757d;
-    border-color: #6c757d;
-}
-
-.uacc-dismissLocalizationButton:hover {
-    background-color: #5c656d;
-}
-
-.uacc-saveLocalizationButton {
-    background-color: #bc1525;
-    border-color: #bc1525;
-}
-
-.uacc-saveLocalizationButton:hover {
-    background-color: #ac0515;
-}
-
-.uacc-revertLocalizationButton {
-    background-color: #28a745;
-    border-color: #28a745;
-}
-
-.uacc-revertLocalizationButton:hover {
-    background-color: #189735;
+    width: 100%;
 }
 
 .uacc-radiobox {
