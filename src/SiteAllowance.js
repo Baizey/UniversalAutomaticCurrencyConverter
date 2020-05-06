@@ -32,8 +32,8 @@ class SiteAllowance {
     }
 
     updateFromConfig() {
-        const blacklist = this._blacklist.using.value ? this._blacklist.urls.value : null;
-        const whitelist = this._whitelist.using.value ? this._whitelist.urls.value : null;
+        const blacklist = this._blacklist.using.value ? this._blacklist.urls.value : [];
+        const whitelist = this._whitelist.using.value ? this._whitelist.urls.value : [];
         this._allowance = new Trie(blacklist, whitelist);
     }
 }
@@ -58,6 +58,7 @@ class Trie {
      * @returns {boolean}
      */
     isAllowed(url, defaultResult) {
+        url = url.startsWith('https://') || url.startsWith('http://') ? url : `https://${url}`;
         url = (typeof (url) === 'string') ? new URL(url) : url;
 
         let result = defaultResult;
@@ -86,6 +87,8 @@ class Trie {
                 console.log(`UACC: ${at._url} allowance: ${at._isAllowed}`);
             }
         }
+
+        return result;
     }
 
     /**

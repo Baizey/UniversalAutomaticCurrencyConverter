@@ -23,16 +23,19 @@ async function detectAllElements(parent) {
 }
 
 /**
- * @param text
  * @param template
- * @returns {Promise<string>}
+ * @param {boolean} asHtml
+ * @returns {Promise<string|ChildNode>}
  */
-async function createAlert(text, template = 'generalAlert') {
+async function createAlert(template, asHtml = true) {
     const browser = Browser.instance;
     const bodyColor = browser.window.getComputedStyle(browser.document.body, null).getPropertyValue('background-color');
     const rawColors = bodyColor.match(/\d+/g).map(e => Number(e));
     const reverseColors = rawColors.slice(0, 3).map(e => (e + 128) % 255);
     const colors = rawColors.map(e => e * 0.85);
+    const inputColor = colors.length === 3
+        ? 'rgb(' + colors.map(e => e * 1.1).join(',') + ')'
+        : 'rgba(' + colors.map(e => e * 1.1).map(e => Math.max(e, .9)).join(',') + ')';
     const backgroundColor = colors.length === 3
         ? 'rgb(' + colors.join(',') + ')'
         : 'rgba(' + colors.map(e => Math.max(e, .9)).join(',') + ')';
@@ -47,11 +50,11 @@ async function createAlert(text, template = 'generalAlert') {
         .replace(/\${backgroundColor}/g, backgroundColor)
         .replace(/\${borderColor}/g, borderColor)
         .replace(/\${textColor}/g, textColor)
+        .replace(/\${inputColor}/g, inputColor)
         .replace(/\${reverseBorderColor}/g, reverseBorderColor)
         .replace(/\${reverseBackgroundColor}/g, reverseBackgroundColor)
-        .replace(/\${reverseTextColor}/g, reverseTextColor)
-        .replace('${content}', text);
-    return html;
+        .replace(/\${reverseTextColor}/g, reverseTextColor);
+    return asHtml ? html : htmlToElement(html);
 }
 
 
@@ -80,13 +83,14 @@ async function createLocalizationAlert(elements) {
 </div>`)
         .join('');
 
-    const html = (await createAlert(content, 'localizationAlert'))
+    const html = (await createAlert('localizationAlert'))
         .replace('${hostname}', browser.hostname)
+        .replace('${content}', content);
 
     const div = browser.document.createElement('div')
     div.innerHTML = html;
     const alert = div.children[0];
-    uaccWrapper.appendChild(alert);
+    uaccWrapper.insertBefore(alert, uaccWrapper.children[1]);
     const removeAlert = (fast = false) => {
         console.log('removing alert')
         if (fast) alert.classList.add('uacc-fastRemove');
@@ -110,14 +114,16 @@ async function createLocalizationAlert(elements) {
         detector.updateSharedLocalizations();
         await localization.save();
         elements.forEach(e => e.updateDisplay());
+        await localization.lockSite(false);
     });
     defaultsButton.addEventListener('change', async () => {
         await localization.reset();
         detector.updateSharedLocalizations();
         await localization.save();
-        elements.forEach(e => e.updateDisplay());
+        elements.forEach(e => e.updateDisplay(true));
+        await localization.lockSite(false);
     });
-    const expire = Date.now() + 60000 * 20;
+    const expire = Date.now() + 60000;
     const countdown = browser.document.getElementById('uacc-localization-countdown');
     const timer = setInterval(() => {
         console.log('countdown alert')
@@ -147,19 +153,24 @@ async function convertOrTryAgain(time, timer) {
     return elements;
 }
 
-async function displayOrTryAgain(time = 500, elements) {
-    if (time > 5000) return [];
-    await Utils.wait(time);
-    elements.forEach(e => e.updateDisplay());
-    await displayOrTryAgain(time * 2, elements);
+function htmlToElement(html) {
+    const div = document.createElement('div')
+    div.innerHTML = html;
+    return div.firstChild;
 }
 
 /**
  * @returns {Promise<CurrencyElement[]>}
  */
 async function main() {
+    const html = (await createAlert('titleMenu'))
+        .replace('${version}', Browser.extensionVersion)
+        .replace('${creator}', Browser.author)
+        .replace("${link}", Browser.reviewLink)
+    uaccWrapper.appendChild(htmlToElement(html));
     document.body.appendChild(uaccWrapper);
     await Engine.instance.load();
+
     const browser = Browser.instance;
     const detector = Detector.instance;
     const config = Configuration.instance;
@@ -223,52 +234,149 @@ async function main() {
     return elements;
 }
 
-async function showContextMenu(elements) {
+async function convertSelected(text, currency) {
+    const amounts = await Detector.instance.detectResult(text).then(e => e.map(e => e.amount));
+    const result = [];
+    for (let e of amounts)
+        result.push(`${e.amount} ${e.tag} ⇒ ${(await e.convertTo(currency)).toString()}`);
+    const resultDiv = document.getElementById('uacc-select-conversions');
+    if (!resultDiv) return;
+    resultDiv.innerHTML = `<div class="uacc-subheader uacc-center">Currencies found in selection</div>${result.join('<br>')}`;
+}
+
+async function showSelectMenu(elements) {
     const browser = Browser.instance;
-    const html = (await createAlert('', 'contextMenu'))
-        .replace('${hostname}', browser.hostname);
-    const div = browser.document.createElement('div')
-    div.innerHTML = html;
-    const menu = div.children[0];
-    menu.style.opacity = '1';
+    const menu = await createAlert('selectedMenu', false);
 
     let selectedText = '';
     const currency = Configuration.instance.currency.tag.value;
     let paused = {value: false};
+    if (browser.document.getElementById('uacc-select')) return;
+    uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
+
+    const filler = document.getElementById('uacc-select-selected');
+    filler.addEventListener('change', async () => {
+        const text = filler.value;
+        if (!text || text === selectedText) return;
+        selectedText = text;
+        await convertSelected(text, currency);
+    });
+
+    const text = window.getSelection().toString().trim();
+    selectedText = text;
+    filler.value = text;
+    await convertSelected(text, currency);
+
     const interval = setInterval(async function () {
-        const filler = document.getElementById('uacc-context-selected');
-        if (!filler) return clearInterval(interval);
         if (paused.value) return;
         const text = window.getSelection().toString().trim();
         if (!text || text === selectedText) return;
         selectedText = text;
         filler.value = text;
-        const amounts = await Detector.instance.detectResult(text).then(e => e.map(e => e.amount));
-        const result = [];
-        for (let e of amounts)
-            result.push(`${e.amount} ${e.tag} ⇒ ${(await e.convertTo(currency)).toString()}`);
-        const resultDiv = document.getElementById('uacc-context-selected-conversions');
-        if (!resultDiv) return clearInterval(interval);
-        resultDiv.innerHTML = `<h3>Currencies found in selection</h3>${result.join('<br>')}`;
+        await convertSelected(text, currency);
     }, 1000);
 
-    if (browser.document.getElementById('uacc-context')) return;
-    uaccWrapper.appendChild(menu);
-    document.getElementById('uacc-context-pause').addEventListener('change', e => {
-        paused.value = !document.getElementById('uacc-context-pause').checked
+    document.getElementById('uacc-select-pause').addEventListener('change', e => {
+        paused.value = !document.getElementById('uacc-select-pause').checked
     })
-    document.getElementById('uacc-context-show').addEventListener('click', () => elements.forEach(e => e.showConverted()))
-    document.getElementById('uacc-context-hide').addEventListener('click', () => elements.forEach(e => e.showOriginal()))
-    document.getElementById('uacc-context-dismiss').addEventListener('click', () => {
+    document.getElementById('uacc-select-dismiss').addEventListener('click', () => {
         clearInterval(interval);
         menu.remove();
     })
+}
 
+async function showContextMenu(elements) {
+    const allowance = SiteAllowance.instance;
+    const config = Configuration.instance;
+    const browser = Browser.instance;
+    const html = (await createAlert('contextMenu')).replace('${hostname}', browser.hostAndPath)
+    const menu = htmlToElement(html);
+    if (browser.document.getElementById('uacc-context')) return;
+    uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
+
+    // Site allowance
+    if (allowance.isAllowed(browser.href))
+        document.getElementById('uacc-context-whitelist').classList.add('uacc-button-ignore');
+    else
+        document.getElementById('uacc-context-blacklist').classList.add('uacc-button-ignore');
+
+    // Conversion
+    document.getElementById('uacc-context-whitelist')
+        .addEventListener('click', async () => {
+            const url = 'https://' + browser.hostAndPath;
+            const allowed = allowance.isAllowed(url);
+            if (!allowed) {
+                config.blacklist.urls.setValue(config.blacklist.urls.value.filter(e => e !== url));
+                config.whitelist.urls.value.push(url);
+                await config.blacklist.urls.save();
+                await config.whitelist.urls.save();
+                allowance.updateFromConfig();
+            }
+            document.getElementById('uacc-context-whitelist').classList.add('uacc-button-ignore');
+            document.getElementById('uacc-context-blacklist').classList.remove('uacc-button-ignore');
+        });
+    document.getElementById('uacc-context-blacklist')
+        .addEventListener('click', async () => {
+            const url = 'https://' + browser.hostAndPath;
+            if (allowance.isAllowed(url)) {
+                config.whitelist.urls.setValue(config.whitelist.urls.value.filter(e => e !== url));
+                config.blacklist.urls.value.push(url);
+                await config.blacklist.urls.save();
+                await config.whitelist.urls.save();
+                allowance.updateFromConfig();
+            }
+            document.getElementById('uacc-context-whitelist').classList.remove('uacc-button-ignore');
+            document.getElementById('uacc-context-blacklist').classList.add('uacc-button-ignore');
+        })
+
+    // Conversion
+    document.getElementById('uacc-context-show')
+        .addEventListener('click', () => {
+            elements.forEach(e => e.showConverted());
+            document.getElementById('uacc-context-show').classList.add('uacc-button-ignore');
+            document.getElementById('uacc-context-hide').classList.remove('uacc-button-ignore');
+        });
+    document.getElementById('uacc-context-hide')
+        .addEventListener('click', () => {
+            elements.forEach(e => e.showOriginal())
+            document.getElementById('uacc-context-show').classList.remove('uacc-button-ignore');
+            document.getElementById('uacc-context-hide').classList.add('uacc-button-ignore');
+        })
+    document.getElementById('uacc-context-dismiss')
+        .addEventListener('click', () => menu.remove());
+    if (config.utility.using.value)
+        document.getElementById('uacc-context-show').classList.add('uacc-button-ignore')
+    else
+        document.getElementById('uacc-context-hide').classList.add('uacc-button-ignore')
+
+
+    // Localization
+    const localization = ActiveLocalization.instance;
+    const detector = Detector.instance;
+    document.getElementById('uacc-context-localization-krone').value = localization.krone;
+    document.getElementById('uacc-context-localization-yen').value = localization.yen;
+    document.getElementById('uacc-context-localization-dollar').value = localization.dollar;
+    ['krone', 'yen', 'dollar'].forEach(name => {
+        const element = document.getElementById(`uacc-context-localization-${name}`);
+        if (!element) return;
+        element.addEventListener('change', async () => {
+            const update = {[name]: element.children[element.selectedIndex].value}
+            await localization.overload(update);
+            await localization.lockSite(false);
+            await localization.save();
+            detector.updateSharedLocalizations();
+            elements.forEach(element => element.convert().then(() => element.updateDisplay(true)));
+        });
+    })
 }
 
 main().then(async elements => {
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
+            case 'selectedMenu':
+                await showSelectMenu(elements);
+                senderResponse({success: true});
+                break;
             case 'contextMenu':
                 await showContextMenu(elements);
                 senderResponse({success: true});

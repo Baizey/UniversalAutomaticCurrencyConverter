@@ -23,6 +23,12 @@ class Browser {
         return index < 0 ? '' : hostname.substr(index + 1);
     }
 
+    static get reviewLink() {
+        return Browser.instance.isChrome()
+            ? 'https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli'
+            : 'https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/';
+    }
+
     static updateReviewLink() {
         const url = Browser.instance.isChrome()
             ? 'https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli'
@@ -223,10 +229,11 @@ class Browser {
     }
 
     /**
-     * @returns {{getHref: (function(): Promise<*>), hideConversions: (function(): Promise<*>), getLocalization: (function(): Promise<*>), showConversions: (function(): Promise<*>), getConversionCount: (function(): Promise<*>), convertSelected: (function(): Promise<*>), interactAlert: (function(): Promise<*>), setLocalization: (function(*=): Promise<*>)}}
+     * @returns {{getHref: (function(): Promise<*>), selectedMenu: (function(): Promise<*>), hideConversions: (function(): Promise<*>), contextMenu: (function(): Promise<*>), showConversions: (function(): Promise<*>), setLocalization: (function(*=): Promise<*>)}}
      */
     get tab() {
         return {
+            selectedMenu: () => this._messageTab({type: 'selectedMenu'}),
             contextMenu: () => this._messageTab({type: 'contextMenu'}),
             showConversions: () => this._messageTab({type: 'showConversions'}),
             hideConversions: () => this._messageTab({type: 'hideConversions'}),
@@ -236,11 +243,10 @@ class Browser {
     }
 
     /**
-     * @returns {{getRate: (function(*=, *=): Promise<*>), getSymbols: (function(): Promise<*>), openPopup: (function(): Promise<*>), localizationAlert: (function(): Promise<*>)}}
+     * @returns {{getHtml: (function(*=): Promise<*>), getRate: (function(*=, *=): Promise<*>), getSymbols: (function(): Promise<*>), openPopup: (function(): Promise<*>)}}
      */
     get background() {
         return {
-            getSelectedText: () => this._messageBackground({type: 'getSelected'}),
             getHtml: template => this._messageBackground({type: 'getHtml', template: template}),
             getRate: (from, to) => this._messageBackground({type: 'rate', from: from, to: to}),
             getSymbols: () => this._messageBackground({type: 'symbols'}),

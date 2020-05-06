@@ -1,0 +1,20 @@
+<div id="uacc-select" class="uacc-alertWrapper"
+     style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
+    <div id="uacc-select-dismiss" style="position: absolute; cursor: pointer" class="uacc-cross">
+        <div></div>
+        <div></div>
+    </div>
+    <div class="uacc-row uacc-header">Convert selected</div>
+    <div class="uacc-row" style="margin-top: 0; padding-top: 0">
+        <label style="width:100%" for="uacc-select-pause">Convert new selections</label>
+        <input type="checkbox" id="uacc-select-pause" name="uacc-select-pause" value="Pause selection conversion"
+               checked="true">
+        <br>
+        <input id="uacc-select-selected" class="uacc-input uacc-center"
+               placeholder="Selected text shows here..."
+               style="background-color:${inputColor}; color: ${textColor}; border: 1px solid; border-color: ${borderColor}">
+    </div>
+    <div class="uacc-row" style="max-height:400px; overflow: hidden" id="uacc-select-conversions">
+
+    </div>
+</div>

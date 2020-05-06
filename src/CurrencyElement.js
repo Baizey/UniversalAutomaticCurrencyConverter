@@ -24,9 +24,13 @@ class CurrencyElement {
         await this.convert();
     }
 
-    async showConverted() {
+    /**
+     * @param {boolean} force
+     * @returns {Promise<void>}
+     */
+    async showConverted(force = false) {
         this._isShowingConversion = true;
-        if (this.updateSnapshot()) await this.convert();
+        if (!force && this.updateSnapshot()) await this.convert();
         this._converted.display();
     }
 
@@ -36,8 +40,12 @@ class CurrencyElement {
         this._original.display();
     }
 
-    async updateDisplay() {
-        if (this._isShowingConversion) await this.showConverted();
+    /**
+     * @param {boolean} force
+     * @returns {Promise<void>}
+     */
+    async updateDisplay(force = false) {
+        if (this._isShowingConversion) await this.showConverted(force);
     }
 
     async flipDisplay() {

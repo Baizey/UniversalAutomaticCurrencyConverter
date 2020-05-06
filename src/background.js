@@ -57,7 +57,7 @@ function openPopup(senderResponse) {
 }
 
 function getHtml(senderResponse, template) {
-    if (['contextMenu', 'localizationAlert'].indexOf(template) < 0)
+    if (['contextMenu', 'localizationAlert', 'selectedMenu', 'titleMenu'].indexOf(template) < 0)
         return senderResponse({status: false, data: `'${template}' is invalid template name`})
     const url = chrome.extension.getURL(`html/${template}.html`);
     Ajax.get(url)
@@ -106,36 +106,18 @@ const openOptionsIfNew = async () => {
 
 openOptionsIfNew().finally();
 
-// TODO: re-implement this
-/*
-function getSelectedText(request, sender, senderResponse) {
-    senderResponse({success: true, data: window.getSelection().toString()});
-    return true;
-}
-*/
-
 chrome.contextMenus.create({
     title: `Convert selected...`,
     contexts: ["selection"],
     onclick: function () {
-        return Browser.instance.tab.contextMenu().finally();
+        return Browser.instance.tab.selectedMenu().finally();
     }
 });
 
 chrome.contextMenus.create({
-    title: `Handle site conversions...`,
+    title: `Open context menu...`,
     contexts: ["page"],
     onclick: function () {
         return Browser.instance.tab.contextMenu().finally();
     }
 });
-
-/*
-chrome.contextMenus.create({
-    title: `Hide conversions...`,
-    contexts: ["page"],
-    onclick: function () {
-        return Browser.instance.tab.hideConversions().finally();
-    }
-});
- */

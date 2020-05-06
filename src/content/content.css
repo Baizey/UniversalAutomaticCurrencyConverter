@@ -1,11 +1,24 @@
-.uacc-clickable {
-    cursor: pointer;
+.uacc-row {
+    height: fit-content;
+    margin: auto;
+    width: 100%;
+    float: none;
 }
 
 .uacc-header {
     font-size: 1.5em;
     display: block;
     font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.uacc-subheader {
+    font-size: 1.2em;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 3px;
+    margin-top: 3px;
 }
 
 .uacc-center {
@@ -18,19 +31,34 @@
     height: fit-content;
     z-index: 1000;
     right: 25px;
-    bottom: 0;
+    bottom: 15px;
     position: fixed;
+}
+
+.uacc-window > div:only-child {
+    display: none;
+}
+
+.uacc-window > div:first-child {
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.uacc-window > div:not(:first-child) {
+    border-top-color: transparent;
+}
+
+.uacc-window > div:last-child {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
 .uacc-alertWrapper {
     width: 350px;
-    opacity: 0;
-    margin: 5px;
-    border-radius: 5px;
     border: 1px solid black;
     font-size: 14px;
     line-height: 1.1;
-    padding: 5px;
+    padding: 10px;
     text-align: center;
     height: fit-content;
     transition: opacity 0.5s linear;
@@ -109,13 +137,6 @@
     background-color: #ac0515;
 }
 
-.uacc-row {
-    height: fit-content;
-    margin: auto;
-    width: 100%;
-    float: none;
-}
-
 .uacc-list > div {
     float: left;
 }
@@ -160,4 +181,39 @@
 
 .checked div {
     opacity: 1;
+}
+
+.uacc-clickable {
+    cursor: pointer;
+}
+
+.uacc-cross {
+    right: 5px;
+    margin-top: 5px;
+    width: 23px;
+    height: 21.5px;
+    border-radius: 10px;
+}
+
+.uacc-cross:hover > div {
+    background-color: #cc2535;
+}
+
+.uacc-cross > div {
+    background-color: #ac0515;
+    transform: rotate(45deg);
+}
+
+.uacc-cross > div:first-child {
+    margin-top: 8px;
+    position: absolute;
+    width: 20px;
+    height: 4px;
+}
+
+.uacc-cross > div:last-child {
+    margin-left: 8px;
+    position: absolute;
+    height: 20px;
+    width: 4px;
 }

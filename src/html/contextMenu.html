@@ -1,25 +1,71 @@
 <div id="uacc-context" class="uacc-alertWrapper"
      style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
-    <span class="uacc-row" style="font-size: 10px; margin-bottom: 0; padding-bottom: 0">UACC context menu</span>
-    <div class="uacc-header uacc-row" style="margin-top: 0; padding-top: 0">${hostname}</div>
-    <div class="uacc-row uacc-list" style="margin-top: 0; padding-top: 0">
-        <div class="uacc-button uacc-button-good uacc-column" id="uacc-context-show" style="width:50%;">Show<br>conversions
-        </div>
-        <div class="uacc-button uacc-button-bad uacc-column" id="uacc-context-hide" style="width:50%">Hide<br>conversions
-        </div>
+    <div id="uacc-context-dismiss" style="position: absolute; cursor: pointer" class="uacc-cross">
+        <div></div>
+        <div></div>
     </div>
-    <div class="uacc-row" style="margin-top: 0; padding-top: 0">
-        <label style="width:100%" for="uacc-context-pause">Convert selected</label>
-        <input type="checkbox" id="uacc-context-pause" name="uacc-context-pause"
-               value="Pause selection conversion" checked="true">
-        <br>
-        <input id="uacc-context-selected" class="uacc-input" style="text-align: center" readonly
-               placeholder="Selected text shows here...">
-    </div>
-    <div class="uacc-row" style="max-height:400px; overflow: auto" id="uacc-context-selected-conversions">
+    <div class="uacc-row uacc-header">Context menu</div>
 
+    <div style="margin-bottom: 15px;">
+        <div class="uacc-subheader"> Site allowance</div>
+        <input id="uacc-context-url" class="uacc-input uacc-center"
+               placeholder="Url go brrr..." value="${hostname}"
+               style="background-color:${inputColor}; color: ${textColor}; border: 1px solid ${borderColor}">
+        <div class="uacc-row uacc-list" style="height:35px">
+            <div class="uacc-button uacc-column" id="uacc-context-whitelist"
+                 style="width:50%; border-top-left-radius: 0; border-top-right-radius: 0">Whitelist
+            </div>
+            <div class="uacc-button uacc-column" id="uacc-context-blacklist"
+                 style="width:50%; border-top-left-radius: 0; border-top-right-radius: 0">Blacklist
+            </div>
+        </div>
     </div>
-    <div class="uacc-row" style="padding-top: 0; margin-top: 5px">
-        <div class="uacc-button uacc-column" id="uacc-context-dismiss" style="width:100%">Dismiss</div>
+
+    <div style="margin-bottom: 15px;" id="uacc-context-conversions">
+        <div class="uacc-subheader">Conversions</div>
+        <div class="uacc-row uacc-list" style="height:50px">
+            <div class="uacc-button uacc-column" id="uacc-context-conversions-show" style="width:50%;">Show all<br>conversions
+            </div>
+            <div class="uacc-button uacc-column" id="uacc-context-conversions-hide" style="width:50%">Hide all<br>conversions
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <div class="uacc-subheader"> Current page's localization</div>
+        <div class="uacc-row uacc-list" style="height:35px;" id="uacc-context-localization">
+            <div style="width:33%">
+                <label class="uacc-row" for="uacc-context-localization-dollar">dollar$</label>
+                <select id="uacc-context-localization-dollar" class="uacc-row uacc-center"
+                        style="background-color:${borderColor}; color: ${textColor}; border: 1px solid ${reverseBorderColor}">
+                    <option value="USD">American</option>
+                    <option value="CAD">Canadian</option>
+                    <option value="AUD">Australian</option>
+                    <option value="MXN">Mexican</option>
+                    <option value="NZD">New Zealand</option>
+                    <option value="SGP">Singapore</option>
+                    <option value="HKD">Hong kong</option>
+                </select>
+            </div>
+            <div style="width:33%">
+                <label class="uacc-row" for="uacc-context-localization-krone">kr</label>
+                <select id="uacc-context-localization-krone" class="uacc-row uacc-center"
+                        style="background-color:${borderColor}; color: ${textColor}; border: 1px solid ${reverseBorderColor}">
+                    <option value="SEK">Swedish</option>
+                    <option value="DKK">Danish</option>
+                    <option value="NOK">Norwegian</option>
+                    <option value="ISK">Icelandic</option>
+                    <option value="CZK">Czechia</option>
+                </select>
+            </div>
+            <div style="width:33%">
+                <label class="uacc-row" for="uacc-context-localization-yen">¥en</label>
+                <select id="uacc-context-localization-yen" class="uacc-row uacc-center"
+                        style="background-color:${borderColor}; color: ${textColor}; border: 1px solid ${reverseBorderColor}">
+                    <option value="CNY">Chinese</option>
+                    <option value="JPY">Japanese</option>
+                </select>
+            </div>
+        </div>
     </div>
 </div>
