@@ -20,8 +20,7 @@ describe('CurrencyElement', () => {
                 localization.dollar = 'USD'
                 const detector = new Detector({activeLocalization: localization});
                 detector.updateSharedLocalizations();
-                Currencies.instance._rates['EUR'] = Currencies.instance._rates['EUR'] || {};
-                Currencies.instance._rates['EUR']['USD'] = new CurrencyRate('EUR', 'USD', 1, Date.now())
+                Currencies.instance._rates['EUR'] = {'USD': new CurrencyRate('EUR', 'USD', 1, Date.now())};
                 const actual = new CurrencyElement(test.element, {detector: detector});
 
                 // Act
