@@ -157,6 +157,9 @@ class Detector {
         const result = [];
         let regexResult;
         while (regexResult = regex.exec(text)) {
+            // Allow reuse of start/end characters in capture
+            regex.lastIndex--;
+
             const data = {
                 amount: null,
                 data: []

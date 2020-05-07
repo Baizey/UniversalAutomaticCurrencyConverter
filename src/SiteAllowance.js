@@ -21,13 +21,11 @@ class SiteAllowance {
 
     /**
      * @param {string} url
-     * @returns {boolean}
+     * @returns {{allowed: boolean, reasoning: [{url: string, allowed: boolean}]}}
      */
     isAllowed(url) {
         // Only false when whitelist is on but blacklist is not
         const defaultResult = this._blacklist.using.value || !this._whitelist.using.value;
-        console.log('UACC: Site allowance layers found for domain...')
-        console.log(`UACC: Default site allowance: ${defaultResult}`);
         return this._allowance.isAllowed(url, defaultResult);
     }
 
@@ -55,13 +53,19 @@ class Trie {
     /**
      * @param {string|URL} url
      * @param {boolean} defaultResult
-     * @returns {boolean}
+     * @returns {{allowed: boolean, reasoning: [{url: string, allowed: boolean}]}}
      */
     isAllowed(url, defaultResult) {
         url = url.startsWith('https://') || url.startsWith('http://') ? url : `https://${url}`;
         url = (typeof (url) === 'string') ? new URL(url) : url;
 
-        let result = defaultResult;
+        const result = {
+            allowed: defaultResult,
+            reasoning: [
+                {url: 'Default allowance', allowed: defaultResult}
+            ]
+        }
+
 
         let at = this;
         const hosts = url.hostname.split('.');
@@ -72,8 +76,8 @@ class Trie {
             at = at.hosts[part];
             if (!at) return result;
             if (at.isSet) {
-                result = at._isAllowed;
-                console.log(`UACC: ${at._url} allowance: ${at._isAllowed}`);
+                result.allowed = at._isAllowed;
+                result.reasoning.push({url: at._url.hostname + at._url.pathname, allowed: !!at._isAllowed})
             }
         }
         const paths = url.pathname.split('/').reverse();
@@ -83,8 +87,8 @@ class Trie {
             at = at.paths[part];
             if (!at) return result;
             if (at.isSet) {
-                result = at._isAllowed;
-                console.log(`UACC: ${at._url} allowance: ${at._isAllowed}`);
+                result.allowed = at._isAllowed;
+                result.reasoning.push({url: at._url.hostname + at._url.pathname, allowed: !!at._isAllowed})
             }
         }
 

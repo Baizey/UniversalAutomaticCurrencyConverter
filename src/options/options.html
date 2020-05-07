@@ -53,12 +53,6 @@
             <div id="firsttime-progress-green" class="progress-bar progress-bar-green"role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
     </div>
-    <div class="row">
-        <h2 class="center">Things you may not initially notice</h2>
-        <p class="center">You can right-click when selecting text to add the conversion to the mini converter</p>
-        <p class="center">You can right-click without a selection to get the mini-converter in the bottom right of your tab</p>
-        <p class="center">You can both blacklist and whitelist at the same time. Fx blacklist google.com but whitelist google.com/stuff, This will stop the extension on any google domain, except if it starts with '/stuff' in its path<p>
-    </div>
 </div>
 
 <div id="options-wrapper" class="centering" style="margin-top: 10px">
@@ -249,28 +243,37 @@
     </div>
     <!-- Black/White-listing -->
     <div class="row">
-        <h2 class="centering">Black/White-listing</h2>
-        <div style="width:50%; float:left">
-            <label class="center" for="usingBlacklist">Use blacklist</label>
-            <div id="usingBlacklist" class="centering checkbox">
-                <div></div>
-                <div></div>
+        <h2 class="centering">Site allowance</h2>
+        <div class="row">
+            <div style="width:50%; float:left">
+                <label class="center" for="usingBlacklist">Use blacklist</label>
+                <div id="usingBlacklist" class="centering checkbox">
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div style="width:50%; float:left">
+                <label class="center" for="usingWhitelist">Use whitelist</label>
+                <div id="usingWhitelist" class="centering checkbox">
+                    <div></div>
+                    <div></div>
+                </div>
             </div>
         </div>
-        <div style="width:50%; float:left">
-            <label class="center" for="usingWhitelist">Use whitelist</label>
-            <div id="usingWhitelist" class="centering checkbox">
-                <div></div>
-                <div></div>
+        <div class="row">
+            <label class="center" for="allowanceTest">Check a url against your allowance settings</label>
+            <input id="allowanceTest" class="form-control" name="allowanceTest" type="text" placeholder="https://...">
+            <span id="allowanceTestResult" class="help-block center">Result will be shown here...</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <label class="center" for="currencyBlacklistUrls">Blacklist</label>
+                <ul id="currencyBlacklistUrls" class="blacklist"></ul>
             </div>
-        </div>
-        <div class="col-sm-6">
-            <label class="center" for="currencyBlacklistUrls">Blacklist</label>
-            <ul id="currencyBlacklistUrls" class="blacklist"></ul>
-        </div>
-        <div class="col-sm-6">
-            <label class="center" for="currencyWhitelistUrls">Whitelist</label>
-            <ul id="currencyWhitelistUrls" class="blacklist"></ul>
+            <div class="col-sm-6">
+                <label class="center" for="currencyWhitelistUrls">Whitelist</label>
+                <ul id="currencyWhitelistUrls" class="blacklist"></ul>
+            </div>
         </div>
     </div>
 </div>

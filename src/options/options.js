@@ -187,6 +187,19 @@ const setUiValue = async (key, value) => {
 
 
 document.addEventListener("DOMContentLoaded", async function () {
+    const allowanceTest = document.getElementById('allowanceTest');
+    const allowanceTestResult = document.getElementById('allowanceTestResult');
+    allowanceTest.addEventListener('change', () => {
+        const value = allowanceTest.value;
+        SiteAllowance.instance.updateFromConfig();
+        const result = SiteAllowance.instance.isAllowed(value);
+        allowanceTestResult.innerText =
+            'Conclusion: ' + (result.allowed ? 'Allowed' : 'Not allowed') + '\n'
+            + result.reasoning
+                .reverse()
+                .map(e => e.url + ": " + (e.allowed ? 'Allowed' : 'Not allowed'))
+                .join('\n');
+    });
     const config = Configuration.instance;
     await config.load();
 
@@ -231,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Newly installed banner
     const options = document.getElementById('options-wrapper');
     const firstTimeKey = 'uacc:global:oldUser'
-    const isOldUser  = (await Browser.instance.loadSync(firstTimeKey))[firstTimeKey];
+    const isOldUser = (await Browser.instance.loadSync(firstTimeKey))[firstTimeKey];
     await Browser.instance.saveSync(firstTimeKey, true);
     if (!isOldUser) {
         const progressBarBlue = document.getElementById('firsttime-progress-blue');

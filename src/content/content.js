@@ -179,7 +179,7 @@ async function main() {
     const shortcut = config.utility.shortcut.value;
 
     // Handle allowance by black/white listing
-    if (!siteAllowance.isAllowed(browser.href)) {
+    if (!siteAllowance.isAllowed(browser.href).allowed) {
         console.log('UACC: Site is blacklisted, goodbye');
         return [];
     }
@@ -295,7 +295,7 @@ async function showContextMenu(elements) {
     uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
 
     // Site allowance
-    if (allowance.isAllowed(browser.href))
+    if (allowance.isAllowed(browser.href).allowed)
         document.getElementById('uacc-context-whitelist').classList.add('uacc-button-ignore');
     else
         document.getElementById('uacc-context-blacklist').classList.add('uacc-button-ignore');
@@ -304,7 +304,7 @@ async function showContextMenu(elements) {
     document.getElementById('uacc-context-whitelist')
         .addEventListener('click', async () => {
             const url = 'https://' + browser.hostAndPath;
-            const allowed = allowance.isAllowed(url);
+            const allowed = allowance.isAllowed(url).allowed;
             if (!allowed) {
                 config.blacklist.urls.setValue(config.blacklist.urls.value.filter(e => e !== url));
                 config.whitelist.urls.value.push(url);
@@ -318,7 +318,7 @@ async function showContextMenu(elements) {
     document.getElementById('uacc-context-blacklist')
         .addEventListener('click', async () => {
             const url = 'https://' + browser.hostAndPath;
-            if (allowance.isAllowed(url)) {
+            if (allowance.isAllowed(url).allowed) {
                 config.whitelist.urls.setValue(config.whitelist.urls.value.filter(e => e !== url));
                 config.blacklist.urls.value.push(url);
                 await config.blacklist.urls.save();

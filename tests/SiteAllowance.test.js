@@ -74,6 +74,6 @@ describe('SiteAllowance', () => {
         const actual = allowance.isAllowed(test.url);
 
         // Assert
-        expect(actual).toEqual(test.expect);
+        expect(actual.allowed).toEqual(test.expect);
     }));
 });
