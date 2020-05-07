@@ -96,8 +96,6 @@ describe('CurrencyAmount', () => {
             expect(actual).toEqual(null);
         });
     });
-
-
     describe('Display', () => {
         const tests = [
             {rounding: 1, amount: 0.099, currency: 'UNK', expect: '0.10 UNK'},

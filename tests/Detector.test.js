@@ -276,7 +276,12 @@ describe('Detector', () => {
     describe('Find CurrencyResults', () => {
         const tests = [
             {text: `$3.99`, expect: [new CurrencyAmount('USD', 3.99)]},
+            {text: `3.99`, expect: []},
             {text: `$3.99 . $3.99`, expect: [new CurrencyAmount('USD', 3.99), new CurrencyAmount('USD', 3.99)]},
+            {text: `$3.99 $3.99`, expect: [new CurrencyAmount('USD', 3.99)]},
+            {text: `$3.99 - 3.99`, expect: [new CurrencyAmount('USD', [3.99, 3.99])]},
+            {text: `$3.99-3.99`, expect: [new CurrencyAmount('USD', [3.99, 3.99])]},
+            {text: `3.99-3.99`, expect: []},
             {text: `$3.99 $3.99`, expect: [new CurrencyAmount('USD', 3.99)]},
             {name: 'invis char', text: "‎$34.99", expect: [new CurrencyAmount('USD', 34.99)]}
         ];
