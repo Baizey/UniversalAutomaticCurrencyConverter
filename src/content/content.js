@@ -330,24 +330,24 @@ async function showContextMenu(elements) {
         })
 
     // Conversion
-    document.getElementById('uacc-context-show')
+    document.getElementById('uacc-context-conversions-show')
         .addEventListener('click', () => {
             elements.forEach(e => e.showConverted());
-            document.getElementById('uacc-context-show').classList.add('uacc-button-ignore');
-            document.getElementById('uacc-context-hide').classList.remove('uacc-button-ignore');
+            document.getElementById('uacc-context-conversions-show').classList.add('uacc-button-ignore');
+            document.getElementById('uacc-context-conversions-hide').classList.remove('uacc-button-ignore');
         });
-    document.getElementById('uacc-context-hide')
+    document.getElementById('uacc-context-conversions-hide')
         .addEventListener('click', () => {
             elements.forEach(e => e.showOriginal())
-            document.getElementById('uacc-context-show').classList.remove('uacc-button-ignore');
-            document.getElementById('uacc-context-hide').classList.add('uacc-button-ignore');
+            document.getElementById('uacc-context-conversions-show').classList.remove('uacc-button-ignore');
+            document.getElementById('uacc-context-conversions-hide').classList.add('uacc-button-ignore');
         })
     document.getElementById('uacc-context-dismiss')
         .addEventListener('click', () => menu.remove());
     if (config.utility.using.value)
-        document.getElementById('uacc-context-show').classList.add('uacc-button-ignore')
+        document.getElementById('uacc-context-conversions-show').classList.add('uacc-button-ignore')
     else
-        document.getElementById('uacc-context-hide').classList.add('uacc-button-ignore')
+        document.getElementById('uacc-context-conversions-hide').classList.add('uacc-button-ignore')
 
 
     // Localization

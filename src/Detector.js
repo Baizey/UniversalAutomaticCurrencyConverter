@@ -195,7 +195,10 @@ class Detector {
                 // If currency tag, add for removal
                 keys.unshift('whitespaceLeft');
                 keys.unshift('currencyLeft');
-            }
+            } else at +=
+                + (regexResult.groups.currencyLeft || '').length
+                + (regexResult.groups.whitespaceLeft || '').length;
+
             const currencyRight = regexResult.groups['currencyRight'];
             const tempCurrency = await this._determineCurrency(currencyRight);
             if (tempCurrency) {
