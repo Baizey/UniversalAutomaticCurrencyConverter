@@ -277,9 +277,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }
             }, 250);
         });
-        document.getElementById('currency').addEventListener('click', () => {
-            document.getElementById('firsttime-currency').classList.add('hidden');
-        });
         options.children[0].classList.add('firsttimeFadein');
         options.children[0].classList.add('fadein');
         wrapper.append(options.children[0]);
