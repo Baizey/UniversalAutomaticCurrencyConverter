@@ -27,6 +27,7 @@
 }
 
 .uacc-window {
+    font-family: Arial, sans-serif;
     width: 350px;
     height: fit-content;
     z-index: 1000;
@@ -96,6 +97,16 @@
     float: left;
 }
 
+.uacc-label {
+    height: 17px;
+    cursor: default;
+    font-weight: 700;
+    display: block;
+    padding-bottom: 2px;
+    text-align: center;
+    width: 100%;
+}
+
 .uacc-button {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -157,6 +168,23 @@
 
 .uacc-input {
     width: 100%;
+}
+
+.uacc-select {
+    border-top: 0 !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+    text-align: center;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+    text-align-last: center;;
+}
+
+.uacc-select:hover {
+    border-bottom: solid 1px #f0ad4e !important;
 }
 
 .uacc-radiobox {

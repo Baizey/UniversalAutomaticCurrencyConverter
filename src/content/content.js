@@ -33,7 +33,9 @@ async function detectAllElements(parent) {
  * @returns {Promise<CurrencyElement[]>}
  */
 async function detectAllNewElements() {
-    return await detectAllElements(Browser.instance.document.body);
+    const newElements = await detectAllElements(Browser.instance.document.body);
+    newElements.forEach(e => elements.push(e));
+    return newElements;
 }
 
 /**
@@ -44,11 +46,11 @@ async function detectAllNewElementsRecurring(time = 1000) {
     const timer = new Timer();
     timer.log(`Looking for currencies...`).reset();
     const newElements = await detectAllNewElements();
-    newElements.forEach(e => elements.push(e));
     time = newElements.length > 0 ? 1000 : time * 2;
     if (newElements.length > 0) timer.log(`Converted page, ${elements.length} conversions...`).reset();
-    else timer.log(`Converted page, found no new elements to convert, waiting ${(time / 1000).toFixed(2)} seconds`);
-    if (time > 16 * 1000) return;
+    else timer.log(`Converted page, found no new elements to convert`).reset();
+    if (time > 7 * 1000) return;
+    timer.log(`Waiting ${(time / 1000).toFixed(2)} seconds before checking again`).reset();
     setTimeout(() => detectAllNewElementsRecurring(time), time);
 }
 
@@ -205,33 +207,14 @@ async function main() {
         elements.filter(e => e.selected).forEach(e => e.flipDisplay());
     });
 
-    /*
     // Update on changes and additions to site
     const observerConfig = {attributes: true, childList: true, subtree: true}
     const observer = new MutationObserver(async list => {
-        console.log(list);
-        return;
-        for (let data of list) {
-            const targets = [data.target];
-            for (let i = 0; i < data.addedNodes.length; i++)
-                targets.push(data.addedNodes[i]);
-            for (let target of targets) {
-                if (!target) continue;
-                const watched = hasWatchedParent(target);
-                if (watched) {
-                    const watcher = elements.filter(e => e.id === watched - 0)[0];
-                    if (watcher) await watcher.updateDisplay();
-                    return;
-                }
-                for (let i = 0; i < 4; i++) target = target.parent || target;
-                const e = await detectAllElements(target);
-                elements = elements.concat(e);
-            }
-        }
+        await detectAllNewElements();
+        elements.forEach(e => e.updateDisplay())
     });
     //observer.observe(browser.document.body, {childList: true, subtree: true, attributes: false, characterData: false});
     observer.observe(browser.document.body, {childList: true, subtree: false, attributes: false, characterData: true});
-     */
 }
 
 async function convertSelected(text, currency) {
@@ -297,7 +280,8 @@ async function showContextMenu() {
 
     const html = (await createAlert('contextMenu'))
         .replace('${hostname}', browser.hostAndPath)
-        .replace('${currencies}', currenciesDropdown);
+        .replace('${currencies}', currenciesDropdown)
+        .replace('${conversionCount}', elements.length + '')
     const menu = htmlToElement(html);
     if (browser.document.getElementById('uacc-context')) return;
     uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
@@ -341,7 +325,8 @@ async function showContextMenu() {
 
     // Black/white listing
     document.getElementById('uacc-context-whitelist').addEventListener('click', async () => {
-        const url = 'https://' + browser.hostAndPath;
+        const value = document.getElementById('uacc-context-url').value;
+        const url = `https://${value}`;
         const allowed = allowance.isAllowed(url).allowed;
         if (!allowed) {
             config.blacklist.urls.setValue(config.blacklist.urls.value.filter(e => e !== url));
@@ -354,7 +339,8 @@ async function showContextMenu() {
         document.getElementById('uacc-context-blacklist').classList.remove('uacc-button-ignore');
     });
     document.getElementById('uacc-context-blacklist').addEventListener('click', async () => {
-        const url = 'https://' + browser.hostAndPath;
+        const value = document.getElementById('uacc-context-url').value;
+        const url = `https://${value}`;
         if (allowance.isAllowed(url).allowed) {
             config.whitelist.urls.setValue(config.whitelist.urls.value.filter(e => e !== url));
             config.blacklist.urls.value.push(url);
