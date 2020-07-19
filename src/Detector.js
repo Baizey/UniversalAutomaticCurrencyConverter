@@ -114,35 +114,41 @@ class Detector {
     }
 
     /**
-     * @param {*} element
+     * @param {HTMLElement} element
      * @returns {Promise<[CurrencyElement]>}
      */
     async detectAllElements(element) {
-        // Return empty list when not found
-        const raw = element.innerText;
-        // First stop if we're in an invalid element type
-        if (!element.tagName || element.tagName.toLowerCase() === 'script') return [];
-        if (element.hasAttribute('uacc:watched')) return null;
-        // Stop if we cannot detect any currencies at all
-        if (!this.regex().test(raw)) {
-            return [];
-        }
-        // Stop if we cannot find any valid currencies
-        if ((await this.detectResult(raw)).length === 0) return [];
+        try {
+            if (element.hasAttribute('uacc:watched')) return null;
+            const raw = element.innerText;
+            if (!element.tagName || element.tagName.toLowerCase() === 'script') return [];
+            if (!this.regex().test(raw)) return [];
+            if ((await this.detectResult(raw)).length === 0) return [];
 
-        // Find currencies detectable in child nodes
-        const children = element.children
-        let result = [];
-        for (let i = 0; i < children.length; i++) {
-            const found = await this.detectAllElements(children[i]);
-            if (!found) return null;
-            result = result.concat(found);
-        }
+            const children = element.children;
+            let result = [];
+            let hasUACCWatchedUnder = false;
+            for (let i = 0; i < children.length; i++) {
+                const found = await this.detectAllElements(children[i]);
+                if (!found) hasUACCWatchedUnder = true;
+                else result = result.concat(found);
+            }
 
-        // If no child contains full currency and we're at most 3 d
-        if (result.length === 0 && !this._hasChildDeeperThan(element, 4))
-            return [new CurrencyElement(element, {detector: this, currencies: this._currencies, config: this._config})];
-        return result;
+            if (result.length === 0 && hasUACCWatchedUnder)
+                return null;
+            else if (result.length > 0)
+                return result;
+            else if (!hasUACCWatchedUnder && !this._hasChildDeeperThan(element, 4)) {
+                element.setAttribute('uacc:watched', true);
+                return [new CurrencyElement(element, {
+                    detector: this,
+                    currencies: this._currencies,
+                    config: this._config
+                })];
+            } else return []
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     /**
@@ -158,7 +164,8 @@ class Detector {
         let regexResult;
         while (regexResult = regex.exec(text)) {
             // Allow reuse of start/end characters in capture
-            regex.lastIndex--;
+            if (regexResult[0].length > 1)
+                regex.lastIndex--;
 
             const data = {
                 amount: null,
@@ -199,7 +206,7 @@ class Detector {
                 keys.unshift('whitespaceLeft');
                 keys.unshift('currencyLeft');
             } else at +=
-                + (regexResult.groups.currencyLeft || '').length
+                +(regexResult.groups.currencyLeft || '').length
                 + (regexResult.groups.whitespaceLeft || '').length;
 
             const currencyRight = regexResult.groups['currencyRight'];
