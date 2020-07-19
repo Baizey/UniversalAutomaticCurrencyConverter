@@ -4,6 +4,13 @@ uaccWrapper.classList.add('uacc-window');
 uaccWrapper.style.opacity = '1';
 
 /**
+ * @returns {CurrencyElement[]}
+ */
+const createElementsList = () => [];
+
+const elements = createElementsList();
+
+/**
  * @param parent
  * @returns {Promise<CurrencyElement[]|*[]>}
  */
@@ -20,6 +27,29 @@ async function detectAllElements(parent) {
         }
     }
     return elements;
+}
+
+/**
+ * @returns {Promise<CurrencyElement[]>}
+ */
+async function detectAllNewElements() {
+    return await detectAllElements(Browser.instance.document.body);
+}
+
+/**
+ * @param {number} time
+ * @returns {Promise<void>}
+ */
+async function detectAllNewElementsRecurring(time = 1000) {
+    const timer = new Timer();
+    timer.log(`Looking for currencies...`).reset();
+    const newElements = await detectAllNewElements();
+    newElements.forEach(e => elements.push(e));
+    time = newElements.length > 0 ? 1000 : time * 2;
+    if (newElements.length > 0) timer.log(`Converted page, ${elements.length} conversions...`).reset();
+    else timer.log(`Converted page, found no new elements to convert, waiting ${(time / 1000).toFixed(2)} seconds`);
+    if (time > 16 * 1000) return;
+    setTimeout(() => detectAllNewElementsRecurring(time), time);
 }
 
 /**
@@ -57,16 +87,7 @@ async function createAlert(template, asHtml = true) {
     return asHtml ? html : htmlToElement(html);
 }
 
-
-function hasWatchedParent(target) {
-    if (!target) return false;
-    if (!target.hasAttribute) return false;
-    if (typeof target.hasAttribute !== 'function') return false;
-    if (target.hasAttribute('uacc:watched')) return target.getAttribute('uacc:watched');
-    return hasWatchedParent(target.parent);
-}
-
-async function createLocalizationAlert(elements) {
+async function createLocalizationAlert() {
     const showAlert = Configuration.instance.alert.localization.value;
     const localization = ActiveLocalization.instance;
     if (!showAlert || !(await localization.hasConflict())) return;
@@ -138,30 +159,12 @@ async function createLocalizationAlert(elements) {
     alert.style.opacity = '1';
 }
 
-/**
- * @param {number} time
- * @param {Timer} timer
- * @returns {Promise<CurrencyElement[]>}
- */
-async function convertOrTryAgain(time, timer) {
-    if (time > 5000) return [];
-    await Utils.wait(time);
-    timer.reset();
-    const elements = await detectAllElements(Browser.instance.document.body);
-    if (elements.length === 0)
-        return await convertOrTryAgain(time * 2, timer);
-    return elements;
-}
-
 function htmlToElement(html) {
     const div = document.createElement('div')
     div.innerHTML = html;
     return div.firstChild;
 }
 
-/**
- * @returns {Promise<CurrencyElement[]>}
- */
 async function main() {
     const html = (await createAlert('titleMenu'))
         .replace('${version}', Browser.extensionVersion)
@@ -179,10 +182,8 @@ async function main() {
     const shortcut = config.utility.shortcut.value;
 
     // Handle allowance by black/white listing
-    if (!siteAllowance.isAllowed(browser.href).allowed) {
-        console.log('UACC: Site is blacklisted, goodbye');
-        return [];
-    }
+    if (!siteAllowance.isAllowed(browser.href).allowed)
+        return console.log('UACC: Site is blacklisted, goodbye');
 
     // Detect localization for website
     const timer = new Timer();
@@ -191,24 +192,25 @@ async function main() {
     timer.log('Checked localization...').reset();
 
     // Convert currencies
-    let elements = await detectAllElements(browser.document.body);
-    if (elements.length === 0)
-        elements = await convertOrTryAgain(500, timer);
-
-    timer.log(`Converted page, ${elements.length} conversions...`).reset();
+    detectAllNewElementsRecurring().finally();
 
     // Create alert if needed
-    await createLocalizationAlert(elements);
+    timer.log('Creating localization alert (if needed)...').reset();
+    await createLocalizationAlert();
 
     // Shortcut activation
+    timer.log('Setting up shortcut listener...').reset();
     browser.window.addEventListener('keyup', e => {
         if (e.key !== shortcut) return;
         elements.filter(e => e.selected).forEach(e => e.flipDisplay());
     });
 
+    /*
     // Update on changes and additions to site
     const observerConfig = {attributes: true, childList: true, subtree: true}
     const observer = new MutationObserver(async list => {
+        console.log(list);
+        return;
         for (let data of list) {
             const targets = [data.target];
             for (let i = 0; i < data.addedNodes.length; i++)
@@ -229,9 +231,7 @@ async function main() {
     });
     //observer.observe(browser.document.body, {childList: true, subtree: true, attributes: false, characterData: false});
     observer.observe(browser.document.body, {childList: true, subtree: false, attributes: false, characterData: true});
-    // Setup listener for messages from popup
-    timer.log('Started listeners for shortcut & new currencies...').reset();
-    return elements;
+     */
 }
 
 async function convertSelected(text, currency) {
@@ -244,7 +244,7 @@ async function convertSelected(text, currency) {
     resultDiv.innerHTML = `<div class="uacc-subheader uacc-center">Currencies found in selection</div>${result.join('<br>')}`;
 }
 
-async function showSelectMenu(elements) {
+async function showSelectMenu() {
     const browser = Browser.instance;
     const menu = await createAlert('selectedMenu', false);
 
@@ -285,11 +285,19 @@ async function showSelectMenu(elements) {
     })
 }
 
-async function showContextMenu(elements) {
+async function showContextMenu() {
     const allowance = SiteAllowance.instance;
     const config = Configuration.instance;
     const browser = Browser.instance;
-    const html = (await createAlert('contextMenu')).replace('${hostname}', browser.hostAndPath)
+    const symbols = await Currencies.instance.symbols();
+    const selectedCurrency = config.currency.tag.value;
+    const currenciesDropdown = Object.keys(symbols).sort()
+        .map(tag => `<option ${selectedCurrency === tag ? 'selected' : ''} value="${tag}">${symbols ? `${tag} (${symbols[tag]})` : tag}</option>`)
+        .join('');
+
+    const html = (await createAlert('contextMenu'))
+        .replace('${hostname}', browser.hostAndPath)
+        .replace('${currencies}', currenciesDropdown);
     const menu = htmlToElement(html);
     if (browser.document.getElementById('uacc-context')) return;
     uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
@@ -301,47 +309,29 @@ async function showContextMenu(elements) {
         document.getElementById('uacc-context-blacklist').classList.add('uacc-button-ignore');
 
     // Conversion
-    document.getElementById('uacc-context-whitelist')
-        .addEventListener('click', async () => {
-            const url = 'https://' + browser.hostAndPath;
-            const allowed = allowance.isAllowed(url).allowed;
-            if (!allowed) {
-                config.blacklist.urls.setValue(config.blacklist.urls.value.filter(e => e !== url));
-                config.whitelist.urls.value.push(url);
-                await config.blacklist.urls.save();
-                await config.whitelist.urls.save();
-                allowance.updateFromConfig();
-            }
-            document.getElementById('uacc-context-whitelist').classList.add('uacc-button-ignore');
-            document.getElementById('uacc-context-blacklist').classList.remove('uacc-button-ignore');
-        });
-    document.getElementById('uacc-context-blacklist')
-        .addEventListener('click', async () => {
-            const url = 'https://' + browser.hostAndPath;
-            if (allowance.isAllowed(url).allowed) {
-                config.whitelist.urls.setValue(config.whitelist.urls.value.filter(e => e !== url));
-                config.blacklist.urls.value.push(url);
-                await config.blacklist.urls.save();
-                await config.whitelist.urls.save();
-                allowance.updateFromConfig();
-            }
-            document.getElementById('uacc-context-whitelist').classList.remove('uacc-button-ignore');
-            document.getElementById('uacc-context-blacklist').classList.add('uacc-button-ignore');
-        })
+    const currenctCurrency = document.getElementById('uacc-context-currency-options');
+    currenctCurrency.addEventListener('change', async () => {
+        const value = currenctCurrency.children[currenctCurrency.selectedIndex].value;
+        // Update settings
+        config.currency.tag.setValue(value);
+        await config.currency.tag.save();
+        // Re-calculate all conversions to new currency
+        elements.forEach(element => element
+            .convertTo(config.currency.tag.value)
+            .then(() => element.updateDisplay(true)));
+    });
 
     // Conversion
-    document.getElementById('uacc-context-conversions-show')
-        .addEventListener('click', () => {
-            elements.forEach(e => e.showConverted());
-            document.getElementById('uacc-context-conversions-show').classList.add('uacc-button-ignore');
-            document.getElementById('uacc-context-conversions-hide').classList.remove('uacc-button-ignore');
-        });
-    document.getElementById('uacc-context-conversions-hide')
-        .addEventListener('click', () => {
-            elements.forEach(e => e.showOriginal())
-            document.getElementById('uacc-context-conversions-show').classList.remove('uacc-button-ignore');
-            document.getElementById('uacc-context-conversions-hide').classList.add('uacc-button-ignore');
-        })
+    document.getElementById('uacc-context-conversions-show').addEventListener('click', () => {
+        elements.forEach(e => e.showConverted());
+        document.getElementById('uacc-context-conversions-show').classList.add('uacc-button-ignore');
+        document.getElementById('uacc-context-conversions-hide').classList.remove('uacc-button-ignore');
+    });
+    document.getElementById('uacc-context-conversions-hide').addEventListener('click', () => {
+        elements.forEach(e => e.showOriginal())
+        document.getElementById('uacc-context-conversions-show').classList.remove('uacc-button-ignore');
+        document.getElementById('uacc-context-conversions-hide').classList.add('uacc-button-ignore');
+    })
     document.getElementById('uacc-context-dismiss')
         .addEventListener('click', () => menu.remove());
     if (config.utility.using.value)
@@ -349,6 +339,32 @@ async function showContextMenu(elements) {
     else
         document.getElementById('uacc-context-conversions-hide').classList.add('uacc-button-ignore')
 
+    // Black/white listing
+    document.getElementById('uacc-context-whitelist').addEventListener('click', async () => {
+        const url = 'https://' + browser.hostAndPath;
+        const allowed = allowance.isAllowed(url).allowed;
+        if (!allowed) {
+            config.blacklist.urls.setValue(config.blacklist.urls.value.filter(e => e !== url));
+            config.whitelist.urls.value.push(url);
+            await config.blacklist.urls.save();
+            await config.whitelist.urls.save();
+            allowance.updateFromConfig();
+        }
+        document.getElementById('uacc-context-whitelist').classList.add('uacc-button-ignore');
+        document.getElementById('uacc-context-blacklist').classList.remove('uacc-button-ignore');
+    });
+    document.getElementById('uacc-context-blacklist').addEventListener('click', async () => {
+        const url = 'https://' + browser.hostAndPath;
+        if (allowance.isAllowed(url).allowed) {
+            config.whitelist.urls.setValue(config.whitelist.urls.value.filter(e => e !== url));
+            config.blacklist.urls.value.push(url);
+            await config.blacklist.urls.save();
+            await config.whitelist.urls.save();
+            allowance.updateFromConfig();
+        }
+        document.getElementById('uacc-context-whitelist').classList.remove('uacc-button-ignore');
+        document.getElementById('uacc-context-blacklist').classList.add('uacc-button-ignore');
+    })
 
     // Localization
     const localization = ActiveLocalization.instance;
@@ -370,15 +386,18 @@ async function showContextMenu(elements) {
     })
 }
 
-main().then(async elements => {
+main().then(async () => {
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
+            case 'changeCurrency':
+                senderResponse({success: false, data: 'not implemented'});
+                break;
             case 'selectedMenu':
-                await showSelectMenu(elements);
+                await showSelectMenu();
                 senderResponse({success: true});
                 break;
             case 'contextMenu':
-                await showContextMenu(elements);
+                await showContextMenu();
                 senderResponse({success: true});
                 break;
             case 'showConversions':
@@ -401,7 +420,8 @@ main().then(async elements => {
                 senderResponse({success: true})
                 break;
             default:
-                senderResponse({success: false, data: `${data.type} did not match anything`})
+                senderResponse({success: false, data: `${data.type} did not match anything`});
+                break;
         }
         return true;
     });
