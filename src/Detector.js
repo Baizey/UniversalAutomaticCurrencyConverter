@@ -118,37 +118,33 @@ class Detector {
      * @returns {Promise<[CurrencyElement]>}
      */
     async detectAllElements(element) {
-        try {
-            if (element.hasAttribute('uacc:watched')) return null;
-            const raw = element.innerText;
-            if (!element.tagName || element.tagName.toLowerCase() === 'script') return [];
-            if (!this.regex().test(raw)) return [];
-            if ((await this.detectResult(raw)).length === 0) return [];
+        if (element.hasAttribute('uacc:watched')) return null;
+        const raw = element.innerText;
+        if (!element.tagName || element.tagName.toLowerCase() === 'script') return [];
+        if (!this.regex().test(raw)) return [];
+        if ((await this.detectResult(raw)).length === 0) return [];
 
-            const children = element.children;
-            let result = [];
-            let hasUACCWatchedUnder = false;
-            for (let i = 0; i < children.length; i++) {
-                const found = await this.detectAllElements(children[i]);
-                if (!found) hasUACCWatchedUnder = true;
-                else result = result.concat(found);
-            }
-
-            if (result.length === 0 && hasUACCWatchedUnder)
-                return null;
-            else if (result.length > 0)
-                return result;
-            else if (!hasUACCWatchedUnder && !this._hasChildDeeperThan(element, 4)) {
-                element.setAttribute('uacc:watched', true);
-                return [new CurrencyElement(element, {
-                    detector: this,
-                    currencies: this._currencies,
-                    config: this._config
-                })];
-            } else return []
-        } catch (e) {
-            console.log(e);
+        const children = element.children;
+        let result = [];
+        let hasUACCWatchedUnder = false;
+        for (let i = 0; i < children.length; i++) {
+            const found = await this.detectAllElements(children[i]);
+            if (!found) hasUACCWatchedUnder = true;
+            else result = result.concat(found);
         }
+
+        if (result.length === 0 && hasUACCWatchedUnder)
+            return null;
+        else if (result.length > 0)
+            return result;
+        else if (!hasUACCWatchedUnder && !this._hasChildDeeperThan(element, 4)) {
+            element.setAttribute('uacc:watched', true);
+            return [new CurrencyElement(element, {
+                detector: this,
+                currencies: this._currencies,
+                config: this._config
+            })];
+        } else return []
     }
 
     /**
