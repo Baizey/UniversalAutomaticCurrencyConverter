@@ -114,7 +114,7 @@ class Detector {
     }
 
     /**
-     * @param {HTMLElement} element
+     * @param {*} element
      * @returns {Promise<[CurrencyElement]>}
      */
     async detectAllElements(element) {
@@ -138,7 +138,7 @@ class Detector {
         else if (result.length > 0)
             return result;
         else if (!hasUACCWatchedUnder && !this._hasChildDeeperThan(element, 4)) {
-            element.setAttribute('uacc:watched', true);
+            element.setAttribute('uacc:watched', 'true');
             return [new CurrencyElement(element, {
                 detector: this,
                 currencies: this._currencies,
