@@ -247,6 +247,7 @@ class Browser {
      */
     get background() {
         return {
+            activeRightClick: async () => this._messageBackground({type: 'activeRightClick'}),
             getHtml: template => this._messageBackground({type: 'getHtml', template: template}),
             getRate: (from, to) => this._messageBackground({type: 'rate', from: from, to: to}),
             getSymbols: () => this._messageBackground({type: 'symbols'}),

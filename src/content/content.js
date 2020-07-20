@@ -1,13 +1,12 @@
 const uaccWrapper = document.createElement('div');
 uaccWrapper.setAttribute('id', 'uacc-window');
 uaccWrapper.classList.add('uacc-window');
-uaccWrapper.style.opacity = '1';
 
 /**
+ * Just here for IDE context
  * @returns {CurrencyElement[]}
  */
 const createElementsList = () => [];
-
 const elements = createElementsList();
 
 /**
@@ -33,8 +32,13 @@ async function detectAllElements(parent) {
  * @returns {Promise<CurrencyElement[]>}
  */
 async function detectAllNewElements() {
+    const timer = new Timer();
     const newElements = await detectAllElements(Browser.instance.document.body);
     newElements.forEach(e => elements.push(e));
+    if (newElements.length > 0)
+        timer.log(`Converted page, ${newElements.length} conversions...`).reset();
+    else
+        timer.log(`Converted page, found no new elements to convert`).reset();
     return newElements;
 }
 
@@ -43,14 +47,9 @@ async function detectAllNewElements() {
  * @returns {Promise<void>}
  */
 async function detectAllNewElementsRecurring(time = 1000) {
-    const timer = new Timer();
-    timer.log(`Looking for currencies...`).reset();
     const newElements = await detectAllNewElements();
     time = newElements.length > 0 ? 1000 : time * 2;
-    if (newElements.length > 0) timer.log(`Converted page, ${elements.length} conversions...`).reset();
-    else timer.log(`Converted page, found no new elements to convert`).reset();
-    if (time > 7 * 1000) return;
-    timer.log(`Waiting ${(time / 1000).toFixed(2)} seconds before checking again`).reset();
+    if (time > 8 * 1000) return console.log(`UACC: Done auto-checking for currencies`);
     setTimeout(() => detectAllNewElementsRecurring(time), time);
 }
 
@@ -62,30 +61,20 @@ async function detectAllNewElementsRecurring(time = 1000) {
 async function createAlert(template, asHtml = true) {
     const browser = Browser.instance;
     const bodyColor = browser.window.getComputedStyle(browser.document.body, null).getPropertyValue('background-color');
-    const rawColors = bodyColor.match(/\d+/g).map(e => Number(e));
-    const reverseColors = rawColors.slice(0, 3).map(e => (e + 128) % 255);
-    const colors = rawColors.map(e => e * 0.85);
-    const inputColor = colors.length === 3
-        ? 'rgb(' + colors.map(e => e * 1.1).join(',') + ')'
-        : 'rgba(' + colors.map(e => e * 1.1).map(e => Math.max(e, .9)).join(',') + ')';
-    const backgroundColor = colors.length === 3
-        ? 'rgb(' + colors.join(',') + ')'
-        : 'rgba(' + colors.map(e => Math.max(e, .9)).join(',') + ')';
-    const borderColor = colors.length === 3
-        ? 'rgb(' + colors.map(e => e * 0.85).join(',') + ')'
-        : 'rgba(' + colors.map(e => e * 0.85).map(e => Math.max(e, .9)).join(',') + ')';
-    const textColor = (colors.slice(0, 3).reduce((a, b) => a + b) / 3) >= 128 ? '#111' : '#eee';
-    const reverseBorderColor = 'rgb(' + reverseColors.join(',') + ')';
-    const reverseBackgroundColor = 'rgb(' + reverseColors.map(e => e * 0.85).join(',') + ')';
-    const reverseTextColor = textColor === '#eee' ? '#111' : '#eee';
+    const colors = bodyColor.match(/\d+/g).slice(0, 3).map(Number);
+    const isLight = (colors.reduce((a, b) => a + b) / 3) >= 128
+
+    const theme = isLight ? 'uacc-light-theme' : 'uacc-dark-theme';
+    const opposite = !isLight ? 'uacc-light-theme' : 'uacc-dark-theme';
+    const title = isLight ? 'uacc-light-title' : 'uacc-dark-title';
+    const dropdown = isLight ? 'uacc-light-dropdown' : 'uacc-dark-dropdown';
+
     const html = (await browser.background.getHtml(template))
-        .replace(/\${backgroundColor}/g, backgroundColor)
-        .replace(/\${borderColor}/g, borderColor)
-        .replace(/\${textColor}/g, textColor)
-        .replace(/\${inputColor}/g, inputColor)
-        .replace(/\${reverseBorderColor}/g, reverseBorderColor)
-        .replace(/\${reverseBackgroundColor}/g, reverseBackgroundColor)
-        .replace(/\${reverseTextColor}/g, reverseTextColor);
+        .replace(/\${theme}/g, theme)
+        .replace(/\${title-theme}/g, title)
+        .replace(/\${dropdown-theme}/g, dropdown)
+        .replace(/\${check-theme}/g, opposite)
+
     return asHtml ? html : htmlToElement(html);
 }
 
@@ -165,56 +154,6 @@ function htmlToElement(html) {
     const div = document.createElement('div')
     div.innerHTML = html;
     return div.firstChild;
-}
-
-async function main() {
-    const html = (await createAlert('titleMenu'))
-        .replace('${version}', Browser.extensionVersion)
-        .replace('${creator}', Browser.author)
-        .replace("${link}", Browser.reviewLink)
-    uaccWrapper.appendChild(htmlToElement(html));
-    document.body.appendChild(uaccWrapper);
-    await Engine.instance.load();
-
-    const browser = Browser.instance;
-    const detector = Detector.instance;
-    const config = Configuration.instance;
-    const localization = ActiveLocalization.instance;
-    const siteAllowance = SiteAllowance.instance;
-    const shortcut = config.utility.shortcut.value;
-
-    // Handle allowance by black/white listing
-    if (!siteAllowance.isAllowed(browser.href).allowed)
-        return console.log('UACC: Site is blacklisted, goodbye');
-
-    // Detect localization for website
-    const timer = new Timer();
-    await localization.determineForSite(browser.document.body.innerText);
-    await detector.updateSharedLocalizations();
-    timer.log('Checked localization...').reset();
-
-    // Convert currencies
-    detectAllNewElementsRecurring().finally();
-
-    // Create alert if needed
-    timer.log('Creating localization alert (if needed)...').reset();
-    await createLocalizationAlert();
-
-    // Shortcut activation
-    timer.log('Setting up shortcut listener...').reset();
-    browser.window.addEventListener('keyup', e => {
-        if (e.key !== shortcut) return;
-        elements.filter(e => e.selected).forEach(e => e.flipDisplay());
-    });
-
-    // Update on changes and additions to site
-    const observerConfig = {attributes: true, childList: true, subtree: true}
-    const observer = new MutationObserver(async list => {
-        await detectAllNewElements();
-        elements.forEach(e => e.updateDisplay())
-    });
-    //observer.observe(browser.document.body, {childList: true, subtree: true, attributes: false, characterData: false});
-    observer.observe(browser.document.body, {childList: true, subtree: false, attributes: false, characterData: true});
 }
 
 async function convertSelected(text, currency) {
@@ -372,7 +311,66 @@ async function showContextMenu() {
     })
 }
 
-main().then(async () => {
+async function main() {
+    const html = (await createAlert('titleMenu'))
+        .replace('${version}', Browser.extensionVersion)
+        .replace('${creator}', Browser.author)
+        .replace("${link}", Browser.reviewLink)
+    uaccWrapper.appendChild(htmlToElement(html));
+    document.body.appendChild(uaccWrapper);
+    await Engine.instance.load();
+
+    const browser = Browser.instance;
+    const detector = Detector.instance;
+    const config = Configuration.instance;
+    const localization = ActiveLocalization.instance;
+    const siteAllowance = SiteAllowance.instance;
+    const shortcut = config.utility.shortcut.value;
+
+    // Handle allowance by black/white listing
+    if (!siteAllowance.isAllowed(browser.href).allowed) {
+        console.log('UACC: Site is blacklisted, goodbye');
+        return false;
+    }
+    await Browser.instance.background.activeRightClick();
+
+    // Detect localization for website
+    const timer = new Timer();
+    await localization.determineForSite(browser.document.body.innerText);
+    await detector.updateSharedLocalizations();
+    timer.log('Checked localization...').reset();
+
+    // Convert currencies
+    detectAllNewElementsRecurring().finally();
+
+    // Create alert if needed
+    await createLocalizationAlert();
+
+    // Shortcut activation
+    browser.window.addEventListener('keyup', e => {
+        if (e.key !== shortcut) return;
+        elements.filter(e => e.selected).forEach(e => e.flipDisplay());
+    });
+
+    new MutationObserver(async () => {
+        //await detectAllNewElements();
+        //elements.forEach(e => e.updateDisplay())
+    }).observe(document.body, {childList: true, subtree: true});
+    /*
+    new MutationObserver(async () => {
+        await detectAllNewElements();
+        elements.forEach(e => e.updateDisplay())
+    }).observe(document.body, {childList: true, subtree: true, attributes: false, characterData: false});
+    new MutationObserver(async () => {
+        await detectAllNewElements();
+        elements.forEach(e => e.updateDisplay())
+    }).observe(document.body, {childList: true, subtree: false, attributes: false, characterData: true});
+     */
+    return true;
+}
+
+main().then(async running => {
+    if (!running) return false;
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
             case 'changeCurrency':
@@ -411,4 +409,6 @@ main().then(async () => {
         }
         return true;
     });
+    await showContextMenu();
+    return running;
 }).catch(e => console.error(e));

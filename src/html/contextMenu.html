@@ -1,5 +1,4 @@
-<div id="uacc-context" class="uacc-alertWrapper"
-     style="background-color:${backgroundColor}; color: ${textColor}; border: 1px solid ${borderColor}">
+<div id="uacc-context" class="uacc-alertWrapper ${theme}">
     <div id="uacc-context-dismiss" style="position: absolute; cursor: pointer" class="uacc-cross">
         <div></div>
         <div></div>
@@ -8,9 +7,8 @@
 
     <div style="margin-bottom: 15px;">
         <div class="uacc-subheader"> Site allowance</div>
-        <input id="uacc-context-url" class="uacc-input uacc-center"
-               placeholder="Url go brrr..." value="${hostname}"
-               style="background-color:${inputColor}; color: ${textColor}; border: 1px solid ${borderColor}">
+        <input id="uacc-context-url" class="uacc-input uacc-center ${dropdown-theme}" placeholder="Url go brrr..."
+               value="${hostname}">
         <div class="uacc-row uacc-list" style="height:35px">
             <div class="uacc-button uacc-column" id="uacc-context-whitelist"
                  style="width:50%; border-top-left-radius: 0; border-top-right-radius: 0">Whitelist
@@ -37,8 +35,7 @@
         <div class="uacc-row uacc-list" style="height:35px;" id="uacc-context-localization">
             <div style="width:33%">
                 <div class="uacc-row uacc-label">dollar$</div>
-                <select id="uacc-context-localization-dollar" class="uacc-row uacc-center uacc-select"
-                        style="background-color:${borderColor}; color: ${textColor}; border: 1px solid ${reverseBorderColor}">
+                <select id="uacc-context-localization-dollar" class="uacc-row uacc-center uacc-select ${dropdown-theme}">
                     <option value="USD">American</option>
                     <option value="CAD">Canadian</option>
                     <option value="AUD">Australian</option>
@@ -50,8 +47,7 @@
             </div>
             <div style="width:33%">
                 <div class="uacc-row uacc-label">kr</div>
-                <select id="uacc-context-localization-krone" class="uacc-row uacc-center uacc-select"
-                        style="background-color:${borderColor}; color: ${textColor}; border: 1px solid ${reverseBorderColor}">
+                <select id="uacc-context-localization-krone" class="uacc-row uacc-center uacc-select ${dropdown-theme}">
                     <option value="SEK">Swedish</option>
                     <option value="DKK">Danish</option>
                     <option value="NOK">Norwegian</option>
@@ -61,8 +57,7 @@
             </div>
             <div style="width:33%">
                 <div class="uacc-row uacc-label">¥en</div>
-                <select id="uacc-context-localization-yen" class="uacc-row uacc-center uacc-select"
-                        style="background-color:${borderColor}; color: ${textColor}; border: 1px solid ${reverseBorderColor}">
+                <select id="uacc-context-localization-yen" class="uacc-row uacc-center uacc-select ${dropdown-theme}">
                     <option value="CNY">Chinese</option>
                     <option value="JPY">Japanese</option>
                 </select>
@@ -72,8 +67,7 @@
     <div style="margin-bottom: 15px;">
         <div class="uacc-subheader">Convert to</div>
         <div class="uacc-row" id="uacc-context-currency">
-            <select id="uacc-context-currency-options" class="uacc-row uacc-center uacc-select"
-                    style="background-color:${borderColor}; color: ${textColor}; border: 1px solid ${reverseBorderColor}">
+            <select id="uacc-context-currency-options" class="uacc-row uacc-center uacc-select ${dropdown-theme}">
                 ${currencies}
             </select>
         </div>

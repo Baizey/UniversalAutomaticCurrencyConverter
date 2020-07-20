@@ -65,12 +65,31 @@ function getHtml(senderResponse, template) {
         .catch(e => senderResponse({success: false, data: e}));
 }
 
+function createRightClickButtons() {
+    chrome.contextMenus.create({
+        title: `Convert selected...`,
+        contexts: ["selection"],
+        onclick: () => Browser.instance.tab.selectedMenu().finally()
+    });
+
+    chrome.contextMenus.create({
+        title: `Open context menu...`,
+        contexts: ["page", "link", "image", "browser_action", "video", "audio", "editable", "page_action"],
+        onclick: () => Browser.instance.tab.contextMenu().finally()
+    });
+}
+createRightClickButtons();
+
 function getSelectedText(senderResponse) {
     senderResponse({success: true, data: window.getSelection().toString()});
 }
 
+let hasRightClick = false;
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
     switch (request.type) {
+        case 'activeRightClick':
+            senderResponse({success: true});
+            break;
         case 'getSelected':
             getSelectedText(senderResponse);
             break;
@@ -105,19 +124,3 @@ const openOptionsIfNew = async () => {
 };
 
 openOptionsIfNew().finally();
-
-chrome.contextMenus.create({
-    title: `Convert selected...`,
-    contexts: ["selection"],
-    onclick: function () {
-        return Browser.instance.tab.selectedMenu().finally();
-    }
-});
-
-chrome.contextMenus.create({
-    title: `Open context menu...`,
-    contexts: ["page"],
-    onclick: function () {
-        return Browser.instance.tab.contextMenu().finally();
-    }
-});

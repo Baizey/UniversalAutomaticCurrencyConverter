@@ -5,6 +5,42 @@
     float: none;
 }
 
+.uacc-light-theme, .uacc-light-title, .uacc-light-dropdown {
+    border-color: #bbb;
+    background-color: #eee;
+    color: #111;
+}
+
+.uacc-dark-theme, .uacc-dark-title, .uacc-dark-dropdown {
+    border-color: #3F474E;
+    background-color: #192028;
+    color: #d0d0d0;
+}
+
+.uacc-light-title {
+    background-color: #bbb;
+}
+
+.uacc-dark-title {
+    background-color: #3F474E;
+}
+
+.uacc-light-dropdown {
+    border-bottom: solid 1px #053050 !important;
+}
+
+.uacc-light-dropdown:hover {
+    background-color: #D7DBDE;
+}
+
+.uacc-dark-dropdown {
+    border-bottom: solid 1px #f0ad4e !important;
+}
+
+.uacc-dark-dropdown:hover {
+    background-color: #2F2E2C;
+}
+
 .uacc-header {
     font-size: 1.5em;
     display: block;
@@ -56,7 +92,8 @@
 
 .uacc-alertWrapper {
     width: 350px;
-    border: 1px solid black;
+    border-width: 1px;
+    border-style: solid;
     font-size: 14px;
     line-height: 1.1;
     padding: 10px;
@@ -168,6 +205,10 @@
 
 .uacc-input {
     width: 100%;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-bottom-width: 1px;
 }
 
 .uacc-select {
@@ -180,11 +221,8 @@
     -moz-appearance: none;
     text-indent: 1px;
     text-overflow: '';
-    text-align-last: center;;
-}
-
-.uacc-select:hover {
-    border-bottom: solid 1px #f0ad4e !important;
+    text-align-last: center;
+    height: 25px;
 }
 
 .uacc-radiobox {
