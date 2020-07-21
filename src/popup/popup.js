@@ -75,7 +75,7 @@ const isLegitUrl = url => {
 document.addEventListener('DOMContentLoaded', async () => {
     const browser = Browser.instance;
     Browser.updateFooter();
-    document.getElementById('review').addEventListener('click', () => Browser.updateReviewLink());
+    document.getElementById('review').addEventListener('click', () => browser.openReviewLink());
     browser._fullHref = await browser.tab.getHref().catch(() => 'unknown');
     const url = isLegitUrl(browser.href);
     if (url) {

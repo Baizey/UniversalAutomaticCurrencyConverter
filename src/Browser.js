@@ -1,47 +1,18 @@
 const Browsers = {
     Firefox: 'Firefox',
     Chrome: 'Chrome',
-    Edge: 'Edge'
+    Edge: 'Edge',
 };
 
 let _browserInstance;
 
 class Browser {
-
     static updateFooter() {
-        //const manifest = chrome.runtime.getManifest();
         const footer = document.getElementById('footer');
-        if (footer)
-            footer.innerText = footer.innerText
-                .replace('{version}', Browser.extensionVersion)
-                .replace('{author}', Browser.author);
-    }
-
-    static getHost() {
-        const hostname = Browser.hostname;
-        const index = hostname.lastIndexOf('.');
-        return index < 0 ? '' : hostname.substr(index + 1);
-    }
-
-    static get reviewLink() {
-        return Browser.instance.isChrome()
-            ? 'https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli'
-            : 'https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/';
-    }
-
-    static updateReviewLink() {
-        const url = Browser.instance.isChrome()
-            ? 'https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli'
-            : 'https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/';
-        chrome.tabs.create({url: url});
-    }
-
-    static get author() {
-        return chrome.runtime.getManifest().author;
-    }
-
-    static get extensionVersion() {
-        return chrome.runtime.getManifest().version;
+        if (!footer) return;
+        footer.innerText = footer.innerText
+            .replace('{version}', Browser.instance.extensionVersion)
+            .replace('{author}', Browser.instance.author);
     }
 
     /**
@@ -92,12 +63,49 @@ class Browser {
             return;
         }
 
-        this.type = typeof chrome !== "undefined"
-            ? ((typeof browser !== "undefined")
-                ? Browsers.Firefox
-                : Browsers.Chrome)
-            : Browsers.Edge;
+        if (typeof chrome === 'undefined')
+            this.type = Browsers.Edge;
+        else if (typeof browser !== "undefined")
+            this.type = Browsers.Firefox;
+        else
+            this.type = Browsers.Chrome;
+        console.log(`UACC: detected browser ${this.type}`)
         this.access = this.type === Browsers.Firefox ? browser : chrome;
+    }
+
+    get reviewLink() {
+        switch (this.type) {
+            case Browsers.Firefox:
+                return 'https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/';
+            case Browsers.Chrome:
+                return 'https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli';
+            case Browsers.Edge:
+                // TODO: setup for edge
+                return null;
+        }
+    }
+
+    get author() {
+        return chrome.runtime.getManifest().author;
+    }
+
+    get extensionVersion() {
+        return chrome.runtime.getManifest().version;
+    }
+
+    get extensionUrl() {
+        switch (this.type) {
+            case Browsers.Firefox:
+                return `moz-extension://${this.id}`;
+            case Browsers.Chrome:
+                return `chrome-extension://${this.id}`;
+            case Browsers.Edge:
+                return `extension://${this.id}`;
+        }
+    }
+
+    get id() {
+        return chrome.runtime.id;
     }
 
     get document() {
@@ -142,12 +150,20 @@ class Browser {
         return index < 0 ? '' : this.hostname.substr(index + 1);
     }
 
+    openReviewLink() {
+        chrome.tabs.create({url: this.reviewLink()});
+    }
+
     isFirefox() {
         return this.type === Browsers.Firefox;
     }
 
     isChrome() {
         return this.type === Browsers.Chrome;
+    }
+
+    isEdge() {
+        return this.type === Browsers.Edge;
     }
 
     /**

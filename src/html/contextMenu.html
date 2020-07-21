@@ -1,40 +1,40 @@
-<div id="uacc-context" class="uacc-alertWrapper ${theme}">
-    <div id="uacc-context-dismiss" style="position: absolute; cursor: pointer" class="uacc-cross">
-        <div></div>
-        <div></div>
-    </div>
-    <div class="uacc-row uacc-header">Context menu</div>
+<UaccDiv id="uacc-context" class="uacc-alertWrapper ${theme}">
+    <UaccDiv id="uacc-context-dismiss" style="position: absolute; cursor: pointer" class="uacc-cross">
+        <UaccDiv></UaccDiv>
+        <UaccDiv></UaccDiv>
+    </UaccDiv>
+    <UaccDiv class="uacc-row uacc-header">Context menu</UaccDiv>
 
-    <div style="margin-bottom: 15px;">
-        <div class="uacc-subheader"> Site allowance</div>
+    <UaccDiv style="margin-bottom: 15px;">
+        <UaccDiv class="uacc-subheader"> Site allowance</UaccDiv>
         <input id="uacc-context-url" class="uacc-input uacc-center ${dropdown-theme}" placeholder="Url go brrr..."
                value="${hostname}">
-        <div class="uacc-row uacc-list" style="height:35px">
-            <div class="uacc-button uacc-column" id="uacc-context-whitelist"
+        <UaccDiv class="uacc-row uacc-list" style="height:35px">
+            <UaccDiv class="uacc-button uacc-column" id="uacc-context-whitelist"
                  style="width:50%; border-top-left-radius: 0; border-top-right-radius: 0">Whitelist
-            </div>
-            <div class="uacc-button uacc-column" id="uacc-context-blacklist"
+            </UaccDiv>
+            <UaccDiv class="uacc-button uacc-column" id="uacc-context-blacklist"
                  style="width:50%; border-top-left-radius: 0; border-top-right-radius: 0">Blacklist
-            </div>
-        </div>
-    </div>
+            </UaccDiv>
+        </UaccDiv>
+    </UaccDiv>
 
-    <div style="margin-bottom: 15px;" id="uacc-context-conversions">
-        <div class="uacc-subheader">Conversions</div>
-        <div class="uacc-row uacc-label">${conversionCount} conversions detected</div>
-        <div class="uacc-row uacc-list" style="height:50px">
-            <div class="uacc-button uacc-column" id="uacc-context-conversions-show" style="width:50%;">Show all<br>conversions
-            </div>
-            <div class="uacc-button uacc-column" id="uacc-context-conversions-hide" style="width:50%">Hide all<br>conversions
-            </div>
-        </div>
-    </div>
+    <UaccDiv style="margin-bottom: 15px;" id="uacc-context-conversions">
+        <UaccDiv class="uacc-subheader">Conversions</UaccDiv>
+        <UaccDiv class="uacc-row uacc-label">${conversionCount} conversions detected</UaccDiv>
+        <UaccDiv class="uacc-row uacc-list" style="height:50px">
+            <UaccDiv class="uacc-button uacc-column" id="uacc-context-conversions-show" style="width:50%;">Show all<br>conversions
+            </UaccDiv>
+            <UaccDiv class="uacc-button uacc-column" id="uacc-context-conversions-hide" style="width:50%">Hide all<br>conversions
+            </UaccDiv>
+        </UaccDiv>
+    </UaccDiv>
 
-    <div style="margin-bottom: 15px;">
-        <div class="uacc-subheader"> Current page's localization</div>
-        <div class="uacc-row uacc-list" style="height:35px;" id="uacc-context-localization">
-            <div style="width:33%">
-                <div class="uacc-row uacc-label">dollar$</div>
+    <UaccDiv style="margin-bottom: 15px;">
+        <UaccDiv class="uacc-subheader"> Current page's localization</UaccDiv>
+        <UaccDiv class="uacc-row uacc-list" style="height:35px;" id="uacc-context-localization">
+            <UaccDiv style="width:33%">
+                <UaccDiv class="uacc-row uacc-label">dollar$</UaccDiv>
                 <select id="uacc-context-localization-dollar" class="uacc-row uacc-center uacc-select ${dropdown-theme}">
                     <option value="USD">American</option>
                     <option value="CAD">Canadian</option>
@@ -44,9 +44,9 @@
                     <option value="SGP">Singapore</option>
                     <option value="HKD">Hong kong</option>
                 </select>
-            </div>
-            <div style="width:33%">
-                <div class="uacc-row uacc-label">kr</div>
+            </UaccDiv>
+            <UaccDiv style="width:33%">
+                <UaccDiv class="uacc-row uacc-label">kr</UaccDiv>
                 <select id="uacc-context-localization-krone" class="uacc-row uacc-center uacc-select ${dropdown-theme}">
                     <option value="SEK">Swedish</option>
                     <option value="DKK">Danish</option>
@@ -54,22 +54,22 @@
                     <option value="ISK">Icelandic</option>
                     <option value="CZK">Czechia</option>
                 </select>
-            </div>
-            <div style="width:33%">
-                <div class="uacc-row uacc-label">¥en</div>
+            </UaccDiv>
+            <UaccDiv style="width:33%">
+                <UaccDiv class="uacc-row uacc-label">¥en</UaccDiv>
                 <select id="uacc-context-localization-yen" class="uacc-row uacc-center uacc-select ${dropdown-theme}">
                     <option value="CNY">Chinese</option>
                     <option value="JPY">Japanese</option>
                 </select>
-            </div>
-        </div>
-    </div>
-    <div style="margin-bottom: 15px;">
-        <div class="uacc-subheader">Convert to</div>
-        <div class="uacc-row" id="uacc-context-currency">
+            </UaccDiv>
+        </UaccDiv>
+    </UaccDiv>
+    <UaccDiv style="margin-bottom: 15px;">
+        <UaccDiv class="uacc-subheader">Convert to</UaccDiv>
+        <UaccDiv class="uacc-row" id="uacc-context-currency">
             <select id="uacc-context-currency-options" class="uacc-row uacc-center uacc-select ${dropdown-theme}">
                 ${currencies}
             </select>
-        </div>
-    </div>
-</div>
+        </UaccDiv>
+    </UaccDiv>
+</UaccDiv>

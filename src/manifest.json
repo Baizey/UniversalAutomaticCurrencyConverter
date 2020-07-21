@@ -15,7 +15,11 @@
     "default_title": "UA Currency Converter",
     "default_popup": "popup/popup.html"
   },
-  "web_accessible_resources": ["html/localizationAlert.html", "html/contextMenu.html", "html/selectedMenu.html"],
+  "web_accessible_resources": [
+    "html/localizationAlert.html",
+    "html/contextMenu.html",
+    "html/selectedMenu.html"
+  ],
   "content_scripts": [
     {
       "matches": [

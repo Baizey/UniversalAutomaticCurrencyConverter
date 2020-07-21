@@ -1,5 +1,5 @@
-const uaccWrapper = document.createElement('div');
-uaccWrapper.setAttribute('id', 'uacc-window');
+const uaccWrapper = document.createElement('UaccDiv');
+uaccWrapper.id = 'uacc-window';
 uaccWrapper.classList.add('uacc-window');
 
 /**
@@ -313,11 +313,12 @@ async function showContextMenu() {
 
 async function main() {
     const html = (await createAlert('titleMenu'))
-        .replace('${version}', Browser.extensionVersion)
-        .replace('${creator}', Browser.author)
-        .replace("${link}", Browser.reviewLink)
-    uaccWrapper.appendChild(htmlToElement(html));
+        .replace('${version}', Browser.instance.extensionVersion)
+        .replace('${creator}', Browser.instance.author)
+        .replace("${link}", Browser.instance.reviewLink)
     document.body.appendChild(uaccWrapper);
+    uaccWrapper.appendChild(htmlToElement(html));
+
     await Engine.instance.load();
 
     const browser = Browser.instance;
@@ -332,7 +333,6 @@ async function main() {
         console.log('UACC: Site is blacklisted, goodbye');
         return false;
     }
-    await Browser.instance.background.activeRightClick();
 
     // Detect localization for website
     const timer = new Timer();
@@ -409,6 +409,5 @@ main().then(async running => {
         }
         return true;
     });
-    await showContextMenu();
     return running;
 }).catch(e => console.error(e));

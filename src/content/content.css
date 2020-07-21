@@ -1,3 +1,7 @@
+UaccDiv {
+    display: block;
+}
+
 .uacc-row {
     height: fit-content;
     margin: auto;
@@ -72,20 +76,20 @@
     position: fixed;
 }
 
-.uacc-window > div:only-child {
+.uacc-window > UaccDiv:only-child {
     display: none;
 }
 
-.uacc-window > div:first-child {
+.uacc-window > UaccDiv:first-child {
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
 }
 
-.uacc-window > div:not(:first-child) {
+.uacc-window > UaccDiv:not(:first-child) {
     border-top-color: transparent;
 }
 
-.uacc-window > div:last-child {
+.uacc-window > UaccDiv:last-child {
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
 }
@@ -185,18 +189,18 @@
     background-color: #ac0515;
 }
 
-.uacc-list > div {
+.uacc-list > UaccDiv {
     float: left;
 }
 
-.uacc-list > div:first-child {
+.uacc-list > UaccDiv:first-child {
     -moz-border-radius-topright: 0;
     -moz-border-radius-bottomright: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.uacc-list > div:last-child {
+.uacc-list > UaccDiv:last-child {
     -moz-border-radius-topleft: 0;
     -moz-border-radius-bottomleft: 0;
     border-top-left-radius: 0;
@@ -233,7 +237,7 @@
     position: relative;
 }
 
-.uacc-radiobox div {
+.uacc-radiobox UaccDiv {
     position: absolute;
     margin-top: 7px;
     margin-left: 7px;
@@ -245,7 +249,7 @@
     opacity: 0;
 }
 
-.checked div {
+.checked UaccDiv {
     opacity: 1;
 }
 
@@ -261,23 +265,23 @@
     border-radius: 10px;
 }
 
-.uacc-cross:hover > div {
+.uacc-cross:hover > UaccDiv {
     background-color: #cc2535;
 }
 
-.uacc-cross > div {
+.uacc-cross > UaccDiv {
     background-color: #ac0515;
     transform: rotate(45deg);
 }
 
-.uacc-cross > div:first-child {
+.uacc-cross > UaccDiv:first-child {
     margin-top: 8px;
     position: absolute;
     width: 20px;
     height: 4px;
 }
 
-.uacc-cross > div:last-child {
+.uacc-cross > UaccDiv:last-child {
     margin-left: 8px;
     position: absolute;
     height: 20px;
