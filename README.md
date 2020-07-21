@@ -1,6 +1,6 @@
 # Universal Automatic Currency Converter
 
-An extension for Chrome and Firefox
+An extension for Chrome, Firefox and (the new) Edge
 
 [Firefox add-on](https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/)
 
