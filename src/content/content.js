@@ -1,6 +1,7 @@
 const uaccWrapper = document.createElement('UaccDiv');
 uaccWrapper.id = 'uacc-window';
 uaccWrapper.classList.add('uacc-window');
+uaccWrapper.setAttribute('uacc:watched', 'true');
 
 /**
  * Just here for IDE context
@@ -220,21 +221,33 @@ async function showContextMenu() {
     const html = (await createAlert('contextMenu'))
         .replace('${hostname}', browser.hostAndPath)
         .replace('${currencies}', currenciesDropdown)
-        .replace('${conversionCount}', elements.length + '')
+        .replace('${conversionCount}', `${elements.length}`)
     const menu = htmlToElement(html);
     if (browser.document.getElementById('uacc-context')) return;
     uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
 
-    // Site allowance
-    if (allowance.isAllowed(browser.href).allowed)
-        document.getElementById('uacc-context-whitelist').classList.add('uacc-button-ignore');
-    else
-        document.getElementById('uacc-context-blacklist').classList.add('uacc-button-ignore');
+    const blacklistButton = document.getElementById('uacc-context-blacklist');
+    const whitelistButton = document.getElementById('uacc-context-whitelist');
+    const urlInput = document.getElementById('uacc-context-url');
+
+    const conversionShowButton = document.getElementById('uacc-context-conversions-show');
+    const conversionHideButton = document.getElementById('uacc-context-conversions-hide');
+
+    // Context based displays
+    // Allowance
+    if (!config.blacklist.using.value && !config.whitelist.using.value) document.getElementById('uacc-context-allowance').style.display = 'none';
+    if (allowance.isAllowed(browser.href).allowed) whitelistButton.style.display = 'none';
+    else blacklistButton.style.display = 'none';
 
     // Conversion
-    const currenctCurrency = document.getElementById('uacc-context-currency-options');
-    currenctCurrency.addEventListener('change', async () => {
-        const value = currenctCurrency.children[currenctCurrency.selectedIndex].value;
+    if (elements.length === 0) document.getElementById('uacc-context-conversions-buttons').style.display = 'none';
+    if (config.utility.using.value) conversionShowButton.classList.add('uacc-button-ignore')
+    else conversionHideButton.classList.add('uacc-button-ignore')
+
+    // Convert to
+    const currencyOptions = document.getElementById('uacc-context-currency-options');
+    currencyOptions.addEventListener('change', async () => {
+        const value = currencyOptions.children[currencyOptions.selectedIndex].value;
         // Update settings
         config.currency.tag.setValue(value);
         await config.currency.tag.save();
@@ -245,41 +258,45 @@ async function showContextMenu() {
     });
 
     // Conversion
-    document.getElementById('uacc-context-conversions-show').addEventListener('click', () => {
+    conversionShowButton.addEventListener('click', () => {
         elements.forEach(e => e.showConverted());
         document.getElementById('uacc-context-conversions-show').classList.add('uacc-button-ignore');
         document.getElementById('uacc-context-conversions-hide').classList.remove('uacc-button-ignore');
     });
-    document.getElementById('uacc-context-conversions-hide').addEventListener('click', () => {
+    conversionHideButton.addEventListener('click', () => {
         elements.forEach(e => e.showOriginal())
         document.getElementById('uacc-context-conversions-show').classList.remove('uacc-button-ignore');
         document.getElementById('uacc-context-conversions-hide').classList.add('uacc-button-ignore');
-    })
-    document.getElementById('uacc-context-dismiss')
-        .addEventListener('click', () => menu.remove());
-    if (config.utility.using.value)
-        document.getElementById('uacc-context-conversions-show').classList.add('uacc-button-ignore')
-    else
-        document.getElementById('uacc-context-conversions-hide').classList.add('uacc-button-ignore')
+    });
 
+    // Dismiss button
+    document.getElementById('uacc-context-dismiss').addEventListener('click', () => menu.remove());
+
+    urlInput.addEventListener('change', () => {
+        const url = `https://${urlInput.value}`;
+        if (allowance.isAllowed(url).allowed) {
+            whitelistButton.style.display = 'none';
+            blacklistButton.style.display = '';
+        } else {
+            whitelistButton.style.display = '';
+            blacklistButton.style.display = 'none';
+        }
+    })
     // Black/white listing
-    document.getElementById('uacc-context-whitelist').addEventListener('click', async () => {
-        const value = document.getElementById('uacc-context-url').value;
-        const url = `https://${value}`;
-        const allowed = allowance.isAllowed(url).allowed;
-        if (!allowed) {
+    whitelistButton.addEventListener('click', async () => {
+        const url = `https://${urlInput.value}`;
+        if (!allowance.isAllowed(url).allowed) {
             config.blacklist.urls.setValue(config.blacklist.urls.value.filter(e => e !== url));
             config.whitelist.urls.value.push(url);
             await config.blacklist.urls.save();
             await config.whitelist.urls.save();
             allowance.updateFromConfig();
         }
-        document.getElementById('uacc-context-whitelist').classList.add('uacc-button-ignore');
-        document.getElementById('uacc-context-blacklist').classList.remove('uacc-button-ignore');
+        whitelistButton.style.display = 'none';
+        blacklistButton.style.display = '';
     });
-    document.getElementById('uacc-context-blacklist').addEventListener('click', async () => {
-        const value = document.getElementById('uacc-context-url').value;
-        const url = `https://${value}`;
+    blacklistButton.addEventListener('click', async () => {
+        const url = `https://${urlInput.value}`;
         if (allowance.isAllowed(url).allowed) {
             config.whitelist.urls.setValue(config.whitelist.urls.value.filter(e => e !== url));
             config.blacklist.urls.value.push(url);
@@ -287,8 +304,8 @@ async function showContextMenu() {
             await config.whitelist.urls.save();
             allowance.updateFromConfig();
         }
-        document.getElementById('uacc-context-whitelist').classList.remove('uacc-button-ignore');
-        document.getElementById('uacc-context-blacklist').classList.add('uacc-button-ignore');
+        whitelistButton.style.display = '';
+        blacklistButton.style.display = 'none';
     })
 
     // Localization
