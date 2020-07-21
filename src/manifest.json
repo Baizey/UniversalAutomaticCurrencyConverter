@@ -16,6 +16,7 @@
     "default_popup": "popup/popup.html"
   },
   "web_accessible_resources": [
+    "html/rowConverter.html",
     "html/localizationAlert.html",
     "html/contextMenu.html",
     "html/selectedMenu.html"

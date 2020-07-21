@@ -57,7 +57,7 @@ function openPopup(senderResponse) {
 }
 
 function getHtml(senderResponse, template) {
-    if (['contextMenu', 'localizationAlert', 'selectedMenu', 'titleMenu'].indexOf(template) < 0)
+    if (['contextMenu', 'localizationAlert', 'selectedMenu', 'titleMenu', 'rowConverter'].indexOf(template) < 0)
         return senderResponse({status: false, data: `'${template}' is invalid template name`})
     const url = chrome.extension.getURL(`html/${template}.html`);
     Ajax.get(url)

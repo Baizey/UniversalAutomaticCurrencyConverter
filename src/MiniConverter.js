@@ -92,4 +92,11 @@ class MiniConverterRow {
         const amount = new CurrencyAmount(this.from, this.amount);
         return await amount.convertTo(this.to);
     }
+
+    /**
+     * @returns {Promise<string>}
+     */
+    async displayValue() {
+        return await this.convertedValue().then(e => e.displayValue[0]);
+    }
 }

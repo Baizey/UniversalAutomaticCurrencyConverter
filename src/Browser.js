@@ -63,12 +63,13 @@ class Browser {
             return;
         }
 
-        if (typeof chrome === 'undefined')
-            this.type = Browsers.Edge;
+        if (this.id === 'hbjagjepkeogombomfeefdmjnclgojli')
+            this.type = Browsers.Chrome;
         else if (typeof browser !== "undefined")
             this.type = Browsers.Firefox;
         else
-            this.type = Browsers.Chrome;
+            this.type = Browsers.Edge;
+
         console.log(`UACC: detected browser ${this.type}`)
         this.access = this.type === Browsers.Firefox ? browser : chrome;
     }
@@ -78,7 +79,7 @@ class Browser {
             case Browsers.Firefox:
                 return 'https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/';
             case Browsers.Chrome:
-                return 'https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli';
+                return `https://chrome.google.com/webstore/detail/universal-automatic-curre/${this.id}`;
             case Browsers.Edge:
                 // TODO: setup for edge
                 return null;
@@ -151,7 +152,7 @@ class Browser {
     }
 
     openReviewLink() {
-        chrome.tabs.create({url: this.reviewLink()});
+        chrome.tabs.create({url: this.reviewLink});
     }
 
     isFirefox() {
