@@ -173,6 +173,12 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
     margin-top: 10px;
 }
 
+.mini-converter-exchange {
+    cursor: pointer;
+    border: solid 1px transparent;
+    border-bottom: solid 1px #3F474E;
+}
+
 .mini-converter-field {
     height: 20px;
     width: 100%;
@@ -224,4 +230,64 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
     position: absolute;
     height: 20px;
     width: 4px;
+}
+
+.arrow {
+    display: block;
+    height: 2px;
+    width: 50%;
+    margin: auto;
+    position: relative;
+}
+
+.arrow.redArrow {
+    background-color: red;
+}
+
+.arrow.greenArrow {
+    background-color: green;
+}
+
+.arrow.redArrow:after {
+    position: absolute;
+    content: "";
+    height: 2px;
+    width: 6px;
+    background: red;
+    right: -1px;
+    transform: rotate(45deg);
+    top: -2px;
+}
+
+.arrow.redArrow:before {
+    position: absolute;
+    content: "";
+    height: 2px;
+    width: 6px;
+    background: red;
+    right: -1px;
+    transform: rotate(135deg);
+    top: 2px;
+}
+
+.arrow.greenArrow:after {
+    position: absolute;
+    content: "";
+    height: 2px;
+    width: 6px;
+    background: green;
+    left: -1px;
+    transform: rotate(135deg);
+    top: -2px;
+}
+
+.arrow.greenArrow:before {
+    position: absolute;
+    content: "";
+    height: 2px;
+    width: 6px;
+    background: green;
+    left: -1px;
+    transform: rotate(45deg);
+    top: 2px;
 }

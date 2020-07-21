@@ -33,75 +33,31 @@
 <body>
 <div id="tab-page">
     <div class="centering" style="width: 400px; padding: 10px; margin:10px">
-        <div class="row hidden" id="no_conversion">
-            <h3>
-                Cannot access your current tab
-            </h3>
-        </div>
-        <div class="row" id="conversion">
-            <div class="col-xs-12">
-                <input id="blacklistInput" class="border bottomConnected center inputDisplay">
-            </div>
-            <div class="col-xs-12">
-                <div id="whitelistbutton" style="width:50%; float:left" class="border topConnected rightConnected center btn btn-success">Add to whitelist</div>
-                <div id="blacklistButton" style="width:50%; float:left" class="border topConnected leftConnected center btn btn-danger">Add to blacklist</div>
-            </div>
-        </div>
-        <div class="row" id="localization">
-            <br><br>
-            <div class="col-xs-12">
-                <h3 style="margin-bottom: 5px" class="center">Current page's localization</h3>
-            </div>
-            <div class="col-xs-4">
-                <label class="border center localizationLabel bottomConnected" for="dollar">$</label>
-                <select id="dollar" class="border topConnected localizationSelect">
-                    <option value="USD">American</option>
-                    <option value="CAD">Canadian</option>
-                    <option value="AUD">Australian</option>
-                    <option value="MXN">Mexican</option>
-                    <option value="NZD">New Zealand</option>
-                    <option value="SGP">Singapore</option>
-                    <option value="HKD">Hong kong</option>
-                </select>
-            </div>
-            <div class="col-xs-4">
-                <label class="border center localizationLabel bottomConnected" for="krone">kr</label>
-                <select id="krone" class="border topConnected localizationSelect">
-                    <option value="SEK">Swedish</option>
-                    <option value="DKK">Danish</option>
-                    <option value="NOK">Norwegian</option>
-                    <option value="ISK">Icelandic</option>
-                    <option value="CZK">Czechia</option>
-                </select>
-            </div>
-            <div class="col-xs-4">
-                <label class="border center localizationLabel bottomConnected" for="yen">¥</label>
-                <select id="yen" class="border topConnected localizationSelect">
-                    <option value="CNY">Chinese</option>
-                    <option value="JPY">Japanese</option>
-                </select>
-            </div>
-        </div>
-        <br>
         <div class="row">
             <div class="col-xs-12">
-                <h3 style="margin-bottom: 5px" class="center">Mini-converter</h3>
+                <h3 style="margin-bottom: 5px" class="center">UA Converter</h3>
             </div>
             <div id="mini-converter" class="col-xs-12"></div>
             <div class="col-xs-12">
-                <div id="mini-converter-add" class="border topConnected center btn btn-success mini-converter-add">Add conversion row</div>
+                <div id="mini-converter-add" style="margin-top:10px" class="border topConnected center btn btn-success">Add conversion row</div>
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col-xs-12">
+                <div id="openContext" class="center btn btn-info bottomConnected">Open context menu</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
                 <a href="../options/options.html" target="_blank">
-                    <div class="center btn btn-primary">Go to settings</div>
+                    <div class="center btn btn-primary topConnected">Go to settings</div>
                 </a>
             </div>
         </div>
         <div class="row">
-            <div class="infoText">Like or hate this extension? <a id="review">Leave a review</a> and tell me about it</div>
+            <div class="infoText">Like or hate this extension? <a id="review">Leave a review</a> and tell me about it
+            </div>
         </div>
         <div class="row">
             <div id="footer">Version {version} Created by {author}</div>

@@ -1,9 +1,3 @@
-const asList = (elements) => {
-    const list = [];
-    for (let i = 0; i < elements.length; i++)
-        list.push(elements[i]);
-    return list;
-};
 /**
  * @param {MiniConverterRow} row
  * @returns {Promise<void>}
@@ -27,7 +21,11 @@ const createMiniConverterRow = async (row) => {
         <div class="col-xs-2 mini-converter-col">
             <select class="mini-converter-field">${select}</select>
         </div>
-        <div class="col-xs-1 mini-converter-col" style="text-align: center;"> ⇒ </div>
+        <div class="col-xs-1 mini-converter-col mini-converter-exchange" style="height: 100%;text-align: center;">
+            <div style="width: 100%; height: 40%"></div>
+            <div style="width: 100%; height: 1px"><span class="arrow redArrow"></span></div>
+            <div style="width: 100%; height: 1px"><span class="arrow greenArrow"></span></div>
+        </div>
         <div class="col-xs-3 mini-converter-col">
             <input class="mini-converter-field" style="text-align-last:right" type="text" readonly/>
         </div>
@@ -36,9 +34,27 @@ const createMiniConverterRow = async (row) => {
         </div>
 </div>`.trim();
     const result = temp.children[0];
-    result.children[1].children[0].value = row.amount;
-    result.children[2].children[0].value = row.from;
-    result.children[4].children[0].value = await row.convertedValue().then(e => e.displayValue[0]);
+    const amountInput = result.children[1].children[0];
+    const fromInput = result.children[2].children[0];
+    const toInput = result.children[5].children[0];
+    const resultInput = result.children[4].children[0];
+
+    amountInput.value = row.amount;
+    fromInput.value = row.from;
+
+    result.children[3].addEventListener('click', async () => {
+        row.amount = (await row.convertedValue()).amount[0].toFixed(2) - 0;
+        row.to = fromInput.value;
+        row.from = toInput.value;
+
+        amountInput.value = row.amount;
+        toInput.value = row.to;
+        fromInput.value = row.from;
+        resultInput.value = await row.convertedValue().then(e => e.displayValue[0]);
+        await MiniConverter.instance.save();
+    });
+
+    resultInput.value = await row.convertedValue().then(e => e.displayValue[0]);
     result.children[5].children[0].value = row.to;
     result.children[0].children[0].addEventListener('mouseover', () => result.classList.add('delete-focus'));
     result.children[0].children[0].addEventListener('mouseout', () => result.classList.remove('delete-focus'));
@@ -78,29 +94,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('review').addEventListener('click', () => browser.openReviewLink());
     browser._fullHref = await browser.tab.getHref().catch(() => 'unknown');
     const url = isLegitUrl(browser.href);
-    if (url) {
-        browser._fullHostName = url.hostname;
-        const localization = ActiveLocalization.instance;
-        await Engine.instance.load().catch();
-        document.getElementById('blacklistInput').value = browser.hostAndPath;
-        document.getElementById('krone').value = localization.krone;
-        document.getElementById('yen').value = localization.yen;
-        document.getElementById('dollar').value = localization.dollar;
-        ['krone', 'yen', 'dollar'].forEach(htmlId => {
-            const element = document.getElementById(htmlId);
-            if (!element) return;
-            element.addEventListener('change', async () => {
-                const update = {[htmlId]: element.children[element.selectedIndex].value}
-                await localization.overload(update);
-                await browser.tab.setLocalization(localization.compact);
-            });
-        })
 
-    } else {
-        document.getElementById('localization').classList.add('hidden');
-        document.getElementById('conversion').classList.add('hidden');
-        document.getElementById('no_conversion').classList.remove('hidden');
-    }
+    document.getElementById('openContext').addEventListener('click', () => {
+        Browser.instance.tab.contextMenu();
+    });
 
     const converter = MiniConverter.instance;
     await converter.load();
@@ -109,37 +106,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         const row = await converter.addNewRow();
         await createMiniConverterRow(row);
     });
-
-    const blacklistbutton = document.getElementById('blacklistButton');
-    const whitelistbutton = document.getElementById('whitelistbutton');
-    const whitelist = Configuration.instance.whitelist;
-    const blacklist = Configuration.instance.blacklist;
-    blacklistbutton.addEventListener('click', () => {
-        const url = document.getElementById('blacklistInput').value;
-        blacklist.urls.value.push(url);
-        blacklist.urls.save();
-        whitelist.urls.setValue(blacklist.urls.value.filter(e => e !== url));
-        whitelist.urls.save();
-    })
-    whitelistbutton.addEventListener('click', () => {
-        const url = document.getElementById('blacklistInput').value;
-        whitelist.urls.value.push(url);
-        whitelist.urls.save();
-        blacklist.urls.setValue(blacklist.urls.value.filter(e => e !== url));
-        blacklist.urls.save();
-    })
-
-    /*
-    let isConverted = false;
-    hideButton.addEventListener('click', () => {
-        Browser.messageTab({
-            method: 'convertAll',
-            converted: isConverted
-        }).finally();
-        hideButton.innerText = isConverted ? 'Hide conversions' : 'Show conversions';
-        hideButton.classList.remove(isConverted ? 'btn-success' : 'btn-danger');
-        hideButton.classList.add(isConverted ? 'btn-danger' : 'btn-success');
-        isConverted = !isConverted;
-    });
-     */
 });
