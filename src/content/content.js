@@ -329,7 +329,7 @@ async function showContextMenu() {
 }
 
 function childOfUACCWatched(element) {
-    if (element.hasAttribute('uacc:watched'))
+    if (!element || element.hasAttribute('uacc:watched'))
         return true;
     if (!element.parentElement)
         return false;

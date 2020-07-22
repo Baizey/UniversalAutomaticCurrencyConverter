@@ -29,6 +29,8 @@
       ],
       "js": [
         "XRegExp.js",
+        "RegExpWrapper.js",
+
         "Utils.js",
         "Timer.js",
         "Browser.js",

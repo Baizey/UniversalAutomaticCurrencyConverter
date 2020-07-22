@@ -1,5 +1,4 @@
 describe('SiteAllowance', () => {
-
     const tests = [
         {whitelist: true, blacklist: true, allowed: [], disallowed: [], url: 'http://google.com', expect: true},
         {
