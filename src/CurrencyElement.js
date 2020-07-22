@@ -26,18 +26,31 @@ class CurrencyElement {
 
     /**
      * @param {boolean} force
-     * @returns {Promise<void>}
+     * @returns {Promise<boolean>}
      */
     async showConverted(force = false) {
         this._isShowingConversion = true;
-        if (!force && this.updateSnapshot()) await this.convert();
+        let updated = false;
+        if (!force && this.updateSnapshot()) {
+            await this.convert();
+            updated = true;
+        }
         this._converted.display();
+        return updated;
     }
 
+    /**
+     * @returns {Promise<boolean>}
+     */
     async showOriginal() {
         this._isShowingConversion = false;
-        if (this.updateSnapshot()) await this.convert();
+        let updated = false;
+        if (this.updateSnapshot()) {
+            await this.convert();
+            updated = true;
+        }
         this._original.display();
+        return updated;
     }
 
     /**
@@ -49,7 +62,10 @@ class CurrencyElement {
     }
 
     async flipDisplay() {
-        if (this._isShowingConversion) await this.showOriginal(); else await this.showConverted();
+        if (this._isShowingConversion) {
+            const updated = await this.showOriginal();
+            if (updated) await this.showConverted();
+        } else await this.showConverted();
     }
 
     async setupListener() {
