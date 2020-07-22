@@ -36,7 +36,7 @@ async function detectAllElements(parent) {
  */
 async function detectAllNewElements() {
     const timer = new Timer();
-    const newElements = await detectAllElements(Browser.instance.document.body);
+    const newElements = await detectAllElements(document.body);
     if (newElements.length > 0)
         timer.log(`Converted page, ${newElements.length} conversions...`).reset();
     else
@@ -62,7 +62,7 @@ async function detectAllNewElementsRecurring(time = 1000) {
  */
 async function createAlert(template, asHtml = true) {
     const browser = Browser.instance;
-    const bodyColor = browser.window.getComputedStyle(browser.document.body, null).getPropertyValue('background-color');
+    const bodyColor = browser.window.getComputedStyle(document.body, null).getPropertyValue('background-color');
     const colors = bodyColor.match(/\d+/g).slice(0, 3).map(Number);
     const isLight = (colors.reduce((a, b) => a + b) / 3) >= 128
 
@@ -101,7 +101,7 @@ async function createLocalizationAlert() {
         .replace('${hostname}', browser.hostname)
         .replace('${content}', content);
 
-    const div = browser.document.createElement('div')
+    const div = document.createElement('div')
     div.innerHTML = html;
     const alert = div.children[0];
     uaccWrapper.insertBefore(alert, uaccWrapper.children[1]);
@@ -111,13 +111,13 @@ async function createLocalizationAlert() {
         setTimeout(() => alert.remove(), 1000);
     };
 
-    browser.document.getElementById('uacc-localization-dismiss').addEventListener('click', () => removeAlert(true));
-    browser.document.getElementById('uacc-localization-save').addEventListener('click', async () => {
+    document.getElementById('uacc-localization-dismiss').addEventListener('click', () => removeAlert(true));
+    document.getElementById('uacc-localization-save').addEventListener('click', async () => {
         await localization.lockSite(true);
         removeAlert(true);
     });
-    const detectedButton = browser.document.getElementById('uacc-localization-using-detected');
-    const defaultsButton = browser.document.getElementById('uacc-localization-using-defaults');
+    const detectedButton = document.getElementById('uacc-localization-using-detected');
+    const defaultsButton = document.getElementById('uacc-localization-using-defaults');
     Utils.initializeRadioBoxes([detectedButton, defaultsButton]);
     const detected = localization.compact;
     detectedButton.addEventListener('change', async () => {
@@ -135,7 +135,7 @@ async function createLocalizationAlert() {
         await localization.lockSite(false);
     });
     const expire = Date.now() + 60000;
-    const countdown = browser.document.getElementById('uacc-localization-countdown');
+    const countdown = document.getElementById('uacc-localization-countdown');
     const timer = setInterval(() => {
         const now = Date.now();
         if (now > expire) {
@@ -171,7 +171,7 @@ async function showSelectMenu() {
     let selectedText = '';
     const currency = Configuration.instance.currency.tag.value;
     let paused = {value: false};
-    if (browser.document.getElementById('uacc-select')) return;
+    if (document.getElementById('uacc-select')) return;
     uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
 
     const filler = document.getElementById('uacc-select-selected');
@@ -220,7 +220,7 @@ async function showContextMenu() {
         .replace('${currencies}', currenciesDropdown)
         .replace('${conversionCount}', blacklisted ? 'Site is blacklisted' : `${elements.length} conversions`)
     const menu = htmlToElement(html);
-    if (browser.document.getElementById('uacc-context')) return;
+    if (document.getElementById('uacc-context')) return;
     uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
 
     const blacklistButton = document.getElementById('uacc-context-blacklist');
@@ -359,7 +359,7 @@ async function main() {
 
     // Detect localization for website
     const timer = new Timer();
-    await localization.determineForSite(browser.document.body.innerText);
+    await localization.determineForSite(document.body.innerText);
     await detector.updateSharedLocalizations();
     timer.log('Checked localization...').reset();
 
