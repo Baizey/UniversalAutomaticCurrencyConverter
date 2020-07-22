@@ -101,13 +101,14 @@ class Detector {
         ].join('');
 
         if (forceNew) return this._constructRegex(regex);
+
         this._regex = this._constructRegex(regex);
         this._regex.lastIndex = 0;
         return this._regex;
     }
 
     _constructRegex(regex) {
-        if (this._browser.isFirefox())
+        if (this._browser.isFirefox)
             return XRegExp.cache(regex, 'gm');
         else
             return new RegExp(regex, 'gm');

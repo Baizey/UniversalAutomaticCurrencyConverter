@@ -6,6 +6,16 @@ class Browser {
         return _browserMockInstance;
     }
 
+    constructor() {
+        const useragent = window.navigator.userAgent;
+        if (useragent.indexOf('HeadlessChrome') >= 0)
+            this.type = 'Chrome';
+        else
+            this.type = 'Firefox'
+        console.log(this.type);
+        console.log(useragent);
+    }
+
     /**
      * @param key
      * @param value
@@ -25,8 +35,8 @@ class Browser {
     /**
      * @returns {boolean}
      */
-    isFirefox() {
-        return false;
+    get isFirefox() {
+        return this.type === 'Firefox';
     }
 
     get background() {

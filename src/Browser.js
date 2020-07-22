@@ -63,15 +63,14 @@ class Browser {
             return;
         }
 
-        if (this.id === 'hbjagjepkeogombomfeefdmjnclgojli')
-            this.type = Browsers.Chrome;
+        if (window.navigator.userAgent.indexOf(' Edg/') >= 0)
+            this.type = Browsers.Edge;
         else if (typeof browser !== "undefined")
             this.type = Browsers.Firefox;
         else
-            this.type = Browsers.Edge;
+            this.type = Browsers.Chrome;
 
-        console.log(`UACC: detected browser ${this.type}`)
-        this.access = this.type === Browsers.Firefox ? browser : chrome;
+        this.access = this.isFirefox ? browser : chrome;
     }
 
     get reviewLink() {
@@ -155,15 +154,24 @@ class Browser {
         chrome.tabs.create({url: this.reviewLink});
     }
 
-    isFirefox() {
+    /**
+     * @returns {boolean}
+     */
+    get isFirefox() {
         return this.type === Browsers.Firefox;
     }
 
-    isChrome() {
+    /**
+     * @returns {boolean}
+     */
+    get isChrome() {
         return this.type === Browsers.Chrome;
     }
 
-    isEdge() {
+    /**
+     * @returns {boolean}
+     */
+    get isEdge() {
         return this.type === Browsers.Edge;
     }
 

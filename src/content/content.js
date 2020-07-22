@@ -390,6 +390,7 @@ async function main() {
 }
 
 main().then(async running => {
+    console.log(window.navigator.userAgent);
     if (!running) return false;
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
