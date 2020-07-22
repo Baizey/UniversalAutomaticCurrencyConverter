@@ -12,8 +12,7 @@ class Browser {
             this.type = 'Chrome';
         else
             this.type = 'Firefox'
-        console.log(this.type);
-        console.log(useragent);
+        console.log(`UACC: Detected ${this.type} browser`);
     }
 
     /**

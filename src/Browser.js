@@ -70,6 +70,7 @@ class Browser {
         else
             this.type = Browsers.Chrome;
 
+        console.log(`UACC: Detected ${this.type} browser`);
         this.access = this.isFirefox ? browser : chrome;
     }
 

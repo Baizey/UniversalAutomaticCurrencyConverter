@@ -94,7 +94,6 @@ class CurrencyAmount {
     async convertTo(tag) {
         tag = tag.toUpperCase();
         const rate = await this._converter.getRate(this.tag, tag);
-        console.log(rate);
         if (!rate) return null;
         const amount = this.amount.map(e => e * rate.rate);
         return new CurrencyAmount(tag, amount, this._services);

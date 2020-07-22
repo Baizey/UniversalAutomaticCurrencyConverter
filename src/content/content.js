@@ -105,7 +105,6 @@ async function createLocalizationAlert() {
     const alert = div.children[0];
     uaccWrapper.insertBefore(alert, uaccWrapper.children[1]);
     const removeAlert = (fast = false) => {
-        console.log('removing alert')
         if (fast) alert.classList.add('uacc-fastRemove');
         alert.style.opacity = '0';
         setTimeout(() => alert.remove(), 1000);
@@ -113,7 +112,6 @@ async function createLocalizationAlert() {
 
     browser.document.getElementById('uacc-localization-dismiss').addEventListener('click', () => removeAlert(true));
     browser.document.getElementById('uacc-localization-save').addEventListener('click', async () => {
-        console.log('locking alert')
         await localization.lockSite(true);
         removeAlert(true);
     });
@@ -122,7 +120,6 @@ async function createLocalizationAlert() {
     Utils.initializeRadioBoxes([detectedButton, defaultsButton]);
     const detected = localization.compact;
     detectedButton.addEventListener('change', async () => {
-        console.log('change alert')
         await localization.overload(detected);
         detector.updateSharedLocalizations();
         await localization.save();
@@ -139,7 +136,6 @@ async function createLocalizationAlert() {
     const expire = Date.now() + 60000;
     const countdown = browser.document.getElementById('uacc-localization-countdown');
     const timer = setInterval(() => {
-        console.log('countdown alert')
         const now = Date.now();
         if (now > expire) {
             clearInterval(timer);
@@ -390,7 +386,6 @@ async function main() {
 }
 
 main().then(async running => {
-    console.log(window.navigator.userAgent);
     if (!running) return false;
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
