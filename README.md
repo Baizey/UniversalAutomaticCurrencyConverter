@@ -8,9 +8,7 @@ An extension for Chrome, Firefox and (the new) Edge
 
 [Edge extension (Coming soon)](#)
 
-[![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=3.0.0)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
-
-[![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
+[![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed-v3)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
 
 ##This extension provides for all your conversion desires. The primary focuses being:
 
