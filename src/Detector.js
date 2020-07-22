@@ -87,8 +87,8 @@ class Detector {
             return this._regex;
         }
         const s = /["‎+\-:|\`^'& ,.<>()\\/\s*]/.source;
-        const start = new RegExp(`(?<start>${s}|^)`).source;
-        const end = new RegExp(`(?<end>${s}|$)`).source;
+        const start = `(?<start>${s}|^)`;
+        const end = `(?<end>${s}|$)`;
         const whitespace = /\s*/.source;
         const regex = [
             start,

@@ -6,46 +6,38 @@ An extension for Chrome, Firefox and (the new) Edge
 
 [Chrome extension](https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli)
 
+[Edge extension (Coming soon)](#)
+
+[![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=3.0.0)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
+
 [![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
 
-## Conversion at all cost
+##This extension provides for all your conversion desires. The primary focuses being:
 
-Currency converters can act in 1 of 3 ways:
+- Intelligent conversion and detection of currencies
 
-- Carefully, searches in invididual text nodes, replaces in individual text nodes, Likely to miss currencies, never breaks websites.
+- Automatic and non-intrusive in-site conversions
 
-- Aggressively, searches across html tags and replaces across html tags. Likely to find all currencies, might break websites.
+- Always access to converter no matter where you are
 
-- Intelligently, searches aggressively, but replaces carefully. Likely to find all currencies, never breaks websites.
+- Simple UI, yet extensive customization
 
-Most currency conversion extensions will likely act carefully. This extension currently acts intelligently.
+##General features
 
-## Description on Firefox/Chrome stores
+- Support for more than 170 currencies and their symbolic equivalents, getting rates from fixer.io and openexchangerates.org
 
-<strong>Your new currency converter.</strong>
+- Intelligent currency detection, catching everything for most if not all symbols, $, £ and € to EUR, USD, GBP to 'US $'
 
-Tired of having to manually convert prices in online stores?
+- Non-intrusive in-site replacement, will never break any website functionality
 
-Tired of annoying prices like '19.99' or '495' and just want the plain price?
+- Control exactly how your prices are displayed, anything from $100 or 100 dollars to 100 schmekels
 
-This extension aims to solve these issues!
+- Intelligent localization of multi-currency symbols like $ and kr
 
-<b>Major features</b>
+- Optional highlighting of prices being converted on pages
 
-- Automatic conversion of prices on all pages to your preferred currency
+- Flip quickly between converted prices and original using either left-clicking, a self chosen shortcut or via the UI
 
-- Support for 170 currencies through fixer.io
+- Mini converter between currencies in the popup window
 
-- Intelligent autodetecting localization with support for all major currency symbols
-
-- Intelligent rounding of prices to your desired precision
-
-- Mini converter available everywhere from the popup windows accessible in the top right extension icon.
-
-- Flip between original and converted prices on pages either by clicking, using the shortcut or using the button in the popup.
-
-- Customizable highlighting on prices being converted (color and highlight duration)
-
-- Define your own currency display. Choose exactly how you want your conversions to display.
-
-- Blacklisting of websites you dont want converted.
+- Blacklisting and whitelisting of websites for conversion
