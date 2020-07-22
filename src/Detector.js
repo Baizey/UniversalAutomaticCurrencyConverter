@@ -79,7 +79,7 @@ class Detector {
      * If forceNew is false, a shared cached instance is used
      * shared instance should only be used in one place at a time
      * @param {boolean} forceNew
-     * @returns {RegExp|XRegExp}
+     * @returns {RegExp}
      */
     regex(forceNew = false) {
         if (this._regex && !forceNew) {
@@ -108,10 +108,7 @@ class Detector {
     }
 
     _constructRegex(regex) {
-        if (this._browser.isFirefox)
-            return XRegExp.cache(regex, 'gm');
-        else
-            return new RegExp(regex, 'gm');
+        return new RegExp(regex, 'gm');
     }
 
     /**
@@ -160,6 +157,8 @@ class Detector {
         const result = [];
         let regexResult;
         while (regexResult = regex.exec(text)) {
+            if (!regexResult.groups)
+                regexResult.groups = regexResult;
             // Allow reuse of start/end characters in capture
             if (regexResult[0].length > 1)
                 regex.lastIndex--;
