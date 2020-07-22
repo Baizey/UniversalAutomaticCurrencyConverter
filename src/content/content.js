@@ -17,8 +17,8 @@ const elements = createElementsList();
 async function detectAllElements(parent) {
     const currency = Configuration.instance.currency.tag.value;
     const autoConvert = Configuration.instance.utility.using.value;
-    const elements = (await Detector.instance.detectAllElements(parent)) || [];
-    for (let element of elements) {
+    const newElements = (await Detector.instance.detectAllElements(parent)) || [];
+    for (let element of newElements) {
         await element.convertTo(currency);
         await element.setupListener();
         if (autoConvert) {
@@ -26,7 +26,8 @@ async function detectAllElements(parent) {
             element.highlight();
         }
     }
-    return elements;
+    newElements.forEach(e => elements.push(e));
+    return newElements;
 }
 
 /**
@@ -35,7 +36,6 @@ async function detectAllElements(parent) {
 async function detectAllNewElements() {
     const timer = new Timer();
     const newElements = await detectAllElements(Browser.instance.document.body);
-    newElements.forEach(e => elements.push(e));
     if (newElements.length > 0)
         timer.log(`Converted page, ${newElements.length} conversions...`).reset();
     else
@@ -328,6 +328,14 @@ async function showContextMenu() {
     })
 }
 
+function childOfUACCWatched(element) {
+    if (element.hasAttribute('uacc:watched'))
+        return true;
+    if (!element.parentElement)
+        return false;
+    return childOfUACCWatched(element.parentElement);
+}
+
 async function main() {
     const html = (await createAlert('titleMenu'))
         .replace('${version}', Browser.instance.extensionVersion)
@@ -369,20 +377,15 @@ async function main() {
         elements.filter(e => e.selected).forEach(e => e.flipDisplay());
     });
 
-    new MutationObserver(async list => {
-        //await detectAllNewElements();
-        //elements.forEach(e => e.updateDisplay())
+    new MutationObserver(async mutations => {
+        for (const mutation of mutations)
+            for (const node of mutation.addedNodes) {
+                const element = node.parentElement;
+                if (childOfUACCWatched(element))
+                    continue;
+                await detectAllElements(element);
+            }
     }).observe(document.body, {childList: true, subtree: true, attributes: true, characterData: true});
-    /*
-    new MutationObserver(async () => {
-        await detectAllNewElements();
-        elements.forEach(e => e.updateDisplay())
-    }).observe(document.body, {childList: true, subtree: true, attributes: false, characterData: false});
-    new MutationObserver(async () => {
-        await detectAllNewElements();
-        elements.forEach(e => e.updateDisplay())
-    }).observe(document.body, {childList: true, subtree: false, attributes: false, characterData: true});
-     */
     return true;
 }
 
