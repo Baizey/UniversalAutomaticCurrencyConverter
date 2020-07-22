@@ -30,5 +30,5 @@ class Engine {
         timer.log('Determined localization...').reset();
         this._allowance.updateFromConfig();
         timer.log('Pre-processed white/black listing...').reset();
-    }s
+    }
 }
