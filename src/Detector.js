@@ -79,7 +79,7 @@ class Detector {
      * If forceNew is false, a shared cached instance is used
      * shared instance should only be used in one place at a time
      * @param {boolean} forceNew
-     * @returns {RegExp}
+     * @returns {RegExp|XRegExp}
      */
     regex(forceNew = false) {
         if (this._regex && !forceNew) {
@@ -100,11 +100,18 @@ class Detector {
             end,
         ].join('');
 
-        if (forceNew) return new RegExp(regex, 'gm');
+        if (forceNew) return this._constructRegex(regex);
 
-        this._regex = new RegExp(regex, 'gm');
+        this._regex = this._constructRegex(regex);
         this._regex.lastIndex = 0;
         return this._regex;
+    }
+
+    _constructRegex(regex) {
+        if (this._browser.isFirefox)
+            return XRegExp.cache(regex, 'gm');
+        else
+            return new RegExp(regex, 'gm');
     }
 
     /**
