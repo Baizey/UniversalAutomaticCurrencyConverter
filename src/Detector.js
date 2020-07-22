@@ -100,15 +100,11 @@ class Detector {
             end,
         ].join('');
 
-        if (forceNew) return this._constructRegex(regex);
+        if (forceNew) return new RegExp(regex, 'gm');
 
-        this._regex = this._constructRegex(regex);
+        this._regex = new RegExp(regex, 'gm');
         this._regex.lastIndex = 0;
         return this._regex;
-    }
-
-    _constructRegex(regex) {
-        return new RegExp(regex, 'gm');
     }
 
     /**
@@ -157,8 +153,6 @@ class Detector {
         const result = [];
         let regexResult;
         while (regexResult = regex.exec(text)) {
-            if (!regexResult.groups)
-                regexResult.groups = regexResult;
             // Allow reuse of start/end characters in capture
             if (regexResult[0].length > 1)
                 regex.lastIndex--;
