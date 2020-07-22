@@ -12,7 +12,7 @@ const elements = createElementsList();
 
 /**
  * @param parent
- * @returns {Promise<CurrencyElement[]|*[]>}
+ * @returns {Promise<CurrencyElement[]>}
  */
 async function detectAllElements(parent) {
     const currency = Configuration.instance.currency.tag.value;
@@ -369,10 +369,10 @@ async function main() {
         elements.filter(e => e.selected).forEach(e => e.flipDisplay());
     });
 
-    new MutationObserver(async () => {
+    new MutationObserver(async list => {
         //await detectAllNewElements();
         //elements.forEach(e => e.updateDisplay())
-    }).observe(document.body, {childList: true, subtree: true});
+    }).observe(document.body, {childList: true, subtree: true, attributes: true, characterData: true});
     /*
     new MutationObserver(async () => {
         await detectAllNewElements();
