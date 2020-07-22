@@ -32,14 +32,14 @@ class RegularExpression {
      * @returns {RegExpExecArray}
      */
     exec(text) {
-        const result = XRegExp.exec(text, this.runner, this.lastIndex)
+        const match = XRegExp.exec(text, this.runner, this.lastIndex)
 
-        if (result) {
-            result.groups = result;
-            this.lastIndex = result.index + result[0].length;
+        if (match) {
+            match.groups = match;
+            this.lastIndex = match.index + match[0].length;
         } else this.lastIndex = text.length;
 
-        return result;
+        return match;
     }
 
 }

@@ -1,3 +1,4 @@
+let blacklisted = false;
 const uaccWrapper = document.createElement('UaccDiv');
 uaccWrapper.id = 'uacc-window';
 uaccWrapper.classList.add('uacc-window');
@@ -217,7 +218,7 @@ async function showContextMenu() {
     const html = (await createAlert('contextMenu'))
         .replace('${hostname}', browser.hostAndPath)
         .replace('${currencies}', currenciesDropdown)
-        .replace('${conversionCount}', `${elements.length}`)
+        .replace('${conversionCount}', blacklisted ? 'Site is blacklisted' : `${elements.length} conversions`)
     const menu = htmlToElement(html);
     if (browser.document.getElementById('uacc-context')) return;
     uaccWrapper.insertBefore(menu, uaccWrapper.children[1]);
@@ -352,7 +353,8 @@ async function main() {
     // Handle allowance by black/white listing
     if (!siteAllowance.isAllowed(browser.href).allowed) {
         console.log('UACC: Site is blacklisted, goodbye');
-        return false;
+        blacklisted = true;
+        return;
     }
 
     // Detect localization for website
@@ -382,11 +384,9 @@ async function main() {
                 await detectAllElements(element);
             }
     }).observe(document.body, {childList: true, subtree: true, attributes: true, characterData: true});
-    return true;
 }
 
-main().then(async running => {
-    if (!running) return false;
+main().then(async () => {
     chrome.runtime.onMessage.addListener(async function (data, sender, senderResponse) {
         switch (data.type) {
             case 'changeCurrency':
@@ -425,5 +425,4 @@ main().then(async running => {
         }
         return true;
     });
-    return running;
 }).catch(e => console.error(e));
