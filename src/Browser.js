@@ -109,14 +109,6 @@ class Browser {
         return chrome.runtime.id;
     }
 
-    get document() {
-        return document;
-    }
-
-    get window() {
-        return window;
-    }
-
     /**
      * @returns {string}
      */

@@ -62,7 +62,7 @@ async function detectAllNewElementsRecurring(time = 1000) {
  */
 async function createAlert(template, asHtml = true) {
     const browser = Browser.instance;
-    const bodyColor = browser.window.getComputedStyle(document.body, null).getPropertyValue('background-color');
+    const bodyColor = window.getComputedStyle(document.body, null).getPropertyValue('background-color');
     const colors = bodyColor.match(/\d+/g).slice(0, 3).map(Number);
     const isLight = (colors.reduce((a, b) => a + b) / 3) >= 128
 
@@ -370,7 +370,7 @@ async function main() {
     await createLocalizationAlert();
 
     // Shortcut activation
-    browser.window.addEventListener('keyup', e => {
+    window.addEventListener('keyup', e => {
         if (e.key !== shortcut) return;
         elements.filter(e => e.selected).forEach(e => e.flipDisplay());
     });
