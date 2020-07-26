@@ -10,7 +10,7 @@ An extension for Chrome, Firefox and (the new) Edge
 
 [![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed-v3)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
 
-##This extension provides for all your conversion desires. The primary focuses being:
+## This extension provides for all your conversion desires. The primary focuses being:
 
 - Intelligent conversion and detection of currencies
 
@@ -20,7 +20,7 @@ An extension for Chrome, Firefox and (the new) Edge
 
 - Simple UI, yet extensive customization
 
-##General features
+## General features
 
 - Support for more than 170 currencies and their symbolic equivalents, getting rates from fixer.io and openexchangerates.org
 
