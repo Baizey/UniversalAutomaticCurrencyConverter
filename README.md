@@ -6,7 +6,7 @@ An extension for Chrome, Firefox and (the new) Edge
 
 [Chrome extension](https://chrome.google.com/webstore/detail/universal-automatic-curre/hbjagjepkeogombomfeefdmjnclgojli)
 
-[Edge extension (Coming soon)](#)
+[Edge extension](https://microsoftedge.microsoft.com/addons/detail/universal-automatic-curre/aeejpkkbcpndcbnmhifkdeabgjafghfn)
 
 [![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed-v3)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
 
