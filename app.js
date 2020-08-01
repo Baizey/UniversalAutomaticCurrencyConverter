@@ -263,13 +263,6 @@ const update = async () => {
         .filter(e => e)
         .reduce((a, b) => ({...a, ...b}), {});
 
-    delete rates['AMD'];
-    delete symbols['AMD'];
-    delete rates['ALL'];
-    delete symbols['ALL'];
-    delete rates['AWG'];
-    delete symbols['AWG'];
-
     const now = new Date();
 
     data.rates = {
