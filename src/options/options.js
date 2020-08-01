@@ -3,16 +3,77 @@ const Ids = {
     'currencyLastUpdate': 'currencyLastUpdate',
 };
 
+let symbols = [];
+let symbolsLookup = {}
+
+class Symbol {
+    constructor(tag, country) {
+        this.display = `${tag} (${country})`
+        this.tag = tag.toUpperCase();
+        this.country = country.toUpperCase();
+    }
+
+    /**
+     * @param text
+     * @returns {boolean}
+     */
+    startsWith(text) {
+        text = text.toUpperCase();
+        return text && (this.tag.startsWith(text) || this.country.startsWith(text));
+    }
+}
+
 /**
  * @returns {Promise<string>}
  */
 const updateCurrencyLists = async () => {
-    const symbols = await Currencies.instance.symbols();
-    document.getElementById(Ids.currency).innerHTML = Object.keys(symbols)
-        .sort()
-        .map(tag => `<option value="${tag}">${symbols ? `${tag} (${symbols[tag]})` : tag}</option>`)
+    const result = await Currencies.instance.symbols();
+    symbols = Object.keys(result).sort().map(e => new Symbol(e, result[e]));
+    symbols.forEach(symbol => symbolsLookup[symbol.tag] = symbol)
+    document.getElementById(Ids.currency).innerHTML = symbols
+        .map(tag => `<option value="${tag.tag.toUpperCase()}">${tag.display}</option>`)
         .join('');
+    setupDisabledCurrencies();
 };
+
+function setupDisabledCurrencies() {
+    const searchField = document.getElementById('uacc:currency:disabled:search');
+    searchField.addEventListener('focus', () => searchField.style.border = '');
+    searchField.addEventListener('focusout', () => searchField.style.border = '');
+    autocomplete(searchField, symbols.map(e => ({
+        value: e.tag,
+        text: e.display,
+        match: text => e.startsWith(text)
+    })), async result => {
+        const config = Configuration.instance.disabledCurrencies.tags;
+        const newConfig = config.value.concat([result.value]);
+        if (config.setValue(newConfig)) {
+            searchField.style.border = '1px solid green';
+            updateDisabledCurrencyList();
+        } else
+            searchField.style.border = '1px solid red';
+        await config.save();
+    });
+    updateDisabledCurrencyList();
+}
+
+function updateDisabledCurrencyList() {
+    const config = Configuration.instance.disabledCurrencies.tags;
+    const wrapper = document.getElementById('uacc:currency:disabled');
+    wrapper.innerHTML = '';
+    for (let value of config.value) {
+        const element = document.createElement(`div`);
+        element.classList.add('removeable', 'center', 'url', 'form-control');
+        element.style.borderRadius = '0';
+        element.addEventListener('click', async () => {
+            config.setValue(config.value.filter(e => e !== value))
+            await config.save();
+            updateDisabledCurrencyList();
+        })
+        element.innerText = symbolsLookup[value].display;
+        wrapper.appendChild(element);
+    }
+}
 
 const createListField = (wrapper, value = '') => {
     const element = document.createElement(`input`);
@@ -156,7 +217,7 @@ const getUiValue = key => {
             return element.checked;
 
         // Selector
-        case 'currency':
+        case Ids.currency:
             return element.children[element.selectedIndex].value || 'EUR';
         // Selector
         case 'currencyLocalizationDollar':
@@ -173,7 +234,7 @@ const setUiValue = async (key, value) => {
     const setting = Configuration.instance.byStorageKey[key];
     if (!setting) throw `Unknown key '${key}'`;
     setting.setValue(value);
-    if (key.indexOf('urls') >= 0) {
+    if (key.indexOf('urls') >= 0 || key.indexOf('disabled') >= 0) {
     } else if (typeof (element.change) === 'function')
         element.change(setting.value)
     else
