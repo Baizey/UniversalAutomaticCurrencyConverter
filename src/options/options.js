@@ -9,6 +9,7 @@ let symbolsLookup = {}
 class Symbol {
     constructor(tag, country) {
         this.display = `${tag} (${country})`
+        this.search = this.display.toUpperCase();
         this.tag = tag.toUpperCase();
         this.country = country.toUpperCase();
     }
@@ -18,8 +19,11 @@ class Symbol {
      * @returns {boolean}
      */
     startsWith(text) {
+        if (!text) return true;
         text = text.toUpperCase();
-        return text && (this.tag.startsWith(text) || this.country.startsWith(text));
+        return this.tag.startsWith(text)
+            || this.country.startsWith(text)
+            || this.search.startsWith(text)
     }
 }
 
@@ -37,15 +41,15 @@ const updateCurrencyLists = async () => {
 };
 
 function setupDisabledCurrencies() {
+    const config = Configuration.instance.disabledCurrencies.tags;
     const searchField = document.getElementById('uacc:currency:disabled:search');
     searchField.addEventListener('focus', () => searchField.style.border = '');
     searchField.addEventListener('focusout', () => searchField.style.border = '');
     autocomplete(searchField, symbols.map(e => ({
         value: e.tag,
         text: e.display,
-        match: text => e.startsWith(text)
+        match: text => e.startsWith(text) && config.value.indexOf(e.tag) === -1
     })), async result => {
-        const config = Configuration.instance.disabledCurrencies.tags;
         const newConfig = config.value.concat([result.value]);
         if (config.setValue(newConfig)) {
             searchField.style.border = '1px solid green';

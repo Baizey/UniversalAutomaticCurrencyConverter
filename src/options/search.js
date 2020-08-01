@@ -42,7 +42,7 @@ function autocomplete(searchField, searchResults, onSelectedResult) {
         this.parentNode.appendChild(autocompleteResults);
 
         for (let result of searchResults) {
-            if (value && !result.match(value)) continue;
+            if (!result.match(value)) continue;
             const autocompleteResult = document.createElement("div");
             autocompleteResult.innerHTML += result.text;
             autocompleteResult.innerHTML += `<input type='hidden' value='${result.value}'>`;
