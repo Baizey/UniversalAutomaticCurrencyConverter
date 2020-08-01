@@ -1,12 +1,21 @@
 let _configurationInstance = null;
 
 const isBool = e => typeof (e) === 'boolean';
-const isString = e => typeof (e) === 'string';
+
 const isNumber = e => !isNaN(Number(e)) && Number.isFinite(Number(e));
 const isInt = e => isNumber(e) && Math.floor(Number(e)) === Number(e);
 const isPositive = e => isNumber(e) && Number(e) >= 0;
+const isPositiveInt = e => isPositive(e) && isInt(e);
+
+const isString = e => typeof (e) === 'string';
 const hasLength = (e, length) => isString(e) && e.length === length;
-const isStringArray = e => Array.isArray(e) && e.every(isString);
+const hasLengthRange = (e, min, max) => isString(e) && min <= e.length && e.length <= max;
+const hasRegexMatch = (e, match) => isString(e) && match.test(e);
+
+const isArray = e => Array.isArray(e);
+const isDistinctArray = e => isArray(e) && (new Set(e)).size === e.length
+const isStringArray = e => isArray(e) && e.every(isString);
+const isArrayWithRegexMatch = (e, match) => isArray(e) && e.every(a => hasRegexMatch(a, match))
 
 class Configuration {
     /**
@@ -47,25 +56,18 @@ class Configuration {
      */
     constructor(services = {}) {
         this._browser = services.browser || Browser.instance;
-        this.alert = new ConfigurationAlert();
-        this.localization = new ConfigurationLocalisation();
-        this.whitelist = new ConfigurationWhitelist();
-        this.blacklist = new ConfigurationBlacklist();
-        this.currency = new ConfigurationCurrency();
-        this.utility = new ConfigurationUtility();
-        this.highlight = new ConfigurationHighLight();
-        this.tag = new ConfigurationCustomTag();
-        this.display = new ConfigurationDisplay();
+        const self = this;
         const configs = [
-            this.alert,
-            this.localization,
-            this.whitelist,
-            this.blacklist,
-            this.currency,
-            this.utility,
-            this.highlight,
-            this.tag,
-            this.display
+            self.disabledCurrencies = new DisabledCurrencies(),
+            self.alert = new ConfigurationAlert(),
+            self.localization = new ConfigurationLocalisation(),
+            self.whitelist = new ConfigurationWhitelist(),
+            self.blacklist = new ConfigurationBlacklist(),
+            self.currency = new ConfigurationCurrency(),
+            self.utility = new ConfigurationUtility(),
+            self.highlight = new ConfigurationHighLight(),
+            self.tag = new ConfigurationCustomTag(),
+            self.display = new ConfigurationDisplay(),
         ];
         this.settings = configs.map(e => e.settings).flatMap(e => e);
         this.byStorageKey = {};
@@ -78,18 +80,29 @@ class Configuration {
     }
 }
 
+class DisabledCurrencies {
+    constructor() {
+        this.tags = new Setting(
+            '',
+            'disabledCurrencies',
+            [],
+            array => isArrayWithRegexMatch(array, /^[A-Z]{3}$/) && isDistinctArray(array));
+        this.settings = [this.tags];
+    }
+}
+
 class ConfigurationDisplay {
     constructor() {
         this.rounding = new Setting(
             '',
             'decimalAmount',
             2,
-            e => isInt(e) && isPositive(e));
+            isPositiveInt);
         this.thousands = new Setting(
             '',
             'thousandDisplay',
             ' ',
-            e => hasLength(e, 1) || hasLength(e, 0));
+            e => hasLengthRange(e, 0, 1));
         this.decimal = new Setting(
             '',
             'decimalDisplay',
@@ -135,7 +148,7 @@ class ConfigurationHighLight {
             '',
             'currencyHighlightDuration',
             500,
-            e => isInt(e) && isPositive(e));
+            isPositiveInt);
         this.using = new Setting(
             '',
             'currencyUsingHighlight',
@@ -156,7 +169,7 @@ class ConfigurationBlacklist {
             '',
             'blacklistingurls',
             [],
-            isStringArray);
+            array => isStringArray(array) && isDistinctArray(array));
         this.settings = [this.using, this.urls];
     }
 }
@@ -172,7 +185,7 @@ class ConfigurationWhitelist {
             '',
             'whitelistingurls',
             [],
-            isStringArray);
+            array => isStringArray(array) && isDistinctArray(array));
         this.settings = [this.using, this.urls];
     }
 }
