@@ -94,8 +94,55 @@ ul {
     padding-inline-start: 0;
 }
 
+.removeable:hover {
+    cursor: pointer;
+    border: 1px solid red !important;
+}
+
+.autocomplete {
+    /*the container must be positioned relative:*/
+    position: relative;
+    display: inline-block;
+}
+
+.max-length, .autocomplete-items {
+    max-height: 405px;
+    overflow: auto;
+}
+
+.autocomplete-items {
+    background-color: #0A1016;
+    position: absolute;
+    border: 1px solid grey;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+}
+
+.autocomplete-active {
+    background-color: #1e90ff;
+}
+
+.autocomplete-items div:hover {
+    background-color: #1B88FB;
+    color: #eee;
+}
+
 .row {
     padding: 10px;
+    margin-left: 0;
+    margin-right: 0;
     margin-bottom: 10px;
     background-color: #0C131B !important;
 }
@@ -196,7 +243,7 @@ ul {
 }
 
 .progress-bar-green {
-    background-image: -webkit-linear-gradient(top,#5cb85c 0,#419641 100%);
-    background-image: -webkit-gradient(linear,left top,left bottom,from(#5cb85c),to(#419641));
-    background-image: linear-gradient(to bottom,#5cb85c 0,#419641 100%);
+    background-image: -webkit-linear-gradient(top, #5cb85c 0, #419641 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#5cb85c), to(#419641));
+    background-image: linear-gradient(to bottom, #5cb85c 0, #419641 100%);
 }

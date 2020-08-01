@@ -1,5 +1,6 @@
 body {
     font: normal 12px/160% Verdana, Arial, Helvetica, sans-serif;
+    background-color: #192028 !important;
 }
 
 input {
@@ -113,18 +114,36 @@ h3 {
     font-size: 1.5em;
 }
 
-.bottomConnected {
+.border {
     border-top: solid 1px #2F373E;
     border-left: solid 1px #2F373E;
     border-right: solid 1px #2F373E;
-    border-radius: 3px 3px 0 0;
+    border-bottom: solid 1px #2F373E;
+    border-radius: 3px 3px 3px 3px;
+}
+
+.bottomConnected {
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .topConnected {
-    border-bottom: solid 1px #2F373E;
-    border-left: solid 1px #2F373E;
-    border-right: solid 1px #2F373E;
-    border-radius: 0 0 3px 3px;
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.leftConnected {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.rightConnected {
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .localizationSelect {
@@ -146,6 +165,26 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
     border: solid 1px #f0ad4e;
 }
 
+.mini-converter-add {
+    height: 22px;
+    font-size: 14px;
+    line-height: 1.5em;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.mini-converter-exchange {
+    font-family: "grupoico";
+    cursor: pointer;
+    border: solid 1px transparent;
+    border-bottom: solid 1px #3F474E;
+}
+
+.mini-converter-exchange::before {
+    font-family: "grupoico";
+    content: '\e896'
+}
+
 .mini-converter-field {
     height: 20px;
     width: 100%;
@@ -159,11 +198,12 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
     margin-left: 0;
     margin-right: 0;
 }
-input[type="number"]{
+
+input[type="number"] {
     text-align: right;
 }
 
-input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover {
+input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover, .mini-converter-exchange:hover {
     border: solid 1px #f0ad4e;
     background-color: #2F373E !important;
 }
@@ -178,7 +218,7 @@ input[type="number"]:hover, input[type="text"]:hover, option:hover, select:hover
 }
 
 .circle {
-    cursor:pointer;
+    cursor: pointer;
     position: relative;
     width: 20px;
     height: 20px;

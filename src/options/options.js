@@ -1,20 +1,83 @@
-const engine = new Engine();
-
 const Ids = {
     'currency': 'currency',
     'currencyLastUpdate': 'currencyLastUpdate',
 };
 
+let symbols = [];
+let symbolsLookup = {}
+
+class Symbol {
+    constructor(tag, country) {
+        this.display = `${tag} (${country})`
+        this.search = this.display.toUpperCase();
+        this.tag = tag.toUpperCase();
+        this.country = country.toUpperCase();
+    }
+
+    /**
+     * @param text
+     * @returns {boolean}
+     */
+    startsWith(text) {
+        if (!text) return true;
+        text = text.toUpperCase();
+        return this.tag.startsWith(text)
+            || this.country.startsWith(text)
+            || this.search.startsWith(text)
+    }
+}
+
 /**
  * @returns {Promise<string>}
  */
 const updateCurrencyLists = async () => {
-    const symbols = (await Browser.httpGet('symbols')).symbols;
-    document.getElementById(Ids.currency).innerHTML = Object.keys(symbols)
-        .sort()
-        .map(tag => `<option value="${tag}">${symbols ? `${tag} (${symbols[tag]})` : tag}</option>`)
+    const result = await Currencies.instance.symbols();
+    symbols = Object.keys(result).sort().map(e => new Symbol(e, result[e]));
+    symbols.forEach(symbol => symbolsLookup[symbol.tag] = symbol)
+    document.getElementById(Ids.currency).innerHTML = symbols
+        .map(tag => `<option value="${tag.tag.toUpperCase()}">${tag.display}</option>`)
         .join('');
+    setupDisabledCurrencies();
 };
+
+function setupDisabledCurrencies() {
+    const config = Configuration.instance.disabledCurrencies.tags;
+    const searchField = document.getElementById('uacc:currency:disabled:search');
+    searchField.addEventListener('focus', () => searchField.style.border = '');
+    searchField.addEventListener('focusout', () => searchField.style.border = '');
+    autocomplete(searchField, symbols.map(e => ({
+        value: e.tag,
+        text: e.display,
+        match: text => e.startsWith(text) && config.value.indexOf(e.tag) === -1
+    })), async result => {
+        const newConfig = config.value.concat([result.value]);
+        if (config.setValue(newConfig)) {
+            searchField.style.border = '1px solid green';
+            updateDisabledCurrencyList();
+        } else
+            searchField.style.border = '1px solid red';
+        await config.save();
+    });
+    updateDisabledCurrencyList();
+}
+
+function updateDisabledCurrencyList() {
+    const config = Configuration.instance.disabledCurrencies.tags;
+    const wrapper = document.getElementById('uacc:currency:disabled');
+    wrapper.innerHTML = '';
+    for (let value of config.value) {
+        const element = document.createElement(`div`);
+        element.classList.add('removeable', 'center', 'url', 'form-control');
+        element.style.borderRadius = '0';
+        element.addEventListener('click', async () => {
+            config.setValue(config.value.filter(e => e !== value))
+            await config.save();
+            updateDisabledCurrencyList();
+        })
+        element.innerText = symbolsLookup[value].display;
+        wrapper.appendChild(element);
+    }
+}
 
 const createListField = (wrapper, value = '') => {
     const element = document.createElement(`input`);
@@ -29,62 +92,72 @@ const createListField = (wrapper, value = '') => {
 const updateListChildren = (wrapper) => {
     const children = wrapper.children;
     const urls = [];
-    for (let i = 0; i < children.length; i++)
-        if (children[i].value) urls.push(children[i].value);
-        else wrapper.removeChild(children[i--]);
+    for (let i = 0; i < children.length; i++) {
+        if (children[i].value) {
+            if (!children[i].value.startsWith('http://') && !children[i].value.startsWith('https://'))
+                children[i].value = `https://${children[i].value}`;
+            const value = children[i].value;
+            const url = new URL(value);
+            urls.push(url.href);
+        } else
+            wrapper.removeChild(children[i--]);
+    }
     createListField(wrapper);
     return urls;
 };
 
 const updateLists = () => {
+    const config = Configuration.instance;
     // Update whitelist
     const whitelistWrapper = document.getElementById('currencyWhitelistUrls');
-    if (whitelistWrapper.children.length === 0) {
-        engine.whitelist.urls.forEach(url => createListField(whitelistWrapper, url));
-        createListField(whitelistWrapper);
-    } else {
-        const urls = updateListChildren(whitelistWrapper);
-        engine.whitelist.withUrls(urls);
-        Browser.save('whitelistingurls', engine.whitelist.urls).catch();
-    }
-
-    // Update blacklist
     const blacklistWrapper = document.getElementById('currencyBlacklistUrls');
-    if (blacklistWrapper.children.length === 0) {
-        engine.blacklist.urls.forEach(url => createListField(blacklistWrapper, url));
-        createListField(blacklistWrapper);
-    } else {
-        const urls = updateListChildren(blacklistWrapper);
-        engine.blacklist.withUrls(urls);
-        Browser.save('blacklistingurls', engine.blacklist.urls).catch();
+    const blacklist = config.blacklist;
+    const whitelist = config.whitelist;
+    const updateList = (wrapper, list) => {
+        if (wrapper.children.length === 0) {
+            list.urls.value.forEach(url => createListField(wrapper, url));
+            createListField(wrapper);
+        } else {
+            const urls = updateListChildren(wrapper);
+            list.urls.setValue(urls);
+            list.urls.save().catch();
+        }
     }
+    updateList(whitelistWrapper, whitelist);
+    updateList(blacklistWrapper, blacklist);
 };
 
 const updateExamples = () => {
-    const formatter = engine.numberFormatter;
-    const converter = engine.currencyConverter;
-    const formattingExample = 123456.78;
-    const conversionExample = 100;
+    const tag = Configuration.instance.currency.tag.value;
+
+    const formatConfig = new Configuration();
+    formatConfig.display = Configuration.instance.display;
+    formatConfig.currency = Configuration.instance.currency;
+    const formatExample = new CurrencyAmount(tag, 123456.78, {config: formatConfig});
+
     const formattingDiv = document.getElementById('formattingExample');
-    if (formattingDiv) formattingDiv.value = formatter.format(formatter.round(formattingExample));
+    if (formattingDiv) formattingDiv.value = formatExample.toString();
+
+    const customConfig = new Configuration();
+    customConfig.display = Configuration.instance.display;
+    formatConfig.currency = Configuration.instance.currency;
+    customConfig.tag = Configuration.instance.tag;
+    const customExample = new CurrencyAmount(tag, 100, {config: customConfig});
 
     const displayExample = document.getElementById('displayExample');
-    if (displayExample) displayExample.value = engine.transform(conversionExample, converter.baseCurrency);
+    if (displayExample) displayExample.value = customExample.toString();
 };
 
 let lastHighLight = Date.now();
 const updateHighlightExample = () => {
-    if (Date.now() <= lastHighLight + 1000)
-        return;
-    lastHighLight = Date.now();
-    engine.elementTransformer
-        .highlightConversion(document.getElementById('highlightExample'))
-        .catch();
+    const element = document.getElementById('highlightExample');
+    const currencyElement = new CurrencyElement(element);
+    currencyElement.highlight();
 };
 
 const initiateCustomElements = () => {
     Utils.getByClass('checkbox')
-        .filter(e => Utils.isUndefined(e.checked))
+        .filter(e => e.checked !== false && e.checked !== true)
         .forEach(box => {
             box.checked = box.classList.contains('checked');
             const check = () => {
@@ -135,6 +208,11 @@ const getUiValue = key => {
             return element.value;
 
         // Checkbox
+        case 'utilityClickConvert':
+        case 'uacc:currency:brackets':
+        case 'utilityHoverConvert':
+        case 'usingWhitelist':
+        case 'usingBlacklist':
         case 'showNonDefaultCurrencyAlert':
         case 'currencyUsingAutomatic':
         case 'currencyUsingHighlight':
@@ -143,10 +221,9 @@ const getUiValue = key => {
             return element.checked;
 
         // Selector
-        case 'currency':
+        case Ids.currency:
             return element.children[element.selectedIndex].value || 'EUR';
         // Selector
-        case 'usingBlacklist':
         case 'currencyLocalizationDollar':
         case 'currencyLocalizationAsian':
         case 'currencyLocalizationKroner':
@@ -158,138 +235,83 @@ const getUiValue = key => {
 
 const setUiValue = async (key, value) => {
     const element = document.getElementById(key);
-    switch (key) {
+    const setting = Configuration.instance.byStorageKey[key];
+    if (!setting) throw `Unknown key '${key}'`;
+    setting.setValue(value);
+    if (key.indexOf('urls') >= 0 || key.indexOf('disabled') >= 0) {
+    } else if (typeof (element.change) === 'function')
+        element.change(setting.value)
+    else
+        element.value = setting.value;
 
-        case 'showNonDefaultCurrencyAlert':
-            engine.withShowNonDefaultCurrencyAlert(value);
-            element.change(engine.showNonDefaultCurrencyAlert);
-            break;
-
-        case 'currencyLocalizationDollar':
-        case 'currencyLocalizationKroner':
-        case 'currencyLocalizationAsian':
-            engine.localization.site.setDefaultLocalization(value);
-            element.value = engine.getById(key);
-            break;
-        case 'currencyUsingAutomatic':
-            engine.shouldAutoconvert(value);
-            element.change(engine.automaticPageConversion);
-            break;
-        case 'usingBlacklist':
-            if (value === true) value = 'blacklist';
-            else if (value === false) value = 'none';
-            engine.blacklist.using(value);
-            engine.whitelist.using(value);
-            const result =
-                engine.blacklist.isEnabled
-                    ? 'blacklist'
-                    : (engine.whitelist.isEnabled ? 'whitelist' : 'none');
-            element.value = result;
-            break;
-
-        case 'currencyHighlightColor':
-            engine.highlighter.withColor(value);
-            element.value = engine.highlighter.color;
-            updateHighlightExample();
-            break;
-        case 'currencyHighlightDuration':
-            engine.highlighter.withDuration(value);
-            element.value = engine.highlighter.duration;
-            updateHighlightExample();
-            break;
-        case 'currencyUsingHighlight':
-            engine.highlighter.using(value);
-            element.change(engine.highlighter.isEnabled);
-            updateHighlightExample();
-            break;
-        case 'currency':
-            engine.currencyConverter.withBaseCurrency(value);
-            element.value = engine.currencyConverter.baseCurrency;
-            updateExamples();
-            break;
-        case 'currencyShortcut':
-            engine.withCurrencyShortcut(value);
-            element.value = engine.conversionShortcut;
-            break;
-        case 'currencyCustomTagValue':
-            engine.customTag.withValue(value);
-            element.value = engine.customTag.value;
-            updateExamples();
-            break;
-        case 'currencyCustomTag':
-            engine.customTag.withTag(value);
-            element.value = engine.customTag.tag;
-            updateExamples();
-            break;
-        case 'currencyUsingCustomTag':
-            engine.customTag.using(value);
-            element.change(engine.customTag.enabled);
-            updateExamples();
-            break;
-        case 'thousandDisplay':
-            engine.numberFormatter.withThousand(value);
-            element.value = engine.numberFormatter.thousand;
-            updateExamples();
-            break;
-        case 'decimalDisplay':
-            engine.numberFormatter.withDecimal(value);
-            element.value = engine.numberFormatter.decimal;
-            updateExamples();
-            break;
-        case 'decimalAmount':
-            engine.numberFormatter.withRounding(Math.round(value));
-            element.value = engine.numberFormatter.rounding;
-            updateExamples();
-            break;
-        default:
-            throw 'Unknown element';
-    }
+    if (key.indexOf('Highlight') >= 0)
+        updateHighlightExample();
+    else if (key.indexOf('currency') >= 0 || key.indexOf('Display') >= 0 || key === 'decimalAmount')
+        updateExamples();
 };
 
 
 document.addEventListener("DOMContentLoaded", async function () {
-    // Initiate UI elements
-    initiateCustomElements();
-    Browser.updateFooter();
+    const allowanceTest = document.getElementById('allowanceTest');
+    const allowanceTestResult = document.getElementById('allowanceTestResult');
+    allowanceTest.addEventListener('change', () => {
+        const value = allowanceTest.value;
+        SiteAllowance.instance.updateFromConfig();
+        const result = SiteAllowance.instance.isAllowed(value);
+        allowanceTestResult.innerText =
+            'Conclusion: ' + (result.allowed ? 'Allowed' : 'Not allowed') + '\n'
+            + result.reasoning
+                .reverse()
+                .map(e => e.url + ": " + (e.allowed ? 'Allowed' : 'Not allowed'))
+                .join('\n');
+    });
+    const config = Configuration.instance;
+    await config.load();
+
+    await setUiValue(Ids.currency, config.currency.tag.value);
     await updateCurrencyLists();
 
-    // Load engine data
-    await engine.getConversionRates();
-    await engine.loadSettings();
-    await setUiValue(Ids.currency, engine.currencyConverter.baseCurrency);
-    document.getElementById(Ids.currencyLastUpdate).innerText = engine.lastCurrencyUpdate;
+    initiateCustomElements();
 
-    // Blacklist fields
+    Browser.updateFooter();
+
     updateLists();
 
     // Normal fields
-    for (const id of Utils.storageIds()) {
-        if (Utils.manualStorageIds()[id])
-            continue;
-        const value = engine.getById(id);
-        const element = document.getElementById(id);
+    const settings = Configuration.instance.settings;
+    for (let i = 0; i < settings.length; i++) {
+        const setting = settings[i];
+        const value = setting.value;
+        const key = setting.storageKey;
+        // TODO: use setting.htmlId
+        const htmlId = setting.storageKey;
+        const element = document.getElementById(htmlId);
+        await setUiValue(key, value);
 
-        await setUiValue(id, value);
+        if (!element) continue;
 
         element.addEventListener('focus', () => element.style.border = '1px solid #f0ad4e');
         element.addEventListener('focusout', () => element.style.border = '');
 
         element.addEventListener('change', async function () {
-            const oldValue = getUiValue(id);
-            await setUiValue(id, oldValue);
-            const newValue = getUiValue(id);
+            const oldValue = getUiValue(key);
+            await setUiValue(key, oldValue);
+            const newValue = getUiValue(key);
 
             if (newValue !== oldValue)
-                document.getElementById(id).style.border = '1px solid red';
+                document.getElementById(key).style.border = '1px solid red';
             else
-                Browser.save(id, oldValue).then(() => document.getElementById(id).style.border = '1px solid green');
+                setting.save()
+                    .then(() => document.getElementById(key).style.border = '1px solid green');
         });
     }
 
     // Newly installed banner
-    const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
     const options = document.getElementById('options-wrapper');
-    if (isFirstTime) {
+    const firstTimeKey = 'uacc:global:oldUser'
+    const isOldUser = (await Browser.instance.loadSync(firstTimeKey))[firstTimeKey];
+    await Browser.instance.saveSync(firstTimeKey, true);
+    if (!isOldUser) {
         const progressBarBlue = document.getElementById('firsttime-progress-blue');
         const progressBarGreen = document.getElementById('firsttime-progress-green');
         options.classList.add('hidden');
@@ -299,12 +321,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         const todo = options.children.length;
 
         const done = document.getElementById('firsttime-button-done');
-        done.addEventListener('click', () => done.classList.contains('disabled') || location.reload());
+        done.addEventListener('click', () => location.reload());
 
         const wrapper = document.getElementById('firsttime-wrapper');
         const next = document.getElementById('firsttime-button-next');
         next.addEventListener('click', () => {
-            if (next.classList.contains('disabled')) return;
             wrapper.children[0].classList.add('fadeout');
             wrapper.children[0].style.opacity = '0';
             const progress = Math.round((1 - (options.children.length - 1) / todo) * 100);
@@ -320,11 +341,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                     done.style.width = '100%';
                 }
             }, 250);
-        });
-        document.getElementById('currency').addEventListener('click', () => {
-            document.getElementById('firsttime-currency').classList.add('hidden');
-            next.classList.remove('disabled');
-            done.classList.remove('disabled');
         });
         options.children[0].classList.add('firsttimeFadein');
         options.children[0].classList.add('fadein');

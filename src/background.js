@@ -1,6 +1,3 @@
-/**
- * @type {{get: (function(string): Promise<*>)}}
- */
 const Ajax = {
     get: url => new Promise((resolve, reject) => {
         if (!url) return reject('No url given');
@@ -17,74 +14,108 @@ const Ajax = {
     })
 };
 
-/**
- * @param request
- * @return {string|undefined}
- */
-const constructUrl = request => {
-    switch (request.type) {
-        case 'symbols':
-            return 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/symbols/ba0974d4-e0a4-4fdf-9631-29cdcf363134';
-        case 'rates':
-            return 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/rates/ba0974d4-e0a4-4fdf-9631-29cdcf363134';
+function rate(request, senderResponse) {
+    if (!isCurrencyTag(request.from)) {
+        senderResponse({
+            success: false,
+            data: `error in rate, from '${request.from}' is not valid currency tag`
+        });
+    } else if (!isCurrencyTag(request.to)) {
+        senderResponse({success: false, data: `error in rate, to '${request.to}' is not valid currency tag`});
+    } else {
+        const url = `https://fixer-middle-endpoint.azurewebsites.net/api/v3/rate/${request.from}/${request.to}/ba0974d4-e0a4-4fdf-9631-29cdcf363134`;
+        Ajax.get(url).then(JSON.parse)
+            .then(r => senderResponse({success: true, data: r}))
+            .catch(r => senderResponse({success: false, data: JSON.stringify(r)}));
     }
-};
-
-/**
- * @param {{type:string, base:undefined|string}} request
- * @param sender
- * @param senderResponse
- * @return {boolean}
- */
-function corsHandler(request, sender, senderResponse) {
-    Ajax.get(constructUrl(request))
-        .then(JSON.parse)
-        .then(r => senderResponse({success: true, data: r}))
-        .catch(error => senderResponse({success: false, data: JSON.stringify(error)}));
-    return true;
 }
 
-function getSelectedText(request, sender, senderResponse) {
+function symbols(senderResponse) {
+    const url = 'https://fixer-middle-endpoint.azurewebsites.net/api/v2/symbols/ba0974d4-e0a4-4fdf-9631-29cdcf363134';
+    Ajax.get(url).then(JSON.parse)
+        .then(r => senderResponse({success: true, data: r.symbols}))
+        .catch(r => senderResponse({success: false, data: JSON.stringify(r)}));
+}
+
+function isCurrencyTag(value) {
+    return typeof (value) === 'string' && /^[A-Z]{3}$/.test(value);
+}
+
+function openPopup(senderResponse) {
+    chrome.tabs.create({
+        url: 'popup/popup.html',
+        active: false
+    }, tab => {
+        chrome.windows.create({
+            tabId: tab.id,
+            focused: true,
+            type: 'popup',
+            width: 440,
+            height: 500,
+        }, window => senderResponse({success: true, data: window}));
+    });
+}
+
+function getHtml(senderResponse, template) {
+    if (['contextMenu', 'localizationAlert', 'selectedMenu', 'titleMenu', 'rowConverter'].indexOf(template) < 0)
+        return senderResponse({status: false, data: `'${template}' is invalid template name`})
+    const url = chrome.extension.getURL(`html/${template}.html`);
+    Ajax.get(url)
+        .then(html => senderResponse({success: true, data: html}))
+        .catch(e => senderResponse({success: false, data: e}));
+}
+
+function createRightClickButtons() {
+    chrome.contextMenus.create({
+        title: `Convert selected...`,
+        contexts: ["selection"],
+        onclick: () => Browser.instance.tab.selectedMenu().finally()
+    });
+
+    chrome.contextMenus.create({
+        title: `Open context menu...`,
+        contexts: ["page", "link", "image", "browser_action", "video", "audio", "editable", "page_action"],
+        onclick: () => Browser.instance.tab.contextMenu().finally()
+    });
+}
+createRightClickButtons();
+
+function getSelectedText(senderResponse) {
     senderResponse({success: true, data: window.getSelection().toString()});
-    return true;
 }
 
-function handleError(request, senderResponse) {
-    senderResponse({success: false, data: `Unknown method ${request.method}`});
-    return true;
-}
-
+let hasRightClick = false;
 chrome.runtime.onMessage.addListener(function (request, sender, senderResponse) {
-    switch (request.method) {
-        case 'openPopup':
-            chrome.tabs.create({
-               url: 'popup/popup.html',
-               active: false
-            }, tab => {
-                chrome.windows.create({
-                    tabId: tab.id,
-                    focused: true,
-                    type: 'popup',
-                    width: 440,
-                    height: 500,
-                }, window => senderResponse({success: true, data: window}));
-            });
+    switch (request.type) {
+        case 'activeRightClick':
+            senderResponse({success: true});
             break;
-        case 'getSelectedText':
-            return getSelectedText(request, sender, senderResponse);
-        case 'HttpGet':
-            return corsHandler(request, sender, senderResponse);
+        case 'getSelected':
+            getSelectedText(senderResponse);
+            break;
+        case 'getHtml':
+            getHtml(senderResponse, request.template);
+            break;
+        case 'rate':
+            rate(request, senderResponse);
+            break;
+        case 'symbols':
+            symbols(senderResponse);
+            break;
+        case 'openPopup':
+            openPopup(senderResponse);
+            break;
         default:
-            return handleError(request, senderResponse);
+            senderResponse({success: false, data: `Unknown type '${request.type}' for background`});
+            break;
     }
-
     return true;
 });
 
-
 const openOptionsIfNew = async () => {
-    const isFirstTime = await Browser.load(Utils.storageIds()).then(r => Object.keys(r).length === 0);
-    if (isFirstTime) {
+    const firstTimeKey = 'uacc:global:oldUser'
+    const isOldUser = (await Browser.instance.loadSync(firstTimeKey))[firstTimeKey];
+    if (!isOldUser) {
         chrome.tabs.create({
             url: 'options/options.html',
             active: true
@@ -93,14 +124,3 @@ const openOptionsIfNew = async () => {
 };
 
 openOptionsIfNew().finally();
-
-chrome.contextMenus.create({
-    title: `Add to mini converter`,
-    contexts: ["selection"],
-    onclick: data => {
-        Browser.messageTab({
-            method: 'contextMenu',
-            text: data.selectionText
-        }).finally();
-    }
-});

@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Universal Automatic Currency Converter",
   "short_name": "UA Currency Converter",
-  "version": "2.9.3",
+  "version": "3.1.0",
   "description": "Your new currency converter.",
   "author": "Baizey",
   "icons": {
@@ -15,6 +15,12 @@
     "default_title": "UA Currency Converter",
     "default_popup": "popup/popup.html"
   },
+  "web_accessible_resources": [
+    "html/rowConverter.html",
+    "html/localizationAlert.html",
+    "html/contextMenu.html",
+    "html/selectedMenu.html"
+  ],
   "content_scripts": [
     {
       "matches": [
@@ -23,28 +29,34 @@
       ],
       "js": [
         "XRegExp.js",
+        "RegExpWrapper.js",
+
         "Utils.js",
+        "Timer.js",
         "Browser.js",
-        "SiteLocalization.js",
-        "CustomTag.js",
-        "Blacklist.js",
-        "Highlighter.js",
-        "Localization.js",
-        "CurrencyDetector.js",
-        "CurrencyConverter.js",
-        "NumberFormatter.js",
-        "ElementTransformer.js",
+        "Localizations.js",
+        "Configuration.js",
+
+        "SiteAllowance.js",
+        "CurrencyAmount.js",
+        "CurrencyRate.js",
+        "CurrencyElement.js",
+
+        "ActiveLocalization.js",
+        "Currencies.js",
+        "Detector.js",
         "Engine.js",
+
         "content/content.js"
       ],
       "css": [
         "content/content.css"
-      ]
+      ],
+      "all_frames": false
     }
   ],
   "background": {
     "scripts": [
-      "Utils.js",
       "Browser.js",
       "background.js"
     ],
