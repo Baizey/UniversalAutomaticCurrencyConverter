@@ -20,6 +20,8 @@ class Detector {
         this._regex = null;
         this._currencyTags = null;
         this._localizationMapping = Localizations.allUniqueLocalizationMappings;
+        this._disabledCurrencies = {};
+        this._config.disabledCurrencies.tags.value.forEach(v => this._disabledCurrencies[v] = true);
     }
 
     _currencyRegex(name) {
@@ -249,13 +251,11 @@ class Detector {
         if (!found) return null;
 
         found = this._localizationMapping[found] || found;
-        if (!found) return null;
-
         const symbols = await this._currencies.symbols();
-        if (!symbols[found])
+        if (!found || !symbols[found])
             return null;
 
-        if (this._config.disabledCurrencies.tags.value.indexOf(found) >= 0)
+        if (this._disabledCurrencies[found])
             return null;
 
         return found;
