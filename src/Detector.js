@@ -246,15 +246,19 @@ class Detector {
      * @private
      */
     async _determineCurrency(found) {
-        if (found) {
-            found = this._localizationMapping[found] || found;
-            if (found) {
-                const symbols = await this._currencies.symbols();
-                if (symbols[found])
-                    return found;
-            }
-        }
-        return null;
+        if (!found) return null;
+
+        found = this._localizationMapping[found] || found;
+        if (!found) return null;
+
+        const symbols = await this._currencies.symbols();
+        if (!symbols[found])
+            return null;
+
+        if (this._config.disabledCurrencies.tags.value.indexOf(found) >= 0)
+            return null;
+
+        return found;
     }
 
     /**
