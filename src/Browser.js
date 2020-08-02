@@ -147,6 +147,13 @@ class Browser {
         chrome.tabs.create({url: this.reviewLink});
     }
 
+    openPatreon() {
+        chrome.tabs.create({
+            url: 'https://www.patreon.com/uacc',
+            active: true
+        });
+    }
+
     /**
      * @returns {boolean}
      */
