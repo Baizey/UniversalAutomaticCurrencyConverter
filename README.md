@@ -10,6 +10,8 @@ An extension for Chrome, Firefox and (the new) Edge
 
 [![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed-v3)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
 
+[Consider supporting it on patreon](https://www.patreon.com/uacc)
+
 ## This extension provides for all your conversion desires. The primary focuses being:
 
 - Intelligent conversion and detection of currencies
