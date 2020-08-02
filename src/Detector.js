@@ -21,6 +21,13 @@ class Detector {
         this._currencyTags = null;
         this._localizationMapping = Localizations.allUniqueLocalizationMappings;
         this._disabledCurrencies = {};
+    }
+
+    /**
+     * Has to happen after config has been loaded
+     * @returns {Promise<void>}
+     */
+    async loadDisabledCurrenciesConfig() {
         this._config.disabledCurrencies.tags.value.forEach(v => this._disabledCurrencies[v] = true);
     }
 

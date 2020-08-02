@@ -25,6 +25,7 @@ class Engine {
     async load() {
         const timer = new Timer();
         await Promise.all([this._config.load(), this._detector.updateSymbols()]);
+        await this._detector.loadDisabledCurrenciesConfig();
         timer.log('Loaded settings and symbols...').reset();
         await this._activeLocalization.load();
         timer.log('Determined localization...').reset();
