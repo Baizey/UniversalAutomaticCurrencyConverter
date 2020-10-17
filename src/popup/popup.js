@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     Browser.updateFooter();
     document.getElementById('review').addEventListener('click', () => browser.openReviewLink());
+    document.getElementById('patreon').addEventListener('click', () => browser.openPatreon());
     document.getElementById('openContext').addEventListener('click', () => browser.tab.contextMenu());
     for (let i in converter.conversions) await createMiniConverterRow(converter.conversions[i], template);
     document.getElementById('mini-converter-add').addEventListener('click', async () => {
