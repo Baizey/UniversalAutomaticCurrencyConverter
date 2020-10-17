@@ -42,7 +42,7 @@ class Localizations {
             // UK
             'GBP': ['£'],
             // Japan
-            'JPY': ['JP¥'],
+            'JPY': ['JP¥', '円'],
             // China
             'CNY': ['元'],
             // India
