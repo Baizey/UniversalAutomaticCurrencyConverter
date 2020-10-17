@@ -8,8 +8,6 @@ An extension for Chrome, Firefox and (the new) Edge
 
 [Edge extension](https://microsoftedge.microsoft.com/addons/detail/universal-automatic-curre/aeejpkkbcpndcbnmhifkdeabgjafghfn)
 
-[Consider supporting it on patreon](https://www.patreon.com/uacc)
-
 [![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed-v3)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
 
 [Consider supporting it on patreon](https://www.patreon.com/uacc)
