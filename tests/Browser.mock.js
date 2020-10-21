@@ -12,7 +12,7 @@ class Browser {
             this.type = 'Chrome';
         else
             this.type = 'Firefox'
-        console.log(`UACC: Detected ${this.type} browser`);
+        Utils.log(`Detected ${this.type} browser`);
     }
 
     /**

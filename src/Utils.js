@@ -1,3 +1,20 @@
+let _uaccLogger;
+
+class Logger {
+    static get instance() {
+        return _uaccLogger || (_uaccLogger = new Logger());
+    }
+
+    constructor() {
+        this._prod = true;
+    }
+
+    log(msg) {
+        if (this._prod) return;
+        console.log(`UACC: ${msg}`);
+    }
+}
+
 class Utils {
     /**
      * @param {string} className
@@ -9,6 +26,14 @@ class Utils {
         for (let i = 0; i < temp.length; i++)
             result.push(temp[i]);
         return result;
+    }
+
+    /**
+     * @param msg
+     * @constructor
+     */
+    static log(msg) {
+        Logger.instance.log(msg);
     }
 
     /**

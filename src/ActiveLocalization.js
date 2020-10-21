@@ -126,7 +126,7 @@ class ActiveLocalization {
         this.yen = this._determine(this.yen, text, shared['¥']);
         this.dollar = this._determine(this.dollar, text, shared['$']);
         this.krone = this._determine(this.krone, text, shared['kr']);
-        console.log(`UACC: Found localization conflict ${await this.hasConflict()}...`);
+        Utils.log(`Found localization conflict ${await this.hasConflict()}...`);
     }
 
     /**

@@ -51,7 +51,7 @@ async function detectAllNewElements() {
 async function detectAllNewElementsRecurring(time = 1000) {
     const newElements = await detectAllNewElements();
     time = newElements.length > 0 ? 1000 : time * 2;
-    if (time > 8 * 1000) return console.log(`UACC: Done auto-checking for currencies`);
+    if (time > 8 * 1000) return Utils.log(`Done auto-checking for currencies`);
     setTimeout(() => detectAllNewElementsRecurring(time), time);
 }
 
@@ -352,7 +352,7 @@ async function main() {
 
     // Handle allowance by black/white listing
     if (!siteAllowance.isAllowed(browser.href).allowed) {
-        console.log('UACC: Site is blacklisted, goodbye');
+        Utils.log('Site is blacklisted, goodbye');
         blacklisted = true;
         return;
     }

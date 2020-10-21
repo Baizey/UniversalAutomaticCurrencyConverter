@@ -39,7 +39,7 @@ class Timer {
      */
     log(prefix = 'Time passed') {
         const time = this.timePassed;
-        console.log(`UACC: ${prefix} took ${time.toFixed(3)} seconds`)
+        Utils.log(`${prefix} took ${time.toFixed(3)} seconds`)
         return this;
     }
 }

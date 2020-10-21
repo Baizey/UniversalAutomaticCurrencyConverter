@@ -4,6 +4,11 @@ const Browsers = {
     Edge: 'Edge',
 };
 
+const Environments = {
+    Dev: 'development',
+    Prod: 'Production'
+}
+
 let _browserInstance;
 
 class Browser {
@@ -70,7 +75,7 @@ class Browser {
         else
             this.type = Browsers.Chrome;
 
-        console.log(`UACC: Detected ${this.type} browser`);
+        Utils.log(`Detected ${this.type} browser`);
         this.access = this.isFirefox ? browser : chrome;
     }
 
@@ -92,6 +97,14 @@ class Browser {
 
     get extensionVersion() {
         return chrome.runtime.getManifest().version;
+    }
+
+    get environment() {
+        const result = chrome.management.getSelf(result => {
+
+        });
+
+        return result;
     }
 
     get extensionUrl() {
