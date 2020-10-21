@@ -5,12 +5,8 @@ class Logger {
         return _uaccLogger || (_uaccLogger = new Logger());
     }
 
-    constructor() {
-        this._prod = true;
-    }
-
     log(msg) {
-        if (this._prod) return;
+        if (Browser.instance.isProduction) return;
         console.log(`UACC: ${msg}`);
     }
 }

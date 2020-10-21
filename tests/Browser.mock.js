@@ -15,6 +15,14 @@ class Browser {
         Utils.log(`Detected ${this.type} browser`);
     }
 
+    get isProduction() {
+        return !this.isDevelopment;
+    }
+
+    get isDevelopment() {
+        return true;
+    }
+
     /**
      * @param key
      * @param value

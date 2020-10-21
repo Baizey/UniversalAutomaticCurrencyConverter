@@ -60,6 +60,8 @@ class Browser {
     }
 
     constructor(dummy = null) {
+        this.environment = Environments.Dev;
+
         this._fullHref = undefined;
         this._fullHostName = undefined;
         if (dummy) {
@@ -99,12 +101,18 @@ class Browser {
         return chrome.runtime.getManifest().version;
     }
 
-    get environment() {
-        const result = chrome.management.getSelf(result => {
+    /**
+     * @returns {boolean}
+     */
+    get isProduction() {
+        return this.environment === Environments.Prod;
+    }
 
-        });
-
-        return result;
+    /**
+     * @returns {boolean}
+     */
+    get isDevelopment() {
+        return this.environment === Environments.Dev;
     }
 
     get extensionUrl() {
