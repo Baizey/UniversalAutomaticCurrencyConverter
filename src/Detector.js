@@ -96,8 +96,10 @@ class Detector {
             return this._regex;
         }
 
-        const start = /(?<start>^|["‎+:|\`^'& ,.<>()\\/\s*])/.source;
-        const end = /(?<end>$|["‎+:|\-\`^'& ,.<>()\\/\s*])/.source;
+        const s = /["‎+:|\`^'& ,.<>()\\/\s*]/.source;
+        const start = `(?<start>^|${s})`;
+        const e = /["‎+:|\`^'& ,.<>()\\/\s*\-]/.source;
+        const end = `(?<start>^|${e})`;
         const whitespace = /\s*/.source;
         const regex = [
             start,
