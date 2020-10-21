@@ -99,7 +99,8 @@ class Detector {
         const s = /["‎+:|\`^'& ,.<>()\\/\s*]/.source;
         const start = `(?<start>^|${s})`;
         const e = /["‎+:|\`^'& ,.<>()\\/\s*\-]/.source;
-        const end = `(?<start>^|${e})`;
+        const end = `(?<end>^|${e})`;
+
         const whitespace = /\s*/.source;
         const regex = [
             start,
