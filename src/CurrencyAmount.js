@@ -63,8 +63,8 @@ class CurrencyAmount {
                     let rounded = String(this._round(decimals, toKeep));
                     // Handle decimal overflow into integers
                     if (rounded.length > toKeep) {
-                       rounded = rounded.substr(1);
-                       integers = String(Number(integers) + 1);
+                        rounded = rounded.substr(1);
+                        integers = String(Number(integers) + 1);
                     }
                     return rounded === '0' ? integers : `${integers}.${rounded}`;
                 } else if (keep === integers.length)

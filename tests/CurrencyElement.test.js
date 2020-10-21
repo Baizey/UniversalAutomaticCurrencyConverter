@@ -6,11 +6,27 @@ describe('CurrencyElement', () => {
     }
     describe('Convert', () => {
         const tests = [
-            {name: 'amazon', expect: ' 4 USD . ', element: create(`<span aria-hidden="true" id="aaa"><span class="a-price-symbol">$</span><span class="a-price-whole">3<span class="a-price-decimal">.</span></span><span class="a-price-fraction">99</span></span>`)},
-            {name: 'aliexpress', expect: '280 - 360 USD', element: create(`<span class="product-price-value uacc-clickable" itemprop="price" style="" data-spm-anchor-id="a2g0o.detail.1000016.i2.132937d7JS6Tjc">US $282.98 - 361.08</span>`)},
-            {name: 'whitespace', expect: '\n        23 USD\n    ', element: create(`<span id="price_inside_buybox" class="a-size-medium a-color-price" style="">
+            {
+                name: 'amazon',
+                expect: ' 4 USD . ',
+                element: create(`<span aria-hidden="true" id="aaa"><span class="a-price-symbol">$</span><span class="a-price-whole">3<span class="a-price-decimal">.</span></span><span class="a-price-fraction">99</span></span>`)
+            },
+            {
+                name: 'aliexpress',
+                expect: '280 - 360 USD',
+                element: create(`<span class="product-price-value uacc-clickable" itemprop="price" style="" data-spm-anchor-id="a2g0o.detail.1000016.i2.132937d7JS6Tjc">US $282.98 - 361.08</span>`)
+            },
+            {
+                name: 'whitespace', expect: '\n        23 USD\n    ', element: create(`<span id="price_inside_buybox" class="a-size-medium a-color-price" style="">
         22,99&nbsp;€
-    </span>`)}
+    </span>`)
+            },
+            {
+                name: 'bracket range',
+                expect: '5 - 5 USD (5 - 5 USD)',
+                showInBrackets: true,
+                element: create(`<div>5 - 5 USD</div>`)
+            }
 
         ];
         tests.forEach(test => {
@@ -21,7 +37,9 @@ describe('CurrencyElement', () => {
                 const detector = new Detector({activeLocalization: localization});
                 detector.updateSharedLocalizations();
                 Currencies.instance._rates['EUR'] = {'USD': new CurrencyRate('EUR', 'USD', 1, Date.now())};
-                const actual = new CurrencyElement(test.element, {detector: detector});
+                const config = new Configuration();
+                config.currency.showInBrackets.setValue(test.showInBrackets);
+                const actual = new CurrencyElement(test.element, {detector: detector, config: config});
 
                 // Act
                 await actual.convertTo('USD');

@@ -97,7 +97,7 @@ class CurrencyElement {
             const converted = await element.amount.convertTo(this._conversionTo);
             element.data.filter(e => e.replace).forEach(e => {
                 if (this._config.currency.showInBrackets.value)
-                    e.text = `${element.amount.amount} ${element.amount.tag} (${converted.toString()})`
+                    e.text = `${element.amount.amount.join(' - ')} ${element.amount.tag} (${converted.toString()})`
                 else
                     e.text = converted.toString()
             });
