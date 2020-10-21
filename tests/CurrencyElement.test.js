@@ -26,19 +26,32 @@ describe('CurrencyElement', () => {
                 expect: '5 - 5 USD (5 - 5 USD)',
                 showInBrackets: true,
                 element: create(`<div>5 - 5 USD</div>`)
+            },
+            {
+                name: 'bracket negative number',
+                expect: '-5 USD (-5 USD)',
+                showInBrackets: true,
+                element: create(`<div>-5 USD</div>`)
+            },
+            {
+                name: 'bracket negative number',
+                expect: '-5 - -5 USD (-5 - -5 USD)',
+                showInBrackets: true,
+                element: create(`<div>-5 - -5 USD</div>`)
             }
 
         ];
         tests.forEach(test => {
             it(`${test.name}`, async () => {
+                const config = new Configuration();
+                config.currency.showInBrackets.setValue(test.showInBrackets);
+
                 // Setup
                 const localization = new ActiveLocalization();
                 localization.dollar = 'USD'
                 const detector = new Detector({activeLocalization: localization});
                 detector.updateSharedLocalizations();
                 Currencies.instance._rates['EUR'] = {'USD': new CurrencyRate('EUR', 'USD', 1, Date.now())};
-                const config = new Configuration();
-                config.currency.showInBrackets.setValue(test.showInBrackets);
                 const actual = new CurrencyElement(test.element, {detector: detector, config: config});
 
                 // Act
