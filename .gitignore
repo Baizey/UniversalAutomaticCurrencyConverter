@@ -3,3 +3,4 @@
 *.zip
 node_modules
 ignored
+debug.log
