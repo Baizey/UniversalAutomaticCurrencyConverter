@@ -1,16 +1,5 @@
 let _uaccLogger;
 
-class Logger {
-    static get instance() {
-        return _uaccLogger || (_uaccLogger = new Logger());
-    }
-
-    log(msg) {
-        if (Browser.instance.isProduction) return;
-        console.log(`UACC: ${msg}`);
-    }
-}
-
 class Utils {
     /**
      * @param {string} className
@@ -22,14 +11,6 @@ class Utils {
         for (let i = 0; i < temp.length; i++)
             result.push(temp[i]);
         return result;
-    }
-
-    /**
-     * @param msg
-     * @constructor
-     */
-    static log(msg) {
-        Logger.instance.log(msg);
     }
 
     /**

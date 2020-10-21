@@ -39,7 +39,7 @@ class Timer {
      */
     log(prefix = 'Time passed') {
         const time = this.timePassed;
-        Utils.log(`${prefix} took ${time.toFixed(3)} seconds`)
+        Browser.instance.log(`${prefix} took ${time.toFixed(3)} seconds`)
         return this;
     }
 }

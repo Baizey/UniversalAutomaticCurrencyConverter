@@ -126,7 +126,7 @@ class ActiveLocalization {
         this.yen = this._determine(this.yen, text, shared['¥']);
         this.dollar = this._determine(this.dollar, text, shared['$']);
         this.krone = this._determine(this.krone, text, shared['kr']);
-        Utils.log(`Found localization conflict ${await this.hasConflict()}...`);
+        this._browser.log(`Found localization conflict ${await this.hasConflict()}...`);
     }
 
     /**

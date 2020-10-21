@@ -7,20 +7,26 @@ class Browser {
     }
 
     constructor() {
+        this.environment = 'development'
         const useragent = window.navigator.userAgent;
         if (useragent.indexOf('HeadlessChrome') >= 0)
             this.type = 'Chrome';
         else
             this.type = 'Firefox'
-        Utils.log(`Detected ${this.type} browser`);
+        this.log(`Detected ${this.type} browser`);
+    }
+
+    log(msg) {
+        if (this.isProduction) return;
+        console.log(`UACC: ${msg}`);
     }
 
     get isProduction() {
-        return !this.isDevelopment;
+        return this.environment === 'production';
     }
 
     get isDevelopment() {
-        return true;
+        return this.environment === 'development';
     }
 
     /**

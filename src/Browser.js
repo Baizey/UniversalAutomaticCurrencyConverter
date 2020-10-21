@@ -77,8 +77,13 @@ class Browser {
         else
             this.type = Browsers.Chrome;
 
-        Utils.log(`Detected ${this.type} browser`);
+        this.log(`Detected ${this.type} browser`);
         this.access = this.isFirefox ? browser : chrome;
+    }
+
+    log(msg) {
+        if (this.isProduction) return;
+        console.log(`UACC: ${msg}`);
     }
 
     get reviewLink() {
