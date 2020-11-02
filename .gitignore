@@ -6,3 +6,4 @@ config.json
 ignored
 debug.log
 deployed.zip
+package-lock.json
