@@ -4,3 +4,5 @@ deployment.zip*
 node_modules
 config.json
 ignored
+debug.log
+deployed.zip
