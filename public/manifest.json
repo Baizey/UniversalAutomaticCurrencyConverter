@@ -1,0 +1,46 @@
+{
+  "name": "Universal Automatic Currency Converter",
+  "description": "Universal automatic currency converter for all web browsing needs",
+  "manifest_version": 2,
+  "version": "4.0.0",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
+    "default_title": "UA Currency Converter",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{c1ae7a88-3721-459c-9f55-c527123c1859}",
+      "strict_min_version": "57.0"
+    }
+  }
+}
