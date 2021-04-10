@@ -3,4 +3,4 @@ node_js:
   - "12.6.0"
 before_script:
   - npm install
-script: node_modules/karma/bin/karma start karma.conf.js
+script: npm run test
