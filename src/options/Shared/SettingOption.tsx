@@ -7,7 +7,7 @@ type Props = {
     help?: string
 }
 
-export default function Option({title, children, help}: Props): JSX.Element {
+export function SettingOption({title, children, help}: Props): JSX.Element {
     return <Container>
         <Label>{title}</Label>
         {children ? children : <></>}

@@ -3,10 +3,10 @@ import * as React from 'react';
 
 type Props = {
     title: string
-    children: JSX.Element | JSX.Element[]
+    children?: JSX.Element | JSX.Element[]
 }
 
-export default function OptionsSection({title, children}: Props): JSX.Element {
+export function OptionsSection({title, children}: Props): JSX.Element {
     return <Row>
         <Header>{title}</Header>
         {children}

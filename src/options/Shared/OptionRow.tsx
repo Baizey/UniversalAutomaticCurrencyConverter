@@ -5,7 +5,7 @@ type Props = {
     children: JSX.Element | JSX.Element[]
 }
 
-export default function OptionRow({children}: Props): JSX.Element {
+export function OptionRow({children}: Props): JSX.Element {
     children = Array.isArray(children) ? children : [children];
     return <Container childrenCount={children.length}>
         {children.map(e => <div>{e}</div>)}
@@ -15,10 +15,10 @@ export default function OptionRow({children}: Props): JSX.Element {
 type ContainerProps = { childrenCount: number }
 const Container = styled.div<ContainerProps>`
   width: 100%;
-  height: 100px;
+  padding-bottom: 10px;
   display: flex;
   flex-direction: row;
-  
+
   & > * {
     width: ${props => (100 / props.childrenCount) + '%'}
   }

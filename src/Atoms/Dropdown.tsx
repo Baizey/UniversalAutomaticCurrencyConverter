@@ -1,28 +1,103 @@
 import styled from "styled-components";
 import * as React from 'react';
+import Select from 'react-select';
 
-type Option = {
-    value: string,
-    text: string
+type Props<> = {
+    options: { label: string, value: string }[]
+    onChange: (value: string | number) => void
 }
 
-type Props = {
-    options: Option[],
-    onChange: () => void
+export function Dropdown({options, onChange}: Props) {
+    return <Select
+        options={options}
+        placeholder={"Dropdown and select..."}
+        components={{DropdownIndicator: () => null, IndicatorSeparator: () => null}}
+        styles={{
+            option: (provided: any, state: any) => ({
+                ...provided,
+                backgroundColor: state.isFocused ? '#1C232B' : '#0C131B',
+                cursor: 'pointer'
+            }),
+            placeholder: (provided: any) => ({
+                ...provided,
+                color: 'grey',
+                fontSize: '14px',
+                margin: 'auto',
+                width: '100%',
+                textAlign: 'center'
+            }),
+            singleValue: (provided: any) => ({
+                ...provided,
+                margin: 'auto',
+                maxWidth: '100%',
+                width: '100%',
+                textAlign: 'center'
+            }),
+            valueContainer: (provided: any) => ({
+                ...provided,
+                width: '100%',
+                fontSize: '14px',
+                height: '34px',
+                textAlign: 'center',
+                padding: '0'
+            }),
+            input: (provided: any) => ({
+                ...provided,
+                width: '100%',
+                fontSize: '14px',
+                height: '34px',
+                textAlign: 'center',
+                padding: '0'
+            }),
+            control: (provided: any, state: any) => ({
+                ...provided,
+                backgroundColor: '#0C131B',
+                borderWidth: '0px',
+                borderBottomStyle: 'solid',
+                height: '34px',
+                borderBottomWidth: '1px',
+                borderBottomColor: state.isFocused ? '#f0ad4e' : '#2F373E',
+                color: '#d0d0d0',
+                cursor: 'pointer'
+            }),
+            menu: (provided: any, state: any) => ({
+                ...provided,
+                padding: 0,
+                borderColor: 'grey',
+                borderStyle: 'solid',
+                borderWidth: '1px'
+            }),
+            menuList: (provided: any, state: any) => ({
+                ...provided,
+                padding: 0,
+                borderColor: 'grey',
+                borderStyle: 'solid',
+                borderWidth: '1px'
+            }),
+            container: (provided: any, state: any) => ({
+                ...provided,
+                border: '0px',
+            })
+        }}
+        theme={theme => ({
+            ...theme,
+            borderRadius: 0,
+            colors: {},
+            spacing: {
+                baseUnit: 10,
+                controlHeight: 10,
+                menuGutter: 10
+            }
+        })}
+    />
 }
 
-export default function Dropdown({options, onChange}: Props) {
-    return <Container onChange={() => onChange()}>
-        {options.map(option => <Opt value={option.value}>{option.text}</Opt>)}
-    </Container>
-}
-
-type ContainerProps = { onChange: () => void }
-const Container = styled.select<ContainerProps>`
+type ContainerProps = {}
+const Container = styled.input<ContainerProps>`
   display: block;
   width: 100%;
-  height: 34px;
-  padding: 6px 12px;
+  height: 33px;
+  padding: 0;
   font-size: 14px;
   line-height: 1.42857143;
   background-color: #0C131B;
@@ -35,13 +110,9 @@ const Container = styled.select<ContainerProps>`
   cursor: pointer;
   -webkit-appearance: none;
   -moz-appearance: none;;
+
   &:hover {
     transition: border-color 0.3s ease-in-out;
     border-color: #f0ad4e;
   }
-`
-const Opt = styled.option`
-  text-align: center;
-  text-align-last: center;
-
 `

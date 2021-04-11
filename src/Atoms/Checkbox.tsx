@@ -7,7 +7,7 @@ type Props = {
     onChange: (value: boolean) => void
 }
 
-export default function Checkbox({initialValue, onChange}: Props) {
+export function Checkbox({initialValue, onChange}: Props) {
     const [isChecked, setIsChecked] = useState(initialValue);
 
     useEffect(() => onChange(isChecked), [isChecked]);

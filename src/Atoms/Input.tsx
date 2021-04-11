@@ -8,7 +8,7 @@ type Props<> = {
     onChange: (value: string | number) => void
 }
 
-export default function Input({type, defaultValue, onChange}: Props) {
+export function Input({type, defaultValue, onChange}: Props) {
     const [value, setValue] = useState(defaultValue);
     return <Container type={type} defaultValue={value} onChange={(e) => {
         console.log(e);

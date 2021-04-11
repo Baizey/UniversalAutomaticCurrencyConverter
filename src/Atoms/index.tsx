@@ -1,5 +1,3 @@
-import Input from "./Input";
-import Dropdown from "./Dropdown";
-import Checkbox from "./Checkbox";
-
-export {Input, Checkbox, Dropdown}
+export {Input} from "./Input";
+export {Dropdown} from "./Dropdown";
+export {Checkbox} from "./Checkbox";
