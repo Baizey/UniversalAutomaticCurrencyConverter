@@ -1,11 +1,11 @@
 import {IBrowser} from "../index";
 
 export enum TabMessageType {
-    ContextMenu,
+    openContextMenu,
 }
 
 export type TabMessage = {
-    type: TabMessageType.ContextMenu
+    type: TabMessageType.openContextMenu
 }
 
 export interface ITabMessenger {
@@ -39,6 +39,6 @@ export class TabMessenger implements ITabMessenger {
     }
 
     contextMenu(): Promise<void> {
-        return this.sendMessage<void>({type: TabMessageType.ContextMenu})
+        return this.sendMessage<void>({type: TabMessageType.openContextMenu})
     }
 }
