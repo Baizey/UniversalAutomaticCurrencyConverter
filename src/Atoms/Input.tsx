@@ -2,19 +2,26 @@ import styled from "styled-components";
 import * as React from 'react';
 import {useState} from "react";
 
-type Props<> = {
+type Props = {
+    placeholder?: string,
     type: 'number' | 'text'
-    defaultValue: string | number,
-    onChange: (value: string | number) => void
+    value: number | string,
+    onChange?: (value: number | string) => void
+    onEnter?: (value: number | string) => void
 }
 
-export function Input({type, defaultValue, onChange}: Props) {
-    const [value, setValue] = useState(defaultValue);
-    return <Container type={type} defaultValue={value} onChange={(e) => {
-        console.log(e);
-        onChange(value);
-    }}>
-    </Container>
+export function Input({type, value, onChange, onEnter, placeholder}: Props) {
+    const [current, setCurrent] = useState(value)
+    return <Container
+        placeholder={placeholder} type={type} defaultValue={current}
+        onChange={event => {
+            setCurrent(event.target.value)
+            onChange && onChange(event.target.value);
+        }}
+        onKeyUp={event => {
+            if (event.key === 'Enter' && onEnter) onEnter(current)
+        }}
+    />
 }
 
 type ContainerProps = {}
@@ -35,6 +42,10 @@ const Container = styled.input<ContainerProps>`
   cursor: pointer;
   -webkit-appearance: none;
   -moz-appearance: none;;
+
+  &:focus {
+    outline: 0;
+  }
 
   &:hover {
     transition: border-color 0.3s ease-in-out;

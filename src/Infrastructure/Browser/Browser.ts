@@ -40,6 +40,10 @@ export interface IBrowser {
     readonly isChrome: boolean
     readonly isEdge: boolean
 
+    readonly tab: ITabMessenger;
+    readonly background: IBackgroundMessenger;
+    readonly popup: IPopupMessenger;
+
     openReviewLink(): void
 
     loadSync<T>(key: string): Promise<T>
@@ -199,9 +203,14 @@ export class Browser implements IBrowser {
             storage.get([key], resp => access.runtime.lastError ?
                 reject(Error(access.runtime.lastError.message))
                 : resolve(resp[key])))
+            .then(resp => {
+                console.log(`Loading ${key}: ${resp}`)
+                return resp;
+            })
     }
 
     private saveSingle(storage: LocalStorageArea | SyncStorageArea, key: string, value: any): Promise<void> {
+        console.log(`Saving ${key}: ${value}`)
         const access = this.access;
         return new Promise<void>((resolve, reject) =>
             storage.set({[key]: value}, () => access.runtime.lastError ?

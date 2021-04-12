@@ -13,6 +13,8 @@ export interface ISetting<T> {
     save(): Promise<void>
 
     load(): Promise<boolean>
+
+    setAndSaveValue(v: T): Promise<boolean>
 }
 
 export class Setting<T> implements ISetting<T> {
@@ -56,5 +58,11 @@ export class Setting<T> implements ISetting<T> {
     async load(): Promise<boolean> {
         const loaded = await this.browser.loadSync<T>(this.storageKey);
         return this.setValue(loaded);
+    }
+
+    async setAndSaveValue(v: T): Promise<boolean> {
+        const result = this.setValue(v);
+        await this.save();
+        return result;
     }
 }

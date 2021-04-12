@@ -28,16 +28,16 @@ export class Configuration {
     readonly settings: ISetting<any>[];
     readonly byStorageKey: { [key: string]: ISetting<any> }
     readonly byHtmlId: { [key: string]: ISetting<any> }
-    private disabledCurrencies: DisabledCurrencies;
-    private alert: ConfigurationAlert;
+    readonly disabledCurrencies: DisabledCurrencies;
+    readonly alert: ConfigurationAlert;
     readonly localization: ConfigurationLocalisation;
-    private whitelist: ConfigurationWhitelist;
-    private blacklist: ConfigurationBlacklist;
-    private currency: ConfigurationCurrency;
-    private utility: ConfigurationUtility;
-    private highlight: ConfigurationHighLight;
-    private tag: ConfigurationCustomTag;
-    private display: ConfigurationDisplay;
+    readonly whitelist: ConfigurationWhitelist;
+    readonly blacklist: ConfigurationBlacklist;
+    readonly currency: ConfigurationCurrency;
+    readonly utility: ConfigurationUtility;
+    readonly highlight: ConfigurationHighLight;
+    readonly tag: ConfigurationCustomTag;
+    readonly display: ConfigurationDisplay;
 
     static instance(config?: Configuration): Configuration {
         if (config) this._instance = config;

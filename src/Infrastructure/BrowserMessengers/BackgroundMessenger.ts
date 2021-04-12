@@ -2,7 +2,6 @@ import {IBrowser} from "../index";
 
 export enum BackgroundMessageType {
     ActiveRightClick = 'activeRightClick',
-    GetHtml = 'getHtml',
     Rate = 'rate',
     Symbols = 'symbols',
     OpenPopup = 'openPopup'
@@ -11,19 +10,15 @@ export enum BackgroundMessageType {
 export type BackgroundMessage = {
     type: BackgroundMessageType.ActiveRightClick | BackgroundMessageType.Symbols | BackgroundMessageType.OpenPopup
 } | {
-    type: BackgroundMessageType.GetHtml, template: string
-} | {
     type: BackgroundMessageType.Rate, from: string, to: string
 }
 
 export interface IBackgroundMessenger {
     activeRightClick(): Promise<void>
 
-    getHtml(template: string): Promise<void>
-
     getRate(from: string, to: string): Promise<number>
 
-    getSymbols(): Promise<void>
+    getSymbols(): Promise<{ [key: string]: string }>
 
     openPopup(): Promise<void>
 }
@@ -53,16 +48,12 @@ export class BackgroundMessenger implements IBackgroundMessenger {
         return this.sendMessage<void>({type: BackgroundMessageType.ActiveRightClick})
     }
 
-    getHtml(template: string): Promise<void> {
-        return this.sendMessage<void>({type: BackgroundMessageType.GetHtml, template: template})
-    }
-
     getRate(from: string, to: string): Promise<number> {
         return this.sendMessage<number>({type: BackgroundMessageType.Rate, to: to, from: from})
     }
 
-    getSymbols(): Promise<void> {
-        return this.sendMessage<void>({type: BackgroundMessageType.Symbols})
+    getSymbols(): Promise<{ [key: string]: string }> {
+        return this.sendMessage<{ [key: string]: string }>({type: BackgroundMessageType.Symbols})
     }
 
     openPopup(): Promise<void> {

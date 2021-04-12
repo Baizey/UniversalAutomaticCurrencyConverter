@@ -3,16 +3,18 @@ import * as React from 'react';
 import {useEffect, useState} from "react";
 
 type Props = {
-    initialValue: boolean,
+    value: boolean,
     onChange: (value: boolean) => void
 }
 
-export function Checkbox({initialValue, onChange}: Props) {
-    const [isChecked, setIsChecked] = useState(initialValue);
+export function Checkbox({value, onChange}: Props) {
+    const [isChecked, setIsChecked] = useState(value);
 
     useEffect(() => onChange(isChecked), [isChecked]);
 
-    return <Container checked={isChecked} onClick={() => setIsChecked(!isChecked)}>
+    return <Container
+        checked={isChecked}
+        onClick={() => setIsChecked(!isChecked)}>
         <div/>
         <div/>
     </Container>
@@ -30,10 +32,6 @@ const Container = styled.div<ContainerProps>`
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    & div {
-      transition: background-color 0.3s ease-in-out;
-      background-color: #f0ad4e;
-    }
     border-color: #f0ad4e;
   }
 
@@ -47,7 +45,7 @@ const Container = styled.div<ContainerProps>`
 
   & div:first-child {
     margin-top: 15px;
-    margin-left: 0px;
+    margin-left: 0;
     width: 16px;
     transform: rotate(45deg);
   }

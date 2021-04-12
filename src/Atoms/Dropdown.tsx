@@ -1,16 +1,30 @@
 import styled from "styled-components";
 import * as React from 'react';
+import {useEffect, useState} from "react";
 import Select from 'react-select';
 
-type Props<> = {
-    options: { label: string, value: string }[]
-    onChange: (value: string | number) => void
+type Props = {
+    options: { label: string, value: string }[],
+    value?: string,
+    onChange: (value: string) => void
 }
 
-export function Dropdown({options, onChange}: Props) {
+export function Dropdown({options, value, onChange}: Props) {
+    const [selected, setSelected] = useState<{ label: string, value: string } | null>(null);
+    useEffect(() => setSelected(options.filter(e => e.value === value)[0]), [])
+
     return <Select
+        onChange={option => {
+            if (option && option.value && option.value !== selected?.value) {
+                onChange(option.value)
+                setSelected(option);
+            }
+        }}
+        value={selected}
         options={options}
-        placeholder={"Dropdown and select..."}
+        cacheOptions
+        defaultOptions
+        placeholder={"Search and select..."}
         components={{DropdownIndicator: () => null, IndicatorSeparator: () => null}}
         styles={{
             option: (provided: any, state: any) => ({
@@ -57,6 +71,9 @@ export function Dropdown({options, onChange}: Props) {
                 height: '34px',
                 borderBottomWidth: '1px',
                 borderBottomColor: state.isFocused ? '#f0ad4e' : '#2F373E',
+                '&:hover': {
+                    borderBottomColor: '#f0ad4e'
+                },
                 color: '#d0d0d0',
                 cursor: 'pointer'
             }),
