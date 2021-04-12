@@ -18,7 +18,7 @@ export function AllowanceCard(injection: { browser?: IBrowser, config?: Configur
     const [blacklist, setBlacklist] = useState(blackurls.value || [])
     const [whitelist, setWhitelist] = useState(whiteurls.value || [])
 
-    return <OptionsSection title="Number formatting">
+    return <OptionsSection title="Site allowance">
         <OptionRow>
             <SettingOption title="Use blacklist">
                 <Checkbox value={useBlacklist.value}

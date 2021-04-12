@@ -80,6 +80,7 @@ export function Dropdown({options, value, onChange}: Props) {
             menu: (provided: any, state: any) => ({
                 ...provided,
                 padding: 0,
+                backgroundColor: '#0C131B',
                 borderColor: 'grey',
                 borderStyle: 'solid',
                 borderWidth: '1px'

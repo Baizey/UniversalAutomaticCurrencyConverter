@@ -6,7 +6,7 @@ import {OptionRow, OptionsSection} from "./Shared";
 export function TitleCard(injection: { browser?: IBrowser }) {
     const browser: IBrowser = injection.browser || Browser.instance();
     return <OptionsSection title={'UA Currency Converter'}>
-        <OptionRow>
+        <OptionRow key="footer-option">
             <Footer>{`Version ${browser.extensionVersion} created by ${browser.author}`}</Footer>
         </OptionRow>
     </OptionsSection>

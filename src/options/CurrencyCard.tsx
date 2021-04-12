@@ -31,16 +31,16 @@ export function CurrencyCard(injection: { browser?: IBrowser, config?: Configura
 
     if (isLoading) return <LoadingCard title="Conversion"/>
     return <OptionsSection title="Conversion">
-        <OptionRow>
-            <SettingOption title="Convert to">
+        <OptionRow key="convert_to_row">
+            <SettingOption key="convert_to_option" title="Convert to">
                 <Dropdown
                     options={options}
                     value={currency}
                     onChange={value => tag.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
-        <OptionRow>
-            <SettingOption title="Display conversion in brackets beside original price">
+        <OptionRow key="brackets_row">
+            <SettingOption key="brackets_option" title="Display conversion in brackets beside original price">
                 <Checkbox value={checked} onChange={value => brackets.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>

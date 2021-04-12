@@ -11,7 +11,7 @@ export function HighlightCard(injection: { browser?: IBrowser, config?: Configur
     const using = config.highlight.using;
     const duration = config.highlight.duration;
 
-    return <OptionsSection title="Number formatting">
+    return <OptionsSection title="Conversion highlighting">
         <OptionRow>
             <SettingOption title="Highlight conversions">
                 <Checkbox value={using.value}

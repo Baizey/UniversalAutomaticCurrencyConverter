@@ -7,13 +7,13 @@ type Props = {
 }
 
 export function OptionsSection({title, children}: Props): JSX.Element {
-    return <Row>
+    return <Container>
         <Header>{title}</Header>
         {children}
-    </Row>
+    </Container>
 }
 
-const Row = styled.div`
+const Container = styled.div`
   padding: 10px;
   margin-left: 0;
   margin-right: 0;
@@ -21,14 +21,21 @@ const Row = styled.div`
   background-color: #0C131B;
   display: flex;
   flex-direction: column;
+  border-width: 1px;
+  border-color: #0C131B;
+  border-style: solid;
+
+  &:hover {
+    border-color: #f0ad4e
+  }
 `
 const Header = styled.h2`
   width: 100%;
   text-align: center;
   margin: auto;
   font-size: 18px;
-  font-weight: 400;
   line-height: 1.1;
   padding-top: 5px;
   padding-bottom: 5px;
+  font-weight: 700;
 `

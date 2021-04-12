@@ -23,8 +23,9 @@ const Label = styled.label`
   margin: auto;
   text-align: center;
   display: block;
-  font-size: 10px;
+  font-size: 14px;
   color: grey;
+  font-weight: 700;
 `
 
 const Help = styled.span`

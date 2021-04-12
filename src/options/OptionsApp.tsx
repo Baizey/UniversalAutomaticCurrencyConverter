@@ -24,22 +24,22 @@ export default function OptionsApp(injection: { browser?: IBrowser, config?: Con
     }, [])
 
     const content = isLoading
-        ? <LoadingCard/>
+        ? <LoadingCard key="LoadingCard-card"/>
         : <>
-            <CurrencyCard browser={injection.browser} config={injection.config}/>
-            <DisableCurrenciesCard browser={injection.browser} config={injection.config}/>
-            <AccessibilityCard browser={injection.browser} config={injection.config}/>
-            <LocalizationCard browser={injection.browser} config={injection.config}/>
-            <FormattingCard browser={injection.browser} config={injection.config}/>
-            <HighlightCard browser={injection.browser} config={injection.config}/>
-            <DisplayCard browser={injection.browser} config={injection.config}/>
-            <AllowanceCard browser={injection.browser} config={injection.config}/>
+            <CurrencyCard key="CurrencyCard-card" browser={injection.browser} config={injection.config}/>
+            <DisableCurrenciesCard key="DisableCurrenciesCard-card" browser={injection.browser} config={injection.config}/>
+            <AccessibilityCard key="AccessibilityCard-card" browser={injection.browser} config={injection.config}/>
+            <LocalizationCard key="LocalizationCard-card" browser={injection.browser} config={injection.config}/>
+            <FormattingCard key="FormattingCard-card" browser={injection.browser} config={injection.config}/>
+            <HighlightCard key="HighlightCard-card" browser={injection.browser} config={injection.config}/>
+            <DisplayCard key="DisplayCard-card" browser={injection.browser} config={injection.config}/>
+            <AllowanceCard key="AllowanceCard-card" browser={injection.browser} config={injection.config}/>
         </>
 
     return <Background>
         <Space/>
         <Container>
-            <TitleCard/>
+            <TitleCard key="TitleCard-card"/>
             {content}
         </Container>
     </Background>
