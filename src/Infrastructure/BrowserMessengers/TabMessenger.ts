@@ -1,37 +1,15 @@
 import {IBrowser} from "../index";
 
 export enum TabMessageType {
-    SelectedMenu = 'selectedMenu',
-    ContextMenu = 'contextMenu',
-    ShowConversions = 'showConversions',
-    HideConversions = 'hideConversions',
-    GetHref = 'getHref',
-    SetActiveLocalizations = 'setActiveLocalization',
+    ContextMenu,
 }
 
 export type TabMessage = {
-    type: TabMessageType.SelectedMenu
-        | TabMessageType.ContextMenu
-        | TabMessageType.ShowConversions
-        | TabMessageType.HideConversions
-        | TabMessageType.GetHref
-} | {
-    type: TabMessageType.SetActiveLocalizations,
-    localizations: { krone: string, asian: string, dollar: string }
+    type: TabMessageType.ContextMenu
 }
 
 export interface ITabMessenger {
-    selectedMenu(): Promise<void>
-
     contextMenu(): Promise<void>
-
-    showConversions(): Promise<void>
-
-    hideConversions(): Promise<void>
-
-    getHref(): Promise<string>
-
-    setLocalization(data: { dollar: string, asian: string, krone: string }): Promise<void>
 }
 
 export class TabMessenger implements ITabMessenger {
@@ -62,25 +40,5 @@ export class TabMessenger implements ITabMessenger {
 
     contextMenu(): Promise<void> {
         return this.sendMessage<void>({type: TabMessageType.ContextMenu})
-    }
-
-    getHref(): Promise<string> {
-        return this.sendMessage<string>({type: TabMessageType.GetHref})
-    }
-
-    selectedMenu(): Promise<void> {
-        return this.sendMessage<void>({type: TabMessageType.SelectedMenu})
-    }
-
-    setLocalization(data: { dollar: string; asian: string; krone: string }): Promise<void> {
-        return this.sendMessage<void>({type: TabMessageType.SetActiveLocalizations, localizations: data})
-    }
-
-    hideConversions(): Promise<void> {
-        return this.sendMessage<void>({type: TabMessageType.HideConversions})
-    }
-
-    showConversions(): Promise<void> {
-        return this.sendMessage<void>({type: TabMessageType.ShowConversions})
     }
 }

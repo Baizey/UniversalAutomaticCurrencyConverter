@@ -3,12 +3,12 @@ import {BackgroundMessage, BackgroundMessageType} from "./Infrastructure";
 
 console.log("Hello from background script!")
 
-function isCurrencyTag(value: any) {
-    return typeof (value) === 'string' && /^[A-Z]{3}$/.test(value);
+function isCurrencyTag(value: any): boolean {
+    return ((typeof value) === 'string') && /^[A-Z]{3}$/.test(value);
 }
 
-chrome.runtime.onMessage.addListener(function (request: BackgroundMessage, sender, senderResponse) {
-    function success(data?: any): boolean {
+chrome.runtime.onMessage.addListener(function (request: BackgroundMessage, sender, senderResponse): boolean {
+    function success(data: any): boolean {
         senderResponse({success: true, data: data})
         return true;
     }
@@ -18,36 +18,22 @@ chrome.runtime.onMessage.addListener(function (request: BackgroundMessage, sende
         return true;
     }
 
+    if (!request) return failure(`No request received`)
     switch (request.type) {
-        case BackgroundMessageType.ActiveRightClick:
-            return success();
-        case BackgroundMessageType.Rate:
-            if (!isCurrencyTag(request.to) || !isCurrencyTag(request.to))
+        case BackgroundMessageType.getRate:
+            if (!isCurrencyTag(request.to) || !isCurrencyTag(request.from))
                 return failure(`Invalid currency tags given (${request.from}, ${request.to})`)
+            if (request.from === request.to) return success(1)
             fetch(`https://fixer-middle-endpoint.azurewebsites.net/api/v3/rate/${request.from}/${request.to}/ba0974d4-e0a4-4fdf-9631-29cdcf363134`)
                 .then(resp => resp.json())
-                .then(resp => success(resp.symbols))
+                .then(resp => success(resp))
                 .catch(err => failure(err.message))
             return true;
-        case BackgroundMessageType.Symbols:
+        case BackgroundMessageType.getSymbols:
             fetch(`https://fixer-middle-endpoint.azurewebsites.net/api/v2/symbols/ba0974d4-e0a4-4fdf-9631-29cdcf363134`)
                 .then(resp => resp.json())
                 .then(resp => success(resp.symbols))
                 .catch(err => failure(err.message))
-            return true;
-        case BackgroundMessageType.OpenPopup:
-            chrome.tabs.create({
-                url: 'popup.html',
-                active: false
-            }, tab => {
-                chrome.windows.create({
-                    tabId: tab.id,
-                    focused: true,
-                    type: 'popup',
-                    width: 440,
-                    height: 500,
-                }, window => success(window));
-            });
             return true;
         default:
             // @ts-ignore
