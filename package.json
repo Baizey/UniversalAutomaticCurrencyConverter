@@ -24,6 +24,7 @@
     "@types/styled-components": "^5.1.9",
     "babel-loader": "^8.1.0",
     "copy-webpack-plugin": "^6.4.1",
+    "zip-webpack-plugin": "^4.0.1",
     "css-loader": "^5.0.2",
     "file-loader": "^6.1.1",
     "react-select": "^4.3.0",
