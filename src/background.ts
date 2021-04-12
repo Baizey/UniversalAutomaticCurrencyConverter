@@ -1,8 +1,6 @@
 // This file is ran as a background script
 import {BackgroundMessage, BackgroundMessageType} from "./Infrastructure";
 
-console.log("Hello from background script!")
-
 function isCurrencyTag(value: any): boolean {
     return ((typeof value) === 'string') && /^[A-Z]{3}$/.test(value);
 }

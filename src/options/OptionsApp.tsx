@@ -47,6 +47,7 @@ export default function OptionsApp(injection: { browser?: IBrowser, config?: Con
 
 const Background = styled.div`
   width: 100%;
+  min-height: 100%;
   height: fit-content;
   background-color: #0F171E;
   color: #d0d0d0;

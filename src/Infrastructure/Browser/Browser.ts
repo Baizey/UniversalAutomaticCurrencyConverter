@@ -204,13 +204,11 @@ export class Browser implements IBrowser {
                 reject(Error(access.runtime.lastError.message))
                 : resolve(resp[key])))
             .then(resp => {
-                console.log(`Loading ${key}: ${resp}`)
                 return resp;
             })
     }
 
     private saveSingle(storage: LocalStorageArea | SyncStorageArea, key: string, value: any): Promise<void> {
-        console.log(`Saving ${key}: ${value}`)
         const access = this.access;
         return new Promise<void>((resolve, reject) =>
             storage.set({[key]: value}, () => access.runtime.lastError ?

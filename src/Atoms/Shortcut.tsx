@@ -12,7 +12,6 @@ export function Shortcut({defaultValue, onChange}: Props) {
     return <Container
         tabIndex={0}
         onKeyDown={event => {
-            console.log(event)
             setValue(event.key);
             onChange(event.key);
         }}>{value}</Container>

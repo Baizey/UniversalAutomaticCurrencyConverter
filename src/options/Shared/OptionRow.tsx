@@ -8,7 +8,7 @@ type Props = {
 export function OptionRow({children}: Props): JSX.Element {
     children = Array.isArray(children) ? children : [children];
     return <Container childrenCount={children.length}>
-        {children.map(e => <div>{e}</div>)}
+        {children.map(e => <div key={`${Math.random()}-optionrow`}>{e}</div>)}
     </Container>
 }
 
