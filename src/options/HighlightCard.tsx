@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {Checkbox, Dropdown, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Browser, Configuration, IBrowser} from "../Infrastructure";
+import {Browser, Configuration, Container, IBrowser} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
 
-export function HighlightCard(injection: { browser?: IBrowser, config?: Configuration }) {
-    const browser = injection.browser || Browser.instance();
-    const config = injection.config || Configuration.instance();
+export function HighlightCard() {
+    const container = Container.factory();
+    const config = container.configuration;
     const color = config.highlight.color;
     const using = config.highlight.using;
     const duration = config.highlight.duration;

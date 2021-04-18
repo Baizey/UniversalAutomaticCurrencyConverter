@@ -2,7 +2,6 @@ import styled from "styled-components";
 import * as react from 'react'
 import {TitleCard} from "./TitleCard";
 import {CurrencyCard} from "./CurrencyCard";
-import {Configuration, IBrowser} from "../Infrastructure";
 import {useEffect, useState} from "react";
 import {LoadingCard} from "./LoadingCard";
 import {DisableCurrenciesCard} from "./DisableCurrenciesCard";
@@ -12,37 +11,56 @@ import {FormattingCard} from "./FormattingCard";
 import {HighlightCard} from "./HighlightCard";
 import {DisplayCard} from "./DisplayCard";
 import {AllowanceCard} from "./AllowanceCard";
+import {ShortcutCard} from "./ShortcutCard";
+import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
+import {Container} from "../Infrastructure";
 
 const React = react;
 
-export default function OptionsApp(injection: { browser?: IBrowser, config?: Configuration }): JSX.Element {
+export default function OptionsApp(): JSX.Element {
     const [isLoading, setIsLoading] = useState(true);
-    const config = injection.config || Configuration.instance();
+    const [firstTimeProgress, setFirstTimeProgress] = useState(0);
+    const container = Container.factory();
+    const config = container.configuration;
+    const logger = container.logger;
 
     useEffect(() => {
         config.load().then(() => setIsLoading(false))
     }, [])
 
-    const content = isLoading
-        ? <LoadingCard key="LoadingCard-card"/>
-        : <>
-            <CurrencyCard key="CurrencyCard-card" browser={injection.browser} config={injection.config}/>
-            <DisableCurrenciesCard key="DisableCurrenciesCard-card" browser={injection.browser} config={injection.config}/>
-            <AccessibilityCard key="AccessibilityCard-card" browser={injection.browser} config={injection.config}/>
-            <LocalizationCard key="LocalizationCard-card" browser={injection.browser} config={injection.config}/>
-            <FormattingCard key="FormattingCard-card" browser={injection.browser} config={injection.config}/>
-            <HighlightCard key="HighlightCard-card" browser={injection.browser} config={injection.config}/>
-            <DisplayCard key="DisplayCard-card" browser={injection.browser} config={injection.config}/>
-            <AllowanceCard key="AllowanceCard-card" browser={injection.browser} config={injection.config}/>
-        </>
+    function wrap(children: any) {
+        return <Background>
+            <Space/>
+            <Wrapper>
+                <TitleCard key="TitleCard-card"/>
+                {children}
+            </Wrapper>
+        </Background>
+    }
 
-    return <Background>
-        <Space/>
-        <Container>
-            <TitleCard key="TitleCard-card"/>
-            {content}
-        </Container>
-    </Background>
+    if (isLoading) return wrap(<LoadingCard key="LoadingCard-card"/>)
+
+    const settings = [
+        <CurrencyCard key="CurrencyCard-card"/>,
+        <DisableCurrenciesCard key="DisableCurrenciesCard-card"/>,
+        <ShortcutCard key="ShortcutCard-card"/>,
+        <AccessibilityCard key="AccessibilityCard-card"/>,
+        <LocalizationCard key="LocalizationCard-card"/>,
+        <FormattingCard key="FormattingCard-card"/>,
+        <HighlightCard key="HighlightCard-card"/>,
+        <DisplayCard key="DisplayCard-card"/>,
+        <AllowanceCard key="AllowanceCard-card"/>
+    ]
+
+    if (config.firstTime.isFirstTime.value) return wrap([
+        <Wrapper>{settings[firstTimeProgress]}</Wrapper>,
+        <FirstTimeProgressCard
+            progress={Math.min(100, 100 * firstTimeProgress / settings.length)}
+            skip={() => config.firstTime.isFirstTime.setAndSaveValue(false)}
+            next={() => setFirstTimeProgress(firstTimeProgress + 1)}/>
+    ])
+
+    return wrap(settings);
 }
 
 const Background = styled.div`
@@ -59,8 +77,9 @@ const Space = styled.div`
   height: 20px;
 `
 
-const Container = styled.div`
-  width: 800px;
+const Wrapper = styled.div`
+  max-width: 800px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
 `;

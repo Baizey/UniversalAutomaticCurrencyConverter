@@ -2,12 +2,13 @@ import * as React from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {useEffect, useState} from "react";
-import {Browser, Configuration, IBrowser} from "../Infrastructure";
+import {Container} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
 
-export function CurrencyCard(injection: { browser?: IBrowser, config?: Configuration }) {
-    const browser = injection.browser || Browser.instance();
-    const config = injection.config || Configuration.instance();
+export function CurrencyCard() {
+    const container = Container.factory()
+    const config = container.configuration;
+    const backendApi = container.backendApi;
     const tag = config.currency.tag;
     const brackets = config.currency.showInBrackets;
 
@@ -18,7 +19,7 @@ export function CurrencyCard(injection: { browser?: IBrowser, config?: Configura
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        browser.background.getSymbols()
+        backendApi.symbols()
             .then(symbols => Object.entries(symbols)
                 .map(([key, value]) => ({
                         label: `${value} (${key})`,

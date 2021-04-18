@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Browser, Configuration, IBrowser} from "../Infrastructure";
+import {Browser, Configuration, Container, IBrowser} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
 
 const dollarOptions = [
@@ -27,9 +27,9 @@ const asianOptions = [
     {value: 'JPY', label: 'Japanese'},
 ]
 
-export function LocalizationCard(injection: { browser?: IBrowser, config?: Configuration }) {
-    const browser = injection.browser || Browser.instance();
-    const config = injection.config || Configuration.instance();
+export function LocalizationCard() {
+    const container = Container.factory();
+    const config = container.configuration;
     const alert = config.alert.localization;
     const asian = config.localization.asian;
     const dollar = config.localization.dollar;

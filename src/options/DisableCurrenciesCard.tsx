@@ -2,14 +2,15 @@ import * as React from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {useEffect, useState} from "react";
-import {Browser, Configuration, IBrowser} from "../Infrastructure";
+import {Browser, Configuration, Container, IBrowser} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
 import styled from "styled-components";
 
-export function DisableCurrenciesCard(injection: { browser?: IBrowser, config?: Configuration }) {
-    const browser = injection.browser || Browser.instance();
-    const config = injection.config || Configuration.instance();
+export function DisableCurrenciesCard() {
+    const container = Container.factory();
+    const config = container.configuration;
     const disabledCurrencies = config.disabledCurrencies.tags;
+    const backendApi = container.backendApi;
 
     const [list, setList] = useState<string[]>(disabledCurrencies.value || []);
     const [options, setOptions] = useState<{ value: string, label: string }[]>([]);
@@ -17,7 +18,7 @@ export function DisableCurrenciesCard(injection: { browser?: IBrowser, config?: 
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        browser.background.getSymbols()
+        backendApi.symbols()
             .then(symbols => Object.entries(symbols)
                 .map(([key, value]) => ({
                         label: `${value} (${key})`,

@@ -1,5 +1,5 @@
-import {Browser, IBrowser} from "../";
 import {Setting, ISetting} from "./Setting";
+import {BuiltContainer} from "../DependencyInjection/Container";
 
 const isBool = (e: any) => typeof (e) === 'boolean';
 
@@ -18,16 +18,8 @@ const isDistinctArray = (e: any) => isArray(e) && (new Set(e)).size === e.length
 const isStringArray = (e: any) => isArray(e) && e.every(isString);
 const isArrayWithRegexMatch = (e: any, match: RegExp) => isArray(e) && e.every((a: any) => hasRegexMatch(a, match))
 
-export type ConfigurationInjection = {
-    browser?: Browser
-}
-
 export class Configuration {
-    private static _instance: Configuration;
-    private browser: IBrowser;
     readonly settings: ISetting<any>[];
-    readonly byStorageKey: { [key: string]: ISetting<any> }
-    readonly byHtmlId: { [key: string]: ISetting<any> }
     readonly disabledCurrencies: DisabledCurrencies;
     readonly alert: ConfigurationAlert;
     readonly localization: ConfigurationLocalisation;
@@ -38,37 +30,40 @@ export class Configuration {
     readonly highlight: ConfigurationHighLight;
     readonly tag: ConfigurationCustomTag;
     readonly display: ConfigurationDisplay;
+    readonly shortcut: ConfigurationShortcuts;
+    readonly firstTime: FirstTimeConfiguration;
 
-    static instance(config?: Configuration): Configuration {
-        if (config) this._instance = config;
-        if (!this._instance) this._instance = new Configuration();
-        return this._instance;
-    }
-
-    constructor(injection: ConfigurationInjection = {}) {
-        this.browser = injection.browser || Browser.instance();
+    constructor({
+                    configurationFirstTime,
+                    configurationDisabledCurrencies,
+                    configurationShortcut,
+                    configurationAlert,
+                    configurationLocalization,
+                    configurationWhitelist,
+                    configurationBlacklist,
+                    configurationCurrency,
+                    configurationUtility,
+                    configurationHighlight,
+                    configurationTag,
+                    configurationDisplay
+                }: BuiltContainer) {
         const configs = [
-            this.disabledCurrencies = new DisabledCurrencies(injection),
-            this.alert = new ConfigurationAlert(injection),
-            this.localization = new ConfigurationLocalisation(injection),
-            this.whitelist = new ConfigurationWhitelist(injection),
-            this.blacklist = new ConfigurationBlacklist(injection),
-            this.currency = new ConfigurationCurrency(injection),
-            this.utility = new ConfigurationUtility(injection),
-            this.highlight = new ConfigurationHighLight(injection),
-            this.tag = new ConfigurationCustomTag(injection),
-            this.display = new ConfigurationDisplay(injection),
+            this.firstTime = configurationFirstTime,
+            this.disabledCurrencies = configurationDisabledCurrencies,
+            this.shortcut = configurationShortcut,
+            this.alert = configurationAlert,
+            this.localization = configurationLocalization,
+            this.whitelist = configurationWhitelist,
+            this.blacklist = configurationBlacklist,
+            this.currency = configurationCurrency,
+            this.utility = configurationUtility,
+            this.highlight = configurationHighlight,
+            this.tag = configurationTag,
+            this.display = configurationDisplay,
         ];
         this.settings = configs.map(e => e.settings)
             // @ts-ignore
             .reduce((a, b) => [...a, ...b]);
-        this.byStorageKey = {};
-        this.byHtmlId = {};
-        for (let i in this.settings) {
-            const setting = this.settings[i];
-            this.byStorageKey[setting.storageKey] = setting;
-            this.byHtmlId[setting.htmlId] = setting;
-        }
     }
 
     async load(): Promise<void> {
@@ -80,16 +75,33 @@ export class Configuration {
     }
 }
 
-class DisabledCurrencies {
+export class FirstTimeConfiguration {
+    readonly isFirstTime: Setting<boolean>;
+
+    constructor({browser, logger}: BuiltContainer) {
+        this.isFirstTime = new Setting<boolean>(
+            'showFirstTimeGuide',
+            true,
+            isBool,
+            browser,
+            logger);
+    }
+
+    get settings() {
+        return [this.isFirstTime]
+    }
+}
+
+export class DisabledCurrencies {
     readonly tags: Setting<string[]>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.tags = new Setting<string[]>(
-            '',
             'disabledCurrencies',
             [],
             array => isArrayWithRegexMatch(array, /^[A-Z]{3}$/) && isDistinctArray(array),
-            injection);
+            browser,
+            logger);
     }
 
     get settings() {
@@ -97,30 +109,30 @@ class DisabledCurrencies {
     }
 }
 
-class ConfigurationDisplay {
+export class ConfigurationDisplay {
     readonly rounding: Setting<number>;
     readonly thousands: Setting<string>;
     readonly decimal: Setting<string>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.rounding = new Setting<number>(
-            '',
             'decimalAmount',
             2,
             isPositiveInt,
-            injection);
+            browser,
+            logger);
         this.thousands = new Setting<string>(
-            '',
             'thousandDisplay',
             ' ',
             e => hasLengthRange(e, 0, 1),
-            injection);
+            browser,
+            logger);
         this.decimal = new Setting<string>(
-            '',
             'decimalDisplay',
             '.',
             e => hasLength(e, 1),
-            injection);
+            browser,
+            logger);
     }
 
     get settings() {
@@ -128,30 +140,30 @@ class ConfigurationDisplay {
     }
 }
 
-class ConfigurationCustomTag {
+export class ConfigurationCustomTag {
     readonly display: Setting<string>;
     readonly value: Setting<number>;
     readonly using: Setting<boolean>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.display = new Setting<string>(
-            '',
             'currencyCustomTag',
-            ' ¤',
-            isString,
-            injection);
+            '$¤',
+            e => hasRegexMatch(e, /.*¤.*/),
+            browser,
+            logger);
         this.value = new Setting<number>(
-            '',
             'currencyCustomTagValue',
             1,
             isNumber,
-            injection);
+            browser,
+            logger);
         this.using = new Setting<boolean>(
-            '',
             'currencyUsingCustomTag',
             false,
             isBool,
-            injection);
+            browser,
+            logger);
     }
 
     get settings() {
@@ -159,14 +171,13 @@ class ConfigurationCustomTag {
     }
 }
 
-class ConfigurationHighLight {
+export class ConfigurationHighLight {
     readonly using: Setting<boolean>;
     readonly color: Setting<string>;
     readonly duration: Setting<number>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.color = new Setting<string>(
-            '',
             'currencyHighlightColor',
             'yellow',
             e => {
@@ -174,19 +185,20 @@ class ConfigurationHighLight {
                 div.style.backgroundColor = e + '';
                 return !!div.style.backgroundColor
             },
-            injection);
+            browser,
+            logger);
         this.duration = new Setting<number>(
-            '',
             'currencyHighlightDuration',
             500,
             isPositiveInt,
-            injection);
+            browser,
+            logger);
         this.using = new Setting<boolean>(
-            '',
             'currencyUsingHighlight',
             true,
             isBool,
-            injection);
+            browser,
+            logger);
     }
 
     get settings() {
@@ -194,23 +206,23 @@ class ConfigurationHighLight {
     }
 }
 
-class ConfigurationBlacklist {
+export class ConfigurationBlacklist {
     readonly using: Setting<boolean>;
     readonly urls: Setting<string[]>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.using = new Setting<boolean>(
-            '',
             'usingBlacklist',
             true,
             e => isBool(e),
-            injection);
+            browser,
+            logger);
         this.urls = new Setting<string[]>(
-            '',
             'blacklistingurls',
             [],
             array => isStringArray(array) && isDistinctArray(array),
-            injection);
+            browser,
+            logger);
     }
 
     get settings() {
@@ -218,23 +230,23 @@ class ConfigurationBlacklist {
     }
 }
 
-class ConfigurationWhitelist {
+export class ConfigurationWhitelist {
     readonly using: Setting<boolean>;
     readonly urls: Setting<string[]>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.using = new Setting<boolean>(
-            '',
             'usingWhitelist',
             false,
             isBool,
-            injection);
+            browser,
+            logger);
         this.urls = new Setting<string[]>(
-            '',
             'whitelistingurls',
             [],
             array => isStringArray(array) && isDistinctArray(array),
-            injection);
+            browser,
+            logger);
     }
 
     get settings() {
@@ -242,32 +254,32 @@ class ConfigurationWhitelist {
     }
 }
 
-class ConfigurationLocalisation {
+export class ConfigurationLocalisation {
     readonly krone: Setting<string>;
     readonly dollar: Setting<string>;
     readonly asian: Setting<string>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.dollar = new Setting<string>(
-            '',
             'currencyLocalizationDollar',
             'USD',
             e => hasLength(e, 3),
-            injection);
+            browser,
+            logger);
 
         this.asian = new Setting<string>(
-            '',
             'currencyLocalizationAsian',
             'JPY',
             e => hasLength(e, 3),
-            injection);
+            browser,
+            logger);
 
         this.krone = new Setting<string>(
-            '',
             'currencyLocalizationKroner',
             'SEK',
             e => hasLength(e, 3),
-            injection)
+            browser,
+            logger)
     }
 
     get settings() {
@@ -275,16 +287,16 @@ class ConfigurationLocalisation {
     }
 }
 
-class ConfigurationAlert {
+export class ConfigurationAlert {
     readonly localization: Setting<boolean>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.localization = new Setting<boolean>(
-            '',
             'showNonDefaultCurrencyAlert',
             true,
             isBool,
-            injection);
+            browser,
+            logger);
     }
 
     get settings() {
@@ -292,23 +304,23 @@ class ConfigurationAlert {
     }
 }
 
-class ConfigurationCurrency {
+export class ConfigurationCurrency {
     readonly tag: Setting<string>;
     readonly showInBrackets: Setting<boolean>;
 
-    constructor(injection: ConfigurationInjection = {}) {
+    constructor({browser, logger}: BuiltContainer) {
         this.tag = new Setting<string>(
-            '',
             'currency',
             'USD',
             e => hasLength(e, 3),
-            injection);
+            browser,
+            logger);
         this.showInBrackets = new Setting<boolean>(
-            '',
             'uacc:currency:brackets',
             false,
             isBool,
-            injection
+            browser,
+            logger
         );
     }
 
@@ -317,42 +329,60 @@ class ConfigurationCurrency {
     }
 }
 
-class ConfigurationUtility {
-    readonly click: Setting<boolean>;
-    readonly using: Setting<boolean>;
-    readonly shortcut: Setting<string>;
-    readonly hover: Setting<boolean>;
+export class ConfigurationShortcuts {
+    readonly convertHover: Setting<string>;
+    readonly convertAll: Setting<string>;
 
-    constructor(injection: ConfigurationInjection = {}) {
-        this.click = new Setting<boolean>(
-            '',
-            'utilityClickConvert',
-            true,
-            isBool,
-            injection
-        );
-        this.using = new Setting<boolean>(
-            '',
-            'currencyUsingAutomatic',
-            true,
-            isBool,
-            injection);
-        this.shortcut = new Setting<string>(
-            '',
+    constructor({browser, logger}: BuiltContainer) {
+        this.convertHover = new Setting<string>(
             'currencyShortcut',
             'Shift',
             isString,
-            injection);
-        this.hover = new Setting<boolean>(
+            browser,
+            logger);
+
+        this.convertAll = new Setting<string>(
+            'shortcut:convert:all',
             '',
-            'utilityHoverConvert',
-            false,
-            isBool,
-            injection);
+            isString,
+            browser,
+            logger);
     }
 
     get settings() {
-        return [this.using, this.shortcut, this.hover, this.click]
+        return [this.convertHover, this.convertAll]
+    }
+}
+
+export class ConfigurationUtility {
+    readonly click: Setting<boolean>;
+    readonly using: Setting<boolean>;
+    readonly hover: Setting<boolean>;
+
+    constructor({browser, logger}: BuiltContainer) {
+        this.click = new Setting<boolean>(
+            'utilityClickConvert',
+            true,
+            isBool,
+            browser,
+            logger
+        );
+        this.using = new Setting<boolean>(
+            'currencyUsingAutomatic',
+            true,
+            isBool,
+            browser,
+            logger);
+        this.hover = new Setting<boolean>(
+            'utilityHoverConvert',
+            false,
+            isBool,
+            browser,
+            logger);
+    }
+
+    get settings() {
+        return [this.using, this.hover, this.click]
     }
 }
 

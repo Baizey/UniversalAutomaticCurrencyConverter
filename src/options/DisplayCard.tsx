@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {Checkbox, Dropdown, Input} from "../Atoms";
+import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Browser, Configuration, IBrowser} from "../Infrastructure";
-import {Shortcut} from "../Atoms/Shortcut";
+import {Container} from "../Infrastructure";
 
-export function DisplayCard(injection: { browser?: IBrowser, config?: Configuration }) {
-    const browser = injection.browser || Browser.instance();
-    const config = injection.config || Configuration.instance();
+export function DisplayCard() {
+    const container = Container.factory();
+    const browser = container.browser;
+    const config = container.configuration;
     const display = config.tag.display;
     const using = config.tag.using;
     const rate = config.tag.value;

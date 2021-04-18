@@ -3,25 +3,21 @@ import LocalStorageArea = chrome.storage.LocalStorageArea;
 import {ITabMessenger, TabMessenger} from "../BrowserMessengers/TabMessenger";
 import {BackgroundMessenger, IBackgroundMessenger} from "../BrowserMessengers/BackgroundMessenger";
 import {IPopupMessenger, PopupMessenger} from "../BrowserMessengers/PopupMessenger";
+import {BuiltContainer} from "../DependencyInjection/Container";
 
-enum Browsers {
+
+export enum Browsers {
     Firefox = 'Firefox',
     Chrome = 'Chrome',
     Edge = 'Edge',
 }
 
-enum Environments {
+export enum Environments {
     Dev = 'development',
-    Prod = 'Production'
-}
-
-type BrowserInfo = {
-    type: Browsers
-    access: any
+    Prod = 'production'
 }
 
 export interface IBrowser {
-    // @ts-ignore
     readonly access: typeof chrome
     readonly type: Browsers
     readonly environment: Environments
@@ -35,6 +31,7 @@ export interface IBrowser {
     readonly id: string
     readonly href: string
     readonly hostAndPath: string
+    readonly hostname: string
     readonly host: string
     readonly isFirefox: boolean
     readonly isChrome: boolean
@@ -55,17 +52,7 @@ export interface IBrowser {
     saveLocal(key: string, value: any): Promise<void>
 }
 
-type Injection = {
-    environment: Environments,
-    type: Browsers,
-    access: any,
-    tab: ITabMessenger,
-    background: IBackgroundMessenger,
-    popup: IPopupMessenger
-}
-
 export class Browser implements IBrowser {
-    private static _instance: IBrowser;
     readonly tab: ITabMessenger;
     readonly background: IBackgroundMessenger;
     readonly popup: IPopupMessenger;
@@ -73,23 +60,15 @@ export class Browser implements IBrowser {
     readonly type: Browsers;
     readonly access: any;
 
-    static instance(browser?: IBrowser): IBrowser {
-        if (browser) this._instance = browser;
-        if (!this._instance) this._instance = new Browser();
-        return this._instance;
-    }
-
-    constructor(injection: Partial<Injection> = {}) {
+    constructor() {
         // @ts-ignore
-        this.environment = injection.environment || process.env.NODE_ENV;
+        this.environment = process.env.NODE_ENV;
 
-        this.tab = injection.tab || new TabMessenger(this);
-        this.background = injection.background || new BackgroundMessenger(this);
-        this.popup = injection.popup || new PopupMessenger(this);
+        this.tab = new TabMessenger(this);
+        this.background = new BackgroundMessenger(this);
+        this.popup = new PopupMessenger(this);
 
-        if (injection.type)
-            this.type = injection.type
-        else if (window.navigator.userAgent.indexOf(' Edg/') >= 0)
+        if (window.navigator.userAgent.indexOf(' Edg/') >= 0)
             this.type = Browsers.Edge;
         else { // @ts-ignore
             if (typeof browser !== "undefined")
@@ -98,11 +77,9 @@ export class Browser implements IBrowser {
                 this.type = Browsers.Chrome;
         }
 
-        if (injection.access)
-            this.access = injection.access
-        else { // @ts-ignore
-            this.access = this.isFirefox ? browser : chrome
-        }
+        // @ts-ignore
+        this.access = this.isFirefox ? browser : chrome
+
     }
 
     get reviewLink(): string {
@@ -202,10 +179,7 @@ export class Browser implements IBrowser {
         return new Promise<T>((resolve, reject) =>
             storage.get([key], resp => access.runtime.lastError ?
                 reject(Error(access.runtime.lastError.message))
-                : resolve(resp[key])))
-            .then(resp => {
-                return resp;
-            })
+                : resolve(resp[key])));
     }
 
     private saveSingle(storage: LocalStorageArea | SyncStorageArea, key: string, value: any): Promise<void> {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Checkbox, Dropdown, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Browser, Configuration, IBrowser} from "../Infrastructure";
+import {Browser, Configuration, Container, IBrowser} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
 
 const thousandsOptions = [
@@ -16,9 +16,9 @@ const commaOptions = [
     {value: '.', label: '0.50 (dot)'},
 ]
 
-export function FormattingCard(injection: { browser?: IBrowser, config?: Configuration }) {
-    const browser = injection.browser || Browser.instance();
-    const config = injection.config || Configuration.instance();
+export function FormattingCard() {
+    const container = Container.factory();
+    const config = container.configuration;
     const decimal = config.display.decimal;
     const thousands = config.display.thousands;
     const rounding = config.display.rounding;

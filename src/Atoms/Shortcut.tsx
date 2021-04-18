@@ -11,6 +11,10 @@ export function Shortcut({defaultValue, onChange}: Props) {
     const [value, setValue] = useState(defaultValue);
     return <Container
         tabIndex={0}
+        onClick={() => {
+            setValue('');
+            onChange('');
+        }}
         onKeyDown={event => {
             setValue(event.key);
             onChange(event.key);

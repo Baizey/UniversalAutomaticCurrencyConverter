@@ -1,11 +1,12 @@
 import * as React from 'react'
-import {Browser, IBrowser} from "../Infrastructure";
+import {Container} from "../Infrastructure";
 import styled from "styled-components";
 import {OptionRow, OptionsSection} from "./Shared";
 
-export function TitleCard(injection: { browser?: IBrowser }) {
-    const browser: IBrowser = injection.browser || Browser.instance();
-    return <OptionsSection title={'UA Currency Converter'}>
+export function TitleCard() {
+    const container = Container.factory();
+    const browser = container.browser;
+    return <OptionsSection title={'UA BackendApi Currency'}>
         <OptionRow key="footer-option">
             <Footer>{`Version ${browser.extensionVersion} created by ${browser.author}`}</Footer>
         </OptionRow>

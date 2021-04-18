@@ -12,7 +12,7 @@ export type BackgroundMessage = {
 }
 
 export interface IBackgroundMessenger {
-    getRate(from: string, to: string): Promise<number>
+    getRate(from: string, to: string): Promise<{ rate: number }>
 
     getSymbols(): Promise<{ [key: string]: string }>
 }
@@ -38,8 +38,8 @@ export class BackgroundMessenger implements IBackgroundMessenger {
         });
     }
 
-    getRate(from: string, to: string): Promise<number> {
-        return this.sendMessage<number>({type: BackgroundMessageType.getRate, to: to, from: from})
+    getRate(from: string, to: string): Promise<{ rate: number }> {
+        return this.sendMessage<{ rate: number }>({type: BackgroundMessageType.getRate, to: to, from: from})
     }
 
     getSymbols(): Promise<{ [key: string]: string }> {

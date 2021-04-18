@@ -2,13 +2,13 @@ import styled from "styled-components";
 import * as React from 'react';
 
 type Props = {
-    title: string
+    title?: string
     children?: JSX.Element | JSX.Element[]
 }
 
 export function OptionsSection({title, children}: Props): JSX.Element {
     return <Container>
-        <Header>{title}</Header>
+        {title ? <Header>{title}</Header> : <></>}
         {children}
     </Container>
 }
