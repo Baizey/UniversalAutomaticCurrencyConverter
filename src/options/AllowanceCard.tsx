@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {Checkbox, Dropdown, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Browser, Configuration, Container, IBrowser} from "../Infrastructure";
+import {Browser, Configuration, Container, IBrowser, useContainer} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
 import styled from "styled-components";
 import {useRef, useState} from "react";
 import {ISetting} from "../Infrastructure/Configuration/Setting";
 
 export function AllowanceCard() {
-    const config = Container.factory().configuration;
-    const useBlacklist = config.blacklist.using;
-    const useWhitelist = config.whitelist.using;
-    const whiteurls = config.whitelist.urls;
-    const blackurls = config.blacklist.urls;
+    const {configurationBlacklist, configurationWhitelist} = useContainer()
+    const useBlacklist = configurationBlacklist.using;
+    const blackurls = configurationBlacklist.urls;
+    const useWhitelist = configurationWhitelist.using;
+    const whiteurls = configurationWhitelist.urls;
 
     const [blacklist, setBlacklist] = useState(blackurls.value || [])
     const [whitelist, setWhitelist] = useState(whiteurls.value || [])

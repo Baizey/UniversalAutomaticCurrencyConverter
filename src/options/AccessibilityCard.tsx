@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {Checkbox} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Container} from "../Infrastructure";
+import {Container, useContainer} from "../Infrastructure";
 
 export function AccessibilityCard() {
-    const config = Container.factory().configuration;
-    const hover = config.utility.hover;
-    const click = config.utility.click;
-    const autoConvert = config.utility.using;
+    const {configurationUtility} = useContainer()
+    const hover = configurationUtility.hover;
+    const click = configurationUtility.click;
+    const autoConvert = configurationUtility.using;
 
     return <OptionsSection title="Accessibility">
         <OptionRow>

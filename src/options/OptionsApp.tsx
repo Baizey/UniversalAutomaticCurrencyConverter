@@ -13,19 +13,17 @@ import {DisplayCard} from "./DisplayCard";
 import {AllowanceCard} from "./AllowanceCard";
 import {ShortcutCard} from "./ShortcutCard";
 import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
-import {Container} from "../Infrastructure";
+import {Container, useContainer} from "../Infrastructure";
 
 const React = react;
 
 export default function OptionsApp(): JSX.Element {
     const [isLoading, setIsLoading] = useState(true);
     const [firstTimeProgress, setFirstTimeProgress] = useState(0);
-    const container = Container.factory();
-    const config = container.configuration;
-    const logger = container.logger;
+    const {configuration} = useContainer()
 
     useEffect(() => {
-        config.load().then(() => setIsLoading(false))
+        configuration.load().then(() => setIsLoading(false))
     }, [])
 
     function wrap(children: any) {
@@ -52,11 +50,11 @@ export default function OptionsApp(): JSX.Element {
         <AllowanceCard key="AllowanceCard-card"/>
     ]
 
-    if (config.firstTime.isFirstTime.value) return wrap([
+    if (configuration.firstTime.isFirstTime.value) return wrap([
         <Wrapper>{settings[firstTimeProgress]}</Wrapper>,
         <FirstTimeProgressCard
             progress={Math.min(100, 100 * firstTimeProgress / settings.length)}
-            skip={() => config.firstTime.isFirstTime.setAndSaveValue(false)}
+            skip={() => configuration.firstTime.isFirstTime.setAndSaveValue(false)}
             next={() => setFirstTimeProgress(firstTimeProgress + 1)}/>
     ])
 

@@ -154,3 +154,7 @@ export class Container {
         return Container.setup().build()
     }
 }
+
+export function useContainer() {
+    return Container.factory();
+}

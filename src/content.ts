@@ -1,8 +1,8 @@
 // This file is injected as a content script
 
-import {Container} from "./Infrastructure";
+import {useContainer} from "./Infrastructure";
 
-const container = Container.factory();
+const container = useContainer()
 const logger = container.logger;
 logger.info('Running...')
 

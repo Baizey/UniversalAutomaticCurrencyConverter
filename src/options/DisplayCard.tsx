@@ -1,15 +1,13 @@
 import * as React from 'react';
 import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Container} from "../Infrastructure";
+import {useContainer} from "../Infrastructure";
 
 export function DisplayCard() {
-    const container = Container.factory();
-    const browser = container.browser;
-    const config = container.configuration;
-    const display = config.tag.display;
-    const using = config.tag.using;
-    const rate = config.tag.value;
+    const {configurationTag} = useContainer()
+    const display = configurationTag.display;
+    const using = configurationTag.using;
+    const rate = configurationTag.value;
 
     return <OptionsSection title="Custom display">
         <OptionRow>

@@ -1,11 +1,10 @@
 import * as React from 'react'
-import {Container} from "../Infrastructure";
+import {Container, useContainer} from "../Infrastructure";
 import styled from "styled-components";
 import {OptionRow, OptionsSection} from "./Shared";
 
 export function TitleCard() {
-    const container = Container.factory();
-    const browser = container.browser;
+    const {browser} = useContainer()
     return <OptionsSection title={'UA BackendApi Currency'}>
         <OptionRow key="footer-option">
             <Footer>{`Version ${browser.extensionVersion} created by ${browser.author}`}</Footer>

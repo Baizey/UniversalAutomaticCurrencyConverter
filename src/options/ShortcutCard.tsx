@@ -1,13 +1,12 @@
 import * as React from 'react';
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Container} from "../Infrastructure";
+import {Container, useContainer} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
 
 export function ShortcutCard() {
-    const container = Container.factory();
-    const config = container.configuration;
-    const convertHover = config.shortcut.convertHover;
-    const convertAll = config.shortcut.convertAll;
+    const {configurationShortcut} = useContainer()
+    const convertHover = configurationShortcut.convertHover;
+    const convertAll = configurationShortcut.convertAll;
 
     return <OptionsSection title="Shortcuts">
         <OptionRow>

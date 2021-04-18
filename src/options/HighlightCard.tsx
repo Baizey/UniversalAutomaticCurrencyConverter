@@ -1,15 +1,14 @@
 import * as React from 'react';
 import {Checkbox, Dropdown, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Browser, Configuration, Container, IBrowser} from "../Infrastructure";
+import {Browser, Configuration, Container, IBrowser, useContainer} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
 
 export function HighlightCard() {
-    const container = Container.factory();
-    const config = container.configuration;
-    const color = config.highlight.color;
-    const using = config.highlight.using;
-    const duration = config.highlight.duration;
+    const {configurationHighlight} = useContainer()
+    const color = configurationHighlight.color;
+    const using = configurationHighlight.using;
+    const duration = configurationHighlight.duration;
 
     return <OptionsSection title="Conversion highlighting">
         <OptionRow>
