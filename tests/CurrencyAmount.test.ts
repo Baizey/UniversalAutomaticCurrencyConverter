@@ -42,9 +42,9 @@ describe('CurrencyAmount', () => {
         tests.forEach((test: { input: number, expect: string | string[], rounding: number }) => {
             it(`Input: ${test.input}, Expected: ${test.expect}, Rounding: ${test.rounding}`, () => {
                 // Setup
-                const container = Container.mock().build()
-                container.configuration.display.rounding.setValue(test.rounding);
-                const amount = new CurrencyAmount('EUR', test.input, container.configuration, container.backendApi);
+                const [container, build] = Container.mock()
+                build.configurationDisplay.rounding.setValue(test.rounding);
+                const amount = new CurrencyAmount('EUR', test.input, build.configuration, build.backendApi);
 
                 // Act
                 const actual = amount.roundedAmount;
@@ -68,14 +68,12 @@ describe('CurrencyAmount', () => {
         tests.forEach((test: { amount: number | number[], expect: number | number[], rate: number }) => {
             it(`Input: ${test.amount}, Expected: ${test.expect}, Rate: ${test.rate}`, async () => {
                 // Setup
-                const container = Container.mock()
+                const [container, build] = Container.mock()
                 container.backendApi.override(() => new BackendApiMock({'AAA': {'BBB': test.rate}}))
-                const build = container.build()
                 const original = new CurrencyAmount('AAA', test.amount, build.configuration, build.backendApi);
 
                 // Act
                 const actual = await original.convertTo('BBB');
-
 
                 // Assert
                 expect(actual).not.toBeNull()
@@ -91,8 +89,7 @@ describe('CurrencyAmount', () => {
 
         it(`Unknown currency`, async () => {
             // Setup
-            const container = Container.mock()
-            const build = container.build()
+            const [container, build] = Container.mock()
             const original = new CurrencyAmount('UNK', 0, build.configuration, build.backendApi);
 
             // Act
@@ -133,8 +130,7 @@ describe('CurrencyAmount', () => {
         }) => {
             it(`Rounding: ${test.rounding}, amount: ${test.amount}, currency: ${test.currency}, expect: ${test.expect}`, async () => {
                 // Setup
-                const container = Container.mock()
-                const build = container.build()
+                const [container, build] = Container.mock()
                 build.configurationDisplay.rounding.setValue(test.rounding)
                 build.configurationDisplay.decimal.setValue(test.decimal)
                 build.configurationDisplay.thousands.setValue(test.thousands)

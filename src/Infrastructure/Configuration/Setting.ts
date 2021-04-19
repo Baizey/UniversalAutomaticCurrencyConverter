@@ -6,7 +6,7 @@ export interface ISetting<T> {
     readonly storageKey: string;
     readonly validation: (v: T) => boolean;
 
-    setValue(v: T): boolean;
+    setValue(v: T | undefined): boolean;
 
     save(): Promise<void>
 
@@ -16,7 +16,6 @@ export interface ISetting<T> {
 }
 
 export class Setting<T> implements ISetting<T> {
-    private _value: T
     readonly defaultValue: T
     readonly storageKey: string
     readonly validation: (v: T) => boolean
@@ -35,6 +34,8 @@ export class Setting<T> implements ISetting<T> {
         this.defaultValue = defaultValue;
         this._value = defaultValue;
     }
+
+    private _value: T
 
     get value(): T {
         return this._value;

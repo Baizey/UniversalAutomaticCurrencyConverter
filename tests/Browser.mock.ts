@@ -1,4 +1,4 @@
-import {Browser, IBrowser} from "../src/Infrastructure";
+import {IBrowser} from "../src/Infrastructure";
 import {ITabMessenger} from "../src/Infrastructure/BrowserMessengers/TabMessenger";
 import {IPopupMessenger} from "../src/Infrastructure/BrowserMessengers/PopupMessenger";
 import {Browsers, Environments} from "../src/Infrastructure/Browser/Browser";

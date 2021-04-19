@@ -2,11 +2,10 @@ import {Configuration} from "../../Infrastructure";
 import {IBackendApi} from "../BackendApi";
 
 export class CurrencyAmount {
-    private readonly config: Configuration;
-    private readonly backendApi: IBackendApi;
-
     readonly tag: string;
     readonly amount: number[];
+    private readonly config: Configuration;
+    private readonly backendApi: IBackendApi;
 
     constructor(tag: string,
                 amount: number | number[],
@@ -16,20 +15,6 @@ export class CurrencyAmount {
         this.backendApi = backendApi;
         this.tag = tag.toUpperCase();
         this.amount = Array.isArray(amount) ? amount : [amount];
-    }
-
-    async convertTo(tag: string): Promise<CurrencyAmount | null> {
-        tag = tag.toUpperCase();
-        const rate = await this.backendApi.rate(this.tag, tag);
-        if (!rate) return null;
-        const amount = this.amount.map(e => e * rate.rate);
-        return new CurrencyAmount(tag, amount, this.config, this.backendApi);
-    }
-
-    private static round(number: string, split: number): number {
-        const start = number.substr(0, split);
-        const digit = number[split] || 1;
-        return Math.round(Number(`${start}.${digit}`));
     }
 
     get roundedAmount(): string[] {
@@ -81,6 +66,20 @@ export class CurrencyAmount {
             const leftSide = integers.split(/(?=(?:.{3})*$)/).join(thousands);
             return leftSide + (digits ? (decimal + digits) : '')
         });
+    }
+
+    private static round(number: string, split: number): number {
+        const start = number.substr(0, split);
+        const digit = number[split] || 1;
+        return Math.round(Number(`${start}.${digit}`));
+    }
+
+    async convertTo(tag: string): Promise<CurrencyAmount | null> {
+        tag = tag.toUpperCase();
+        const rate = await this.backendApi.rate(this.tag, tag);
+        if (!rate) return null;
+        const amount = this.amount.map(e => e * rate.rate);
+        return new CurrencyAmount(tag, amount, this.config, this.backendApi);
     }
 
     toString(): string {

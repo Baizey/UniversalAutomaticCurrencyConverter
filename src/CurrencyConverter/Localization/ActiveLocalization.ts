@@ -1,8 +1,7 @@
-import {Configuration, IBrowser} from "../../Infrastructure";
+import {IBrowser} from "../../Infrastructure";
 import {CurrencyLocalization} from "./CurrencyLocalization";
 import {Localizations} from "./Localization";
-import {ITextDetector} from "../Detection";
-import {BuiltContainer} from "../../Infrastructure/DependencyInjection/Container";
+import {IBuiltContainer} from "../../Infrastructure/DependencyInjection/Container";
 import {IBackendApi} from "../BackendApi";
 import {DisabledCurrencies} from "../../Infrastructure/Configuration";
 
@@ -31,6 +30,7 @@ type Compact = { dollar: string, yen: string, krone: string }
 
 export class ActiveLocalization implements IActiveLocalization {
 
+    isLocked: boolean;
     private readonly browser: IBrowser;
     private readonly disabledCurrenciesConfig: DisabledCurrencies;
     private readonly backendApi: IBackendApi;
@@ -38,12 +38,11 @@ export class ActiveLocalization implements IActiveLocalization {
     private readonly yen: CurrencyLocalization;
     private readonly dollar: CurrencyLocalization;
     private readonly lockedKey: string;
-    isLocked: boolean;
     private readonly localizationMapping: Record<string, string>;
     private readonly isDisabled: Record<string, boolean>;
     private symbols: Record<string, string>
 
-    constructor({browser, configurationLocalization, configurationDisabledCurrencies, backendApi}: BuiltContainer) {
+    constructor({browser, configurationLocalization, configurationDisabledCurrencies, backendApi}: IBuiltContainer) {
         this.disabledCurrenciesConfig = configurationDisabledCurrencies;
         this.backendApi = backendApi;
         this.browser = browser;
@@ -62,6 +61,10 @@ export class ActiveLocalization implements IActiveLocalization {
         this.yen = new CurrencyLocalization(yenKey, configurationLocalization.asian, this.browser);
     }
 
+    get compact(): [string, string, string] {
+        return [this.krone.value, this.yen.value, this.dollar.value]
+    }
+
     parseCurrency(raw: string): string | null {
         // Convert from display to currency tag
         const localized = this.localizationMapping[raw] || raw;
@@ -74,10 +77,6 @@ export class ActiveLocalization implements IActiveLocalization {
         if (this.isDisabled[localized]) return null;
 
         return localized;
-    }
-
-    get compact(): [string, string, string] {
-        return [this.krone.value, this.yen.value, this.dollar.value]
     }
 
     async load(): Promise<void> {

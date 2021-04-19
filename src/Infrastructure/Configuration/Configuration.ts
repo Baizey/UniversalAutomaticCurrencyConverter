@@ -1,5 +1,5 @@
-import {Setting, ISetting} from "./Setting";
-import {BuiltContainer} from "../DependencyInjection/Container";
+import {ISetting, Setting} from "./Setting";
+import {IBuiltContainer} from "../DependencyInjection/Container";
 
 const isBool = (e: any) => typeof (e) === 'boolean';
 
@@ -46,7 +46,7 @@ export class Configuration {
                     configurationHighlight,
                     configurationTag,
                     configurationDisplay
-                }: BuiltContainer) {
+                }: IBuiltContainer) {
         const configs = [
             this.firstTime = configurationFirstTime,
             this.disabledCurrencies = configurationDisabledCurrencies,
@@ -78,7 +78,7 @@ export class Configuration {
 export class FirstTimeConfiguration {
     readonly isFirstTime: Setting<boolean>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.isFirstTime = new Setting<boolean>(
             'showFirstTimeGuide',
             true,
@@ -95,7 +95,7 @@ export class FirstTimeConfiguration {
 export class DisabledCurrencies {
     readonly tags: Setting<string[]>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.tags = new Setting<string[]>(
             'disabledCurrencies',
             [],
@@ -114,7 +114,7 @@ export class ConfigurationDisplay {
     readonly thousands: Setting<string>;
     readonly decimal: Setting<string>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.rounding = new Setting<number>(
             'decimalAmount',
             2,
@@ -145,7 +145,7 @@ export class ConfigurationCustomTag {
     readonly value: Setting<number>;
     readonly using: Setting<boolean>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.display = new Setting<string>(
             'currencyCustomTag',
             '$¤',
@@ -176,7 +176,7 @@ export class ConfigurationHighLight {
     readonly color: Setting<string>;
     readonly duration: Setting<number>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.color = new Setting<string>(
             'currencyHighlightColor',
             'yellow',
@@ -210,7 +210,7 @@ export class ConfigurationBlacklist {
     readonly using: Setting<boolean>;
     readonly urls: Setting<string[]>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.using = new Setting<boolean>(
             'usingBlacklist',
             true,
@@ -234,7 +234,7 @@ export class ConfigurationWhitelist {
     readonly using: Setting<boolean>;
     readonly urls: Setting<string[]>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.using = new Setting<boolean>(
             'usingWhitelist',
             false,
@@ -259,7 +259,7 @@ export class ConfigurationLocalisation {
     readonly dollar: Setting<string>;
     readonly asian: Setting<string>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.dollar = new Setting<string>(
             'currencyLocalizationDollar',
             'USD',
@@ -290,7 +290,7 @@ export class ConfigurationLocalisation {
 export class ConfigurationAlert {
     readonly localization: Setting<boolean>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.localization = new Setting<boolean>(
             'showNonDefaultCurrencyAlert',
             true,
@@ -308,7 +308,7 @@ export class ConfigurationCurrency {
     readonly tag: Setting<string>;
     readonly showInBrackets: Setting<boolean>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.tag = new Setting<string>(
             'currency',
             'USD',
@@ -333,7 +333,7 @@ export class ConfigurationShortcuts {
     readonly convertHover: Setting<string>;
     readonly convertAll: Setting<string>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.convertHover = new Setting<string>(
             'currencyShortcut',
             'Shift',
@@ -359,7 +359,7 @@ export class ConfigurationUtility {
     readonly using: Setting<boolean>;
     readonly hover: Setting<boolean>;
 
-    constructor({browser, logger}: BuiltContainer) {
+    constructor({browser, logger}: IBuiltContainer) {
         this.click = new Setting<boolean>(
             'utilityClickConvert',
             true,

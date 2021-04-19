@@ -24,6 +24,14 @@ export class BackgroundMessenger implements IBackgroundMessenger {
         this.browser = browser;
     }
 
+    getRate(from: string, to: string): Promise<{ rate: number }> {
+        return this.sendMessage<{ rate: number }>({type: BackgroundMessageType.getRate, to: to, from: from})
+    }
+
+    getSymbols(): Promise<{ [key: string]: string }> {
+        return this.sendMessage<Record<string, string>>({type: BackgroundMessageType.getSymbols})
+    }
+
     private sendMessage<Response>(data: BackgroundMessage): Promise<Response> {
         const access = this.browser.access;
         return new Promise((resolve, reject) => {
@@ -36,13 +44,5 @@ export class BackgroundMessenger implements IBackgroundMessenger {
                 reject(e);
             }
         });
-    }
-
-    getRate(from: string, to: string): Promise<{ rate: number }> {
-        return this.sendMessage<{ rate: number }>({type: BackgroundMessageType.getRate, to: to, from: from})
-    }
-
-    getSymbols(): Promise<{ [key: string]: string }> {
-        return this.sendMessage<Record<string, string>>({type: BackgroundMessageType.getSymbols})
     }
 }

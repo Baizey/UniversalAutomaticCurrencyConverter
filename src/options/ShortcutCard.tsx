@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Container, useContainer} from "../Infrastructure";
+import {useContainer} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
 
 export function ShortcutCard() {

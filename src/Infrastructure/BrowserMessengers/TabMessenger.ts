@@ -19,6 +19,10 @@ export class TabMessenger implements ITabMessenger {
         this.browser = browser;
     }
 
+    contextMenu(): Promise<void> {
+        return this.sendMessage<void>({type: TabMessageType.openContextMenu})
+    }
+
     private sendMessage<Response>(data: TabMessage): Promise<Response> {
         const access = this.browser.access;
         return new Promise((resolve, reject) => {
@@ -36,9 +40,5 @@ export class TabMessenger implements ITabMessenger {
                 reject(e);
             }
         })
-    }
-
-    contextMenu(): Promise<void> {
-        return this.sendMessage<void>({type: TabMessageType.openContextMenu})
     }
 }

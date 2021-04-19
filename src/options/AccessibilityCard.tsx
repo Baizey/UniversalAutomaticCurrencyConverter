@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Checkbox} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Container, useContainer} from "../Infrastructure";
+import {useContainer} from "../Infrastructure";
 
 export function AccessibilityCard() {
     const {configurationUtility} = useContainer()

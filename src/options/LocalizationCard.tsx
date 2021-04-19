@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Browser, Configuration, Container, IBrowser, useContainer} from "../Infrastructure";
-import {Shortcut} from "../Atoms/Shortcut";
+import {useContainer} from "../Infrastructure";
 
 const dollarOptions = [
     {value: 'USD', label: 'American'},

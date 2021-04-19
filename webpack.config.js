@@ -7,7 +7,7 @@ const config = {
     devtool: false,
     entry: {
         popup: path.join(__dirname, "src/popup.tsx"),
-        content: path.join(__dirname, "src/content.ts"),
+        content: path.join(__dirname, "src/content.tsx"),
         background: path.join(__dirname, "src/background.ts"),
         options: path.join(__dirname, "src/options.tsx"),
     },

@@ -1,14 +1,14 @@
 import {Configuration} from "../Infrastructure";
 import {IActiveLocalization} from "./Localization";
 import {ITextDetector} from "./Detection";
-import {BuiltContainer} from "../Infrastructure/DependencyInjection/Container";
+import {IBuiltContainer} from "../Infrastructure/DependencyInjection/Container";
 
 export class Startup {
     private localization: IActiveLocalization;
     private config: Configuration;
     private detector: ITextDetector;
 
-    constructor({configuration, activeLocalization, textDetector}: BuiltContainer) {
+    constructor({configuration, activeLocalization, textDetector}: IBuiltContainer) {
         this.config = configuration
         this.localization = activeLocalization
         this.detector = textDetector;

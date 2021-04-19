@@ -1,10 +1,9 @@
 import * as React from 'react';
-import {Checkbox, Dropdown, Input} from "../Atoms";
+import {useState} from 'react';
+import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Browser, Configuration, Container, IBrowser, useContainer} from "../Infrastructure";
-import {Shortcut} from "../Atoms/Shortcut";
+import {useContainer} from "../Infrastructure";
 import styled from "styled-components";
-import {useRef, useState} from "react";
 import {ISetting} from "../Infrastructure/Configuration/Setting";
 
 export function AllowanceCard() {

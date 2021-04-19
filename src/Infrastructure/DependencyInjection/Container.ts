@@ -1,14 +1,5 @@
-import {Configuration} from "../Configuration";
-import {Browser, IBrowser} from "../Browser";
-import {BackendApi, IBackendApi} from "../../CurrencyConverter/BackendApi";
-import {ActiveLocalization, IActiveLocalization} from "../../CurrencyConverter/Localization";
-import {Singleton} from "./Singleton";
-import {Startup} from "../../CurrencyConverter/Startup";
-import {IScopedService} from "./IScopedService";
-import {ILogger, Logger} from "../Logger";
-import {TextDetector, ITextDetector} from "../../CurrencyConverter/Detection";
-import {ElementDetector, IElementDetector} from "../../CurrencyConverter/Detection/ElementDetector";
 import {
+    Configuration,
     ConfigurationAlert,
     ConfigurationBlacklist,
     ConfigurationCurrency,
@@ -22,11 +13,47 @@ import {
     DisabledCurrencies,
     FirstTimeConfiguration
 } from "../Configuration";
+import {Browser, IBrowser} from "../Browser";
+import {BackendApi, IBackendApi} from "../../CurrencyConverter/BackendApi";
+import {ActiveLocalization, IActiveLocalization} from "../../CurrencyConverter/Localization";
+import {Singleton} from "./Singleton";
+import {Startup} from "../../CurrencyConverter/Startup";
+import {IScopedService} from "./IScopedService";
+import {ILogger, Logger} from "../Logger";
+import {ITextDetector, TextDetector} from "../../CurrencyConverter/Detection";
+import {ElementDetector, IElementDetector} from "../../CurrencyConverter/Detection/ElementDetector";
 import {BrowserMock} from "../../../tests/Browser.mock";
 import {BackendApiMock} from "../../../tests/BackendApi.mock";
 
+export type IBuiltContainer = {
+    configurationFirstTime: FirstTimeConfiguration
+    configurationDisabledCurrencies: DisabledCurrencies
+    configurationShortcut: ConfigurationShortcuts
+    configurationAlert: ConfigurationAlert
+    configurationLocalization: ConfigurationLocalisation
+    configurationWhitelist: ConfigurationWhitelist
+    configurationBlacklist: ConfigurationBlacklist
+    configurationCurrency: ConfigurationCurrency
+    configurationUtility: ConfigurationUtility
+    configurationHighlight: ConfigurationHighLight
+    configurationTag: ConfigurationCustomTag
+    configurationDisplay: ConfigurationDisplay
+    configuration: Configuration
 
-export class BuiltContainer {
+    browser: IBrowser
+    logger: ILogger
+    backendApi: IBackendApi
+
+    activeLocalization: IActiveLocalization
+    textDetector: ITextDetector;
+
+    elementDetector: IElementDetector;
+    startup: Startup;
+}
+
+type IContainer = { [key in keyof IBuiltContainer]: IScopedService<IBuiltContainer[key]> }
+
+export class BuiltContainer implements IBuiltContainer {
     private container: Container;
 
     constructor(container: Container) {
@@ -74,8 +101,7 @@ export class BuiltContainer {
     get startup() { return this.container.startup.instance }
 }
 
-
-export class Container {
+export class Container implements IContainer {
     private static instance: Container;
 
     configurationFirstTime: IScopedService<FirstTimeConfiguration>
@@ -104,7 +130,7 @@ export class Container {
 
     constructor() {
         const build = this.build()
-        const singleton = function <T>(provider: (build: BuiltContainer) => T): IScopedService<T> {
+        const singleton = function <T>(provider: (build: IBuiltContainer) => T): IScopedService<T> {
             return new Singleton(build, provider);
         }
 
@@ -133,15 +159,11 @@ export class Container {
         this.startup = singleton(container => new Startup(container))
     }
 
-    build(): BuiltContainer {
-        return new BuiltContainer(this);
-    }
-
-    public static mock() {
+    public static mock(): [Container, IBuiltContainer] {
         const container = new Container();
         container.browser.override(() => new BrowserMock())
         container.backendApi.override(() => new BackendApiMock())
-        return container;
+        return [container, container.build()];
     }
 
     public static setup(container?: Container): Container {
@@ -150,11 +172,16 @@ export class Container {
         return Container.instance;
     }
 
-    public static factory(): BuiltContainer {
+    public static factory(): IBuiltContainer {
         return Container.setup().build()
+    }
+
+    build(): IBuiltContainer {
+        // @ts-ignore
+        return new BuiltContainer(this);
     }
 }
 
-export function useContainer() {
+export function useContainer(): IBuiltContainer {
     return Container.factory();
 }

@@ -22,7 +22,8 @@ An extension for Chrome, Firefox and (the new) Edge
 
 ## General features
 
-- Support for more than 170 currencies and their symbolic equivalents, getting rates from fixer.io and openexchangerates.org
+- Support for more than 170 currencies and their symbolic equivalents, getting rates from fixer.io and
+  openexchangerates.org
 
 - Intelligent currency detection, catching everything for most if not all symbols, $, £ and € to EUR, USD, GBP to 'US $'
 

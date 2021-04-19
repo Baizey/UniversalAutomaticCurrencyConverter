@@ -1,7 +1,7 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useEffect, useState} from "react";
 import {Container} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
 

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import * as react from 'react'
+import {useEffect, useState} from 'react'
 import {TitleCard} from "./TitleCard";
 import {CurrencyCard} from "./CurrencyCard";
-import {useEffect, useState} from "react";
 import {LoadingCard} from "./LoadingCard";
 import {DisableCurrenciesCard} from "./DisableCurrenciesCard";
 import {AccessibilityCard} from "./AccessibilityCard";
@@ -13,7 +13,7 @@ import {DisplayCard} from "./DisplayCard";
 import {AllowanceCard} from "./AllowanceCard";
 import {ShortcutCard} from "./ShortcutCard";
 import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
-import {Container, useContainer} from "../Infrastructure";
+import {useContainer} from "../Infrastructure";
 
 const React = react;
 

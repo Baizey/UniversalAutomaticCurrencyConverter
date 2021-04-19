@@ -2,7 +2,7 @@ import {ITextDetector} from "./TextDetector";
 import {Configuration} from "../../Infrastructure";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyElement} from "../Currency/CurrencyElement";
-import {BuiltContainer} from "../../Infrastructure/DependencyInjection/Container";
+import {IBuiltContainer} from "../../Infrastructure/DependencyInjection/Container";
 import {IActiveLocalization} from "../Localization";
 
 export interface IElementDetector {
@@ -18,7 +18,7 @@ export class ElementDetector implements IElementDetector {
     private readonly config: Configuration;
     private localization: IActiveLocalization;
 
-    constructor({configuration, backendApi, textDetector, activeLocalization}: BuiltContainer) {
+    constructor({configuration, backendApi, textDetector, activeLocalization}: IBuiltContainer) {
         this.config = configuration;
         this.localization = activeLocalization;
         this.backendApi = backendApi;

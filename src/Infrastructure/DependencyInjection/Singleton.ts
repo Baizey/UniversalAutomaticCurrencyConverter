@@ -1,24 +1,24 @@
 import {IScopedService} from "./IScopedService";
-import {BuiltContainer} from "./Container";
+import {IBuiltContainer} from "./Container";
 
 export class Singleton<T> implements IScopedService<T> {
     private _value?: T
-    private provider: (container: BuiltContainer) => T
-    private readonly built: BuiltContainer
+    private provider: (container: IBuiltContainer) => T
+    private readonly built: IBuiltContainer
 
-    constructor(built: BuiltContainer, provider: (container: BuiltContainer) => T) {
+    constructor(built: IBuiltContainer, provider: (container: IBuiltContainer) => T) {
         this.built = built;
         this.provider = provider;
-    }
-
-    override(input: (container: BuiltContainer) => T): IScopedService<T> {
-        this.provider = input;
-        this._value = undefined;
-        return this;
     }
 
     get instance(): T {
         if (!this._value) this._value = this.provider(this.built);
         return this._value;
+    }
+
+    override(input: (container: IBuiltContainer) => T): IScopedService<T> {
+        this.provider = input;
+        this._value = undefined;
+        return this;
     }
 }

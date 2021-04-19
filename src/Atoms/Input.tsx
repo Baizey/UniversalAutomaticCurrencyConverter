@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as React from 'react';
-import {RefObject, useState} from "react";
+import {useState} from 'react';
 
 type Props = {
     placeholder?: string,

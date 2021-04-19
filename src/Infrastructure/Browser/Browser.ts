@@ -3,7 +3,6 @@ import LocalStorageArea = chrome.storage.LocalStorageArea;
 import {ITabMessenger, TabMessenger} from "../BrowserMessengers/TabMessenger";
 import {BackgroundMessenger, IBackgroundMessenger} from "../BrowserMessengers/BackgroundMessenger";
 import {IPopupMessenger, PopupMessenger} from "../BrowserMessengers/PopupMessenger";
-import {BuiltContainer} from "../DependencyInjection/Container";
 
 
 export enum Browsers {
@@ -142,10 +141,6 @@ export class Browser implements IBrowser {
         return index < 0 ? '' : this.hostname.substr(index + 1);
     }
 
-    openReviewLink(): void {
-        this.access.tabs.create({url: this.reviewLink});
-    }
-
     get isFirefox(): boolean {
         return this.type === Browsers.Firefox;
     }
@@ -156,6 +151,10 @@ export class Browser implements IBrowser {
 
     get isEdge(): boolean {
         return this.type === Browsers.Edge;
+    }
+
+    openReviewLink(): void {
+        this.access.tabs.create({url: this.reviewLink});
     }
 
     async loadLocal<T>(key: string): Promise<T> {

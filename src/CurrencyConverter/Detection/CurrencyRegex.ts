@@ -45,79 +45,12 @@ export type RegexResult = {
 }
 
 export class CurrencyRegex {
-    private regex: RegExp;
     readonly text: string;
+    private regex: RegExp;
 
     constructor(text: string) {
         this.text = text;
         this.regex = new RegExp(CurrencyRegex.constructRegex(), 'gm')
-    }
-
-    test(): boolean {
-        return this.regex.test(this.text);
-    }
-
-    next(): null | RegexResult {
-        const regexResult = this.regex.exec(this.text);
-        if (!regexResult) return null;
-        // Allows us to reuse a start/end symbol to catch currency close together like '5$ 5$'
-        if (regexResult[0].length > 1) this.regex.lastIndex--;
-
-        // Firefox doesnt have a groups object, but rather has it on the result itself
-        if (!regexResult.groups) // @ts-ignore
-            regexResult.groups = regexResult;
-
-        const group = regexResult.groups as RegexGroups;
-
-        const leftOuter = [
-            group.start
-        ].map(e => (e || '').length)
-            .reduce((a, b) => a + b) + regexResult.index
-        const leftInner = [
-            group.currencyLeft,
-            group.whitespaceLeft
-        ].map(e => (e || '').length)
-            .reduce((a, b) => a + b) + leftOuter
-        const leftAmount = [
-            group.negLeft
-        ].map(e => (e || '').length)
-            .reduce((a, b) => a + b) + leftInner
-        const rightAmount = 1 + leftAmount
-        const rightInner = [
-            group.integerLeft,
-            group.full_decimalLeft,
-            group.range_inner,
-            group.amountRight,
-        ].map(e => (e || '').length)
-            .reduce((a, b) => a + b) + leftAmount
-        const rightOuter = [
-            group.whitespaceRight,
-            group.currencyRight
-        ].map(e => (e || '').length)
-            .reduce((a, b) => a + b) + rightInner
-
-        const amounts = [{
-            neg: group.negLeft || '+',
-            integer: group.integerLeft || '',
-            decimal: group.decimalLeft || ''
-        }]
-        if (group.integerRight)
-            amounts.push({
-                neg: group.negRight || '+',
-                integer: group.integerRight || '',
-                decimal: group.decimalRight || ''
-            })
-
-        return {
-            startIndex: regexResult.index,
-            length: regexResult[0].length,
-            indexes: [leftOuter, leftInner, leftAmount, rightAmount, rightInner, rightOuter],
-            text: regexResult[0],
-            parts: regexResult,
-            groups: group,
-            currencies: [group.currencyLeft || '', group.currencyRight || ''],
-            amounts: amounts
-        } as RegexResult
     }
 
     private static currencyRegex(key: string) {
@@ -187,5 +120,72 @@ export class CurrencyRegex {
             end,
         ].join('');
 
+    }
+
+    test(): boolean {
+        return this.regex.test(this.text);
+    }
+
+    next(): null | RegexResult {
+        const regexResult = this.regex.exec(this.text);
+        if (!regexResult) return null;
+        // Allows us to reuse a start/end symbol to catch currency close together like '5$ 5$'
+        if (regexResult[0].length > 1) this.regex.lastIndex--;
+
+        // Firefox doesnt have a groups object, but rather has it on the result itself
+        if (!regexResult.groups) // @ts-ignore
+            regexResult.groups = regexResult;
+
+        const group = regexResult.groups as RegexGroups;
+
+        const leftOuter = [
+            group.start
+        ].map(e => (e || '').length)
+            .reduce((a, b) => a + b) + regexResult.index
+        const leftInner = [
+            group.currencyLeft,
+            group.whitespaceLeft
+        ].map(e => (e || '').length)
+            .reduce((a, b) => a + b) + leftOuter
+        const leftAmount = [
+            group.negLeft
+        ].map(e => (e || '').length)
+            .reduce((a, b) => a + b) + leftInner
+        const rightAmount = 1 + leftAmount
+        const rightInner = [
+            group.integerLeft,
+            group.full_decimalLeft,
+            group.range_inner,
+            group.amountRight,
+        ].map(e => (e || '').length)
+            .reduce((a, b) => a + b) + leftAmount
+        const rightOuter = [
+            group.whitespaceRight,
+            group.currencyRight
+        ].map(e => (e || '').length)
+            .reduce((a, b) => a + b) + rightInner
+
+        const amounts = [{
+            neg: group.negLeft || '+',
+            integer: group.integerLeft || '',
+            decimal: group.decimalLeft || ''
+        }]
+        if (group.integerRight)
+            amounts.push({
+                neg: group.negRight || '+',
+                integer: group.integerRight || '',
+                decimal: group.decimalRight || ''
+            })
+
+        return {
+            startIndex: regexResult.index,
+            length: regexResult[0].length,
+            indexes: [leftOuter, leftInner, leftAmount, rightAmount, rightInner, rightOuter],
+            text: regexResult[0],
+            parts: regexResult,
+            groups: group,
+            currencies: [group.currencyLeft || '', group.currencyRight || ''],
+            amounts: amounts
+        } as RegexResult
     }
 }

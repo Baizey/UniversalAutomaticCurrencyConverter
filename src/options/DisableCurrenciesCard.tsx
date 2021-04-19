@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {Checkbox, Dropdown} from "../Atoms";
+import {useEffect, useState} from 'react';
+import {Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useEffect, useState} from "react";
-import {Browser, Configuration, Container, IBrowser, useContainer} from "../Infrastructure";
+import {useContainer} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
 import styled from "styled-components";
 

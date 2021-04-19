@@ -1,0 +1,10 @@
+#uacc-root {
+    font-family: Arial, sans-serif;
+    width: 450px;
+    min-height: 500px;
+    height: fit-content;
+    z-index: 1000;
+    right: 10px;
+    bottom: 10px;
+    position: fixed;
+}
