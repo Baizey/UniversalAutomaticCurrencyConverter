@@ -6,6 +6,8 @@ export class Localizations {
         const result: Record<string, string> = {};
         const unique = Localizations.unique;
         Object.entries(unique).forEach(([key, value]) => value.forEach(symbol => result[symbol] = key))
+        const shared = Localizations.shared;
+        Object.entries(shared).forEach(([key, value]) => result[key] = value[0])
         return (this._uniqueSymbols = result)
     }
 

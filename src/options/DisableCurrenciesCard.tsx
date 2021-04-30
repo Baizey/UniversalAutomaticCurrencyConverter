@@ -2,12 +2,12 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useContainer} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
 import styled from "styled-components";
 
 export function DisableCurrenciesCard() {
-    const {backendApi, configurationDisabledCurrencies} = useContainer()
+    const {backendApi, configurationDisabledCurrencies} = useProvider()
     const disabledCurrencies = configurationDisabledCurrencies.tags;
 
     const [list, setList] = useState<string[]>(disabledCurrencies.value || []);

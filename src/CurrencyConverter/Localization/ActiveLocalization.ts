@@ -1,9 +1,9 @@
 import {IBrowser} from "../../Infrastructure";
 import {CurrencyLocalization} from "./CurrencyLocalization";
 import {Localizations} from "./Localization";
-import {IBuiltContainer} from "../../Infrastructure/DependencyInjection/Container";
 import {IBackendApi} from "../BackendApi";
-import {DisabledCurrencies} from "../../Infrastructure/Configuration";
+import {ConfigurationDisabledCurrencies} from "../../Infrastructure/Configuration";
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 export interface IActiveLocalization {
     readonly compact: [string, string, string]
@@ -32,7 +32,7 @@ export class ActiveLocalization implements IActiveLocalization {
 
     isLocked: boolean;
     private readonly browser: IBrowser;
-    private readonly disabledCurrenciesConfig: DisabledCurrencies;
+    private readonly disabledCurrenciesConfig: ConfigurationDisabledCurrencies;
     private readonly backendApi: IBackendApi;
     private readonly krone: CurrencyLocalization;
     private readonly yen: CurrencyLocalization;
@@ -42,7 +42,7 @@ export class ActiveLocalization implements IActiveLocalization {
     private readonly isDisabled: Record<string, boolean>;
     private symbols: Record<string, string>
 
-    constructor({browser, configurationLocalization, configurationDisabledCurrencies, backendApi}: IBuiltContainer) {
+    constructor({browser, configurationLocalization, configurationDisabledCurrencies, backendApi}: DependencyProvider) {
         this.disabledCurrenciesConfig = configurationDisabledCurrencies;
         this.backendApi = backendApi;
         this.browser = browser;
@@ -68,10 +68,11 @@ export class ActiveLocalization implements IActiveLocalization {
     parseCurrency(raw: string): string | null {
         // Convert from display to currency tag
         const localized = this.localizationMapping[raw] || raw;
-        if (!raw) return null;
+
+        if (!localized) return null;
 
         // Verify it exists in our known currency tags
-        if (!this.symbols[raw]) return null;
+        if (!this.symbols[localized]) return null;
 
         // Verify it is not disabled
         if (this.isDisabled[localized]) return null;

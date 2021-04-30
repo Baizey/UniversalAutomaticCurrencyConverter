@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useContainer} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
 
 export function ShortcutCard() {
-    const {configurationShortcut} = useContainer()
+    const {configurationShortcut} = useProvider()
     const convertHover = configurationShortcut.convertHover;
     const convertAll = configurationShortcut.convertAll;
 

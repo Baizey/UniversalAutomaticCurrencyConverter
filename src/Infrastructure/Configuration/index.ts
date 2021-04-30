@@ -8,6 +8,6 @@ export {
     ConfigurationShortcuts,
     ConfigurationUtility,
     ConfigurationWhitelist,
-    DisabledCurrencies,
-    FirstTimeConfiguration
+    ConfigurationDisabledCurrencies,
+    ConfigurationFirstTime
 } from "./Configuration";

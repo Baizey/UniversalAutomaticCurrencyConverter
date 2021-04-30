@@ -1,5 +1,5 @@
 import {IBrowser} from "../Browser";
-import {IBuiltContainer} from "../DependencyInjection/Container";
+import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 
 export interface ILogger {
     debug(message: string): void
@@ -15,7 +15,7 @@ export interface ILogger {
 export class Logger implements ILogger {
     private browser: IBrowser;
 
-    constructor({browser}: IBuiltContainer) {
+    constructor({browser}: DependencyProvider) {
         this.browser = browser;
     }
 

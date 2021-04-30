@@ -1,6 +1,7 @@
-import {Container} from "../src/Infrastructure";
 import {CurrencyAmount} from "../src/CurrencyConverter/Currency/CurrencyAmount";
 import {BackendApiMock} from "./BackendApi.mock";
+import useMockContainer from './Container.mock';
+import {BackendApi, IBackendApi} from '../src/CurrencyConverter/BackendApi';
 
 describe('CurrencyAmount', () => {
     describe('Rounding', () => {
@@ -42,15 +43,15 @@ describe('CurrencyAmount', () => {
         tests.forEach((test: { input: number, expect: string | string[], rounding: number }) => {
             it(`Input: ${test.input}, Expected: ${test.expect}, Rounding: ${test.rounding}`, () => {
                 // Setup
-                const [container, build] = Container.mock()
-                build.configurationDisplay.rounding.setValue(test.rounding);
-                const amount = new CurrencyAmount('EUR', test.input, build.configuration, build.backendApi);
+                const [container, provider] = useMockContainer()
+                provider.configurationDisplay.rounding.setValue(test.rounding);
+                const amount = new CurrencyAmount('EUR', test.input, provider.configuration, provider.backendApi);
 
                 // Act
                 const actual = amount.roundedAmount;
 
                 // Assert
-                if (!Array.isArray(test.expect)) test.expect = [test.expect]
+                if(!Array.isArray(test.expect)) test.expect = [test.expect]
                 expect(actual).toEqual(test.expect);
             });
         });
@@ -68,20 +69,20 @@ describe('CurrencyAmount', () => {
         tests.forEach((test: { amount: number | number[], expect: number | number[], rate: number }) => {
             it(`Input: ${test.amount}, Expected: ${test.expect}, Rate: ${test.rate}`, async () => {
                 // Setup
-                const [container, build] = Container.mock()
-                container.backendApi.override(() => new BackendApiMock({'AAA': {'BBB': test.rate}}))
-                const original = new CurrencyAmount('AAA', test.amount, build.configuration, build.backendApi);
+                const [container, provider] = useMockContainer()
+                container.getRequired<IBackendApi>(BackendApi).override(() => new BackendApiMock({'AAA': {'BBB': test.rate}}))
+                const original = new CurrencyAmount('AAA', test.amount, provider.configuration, provider.backendApi);
 
                 // Act
                 const actual = await original.convertTo('BBB');
 
                 // Assert
                 expect(actual).not.toBeNull()
-                if (!actual) return;
-                if (!Array.isArray(test.amount)) test.amount = [test.amount]
+                if(!actual) return;
+                if(!Array.isArray(test.amount)) test.amount = [test.amount]
                 expect(original.amount).toEqual(test.amount);
                 expect(original.tag).toEqual('AAA');
-                if (!Array.isArray(test.expect)) test.expect = [test.expect]
+                if(!Array.isArray(test.expect)) test.expect = [test.expect]
                 expect(actual.amount).toEqual(test.expect);
                 expect(actual.tag).toEqual('BBB');
             });
@@ -89,8 +90,8 @@ describe('CurrencyAmount', () => {
 
         it(`Unknown currency`, async () => {
             // Setup
-            const [container, build] = Container.mock()
-            const original = new CurrencyAmount('UNK', 0, build.configuration, build.backendApi);
+            const [container, provider] = useMockContainer()
+            const original = new CurrencyAmount('UNK', 0, provider.configuration, provider.backendApi);
 
             // Act
             const actual = await original.convertTo('UNK4');
@@ -130,16 +131,16 @@ describe('CurrencyAmount', () => {
         }) => {
             it(`Rounding: ${test.rounding}, amount: ${test.amount}, currency: ${test.currency}, expect: ${test.expect}`, async () => {
                 // Setup
-                const [container, build] = Container.mock()
-                build.configurationDisplay.rounding.setValue(test.rounding)
-                build.configurationDisplay.decimal.setValue(test.decimal)
-                build.configurationDisplay.thousands.setValue(test.thousands)
+                const [container, provider] = useMockContainer()
+                provider.configurationDisplay.rounding.setValue(test.rounding)
+                provider.configurationDisplay.decimal.setValue(test.decimal)
+                provider.configurationDisplay.thousands.setValue(test.thousands)
 
-                build.configurationTag.using.setValue(test.using)
-                build.configurationTag.value.setValue(test.value)
-                build.configurationTag.display.setValue(test.tag)
+                provider.configurationTag.using.setValue(test.using)
+                provider.configurationTag.value.setValue(test.value)
+                provider.configurationTag.display.setValue(test.tag)
 
-                const original = new CurrencyAmount(test.currency, test.amount, build.configuration, build.backendApi);
+                const original = new CurrencyAmount(test.currency, test.amount, provider.configuration, provider.backendApi);
 
                 // Act
                 const actual = original.toString();

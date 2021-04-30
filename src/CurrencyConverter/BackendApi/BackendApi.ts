@@ -1,6 +1,6 @@
 import {IBrowser} from "../../Infrastructure";
 import {CurrencyRate, ICurrencyRate} from "./CurrencyRate";
-import {IBuiltContainer} from "../../Infrastructure/DependencyInjection/Container";
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 export interface IBackendApi {
     symbols(): Promise<Record<string, string>>
@@ -14,7 +14,7 @@ export class BackendApi implements IBackendApi {
     private _symbolsExpireDate: number;
     private _browser: IBrowser;
 
-    constructor({browser}: IBuiltContainer) {
+    constructor({browser}: DependencyProvider) {
         this._symbolsExpireDate = 0;
         this._rates = {}
         this._symbols = undefined;

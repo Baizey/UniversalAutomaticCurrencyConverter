@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useContainer} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 
 export function DisplayCard() {
-    const {configurationTag} = useContainer()
+    const {configurationTag} = useProvider()
     const display = configurationTag.display;
     const using = configurationTag.using;
     const rate = configurationTag.value;

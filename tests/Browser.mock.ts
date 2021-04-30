@@ -54,7 +54,6 @@ export class BrowserMock implements IBrowser {
             this.type = Browsers.Chrome
         else
             this.type = Browsers.Firefox
-        console.log(`Environment: ${this.type}, ${this.environment}`)
     }
 
     loadLocal<T>(key: string): Promise<T> {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useContainer} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 
 const dollarOptions = [
     {value: 'USD', label: 'American'},
@@ -27,7 +27,7 @@ const asianOptions = [
 ]
 
 export function LocalizationCard() {
-    const {configurationAlert, configurationLocalization} = useContainer()
+    const {configurationAlert, configurationLocalization} = useProvider()
     const alert = configurationAlert.localization;
     const asian = configurationLocalization.asian;
     const dollar = configurationLocalization.dollar;

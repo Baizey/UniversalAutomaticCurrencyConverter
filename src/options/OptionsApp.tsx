@@ -13,14 +13,14 @@ import {DisplayCard} from "./DisplayCard";
 import {AllowanceCard} from "./AllowanceCard";
 import {ShortcutCard} from "./ShortcutCard";
 import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
-import {useContainer} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 
 const React = react;
 
 export default function OptionsApp(): JSX.Element {
     const [isLoading, setIsLoading] = useState(true);
     const [firstTimeProgress, setFirstTimeProgress] = useState(0);
-    const {configuration} = useContainer()
+    const {configuration} = useProvider()
 
     useEffect(() => {
         configuration.load().then(() => setIsLoading(false))

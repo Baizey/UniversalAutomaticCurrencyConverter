@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Dropdown, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useContainer} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 
 const thousandsOptions = [
     {value: ' ', label: '100 000 (space)'},
@@ -16,7 +16,7 @@ const commaOptions = [
 ]
 
 export function FormattingCard() {
-    const {configurationDisplay} = useContainer()
+    const {configurationDisplay} = useProvider()
     const decimal = configurationDisplay.decimal;
     const thousands = configurationDisplay.thousands;
     const rounding = configurationDisplay.rounding;

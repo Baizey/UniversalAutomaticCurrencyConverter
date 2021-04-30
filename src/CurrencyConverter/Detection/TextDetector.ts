@@ -1,7 +1,7 @@
 import {IActiveLocalization} from "../Localization";
 import {CurrencyRegex, RegexResult} from "./CurrencyRegex";
 import {IBackendApi} from "../BackendApi";
-import {IBuiltContainer} from "../../Infrastructure/DependencyInjection/Container";
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 export interface ITextDetector {
 
@@ -15,7 +15,7 @@ export class TextDetector implements ITextDetector {
     private readonly backendApi: IBackendApi;
     private localization: IActiveLocalization;
 
-    constructor({backendApi, activeLocalization}: IBuiltContainer) {
+    constructor({backendApi, activeLocalization}: DependencyProvider) {
         this.localization = activeLocalization;
         this.backendApi = backendApi;
     }

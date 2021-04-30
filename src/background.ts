@@ -1,7 +1,8 @@
 // This file is ran as a background script
-import {BackgroundMessage, BackgroundMessageType, Container} from "./Infrastructure";
+import {BackgroundMessage, BackgroundMessageType} from "./Infrastructure";
+import {useProvider} from './Infrastructure/DependencyInjection/DependencyInjector';
 
-const container = Container.factory();
+const container = useProvider()
 const logger = container.logger;
 logger.info('Initializing background');
 

@@ -1,8 +1,8 @@
 // This file is injected as a content script
 import * as React from "react";
-import {useContainer} from "./Infrastructure";
+import {useProvider} from "./Infrastructure";
 
-const container = useContainer()
+const container = useProvider()
 const logger = container.logger;
 logger.info('Running...')
 

@@ -7,7 +7,7 @@ import {IActiveLocalization} from "../Localization";
 
 type CurrencyInfo = {
     original: CurrencyAmount,
-    converted: CurrencyAmount,
+    converted: CurrencyAmount | null,
     left: { start: number, end: number }
     center: { start: number, end: number }
     right: { start: number, end: number }
@@ -55,7 +55,7 @@ export class CurrencyElement {
     async showConverted(force: boolean = false): Promise<boolean> {
         this.isShowingConversion = true;
         let updated = false;
-        if (!force && this.updateSnapshot()) {
+        if(!force && this.updateSnapshot()) {
             await this.convert();
             updated = true;
         }
@@ -66,7 +66,7 @@ export class CurrencyElement {
     async showOriginal(): Promise<boolean> {
         this.isShowingConversion = false;
         let updated = false;
-        if (this.updateSnapshot()) {
+        if(this.updateSnapshot()) {
             await this.convert();
             updated = true;
         }
@@ -75,35 +75,35 @@ export class CurrencyElement {
     }
 
     async updateDisplay(force: boolean = false): Promise<void> {
-        if (this.isShowingConversion) await this.showConverted(force);
+        if(this.isShowingConversion) await this.showConverted(force);
     }
 
     async flipDisplay() {
-        if (this.isShowingConversion) {
+        if(this.isShowingConversion) {
             const updated = await this.showOriginal();
-            if (updated) await this.showConverted();
+            if(updated) await this.showConverted();
         } else await this.showConverted();
     }
 
     async setupListener() {
         this.element.classList.add('uacc-clickable');
-        if (this.config.utility.click.value)
+        if(this.config.utility.click.value)
             this.element.addEventListener('click', () => this.flipDisplay());
         this.element.addEventListener('mouseover', () => {
-            if (this.config.utility.hover.value) this.flipDisplay();
+            if(this.config.utility.hover.value) this.flipDisplay();
         });
         this.element.addEventListener('mouseout', () => {
-            if (this.config.utility.hover.value) this.flipDisplay();
+            if(this.config.utility.hover.value) this.flipDisplay();
         });
     }
 
     async convert(): Promise<void> {
-        if (!this.conversionTo) return;
+        if(!this.conversionTo) return;
         this.converted = this.original.clone();
 
         const texts = this.converted.texts;
         const indexes = texts.map(e => e.length);
-        indexes.forEach((e, i) => indexes[i] = e + ((indexes[i] + 1) || 0))
+        for (let i = 0; i < indexes.length; i++) indexes[i] = (indexes[i - 1] || 0) + (texts[i - 1]?.length || 0) + (i && 1);
 
         const text = texts.join(' ');
 
@@ -115,7 +115,7 @@ export class CurrencyElement {
             const amount = new CurrencyAmount(currency, numbers, this.config, this.backendApi)
 
             let left, right;
-            if (this.localization.parseCurrency(r.currencies[0])) {
+            if(this.localization.parseCurrency(r.currencies[0])) {
                 left = r.indexes[0]
                 right = r.indexes[4]
             } else {
@@ -128,17 +128,18 @@ export class CurrencyElement {
                 left: {start: left, end: r.indexes[2]},
                 center: {start: r.indexes[2], end: r.indexes[3]},
                 right: {start: r.indexes[3], end: right}
-            } as CurrencyInfo
+            }
         }))
-
         let node = texts.length - 1
 
         function replace(start: number, end: number, replacement?: string): any {
+            if(start === end) return;
             // Move through nodes until we find contact
             while (indexes[node] >= end) node--;
+            if (node < 0) return;
 
             // If replacing, expect to only be within 1 node
-            if (replacement) {
+            if(replacement) {
                 return texts[node] =
                     texts[node].substr(0, start - indexes[node]) +
                     replacement +
@@ -146,18 +147,20 @@ export class CurrencyElement {
             }
 
             // If both start end end is within same node
-            if (start >= indexes[node])
+            if(start >= indexes[node])
                 return texts[node] =
                     texts[node].substr(0, start - indexes[node]) +
                     texts[node].substr(end - indexes[node])
 
             // Handle if we need to remove text in multiple nodes
+
             texts[node] = texts[node].substr(end - indexes[node])
             while (start <= indexes[node]) texts[node--] = ''
             texts[node] = texts[node].substr(0, start - indexes[node])
         }
 
         currencyInfo.reverse().forEach(info => {
+            if(!info.converted) return;
             const text = this.config.currency.showInBrackets.value
                 ? `${info.original.amount.join(' - ')} ${info.original.tag} (${info.converted.toString()})`
                 : info.converted.toString()
@@ -170,15 +173,15 @@ export class CurrencyElement {
 
     updateSnapshot(): boolean {
         const snapshot = new ElementSnapshot(this.element);
-        if (snapshot.isEqual(this.original)) return false;
-        if (snapshot.isEqual(this.converted)) return false;
+        if(snapshot.isEqual(this.original)) return false;
+        if(snapshot.isEqual(this.converted)) return false;
         this.original = snapshot;
         this.converted = snapshot.clone();
         return true;
     }
 
     highlight() {
-        if (!this.config.highlight.using.value) return;
+        if(!this.config.highlight.using.value) return;
         const color = this.config.highlight.color.value;
         const duration = this.config.highlight.duration.value;
         this.element.style.textShadow = `${color}  2px 0px 2px, ${color} -2px 0px 2px, ${color}  4px 0px 4px, ${color} -4px 0px 4px, ${color}  6px 0px 6px, ${color} -6px 0px 6px`;

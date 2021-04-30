@@ -1,1 +1,2 @@
-export {Container, useContainer} from './Container'
+export {Container, Provider} from './package'
+export {useProvider} from './DependencyInjector'

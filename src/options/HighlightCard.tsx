@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useContainer} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 
 export function HighlightCard() {
-    const {configurationHighlight} = useContainer()
+    const {configurationHighlight} = useProvider()
     const color = configurationHighlight.color;
     const using = configurationHighlight.using;
     const duration = configurationHighlight.duration;

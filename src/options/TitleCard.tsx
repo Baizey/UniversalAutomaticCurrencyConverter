@@ -1,10 +1,10 @@
 import * as React from 'react'
-import {useContainer} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 import styled from "styled-components";
 import {OptionRow, OptionsSection} from "./Shared";
 
 export function TitleCard() {
-    const {browser} = useContainer()
+    const {browser} = useProvider()
     return <OptionsSection title={'UA Currency Converter'}>
         <OptionRow key="footer-option">
             <Footer>{`Version ${browser.extensionVersion} created by ${browser.author}`}</Footer>

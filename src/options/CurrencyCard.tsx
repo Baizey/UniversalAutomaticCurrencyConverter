@@ -2,13 +2,14 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {Container} from "../Infrastructure";
+import {useProvider} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
+import {IBackendApi} from '../CurrencyConverter/BackendApi';
 
 export function CurrencyCard() {
-    const container = Container.factory()
+    const container = useProvider();
     const config = container.configuration;
-    const backendApi = container.backendApi;
+    const backendApi: IBackendApi = container.backendApi;
     const tag = config.currency.tag;
     const brackets = config.currency.showInBrackets;
 
