@@ -14,8 +14,8 @@ type RegexGroups = {
     integerLeft: string
 
     full_decimalLeft: string | undefined
-    decimalLeft: string | undefined
     decimalPointLeft: string | undefined
+    decimalLeft: string | undefined
 
     range_inner: string | undefined
 
@@ -26,8 +26,8 @@ type RegexGroups = {
     integerRight: string | undefined
 
     full_decimalRight: string | undefined
-    decimalRight: string | undefined
     decimalPointRight: string | undefined
+    decimalRight: string | undefined
 
     whitespaceRight: string | undefined
     currencyRight: string | undefined
@@ -35,7 +35,7 @@ type RegexGroups = {
 }
 
 function mapToGroups(result: RegExpExecArray): RegexGroups {
-    const [all, start, currencyLeft, whitespaceLeft, full_range, amountLeft, full_integerLeft, negLeft, integerLeft, full_decimalLeft, decimalLeft, decimalPointLeft, range_inner, amountRight, full_integerRight, negRight, integerRight, full_decimalRight, decimalRight, decimalPointRight, whitespaceRight, currencyRight, end] = result;
+    const [, start, currencyLeft, whitespaceLeft, full_range, amountLeft, full_integerLeft, negLeft, integerLeft, full_decimalLeft, decimalPointLeft, decimalLeft, range_inner, amountRight, full_integerRight, negRight, integerRight, full_decimalRight, decimalPointRight, decimalRight, whitespaceRight, currencyRight, end] = result;
     return {
         start,
         currencyLeft,
@@ -80,7 +80,8 @@ export class CurrencyRegex {
         this.regex = new RegExp(CurrencyRegex.constructRegex(), 'gm')
     }
 
-    private static currencyRegex(key: string) {
+    private static currencyRegex() {
+        // noinspection JSMismatchedCollectionQueryUpdate
         const empty: string[] = [],
             symbols: string = empty
                 .concat(Object.values(Localizations.unique)
@@ -93,10 +94,10 @@ export class CurrencyRegex {
         return `(${symbols})?`;
     }
 
-    private static integerRegex(key: string) {
+    private static integerRegex() {
         // Regex for parts
         const neg = /[-]?/.source
-        const integer = /(?:(?:\d{1,3}?(?:[., ]\d{3})*)|\d{4,})/.source
+        const integer = /\d{1,3}?(?:[., ]\d{3})*|\d{4,}/.source
 
         // Group naming for catching
         const negGroup = `(${neg})`
@@ -106,7 +107,7 @@ export class CurrencyRegex {
         return `(${negGroup}${integerGroup})`;
     }
 
-    private static decimalRegex(key: string) {
+    private static decimalRegex() {
         // Regex for parts
         const decimalPoint = /[,.]/.source
         const decimal = /\d+|-{2}/.source
@@ -119,31 +120,31 @@ export class CurrencyRegex {
         return `(\\s*${decimalPointGroup}\\s*${decimalGroup})?`;
     }
 
-    private static amountRegex(key: string) {
-        return `(${CurrencyRegex.integerRegex(key)}${CurrencyRegex.decimalRegex(key)})`;
+    private static amountRegex() {
+        return `(${CurrencyRegex.integerRegex()}${CurrencyRegex.decimalRegex()})`;
     }
 
     private static rangeAmountRegex() {
         const innerRange = /\s*-\s*/.source
         const innerRangeGroup = `(${innerRange})`
-        const range = `(?:${innerRangeGroup}${CurrencyRegex.amountRegex('Right')})?`;
-        return `(${CurrencyRegex.amountRegex('Left')}${range})`;
+        const range = `(?:${innerRangeGroup}${CurrencyRegex.amountRegex()})?`;
+        return `(${CurrencyRegex.amountRegex()}${range})`;
     }
 
     private static constructRegex(): string {
-        const s = /["‎+:|\`^'& ,.<>()\\/\s*]/.source;
+        const s = /["‎+:|`^'& ,.<>()\\/\s*]/.source;
         const start = `(^|${s})`;
-        const e = /["‎+:|\`^'& ,.<>()\\/\s*\-]/.source;
+        const e = /["‎+:|`^'& ,.<>()\\/\s*\-]/.source;
         const end = `($|${e})`;
 
         const whitespace = /\s*/.source;
         return [
             start,
-            CurrencyRegex.currencyRegex('Left'),
+            CurrencyRegex.currencyRegex(),
             `(${whitespace})`,
             CurrencyRegex.rangeAmountRegex(),
             `(${whitespace})`,
-            CurrencyRegex.currencyRegex('Right'),
+            CurrencyRegex.currencyRegex(),
             end,
         ].join('');
 
@@ -159,11 +160,7 @@ export class CurrencyRegex {
         // Allows us to reuse a start/end symbol to catch currency close together like '5$ 5$'
         if(regexResult[0].length > 1) this.regex.lastIndex--;
 
-        // Firefox doesnt have a groups object, but rather has it on the result itself
-        if(!regexResult.groups) // @ts-ignore
-            regexResult.groups = regexResult;
-
-        const group = regexResult.groups as RegexGroups;
+        const group = mapToGroups(regexResult)
 
         const leftOuter = [
             group.start
