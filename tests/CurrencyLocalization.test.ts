@@ -61,7 +61,7 @@ describe('CurrencyLocalization', () => {
         const [container, provider] = useMockContainer();
         const setting = new Setting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, 'key', setting);
-        spyOn(BrowserMock.prototype, 'saveLocal').and.callThrough()
+        spyOn(provider.browser, 'saveLocal').and.callThrough()
 
         // Act
         await localization.save();

@@ -59,9 +59,10 @@ describe('ActiveLocalization', () => {
     it(`Save`, async () => {
         // Setup
         const [container, provider] = useMockContainer();
-        // @ts-ignore
-        const localization: ActiveLocalization = provider.activeLocalization;
-        spyOn(CurrencyLocalization.prototype, 'save').and.callThrough()
+        const localization = provider.activeLocalization;
+        spyOn(localization.krone, 'save')
+        spyOn(localization.yen, 'save')
+        spyOn(localization.dollar, 'save')
 
         // Act
         await localization.save();

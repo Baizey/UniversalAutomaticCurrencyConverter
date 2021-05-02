@@ -6,6 +6,10 @@ import {ConfigurationDisabledCurrencies} from "../../Infrastructure/Configuratio
 import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 export interface IActiveLocalization {
+    readonly krone: CurrencyLocalization;
+    readonly yen: CurrencyLocalization;
+    readonly dollar: CurrencyLocalization;
+
     readonly compact: [string, string, string]
     isLocked: boolean
 
