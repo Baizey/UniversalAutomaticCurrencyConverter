@@ -45,7 +45,7 @@ describe('CurrencyAmount', () => {
                 // Setup
                 const [container, provider] = useMockContainer()
                 provider.configurationDisplay.rounding.setValue(test.rounding);
-                const amount = new CurrencyAmount('EUR', test.input, provider.configuration, provider.backendApi);
+                const amount = new CurrencyAmount(provider, 'EUR', test.input);
 
                 // Act
                 const actual = amount.roundedAmount;
@@ -71,7 +71,7 @@ describe('CurrencyAmount', () => {
                 // Setup
                 const [container, provider] = useMockContainer()
                 container.getRequired<IBackendApi>(BackendApi).override(() => new BackendApiMock({'AAA': {'BBB': test.rate}}))
-                const original = new CurrencyAmount('AAA', test.amount, provider.configuration, provider.backendApi);
+                const original = new CurrencyAmount(provider, 'AAA', test.amount);
 
                 // Act
                 const actual = await original.convertTo('BBB');
@@ -91,7 +91,7 @@ describe('CurrencyAmount', () => {
         it(`Unknown currency`, async () => {
             // Setup
             const [container, provider] = useMockContainer()
-            const original = new CurrencyAmount('UNK', 0, provider.configuration, provider.backendApi);
+            const original = new CurrencyAmount(provider, 'UNK', 0);
 
             // Act
             const actual = await original.convertTo('UNK4');
@@ -140,7 +140,7 @@ describe('CurrencyAmount', () => {
                 provider.configurationTag.value.setValue(test.value)
                 provider.configurationTag.display.setValue(test.tag)
 
-                const original = new CurrencyAmount(test.currency, test.amount, provider.configuration, provider.backendApi);
+                const original = new CurrencyAmount(provider, test.currency, test.amount);
 
                 // Act
                 const actual = original.toString();

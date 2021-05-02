@@ -57,7 +57,7 @@ describe('CurrencyElement', () => {
             await provider.activeLocalization.load()
             await provider.activeLocalization.overload({dollar: 'USD'})
             provider.configurationCurrency.showInBrackets.setValue(test.showInBrackets);
-            const actual = new CurrencyElement(test.element, provider.configuration, provider.backendApi, provider.textDetector, provider.activeLocalization)
+            const actual = new CurrencyElement(provider, test.element)
 
             // Act
             await actual.convertTo('USD');

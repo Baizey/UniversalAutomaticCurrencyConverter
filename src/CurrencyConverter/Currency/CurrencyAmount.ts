@@ -1,17 +1,17 @@
 import {Configuration} from "../../Infrastructure";
 import {IBackendApi} from "../BackendApi";
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 export class CurrencyAmount {
     readonly tag: string;
     readonly amount: number[];
     private readonly config: Configuration;
     private readonly backendApi: IBackendApi;
+    private readonly provider: DependencyProvider;
 
-    constructor(tag: string,
-                amount: number | number[],
-                config: Configuration,
-                backendApi: IBackendApi) {
-        this.config = config;
+    constructor({provider, configuration, backendApi}: DependencyProvider, tag: string, amount: number | number[]) {
+        this.provider = provider;
+        this.config = configuration;
         this.backendApi = backendApi;
         this.tag = tag.toUpperCase();
         this.amount = Array.isArray(amount) ? amount : [amount];
@@ -79,7 +79,7 @@ export class CurrencyAmount {
         const rate = await this.backendApi.rate(this.tag, tag);
         if (!rate) return null;
         const amount = this.amount.map(e => e * rate.rate);
-        return new CurrencyAmount(tag, amount, this.config, this.backendApi);
+        return new CurrencyAmount(this.provider, tag, amount);
     }
 
     toString(): string {

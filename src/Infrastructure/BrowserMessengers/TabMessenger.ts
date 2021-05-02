@@ -1,4 +1,5 @@
 import {IBrowser} from "../index";
+import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 
 export enum TabMessageType {
     openContextMenu,
@@ -15,7 +16,7 @@ export interface ITabMessenger {
 export class TabMessenger implements ITabMessenger {
     private browser: IBrowser;
 
-    constructor(browser: IBrowser) {
+    constructor({browser}: DependencyProvider) {
         this.browser = browser;
     }
 

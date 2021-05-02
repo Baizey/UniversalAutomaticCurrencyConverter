@@ -23,6 +23,8 @@ import {Startup} from '../../CurrencyConverter/Startup';
 import {Container, Provider} from './';
 
 export class DependencyProvider extends Provider {
+    get provider(): DependencyProvider {return this}
+
     get browser(): IBrowser { return this.getRequired(Browser) }
 
     get logger(): ILogger { return this.getRequired(Logger) }

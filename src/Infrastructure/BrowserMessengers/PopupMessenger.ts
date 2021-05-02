@@ -1,4 +1,5 @@
 import {IBrowser} from "../index";
+import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 
 export enum PopupMessageType {
 }
@@ -11,7 +12,7 @@ export interface IPopupMessenger {
 export class PopupMessenger implements IPopupMessenger {
     private browser: IBrowser;
 
-    constructor(browser: IBrowser) {
+    constructor({browser}: DependencyProvider) {
         this.browser = browser;
     }
 

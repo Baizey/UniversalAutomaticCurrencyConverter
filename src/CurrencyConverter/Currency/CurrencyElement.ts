@@ -4,6 +4,7 @@ import {ITextDetector} from "../Detection";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyAmount} from "./CurrencyAmount";
 import {IActiveLocalization} from "../Localization";
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 type CurrencyInfo = {
     original: CurrencyAmount,
@@ -28,16 +29,25 @@ export class CurrencyElement {
     private conversionTo: string;
     private isShowingConversion: boolean;
     private localization: IActiveLocalization;
+    private provider: DependencyProvider;
 
-    constructor(element: HTMLElement, config: Configuration, backendApi: IBackendApi, detector: ITextDetector, localization: IActiveLocalization) {
+    constructor({
+                    provider,
+                    configuration,
+                    backendApi,
+                    textDetector,
+                    activeLocalization
+                }: DependencyProvider,
+                element: HTMLElement) {
         this.id = ++CurrencyElement.nextId;
+        this.provider = provider;
 
         this.element = element;
 
-        this.localization = localization;
-        this.config = config;
+        this.localization = activeLocalization;
+        this.config = configuration;
         this.backendApi = backendApi;
-        this.detector = detector;
+        this.detector = textDetector;
 
         this.original = new ElementSnapshot(element)
         this.converted = this.original.clone()
@@ -112,7 +122,7 @@ export class CurrencyElement {
         const currencyInfo: CurrencyInfo[] = await Promise.all(result.map(async r => {
             const currency = this.localization.parseCurrency(r.currencies[0]) || this.localization.parseCurrency(r.currencies[1]) || ''
             const numbers = r.amounts.map(e => Number(`${e.neg + e.integer}.${e.decimal}`));
-            const amount = new CurrencyAmount(currency, numbers, this.config, this.backendApi)
+            const amount = new CurrencyAmount(this.provider, currency, numbers)
 
             let left, right;
             if(this.localization.parseCurrency(r.currencies[0])) {
@@ -136,7 +146,7 @@ export class CurrencyElement {
             if(start === end) return;
             // Move through nodes until we find contact
             while (indexes[node] >= end) node--;
-            if (node < 0) return;
+            if(node < 0) return;
 
             // If replacing, expect to only be within 1 node
             if(replacement) {

@@ -3,6 +3,7 @@ import LocalStorageArea = chrome.storage.LocalStorageArea;
 import {ITabMessenger, TabMessenger} from "../BrowserMessengers/TabMessenger";
 import {BackgroundMessenger, IBackgroundMessenger} from "../BrowserMessengers/BackgroundMessenger";
 import {IPopupMessenger, PopupMessenger} from "../BrowserMessengers/PopupMessenger";
+import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 
 
 export enum Browsers {
@@ -59,18 +60,18 @@ export class Browser implements IBrowser {
     readonly type: Browsers;
     readonly access: any;
 
-    constructor() {
+    constructor({provider}: DependencyProvider) {
         // @ts-ignore
         this.environment = process.env.NODE_ENV;
 
-        this.tab = new TabMessenger(this);
-        this.background = new BackgroundMessenger(this);
-        this.popup = new PopupMessenger(this);
+        this.tab = new TabMessenger(provider);
+        this.background = new BackgroundMessenger(provider);
+        this.popup = new PopupMessenger(provider);
 
-        if (window.navigator.userAgent.indexOf(' Edg/') >= 0)
+        if(window.navigator.userAgent.indexOf(' Edg/') >= 0)
             this.type = Browsers.Edge;
         else { // @ts-ignore
-            if (typeof browser !== "undefined")
+            if(typeof browser !== "undefined")
                 this.type = Browsers.Firefox;
             else
                 this.type = Browsers.Chrome;

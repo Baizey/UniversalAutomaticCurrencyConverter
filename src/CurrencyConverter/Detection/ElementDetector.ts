@@ -16,9 +16,11 @@ export class ElementDetector implements IElementDetector {
     private readonly detector: ITextDetector;
     private readonly backendApi: IBackendApi;
     private readonly config: Configuration;
-    private localization: IActiveLocalization;
+    private readonly localization: IActiveLocalization;
+    private readonly provider: DependencyProvider;
 
-    constructor({configuration, backendApi, textDetector, activeLocalization}: DependencyProvider) {
+    constructor({configuration, provider, backendApi, textDetector, activeLocalization}: DependencyProvider) {
+        this.provider = provider;
         this.config = configuration;
         this.localization = activeLocalization;
         this.backendApi = backendApi;
@@ -26,9 +28,9 @@ export class ElementDetector implements IElementDetector {
     }
 
     find(element: HTMLElement) {
-        if (this.detectConverterTagUp(element))
+        if(this.detectConverterTagUp(element))
             return []
-        if (!this.detect(element))
+        if(!this.detect(element))
             return []
 
         let result: CurrencyElement[] = []
@@ -36,14 +38,14 @@ export class ElementDetector implements IElementDetector {
             // @ts-ignore
             result = result.concat(this.find(element.children[i]))
 
-        if (result.length > 0)
+        if(result.length > 0)
             return result;
 
-        if (this.detectConverterTagDown(element))
+        if(this.detectConverterTagDown(element))
             return []
 
         element.setAttribute('uacc:watched', 'true')
-        return [new CurrencyElement(element, this.config, this.backendApi, this.detector, this.localization)]
+        return [new CurrencyElement(this.provider, element)]
     }
 
     detect(element: HTMLElement) {
@@ -51,17 +53,17 @@ export class ElementDetector implements IElementDetector {
     }
 
     private detectConverterTagDown(element: Element): boolean {
-        if (element.hasAttribute('uacc:watched')) return true;
+        if(element.hasAttribute('uacc:watched')) return true;
         for (let i = 0; i < element.children.length; i++) {
-            if (this.detectConverterTagDown(element.children[0]))
+            if(this.detectConverterTagDown(element.children[0]))
                 return true;
         }
         return false;
     }
 
     private detectConverterTagUp(element: Element | null): boolean {
-        if (!element) return false;
-        if (element.hasAttribute('uacc:watched')) return true;
+        if(!element) return false;
+        if(element.hasAttribute('uacc:watched')) return true;
         return this.detectConverterTagUp(element.parentElement)
     }
 

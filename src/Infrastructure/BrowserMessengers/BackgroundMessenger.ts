@@ -1,4 +1,5 @@
 import {IBrowser} from "../index";
+import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 
 export enum BackgroundMessageType {
     getRate,
@@ -20,7 +21,7 @@ export interface IBackgroundMessenger {
 export class BackgroundMessenger implements IBackgroundMessenger {
     private browser: IBrowser;
 
-    constructor(browser: IBrowser) {
+    constructor({browser}: DependencyProvider) {
         this.browser = browser;
     }
 
@@ -37,7 +38,7 @@ export class BackgroundMessenger implements IBackgroundMessenger {
         return new Promise((resolve, reject) => {
             try {
                 access.runtime.sendMessage(data, function (resp: { success: boolean, data: Response }) {
-                    if (!resp) return reject('No response');
+                    if(!resp) return reject('No response');
                     return resp.success ? resolve(resp.data) : reject(resp.data);
                 })
             } catch (e) {

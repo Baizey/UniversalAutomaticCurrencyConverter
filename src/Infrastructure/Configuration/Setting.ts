@@ -1,4 +1,5 @@
 import {IBrowser, ILogger} from "../";
+import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 
 export interface ISetting<T> {
     readonly defaultValue: T;
@@ -22,11 +23,9 @@ export class Setting<T> implements ISetting<T> {
     private browser: IBrowser;
     private logger: ILogger;
 
-    constructor(storageKey: string,
+    constructor({browser, logger}: DependencyProvider, storageKey: string,
                 defaultValue: T,
-                validation: (v: T) => boolean = () => true,
-                browser: IBrowser,
-                logger: ILogger) {
+                validation: (v: T) => boolean = () => true,) {
         this.logger = logger;
         this.browser = browser;
         this.storageKey = storageKey;
@@ -42,9 +41,9 @@ export class Setting<T> implements ISetting<T> {
     }
 
     setValue(value: T | undefined): boolean {
-        if (typeof value === 'undefined') return false;
-        if (!this.validation(value)) return false
-        if (typeof this.defaultValue === 'number') { // @ts-ignore
+        if(typeof value === 'undefined') return false;
+        if(!this.validation(value)) return false
+        if(typeof this.defaultValue === 'number') { // @ts-ignore
             this._value = Number(value)
         } else
             this._value = value;

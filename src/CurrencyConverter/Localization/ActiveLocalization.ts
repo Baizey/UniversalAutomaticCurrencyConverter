@@ -34,15 +34,21 @@ export class ActiveLocalization implements IActiveLocalization {
     private readonly browser: IBrowser;
     private readonly disabledCurrenciesConfig: ConfigurationDisabledCurrencies;
     private readonly backendApi: IBackendApi;
-    private readonly krone: CurrencyLocalization;
-    private readonly yen: CurrencyLocalization;
-    private readonly dollar: CurrencyLocalization;
+    readonly krone: CurrencyLocalization;
+    readonly yen: CurrencyLocalization;
+    readonly dollar: CurrencyLocalization;
     private readonly lockedKey: string;
     private readonly localizationMapping: Record<string, string>;
     private readonly isDisabled: Record<string, boolean>;
     private symbols: Record<string, string>
 
-    constructor({browser, configurationLocalization, configurationDisabledCurrencies, backendApi}: DependencyProvider) {
+    constructor({
+                    provider,
+                    browser,
+                    configurationLocalization,
+                    configurationDisabledCurrencies,
+                    backendApi
+                }: DependencyProvider) {
         this.disabledCurrenciesConfig = configurationDisabledCurrencies;
         this.backendApi = backendApi;
         this.browser = browser;
@@ -56,9 +62,9 @@ export class ActiveLocalization implements IActiveLocalization {
         this.symbols = {}
         this.isDisabled = {}
 
-        this.krone = new CurrencyLocalization(kroneKey, configurationLocalization.krone, this.browser);
-        this.dollar = new CurrencyLocalization(dollarKey, configurationLocalization.dollar, this.browser);
-        this.yen = new CurrencyLocalization(yenKey, configurationLocalization.asian, this.browser);
+        this.krone = new CurrencyLocalization(provider, kroneKey, configurationLocalization.krone);
+        this.dollar = new CurrencyLocalization(provider, dollarKey, configurationLocalization.dollar);
+        this.yen = new CurrencyLocalization(provider, yenKey, configurationLocalization.asian);
     }
 
     get compact(): [string, string, string] {
@@ -69,13 +75,13 @@ export class ActiveLocalization implements IActiveLocalization {
         // Convert from display to currency tag
         const localized = this.localizationMapping[raw] || raw;
 
-        if (!localized) return null;
+        if(!localized) return null;
 
         // Verify it exists in our known currency tags
-        if (!this.symbols[localized]) return null;
+        if(!this.symbols[localized]) return null;
 
         // Verify it is not disabled
-        if (this.isDisabled[localized]) return null;
+        if(this.isDisabled[localized]) return null;
 
         return localized;
     }
@@ -121,7 +127,7 @@ export class ActiveLocalization implements IActiveLocalization {
     }
 
     hasConflict(): boolean {
-        if (this.krone.hasConflict() || this.yen.hasConflict() || this.dollar.hasConflict())
+        if(this.krone.hasConflict() || this.yen.hasConflict() || this.dollar.hasConflict())
             return false;
         return !this.isLocked;
     }
@@ -129,7 +135,7 @@ export class ActiveLocalization implements IActiveLocalization {
     determineForSite(siteAsText?: string): void {
         siteAsText = siteAsText || document.body.innerText;
         // If the user has locked localization for site, do nothing
-        if (this.isLocked) return;
+        if(this.isLocked) return;
         const shared = Localizations.shared;
         this.yen.override(this._determine(this.yen.value, siteAsText, shared['¥']))
         this.dollar.override(this._determine(this.dollar.value, siteAsText, shared.$))

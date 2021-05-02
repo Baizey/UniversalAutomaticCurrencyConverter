@@ -78,13 +78,12 @@ export class Configuration {
 export class ConfigurationFirstTime {
     readonly isFirstTime: Setting<boolean>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.isFirstTime = new Setting<boolean>(
+            provider,
             'showFirstTimeGuide',
             true,
-            isBool,
-            browser,
-            logger);
+            isBool);
     }
 
     get settings() {
@@ -95,13 +94,12 @@ export class ConfigurationFirstTime {
 export class ConfigurationDisabledCurrencies {
     readonly tags: Setting<string[]>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.tags = new Setting<string[]>(
+            provider,
             'disabledCurrencies',
             [],
-            array => isArrayWithRegexMatch(array, /^[A-Z]{3}$/) && isDistinctArray(array),
-            browser,
-            logger);
+            array => isArrayWithRegexMatch(array, /^[A-Z]{3}$/) && isDistinctArray(array));
     }
 
     get settings() {
@@ -114,25 +112,22 @@ export class ConfigurationDisplay {
     readonly thousands: Setting<string>;
     readonly decimal: Setting<string>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.rounding = new Setting<number>(
+            provider,
             'decimalAmount',
             2,
-            isPositiveInt,
-            browser,
-            logger);
+            isPositiveInt);
         this.thousands = new Setting<string>(
+            provider,
             'thousandDisplay',
             ' ',
-            e => hasLengthRange(e, 0, 1),
-            browser,
-            logger);
+            e => hasLengthRange(e, 0, 1));
         this.decimal = new Setting<string>(
+            provider,
             'decimalDisplay',
             '.',
-            e => hasLength(e, 1),
-            browser,
-            logger);
+            e => hasLength(e, 1));
     }
 
     get settings() {
@@ -145,25 +140,22 @@ export class ConfigurationCustomTag {
     readonly value: Setting<number>;
     readonly using: Setting<boolean>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.display = new Setting<string>(
+            provider,
             'currencyCustomTag',
             '$¤',
-            e => hasRegexMatch(e, /.*¤.*/),
-            browser,
-            logger);
+            e => hasRegexMatch(e, /.*¤.*/));
         this.value = new Setting<number>(
+            provider,
             'currencyCustomTagValue',
             1,
-            isNumber,
-            browser,
-            logger);
+            isNumber);
         this.using = new Setting<boolean>(
+            provider,
             'currencyUsingCustomTag',
             false,
-            isBool,
-            browser,
-            logger);
+            isBool);
     }
 
     get settings() {
@@ -176,29 +168,26 @@ export class ConfigurationHighLight {
     readonly color: Setting<string>;
     readonly duration: Setting<number>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.color = new Setting<string>(
+            provider,
             'currencyHighlightColor',
             'yellow',
             e => {
                 const div = document.createElement('div');
                 div.style.backgroundColor = e + '';
                 return !!div.style.backgroundColor
-            },
-            browser,
-            logger);
+            });
         this.duration = new Setting<number>(
+            provider,
             'currencyHighlightDuration',
             500,
-            isPositiveInt,
-            browser,
-            logger);
+            isPositiveInt);
         this.using = new Setting<boolean>(
+            provider,
             'currencyUsingHighlight',
             true,
-            isBool,
-            browser,
-            logger);
+            isBool);
     }
 
     get settings() {
@@ -210,19 +199,17 @@ export class ConfigurationBlacklist {
     readonly using: Setting<boolean>;
     readonly urls: Setting<string[]>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.using = new Setting<boolean>(
+            provider,
             'usingBlacklist',
             true,
-            e => isBool(e),
-            browser,
-            logger);
+            e => isBool(e));
         this.urls = new Setting<string[]>(
+            provider,
             'blacklistingurls',
             [],
-            array => isStringArray(array) && isDistinctArray(array),
-            browser,
-            logger);
+            array => isStringArray(array) && isDistinctArray(array));
     }
 
     get settings() {
@@ -234,19 +221,17 @@ export class ConfigurationWhitelist {
     readonly using: Setting<boolean>;
     readonly urls: Setting<string[]>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.using = new Setting<boolean>(
+            provider,
             'usingWhitelist',
             false,
-            isBool,
-            browser,
-            logger);
+            isBool);
         this.urls = new Setting<string[]>(
+            provider,
             'whitelistingurls',
             [],
-            array => isStringArray(array) && isDistinctArray(array),
-            browser,
-            logger);
+            array => isStringArray(array) && isDistinctArray(array));
     }
 
     get settings() {
@@ -259,27 +244,24 @@ export class ConfigurationLocalisation {
     readonly dollar: Setting<string>;
     readonly asian: Setting<string>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.dollar = new Setting<string>(
+            provider,
             'currencyLocalizationDollar',
             'USD',
-            e => hasLength(e, 3),
-            browser,
-            logger);
+            e => hasLength(e, 3));
 
         this.asian = new Setting<string>(
+            provider,
             'currencyLocalizationAsian',
             'JPY',
-            e => hasLength(e, 3),
-            browser,
-            logger);
+            e => hasLength(e, 3));
 
         this.krone = new Setting<string>(
+            provider,
             'currencyLocalizationKroner',
             'SEK',
-            e => hasLength(e, 3),
-            browser,
-            logger)
+            e => hasLength(e, 3))
     }
 
     get settings() {
@@ -290,13 +272,12 @@ export class ConfigurationLocalisation {
 export class ConfigurationAlert {
     readonly localization: Setting<boolean>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.localization = new Setting<boolean>(
+            provider,
             'showNonDefaultCurrencyAlert',
             true,
-            isBool,
-            browser,
-            logger);
+            isBool);
     }
 
     get settings() {
@@ -308,19 +289,17 @@ export class ConfigurationCurrency {
     readonly tag: Setting<string>;
     readonly showInBrackets: Setting<boolean>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.tag = new Setting<string>(
+            provider,
             'currency',
             'USD',
-            e => hasLength(e, 3),
-            browser,
-            logger);
+            e => hasLength(e, 3));
         this.showInBrackets = new Setting<boolean>(
+            provider,
             'uacc:currency:brackets',
             false,
-            isBool,
-            browser,
-            logger
+            isBool
         );
     }
 
@@ -333,20 +312,18 @@ export class ConfigurationShortcuts {
     readonly convertHover: Setting<string>;
     readonly convertAll: Setting<string>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.convertHover = new Setting<string>(
+            provider,
             'currencyShortcut',
             'Shift',
-            isString,
-            browser,
-            logger);
+            isString);
 
         this.convertAll = new Setting<string>(
+            provider,
             'shortcut:convert:all',
             '',
-            isString,
-            browser,
-            logger);
+            isString);
     }
 
     get settings() {
@@ -359,26 +336,23 @@ export class ConfigurationUtility {
     readonly using: Setting<boolean>;
     readonly hover: Setting<boolean>;
 
-    constructor({browser, logger}: DependencyProvider) {
+    constructor({provider}: DependencyProvider) {
         this.click = new Setting<boolean>(
+            provider,
             'utilityClickConvert',
             true,
-            isBool,
-            browser,
-            logger
+            isBool
         );
         this.using = new Setting<boolean>(
+            provider,
             'currencyUsingAutomatic',
             true,
-            isBool,
-            browser,
-            logger);
+            isBool);
         this.hover = new Setting<boolean>(
+            provider,
             'utilityHoverConvert',
             false,
-            isBool,
-            browser,
-            logger);
+            isBool);
     }
 
     get settings() {

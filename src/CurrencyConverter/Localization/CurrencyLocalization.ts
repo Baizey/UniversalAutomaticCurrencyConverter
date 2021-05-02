@@ -1,4 +1,5 @@
 import {IBrowser, ISetting} from "../../Infrastructure";
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 export class CurrencyLocalization {
     value: string;
@@ -9,7 +10,7 @@ export class CurrencyLocalization {
     private readonly key: string;
     private readonly setting: ISetting<string>;
 
-    constructor(key: string, setting: ISetting<string>, browser: IBrowser) {
+    constructor({browser}: DependencyProvider, key: string, setting: ISetting<string>) {
         this.browser = browser;
         this.setting = setting;
         this.key = key
@@ -18,8 +19,8 @@ export class CurrencyLocalization {
     }
 
     override(value: string | undefined): void {
-        if (!value) return;
-        if (/^[A-Z]{3}$/.test(value))
+        if(!value) return;
+        if(/^[A-Z]{3}$/.test(value))
             this.value = value;
     }
 

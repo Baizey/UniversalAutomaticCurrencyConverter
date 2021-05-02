@@ -15,13 +15,10 @@ module.exports = config => config.set({
         "**/*.ts": "karma-typescript",
         "**/*.tsx": "karma-typescript"
     },
-    webpack: {
-        mode: 'development'
-    },
+    webpack: {mode: 'development'},
     singleRun: true,
     bundlerOptions: {sourceMap: true},
-    logLevel: config.LOG_INFO,
-    reporters: ["dots", "karma-typescript"],
+    reporters: ["karma-typescript"],
     frameworks: ["jasmine", "karma-typescript"],
     browsers: ["ChromeHeadless", "FirefoxHeadless"],
     customLaunchers: {
