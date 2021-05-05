@@ -26,6 +26,7 @@ import {
 } from '../../CurrencyConverter/Detection';
 import {ActiveLocalization, IActiveLocalization} from '../../CurrencyConverter/Localization';
 import {Container, Provider} from './';
+import {ThemeConfiguration} from '../Configuration/Configuration';
 
 export class DependencyProvider extends Provider {
     get provider(): DependencyProvider { return this }
@@ -37,6 +38,8 @@ export class DependencyProvider extends Provider {
     get backendApi(): IBackendApi { return this.getRequired(BackendApi) }
 
     get siteAllowance(): ISiteAllowance { return this.getRequired(SiteAllowance) }
+
+    get themeConfiguration(): ThemeConfiguration { return this.getRequired(ThemeConfiguration) }
 
     get configurationFirstTime(): ConfigurationFirstTime { return this.getRequired(ConfigurationFirstTime) }
 
@@ -84,6 +87,7 @@ export function addDependencies(container: Container<DependencyProvider>) {
         .addSingleton(SiteAllowance)
 
         .addSingleton(ConfigurationFirstTime)
+        .addSingleton(ThemeConfiguration)
         .addSingleton(ConfigurationDisabledCurrencies)
         .addSingleton(ConfigurationShortcuts)
         .addSingleton(ConfigurationAlert)

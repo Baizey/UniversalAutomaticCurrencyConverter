@@ -2,7 +2,7 @@ import {useTheme} from "styled-components";
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Select from 'react-select';
-import {Theme} from './Theme';
+import {MyTheme} from './StyleTheme';
 
 type Props = {
     options: { label: string, value: string }[],
@@ -13,7 +13,7 @@ type Props = {
 export function Dropdown({options, value, onChange}: Props) {
     const [selected, setSelected] = useState<{ label: string, value: string } | null>(null);
     useEffect(() => setSelected(options.filter(e => e.value === value)[0]), [])
-    const theme = useTheme() as Theme;
+    const theme = useTheme() as MyTheme;
 
     return <Select
         onChange={option => {
@@ -36,7 +36,7 @@ export function Dropdown({options, value, onChange}: Props) {
             }),
             placeholder: (provided: any) => ({
                 ...provided,
-                color: theme.subtitleText,
+                color: theme.headerText,
                 fontSize: '14px',
                 margin: 'auto',
                 width: '100%',
@@ -72,7 +72,7 @@ export function Dropdown({options, value, onChange}: Props) {
                 borderBottomStyle: 'solid',
                 height: '34px',
                 borderBottomWidth: '1px',
-                borderBottomColor: state.isFocused ? theme.borderFocus : theme.subtitleText,
+                borderBottomColor: state.isFocused ? theme.borderFocus : theme.headerText,
                 '&:hover': {
                     borderBottomColor: theme.borderFocus
                 },
@@ -83,14 +83,14 @@ export function Dropdown({options, value, onChange}: Props) {
                 ...provided,
                 padding: 0,
                 backgroundColor: theme.containerBackground,
-                borderColor: theme.subtitleText,
+                borderColor: theme.headerText,
                 borderStyle: 'solid',
                 borderWidth: '1px'
             }),
             menuList: (provided: any, state: any) => ({
                 ...provided,
                 padding: 0,
-                borderColor: theme.subtitleText,
+                borderColor: theme.headerText,
                 borderStyle: 'solid',
                 borderWidth: '1px'
             }),

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import * as react from 'react'
+import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {TitleCard} from "./TitleCard";
 import {CurrencyCard} from "./CurrencyCard";
@@ -14,10 +14,11 @@ import {AllowanceCard} from "./AllowanceCard";
 import {ShortcutCard} from "./ShortcutCard";
 import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
 import {useProvider} from "../Infrastructure";
+import {StyleTheme} from '../Atoms/StyleTheme';
+import {ThemeCard} from './ThemeCard';
 
-const React = react;
-
-export default function OptionsApp(): JSX.Element {
+type Props = { setTheme: React.Dispatch<React.SetStateAction<string>> }
+export default function OptionsApp(props: Props): JSX.Element {
     const [isLoading, setIsLoading] = useState(true);
     const [firstTimeProgress, setFirstTimeProgress] = useState(0);
     const {configuration} = useProvider()
@@ -36,7 +37,7 @@ export default function OptionsApp(): JSX.Element {
         </Background>
     }
 
-    if (isLoading) return wrap(<LoadingCard key="LoadingCard-card"/>)
+    if(isLoading) return wrap(<LoadingCard key="LoadingCard-card"/>)
 
     const settings = [
         <CurrencyCard key="CurrencyCard-card"/>,
@@ -44,13 +45,14 @@ export default function OptionsApp(): JSX.Element {
         <ShortcutCard key="ShortcutCard-card"/>,
         <AccessibilityCard key="AccessibilityCard-card"/>,
         <LocalizationCard key="LocalizationCard-card"/>,
+        <ThemeCard setTheme={props.setTheme} key="ThemeCard-card"/>,
         <FormattingCard key="FormattingCard-card"/>,
         <HighlightCard key="HighlightCard-card"/>,
         <DisplayCard key="DisplayCard-card"/>,
         <AllowanceCard key="AllowanceCard-card"/>
     ]
 
-    if (configuration.firstTime.isFirstTime.value) return wrap([
+    if(configuration.firstTime.isFirstTime.value) return wrap([
         <Wrapper>{settings[firstTimeProgress]}</Wrapper>,
         <FirstTimeProgressCard
             progress={Math.min(100, 100 * firstTimeProgress / settings.length)}
@@ -65,8 +67,8 @@ const Background = styled.div`
   width: 100%;
   min-height: 100%;
   height: fit-content;
-  background-color: ${props => props.theme.background};
-  color: ${props => props.theme.normalText};
+  background-color: ${(props: StyleTheme) => props.theme.wrapperBackground};
+  color: ${(props: StyleTheme) => props.theme.normalText};
   padding: 0;
   margin: 0;
 `;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Theme} from './Theme';
+import {PropsTheme, StyleTheme} from './StyleTheme';
 
 type Props = {
     value: boolean,
@@ -21,27 +21,27 @@ export function Checkbox({value, onChange}: Props) {
     </Container>
 }
 
-type ContainerProps = { checked: boolean, onClick: () => void, theme: Theme }
+type ContainerProps = { checked: boolean, onClick: () => void }
 const Container = styled.div<ContainerProps>`
   margin: auto;
   cursor: pointer;
   width: 30px;
   height: 30px;
-  border: ${props => `1px solid ${props.theme.subtitleText}`};
+  border: ${(props: StyleTheme) => `1px solid ${props.theme.headerText}`};
   position: relative;
   display: block;
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: ${props => props.theme.borderFocus};
+    border-color: ${(props: StyleTheme) => props.theme.borderFocus};
   }
 
   & div {
     position: absolute;
     height: 5px;
-    background-color: ${props => props.theme.success};
+    background-color: ${(props: StyleTheme) => props.theme.success};
     transition: opacity 0.3s ease-in-out;
-    opacity: ${props => props.checked ? 1 : 0};
+    opacity: ${(props) => props.checked ? 1 : 0};
   }
 
   & div:first-child {

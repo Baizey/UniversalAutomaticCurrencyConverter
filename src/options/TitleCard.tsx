@@ -2,6 +2,7 @@ import * as React from 'react'
 import {useProvider} from "../Infrastructure";
 import styled from "styled-components";
 import {OptionRow, OptionsSection} from "./Shared";
+import {StyleTheme} from '../Atoms/StyleTheme';
 
 export function TitleCard() {
     const {browser} = useProvider()
@@ -15,5 +16,5 @@ export function TitleCard() {
 const Footer = styled.div`
   margin: auto;
   text-align: center;
-  color: ${props => props.theme.helperText};
+  color: ${(props: StyleTheme) => props.theme.footerText};
 `

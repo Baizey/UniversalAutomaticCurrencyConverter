@@ -1,5 +1,5 @@
 import {CurrencyLocalization} from '../src/CurrencyConverter/Localization/CurrencyLocalization';
-import {Setting} from '../src/Infrastructure/Configuration/Setting';
+import {SyncSetting} from '../src/Infrastructure/Configuration/SyncSetting';
 import useMockContainer from './Container.mock';
 import {ActiveLocalization} from '../src/CurrencyConverter/Localization';
 
@@ -16,7 +16,7 @@ describe('ActiveLocalization', () => {
     ].forEach(test => it(`Override ${test.input} => ${test.expect}`, () => {
         // Setup
         const [container, provider] = useMockContainer();
-        const setting = new Setting<string>(provider, '', '', () => true)
+        const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
 
         // Act
@@ -32,7 +32,7 @@ describe('ActiveLocalization', () => {
     ].forEach(test => it(`Conflict ${test.input} => ${test.expect}`, () => {
         // Setup
         const [container, provider] = useMockContainer();
-        const setting = new Setting<string>(provider, '', '', () => true)
+        const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
         localization.override(test.input)
 
@@ -45,7 +45,7 @@ describe('ActiveLocalization', () => {
     ].forEach(test => it(`Reset removes conflict ${test.input} => ${test.expect}`, () => {
         // Setup
         const [container, provider] = useMockContainer();
-        const setting = new Setting<string>(provider, '', '', () => true)
+        const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
         localization.override(test.input)
 

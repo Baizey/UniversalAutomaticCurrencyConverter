@@ -2,9 +2,8 @@ import * as React from 'react';
 import {useState} from 'react';
 import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useProvider} from "../Infrastructure";
+import {ISetting, useProvider} from "../Infrastructure";
 import styled from "styled-components";
-import {ISetting} from "../Infrastructure/Configuration/Setting";
 
 export function AllowanceCard() {
     const {configurationBlacklist, configurationWhitelist} = useProvider()

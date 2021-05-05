@@ -1,6 +1,6 @@
 import styled, {ThemeProvider} from 'styled-components';
 import * as React from 'react'
-import {DarkTheme} from '../Atoms/Theme';
+import {DarkTheme, LightTheme} from '../Atoms/StyleTheme';
 
 export function MenuWrapper() {
     return <ThemeProvider theme={DarkTheme}>

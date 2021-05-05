@@ -1,22 +1,8 @@
 import {IBrowser, ILogger} from "../";
 import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
+import {ISetting} from './ISetting';
 
-export interface ISetting<T> {
-    readonly defaultValue: T;
-    readonly value: T;
-    readonly storageKey: string;
-    readonly validation: (v: T) => boolean;
-
-    setValue(v: T | undefined): boolean;
-
-    save(): Promise<void>
-
-    load(): Promise<boolean>
-
-    setAndSaveValue(v: T): Promise<boolean>
-}
-
-export class Setting<T> implements ISetting<T> {
+export class SyncSetting<T> implements ISetting<T> {
     readonly defaultValue: T
     readonly storageKey: string
     readonly validation: (v: T) => boolean
