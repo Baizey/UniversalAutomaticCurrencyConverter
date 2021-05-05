@@ -12,7 +12,7 @@ export interface IPopupMessenger {
 export class PopupMessenger implements IPopupMessenger {
     private browser: IBrowser;
 
-    constructor({browser}: DependencyProvider) {
+    constructor(browser: IBrowser) {
         this.browser = browser;
     }
 

@@ -33,10 +33,14 @@ export class TextDetector implements ITextDetector {
 
     detect(text: string) {
         const regex = new CurrencyRegex(text);
+
         if (!regex.test()) return false;
+
         while (true) {
             const result = regex.next();
+
             if (!result) return false;
+
             if (this.isCurrency(result))
                 return true;
         }

@@ -5,9 +5,17 @@ import {BackendApiMock} from './BackendApi.mock';
 import {BrowserMock} from './Browser.mock';
 
 export default function useMockContainer(): [Container<DependencyProvider>, DependencyProvider] {
-    const container = new Container(DependencyProvider);
-    addDependencies(container)
-    container.getRequired<IBrowser>(Browser).override(() => new BrowserMock())
-    container.getRequired<IBackendApi>(BackendApi).override(() => new BackendApiMock())
+    const container = addDependencies(new Container(DependencyProvider));
+    container.getRequired<IBrowser>(Browser).overrideFactory(() => new BrowserMock())
+    container.getRequired<IBackendApi>(BackendApi).overrideFactory(() => new BackendApiMock(
+        {
+            USD: {EUR: 1, DKK: 1},
+            EUR: {USD: 1, DKK: 1},
+            DKK: {USD: 1, EUR: 1}
+        }, {
+            'USD': 'y',
+            'EUR': 'y',
+            'DKK': 'y',
+        }))
     return [container, container.build()];
 }

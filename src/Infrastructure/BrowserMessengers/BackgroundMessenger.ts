@@ -21,7 +21,7 @@ export interface IBackgroundMessenger {
 export class BackgroundMessenger implements IBackgroundMessenger {
     private browser: IBrowser;
 
-    constructor({browser}: DependencyProvider) {
+    constructor(browser: IBrowser) {
         this.browser = browser;
     }
 

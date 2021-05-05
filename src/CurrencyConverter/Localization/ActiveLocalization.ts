@@ -1,4 +1,4 @@
-import {IBrowser} from "../../Infrastructure";
+import {IBrowser, ILogger} from "../../Infrastructure";
 import {CurrencyLocalization} from "./CurrencyLocalization";
 import {Localizations} from "./Localization";
 import {IBackendApi} from "../BackendApi";
@@ -45,14 +45,17 @@ export class ActiveLocalization implements IActiveLocalization {
     private readonly localizationMapping: Record<string, string>;
     private readonly isDisabled: Record<string, boolean>;
     private symbols: Record<string, string>
+    private logger: ILogger;
 
     constructor({
                     provider,
+                    logger,
                     browser,
                     configurationLocalization,
                     configurationDisabledCurrencies,
                     backendApi
                 }: DependencyProvider) {
+        this.logger = logger;
         this.disabledCurrenciesConfig = configurationDisabledCurrencies;
         this.backendApi = backendApi;
         this.browser = browser;
@@ -144,7 +147,7 @@ export class ActiveLocalization implements IActiveLocalization {
         this.yen.override(this._determine(this.yen.value, siteAsText, shared['¥']))
         this.dollar.override(this._determine(this.dollar.value, siteAsText, shared.$))
         this.krone.override(this._determine(this.krone.value, siteAsText, shared.kr))
-        // TODO: this.browser.log(`Found localization conflict ${await this.hasConflict()}...`);
+        this.logger.debug(`Found localization conflict: ${this.hasConflict()}`);
     }
 
     private _determine(currentTag: string, text: string, tags: string[]): string {

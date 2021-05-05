@@ -1,5 +1,5 @@
 import {ITextDetector} from "./TextDetector";
-import {Configuration} from "../../Infrastructure";
+import {Configuration, ILogger} from "../../Infrastructure";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyElement} from "../Currency/CurrencyElement";
 import {IActiveLocalization} from "../Localization";
@@ -13,49 +13,50 @@ export interface IElementDetector {
 }
 
 export class ElementDetector implements IElementDetector {
-    private readonly detector: ITextDetector;
+    private readonly textDetector: ITextDetector;
     private readonly backendApi: IBackendApi;
     private readonly config: Configuration;
     private readonly localization: IActiveLocalization;
     private readonly provider: DependencyProvider;
+    private readonly logger: ILogger;
 
-    constructor({configuration, provider, backendApi, textDetector, activeLocalization}: DependencyProvider) {
+    constructor({configuration, provider, backendApi, textDetector, activeLocalization, logger}: DependencyProvider) {
         this.provider = provider;
+        this.logger = logger;
         this.config = configuration;
         this.localization = activeLocalization;
         this.backendApi = backendApi;
-        this.detector = textDetector;
+        this.textDetector = textDetector;
     }
 
     find(element: HTMLElement) {
-        if(this.detectConverterTagUp(element))
-            return []
-        if(!this.detect(element))
-            return []
+        if(!element) return [];
+
+        if(this.detectConverterTagUp(element)) return []
+
+        if(!this.detect(element)) return []
 
         let result: CurrencyElement[] = []
         for (let i = 0; i < element.children.length; i++)
-            // @ts-ignore
-            result = result.concat(this.find(element.children[i]))
+            result = result.concat(this.find(element.children[i] as HTMLElement))
 
         if(result.length > 0)
             return result;
 
-        if(this.detectConverterTagDown(element))
-            return []
+        if(this.detectConverterTagDown(element)) return []
 
         element.setAttribute('uacc:watched', 'true')
         return [new CurrencyElement(this.provider, element)]
     }
 
     detect(element: HTMLElement) {
-        return this.detector.detect(element.innerText)
+        return this.textDetector.detect(element.innerText)
     }
 
     private detectConverterTagDown(element: Element): boolean {
         if(element.hasAttribute('uacc:watched')) return true;
         for (let i = 0; i < element.children.length; i++) {
-            if(this.detectConverterTagDown(element.children[0]))
+            if(this.detectConverterTagDown(element.children[i]))
                 return true;
         }
         return false;

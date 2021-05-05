@@ -85,7 +85,6 @@ describe('TextDetector', () => {
         it(`${test.name || test.text}`, async () => {
             // Setup
             const [container, provider] = useMockContainer();
-            container.getRequired<IBackendApi>(BackendApi).override(() => new BackendApiMock({'EUR': {'USD': 1}}, {'USD': 'y', 'EUR': 'y'}))
             await provider.activeLocalization.load()
             await provider.activeLocalization.overload({dollar: 'USD'})
             const detector = provider.textDetector;

@@ -27,6 +27,7 @@
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^8.1.1",
     "css-loader": "^5.2.4",
+    "ts-loader": "^9.1.1",
     "expect": "^26.6.2",
     "file-loader": "^6.2.0",
     "jasmine": "^3.7.0",

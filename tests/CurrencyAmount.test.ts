@@ -70,7 +70,7 @@ describe('CurrencyAmount', () => {
             it(`Input: ${test.amount}, Expected: ${test.expect}, Rate: ${test.rate}`, async () => {
                 // Setup
                 const [container, provider] = useMockContainer()
-                container.getRequired<IBackendApi>(BackendApi).override(() => new BackendApiMock({'AAA': {'BBB': test.rate}}))
+                container.getRequired<IBackendApi>(BackendApi).overrideFactory(() => new BackendApiMock({'AAA': {'BBB': test.rate}}))
                 const original = new CurrencyAmount(provider, 'AAA', test.amount);
 
                 // Act

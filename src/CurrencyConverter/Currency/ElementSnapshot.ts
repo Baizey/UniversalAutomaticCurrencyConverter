@@ -1,14 +1,18 @@
 export class ElementSnapshot {
 
-    readonly nodes: Node[]
+    private readonly nodes: Node[]
     readonly texts: string[]
 
     constructor(node: Node | ElementSnapshot) {
         if (node instanceof ElementSnapshot) {
+            // Nodes should always point at the same nodes, so we can safely reuse the exact array
             this.nodes = node.nodes
+            // Texts may change, so we always need to ensure we dont reuse them in different snapshots
             this.texts = node.texts.map(e => e);
             return;
         }
+
+        // Collect text nodes in the order which we can best assume their text would be displayed on screen
         this.nodes = [];
         const queue: Node[] = [node];
         while (queue.length > 0) {

@@ -50,7 +50,7 @@ describe('CurrencyElement', () => {
         it(`${test.name}`, async () => {
             // Setup
             const [container, provider] = useMockContainer()
-            container.getRequired<IBackendApi>(BackendApi).override(() => new BackendApiMock({
+            container.getRequired<IBackendApi>(BackendApi).overrideFactory(() => new BackendApiMock({
                 USD: {EUR: 1},
                 EUR: {USD: 1}
             }, {USD: 'y', EUR: 'y'}))

@@ -151,7 +151,10 @@ export class CurrencyRegex {
     }
 
     test(): boolean {
-        return this.regex.test(this.text);
+        const oldIndex = this.regex.lastIndex;
+        const result = this.regex.test(this.text);
+        this.regex.lastIndex = oldIndex;
+        return result;
     }
 
     next(): null | RegexResult {

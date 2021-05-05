@@ -11,13 +11,13 @@ export function ShortcutCard() {
     return <OptionsSection title="Shortcuts">
         <OptionRow>
             <SettingOption title="Convert-hovered shortcut"
-                           help={"Left-click, then click your desired shortcut key"}>
+                           help={"Left-click, then click your desired shortcut key, right-click to remove shortcut"}>
                 <Shortcut
                     defaultValue={convertHover.value}
                     onChange={value => convertHover.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Convert-all shortcut"
-                           help={"Left-click, then click your desired shortcut key"}>
+                           help={"Left-click, then click your desired shortcut key, right-click to remove shortcut"}>
                 <Shortcut
                     defaultValue={convertAll.value}
                     onChange={value => convertAll.setAndSaveValue(value)}/>

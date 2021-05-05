@@ -60,22 +60,20 @@ export class Browser implements IBrowser {
     readonly type: Browsers;
     readonly access: any;
 
-    constructor({provider}: DependencyProvider) {
-        // @ts-ignore
-        this.environment = process.env.NODE_ENV;
+    constructor({}: DependencyProvider) {
+        this.environment = process.env.NODE_ENV as Environments;
 
-        this.tab = new TabMessenger(provider);
-        this.background = new BackgroundMessenger(provider);
-        this.popup = new PopupMessenger(provider);
+        this.tab = new TabMessenger(this);
+        this.background = new BackgroundMessenger(this);
+        this.popup = new PopupMessenger(this);
 
         if(window.navigator.userAgent.indexOf(' Edg/') >= 0)
             this.type = Browsers.Edge;
-        else { // @ts-ignore
-            if(typeof browser !== "undefined")
-                this.type = Browsers.Firefox;
-            else
-                this.type = Browsers.Chrome;
-        }
+        // @ts-ignore (browser is not recognized, but it exists on Firefox)
+        else if(typeof browser !== "undefined")
+            this.type = Browsers.Firefox;
+        else
+            this.type = Browsers.Chrome;
 
         // @ts-ignore
         this.access = this.isFirefox ? browser : chrome

@@ -93,7 +93,7 @@ describe('CurrencyRegex', () => {
         it(`${test.name || test.text}`, async () => {
             // Setup
             const [container, provider] = useMockContainer();
-            container.getRequired<IBackendApi>(BackendApi).override(() => new BackendApiMock({'EUR': {'USD': 1}}))
+            container.getRequired<IBackendApi>(BackendApi).overrideFactory(() => new BackendApiMock({'EUR': {'USD': 1}}))
             await provider.activeLocalization.overload({dollar: 'USD'})
             const regex = new CurrencyRegex(test.text);
 

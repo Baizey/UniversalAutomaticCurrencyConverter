@@ -62,6 +62,11 @@ export class CurrencyElement {
         await this.convert();
     }
 
+    show(showConverted: boolean): Promise<boolean> {
+        if(showConverted) return this.showConverted()
+        return this.showOriginal();
+    }
+
     async showConverted(force: boolean = false): Promise<boolean> {
         this.isShowingConversion = true;
         let updated = false;
@@ -88,23 +93,33 @@ export class CurrencyElement {
         if(this.isShowingConversion) await this.showConverted(force);
     }
 
-    async flipDisplay() {
+    async flipDisplay(): Promise<void> {
         if(this.isShowingConversion) {
             const updated = await this.showOriginal();
             if(updated) await this.showConverted();
         } else await this.showConverted();
     }
 
-    async setupListener() {
+    setupListener(): void {
+        const self = this;
         this.element.classList.add('uacc-clickable');
-        if(this.config.utility.click.value)
-            this.element.addEventListener('click', () => this.flipDisplay());
-        this.element.addEventListener('mouseover', () => {
-            if(this.config.utility.hover.value) this.flipDisplay();
-        });
-        this.element.addEventListener('mouseout', () => {
-            if(this.config.utility.hover.value) this.flipDisplay();
-        });
+
+        const convertOnHoverAndShortcut = this.config.shortcut.convertHover.value
+        const convertOnClick = this.config.utility.click.value
+        const convertOnHover = this.config.utility.hover.value
+
+        if(convertOnHoverAndShortcut)
+            this.element.addEventListener('keyup', e => e.key === convertOnHoverAndShortcut && self.flipDisplay())
+
+        if(convertOnClick)
+            this.element.addEventListener('click', () => self.flipDisplay());
+
+        if(convertOnHover) {
+            this.element.addEventListener('mouseover', () => {
+                return self.flipDisplay(); });
+            this.element.addEventListener('mouseout', () => {
+                return self.flipDisplay(); });
+        }
     }
 
     async convert(): Promise<void> {

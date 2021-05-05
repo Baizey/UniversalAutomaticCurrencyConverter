@@ -26,9 +26,10 @@ const Container = styled.div`
   border-style: solid;
 
   &:hover {
-    border-color: #f0ad4e
+    border-color: #352F24
   }
 `
+
 const Header = styled.h2`
   width: 100%;
   text-align: center;

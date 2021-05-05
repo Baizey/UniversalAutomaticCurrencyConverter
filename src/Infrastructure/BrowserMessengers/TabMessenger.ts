@@ -16,7 +16,7 @@ export interface ITabMessenger {
 export class TabMessenger implements ITabMessenger {
     private browser: IBrowser;
 
-    constructor({browser}: DependencyProvider) {
+    constructor(browser: IBrowser) {
         this.browser = browser;
     }
 

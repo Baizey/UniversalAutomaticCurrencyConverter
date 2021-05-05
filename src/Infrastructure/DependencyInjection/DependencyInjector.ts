@@ -16,20 +16,27 @@ import {
     ConfigurationUtility,
     ConfigurationWhitelist
 } from '../Configuration';
-import {ITextDetector, TextDetector} from '../../CurrencyConverter/Detection';
-import {ElementDetector, IElementDetector} from '../../CurrencyConverter/Detection/ElementDetector';
+import {
+    ElementDetector,
+    IElementDetector,
+    ISiteAllowance,
+    ITextDetector,
+    SiteAllowance,
+    TextDetector,
+} from '../../CurrencyConverter/Detection';
 import {ActiveLocalization, IActiveLocalization} from '../../CurrencyConverter/Localization';
-import {Startup} from '../../CurrencyConverter/Startup';
 import {Container, Provider} from './';
 
 export class DependencyProvider extends Provider {
-    get provider(): DependencyProvider {return this}
+    get provider(): DependencyProvider { return this }
 
     get browser(): IBrowser { return this.getRequired(Browser) }
 
     get logger(): ILogger { return this.getRequired(Logger) }
 
     get backendApi(): IBackendApi { return this.getRequired(BackendApi) }
+
+    get siteAllowance(): ISiteAllowance { return this.getRequired(SiteAllowance) }
 
     get configurationFirstTime(): ConfigurationFirstTime { return this.getRequired(ConfigurationFirstTime) }
 
@@ -62,8 +69,6 @@ export class DependencyProvider extends Provider {
     get elementDetector(): IElementDetector { return this.getRequired(ElementDetector) }
 
     get activeLocalization(): IActiveLocalization { return this.getRequired(ActiveLocalization) }
-
-    get startup(): Startup { return this.getRequired(Startup) }
 }
 
 export function useProvider(): DependencyProvider {
@@ -73,8 +78,10 @@ export function useProvider(): DependencyProvider {
 export function addDependencies(container: Container<DependencyProvider>) {
     return container
         .addSingleton(Browser)
+
         .addSingleton(Logger)
         .addSingleton(BackendApi)
+        .addSingleton(SiteAllowance)
 
         .addSingleton(ConfigurationFirstTime)
         .addSingleton(ConfigurationDisabledCurrencies)
@@ -93,5 +100,4 @@ export function addDependencies(container: Container<DependencyProvider>) {
         .addSingleton(TextDetector)
         .addSingleton(ElementDetector)
         .addSingleton(ActiveLocalization)
-        .addSingleton(Startup)
 }

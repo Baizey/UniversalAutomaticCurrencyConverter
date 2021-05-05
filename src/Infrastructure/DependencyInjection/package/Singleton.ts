@@ -18,7 +18,7 @@ export class Singleton<T, P extends Provider> implements IScopedService<T, P> {
         return this.value || (this.value = this.factoryFunction(this.container.build()))
     }
 
-    override(input: (provider: P) => T): IScopedService<T, P> {
+    overrideFactory(input: (provider: P) => T): IScopedService<T, P> {
         this.factoryFunction = input;
         this.value = undefined;
         return this;
