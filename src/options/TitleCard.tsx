@@ -15,5 +15,5 @@ export function TitleCard() {
 const Footer = styled.div`
   margin: auto;
   text-align: center;
-  color: grey;
+  color: ${props => props.theme.helperText};
 `

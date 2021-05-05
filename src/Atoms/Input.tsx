@@ -19,7 +19,7 @@ export function Input({type, value, onChange, onEnter, placeholder}: Props) {
             onChange && onChange(event.target.value);
         }}
         onKeyUp={event => {
-            if (event.key === 'Enter' && onEnter) onEnter(current)
+            if(event.key === 'Enter' && onEnter) onEnter(current)
         }}
     />
 }
@@ -32,14 +32,13 @@ const Container = styled.input<ContainerProps>`
   padding: 0;
   font-size: 14px;
   line-height: 1.42857143;
-  background-color: #0C131B;
-  color: #d0d0d0;
-  border: 0 solid #2F373E;
+  background-color: ${props => props.theme.containerBackground};
+  color: ${props => props.theme.normalText};
+  border: ${props => `0 solid ${props.theme.containerBorder}`};
   border-bottom-width: 1px;
   border-radius: 0;
   text-align: center;
   text-align-last: center;
-  cursor: pointer;
   -webkit-appearance: none;
   -moz-appearance: none;;
 
@@ -49,6 +48,6 @@ const Container = styled.input<ContainerProps>`
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: #f0ad4e;
+    border-color: ${props => props.theme.borderFocus};
   }
 `

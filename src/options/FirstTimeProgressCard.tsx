@@ -37,14 +37,14 @@ const Button = styled.button`
   font-weight: 700;
 
   &:hover {
-    background-color: #000
+    background-color: ${props => props.theme.backgroundFocus}
   }
 `
 
-const Progress = styled.div
-    < {progress: number} > `
-    height: 10px;
-    background-color: green;
-    width: ${({progress}) => `${progress}%`};
-    float: left;
-    `
+type ProgressProps = { progress: number }
+const Progress = styled.div<ProgressProps>`
+  height: 10px;
+  background-color: ${props => props.theme.successColor};
+  width: ${({progress}) => `${progress}%`};
+  float: left;
+`

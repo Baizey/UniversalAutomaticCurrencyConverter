@@ -69,15 +69,15 @@ const ListItem = styled.div`
   width: 99%;
   margin: auto;
   text-align: center;
-  border-bottom: solid 1px #2F373E;
+  border-bottom: ${props => `solid 1px ${props.theme.containerBorder}`};
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 14px;
-  background-color: #0f161e;
+  background-color: ${props => props.theme.containerBackground};
 
   &:hover {
-    background-color: #1C232B;
-    border-color: red;
+    background-color: ${props => props.theme.backgroundFocus};
+    border-color: ${props => props.theme.error};
     cursor: pointer;
   }
 `

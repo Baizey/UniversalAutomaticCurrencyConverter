@@ -1,7 +1,8 @@
-import styled from "styled-components";
+import {useTheme} from "styled-components";
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Select from 'react-select';
+import {Theme} from './Theme';
 
 type Props = {
     options: { label: string, value: string }[],
@@ -12,10 +13,11 @@ type Props = {
 export function Dropdown({options, value, onChange}: Props) {
     const [selected, setSelected] = useState<{ label: string, value: string } | null>(null);
     useEffect(() => setSelected(options.filter(e => e.value === value)[0]), [])
+    const theme = useTheme() as Theme;
 
     return <Select
         onChange={option => {
-            if (option && option.value && option.value !== selected?.value) {
+            if(option && option.value && option.value !== selected?.value) {
                 onChange(option.value)
                 setSelected(option);
             }
@@ -29,12 +31,12 @@ export function Dropdown({options, value, onChange}: Props) {
         styles={{
             option: (provided: any, state: any) => ({
                 ...provided,
-                backgroundColor: state.isFocused ? '#1C232B' : '#0C131B',
+                backgroundColor: state.isFocused ? theme.backgroundFocus : theme.containerBackground,
                 cursor: 'pointer'
             }),
             placeholder: (provided: any) => ({
                 ...provided,
-                color: 'grey',
+                color: theme.subtitleText,
                 fontSize: '14px',
                 margin: 'auto',
                 width: '100%',
@@ -65,30 +67,30 @@ export function Dropdown({options, value, onChange}: Props) {
             }),
             control: (provided: any, state: any) => ({
                 ...provided,
-                backgroundColor: '#0C131B',
+                backgroundColor: theme.containerBackground,
                 borderWidth: '0px',
                 borderBottomStyle: 'solid',
                 height: '34px',
                 borderBottomWidth: '1px',
-                borderBottomColor: state.isFocused ? '#f0ad4e' : '#2F373E',
+                borderBottomColor: state.isFocused ? theme.borderFocus : theme.subtitleText,
                 '&:hover': {
-                    borderBottomColor: '#f0ad4e'
+                    borderBottomColor: theme.borderFocus
                 },
-                color: '#d0d0d0',
+                color: theme.normalText,
                 cursor: 'pointer'
             }),
             menu: (provided: any, state: any) => ({
                 ...provided,
                 padding: 0,
-                backgroundColor: '#0C131B',
-                borderColor: 'grey',
+                backgroundColor: theme.containerBackground,
+                borderColor: theme.subtitleText,
                 borderStyle: 'solid',
                 borderWidth: '1px'
             }),
             menuList: (provided: any, state: any) => ({
                 ...provided,
                 padding: 0,
-                borderColor: 'grey',
+                borderColor: theme.subtitleText,
                 borderStyle: 'solid',
                 borderWidth: '1px'
             }),
@@ -109,28 +111,3 @@ export function Dropdown({options, value, onChange}: Props) {
         })}
     />
 }
-
-type ContainerProps = {}
-const Container = styled.input<ContainerProps>`
-  display: block;
-  width: 100%;
-  height: 33px;
-  padding: 0;
-  font-size: 14px;
-  line-height: 1.42857143;
-  background-color: #0C131B;
-  color: #d0d0d0;
-  border: 0 solid #2F373E;
-  border-bottom-width: 1px;
-  border-radius: 0;
-  text-align: center;
-  text-align-last: center;
-  cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;;
-
-  &:hover {
-    transition: border-color 0.3s ease-in-out;
-    border-color: #f0ad4e;
-  }
-`

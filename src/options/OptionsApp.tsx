@@ -65,8 +65,8 @@ const Background = styled.div`
   width: 100%;
   min-height: 100%;
   height: fit-content;
-  background-color: #0F171E;
-  color: #d0d0d0;
+  background-color: ${props => props.theme.background};
+  color: ${props => props.theme.normalText};
   padding: 0;
   margin: 0;
 `;

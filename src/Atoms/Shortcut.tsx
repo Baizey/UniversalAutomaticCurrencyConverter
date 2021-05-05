@@ -29,9 +29,9 @@ const Container = styled.div<ContainerProps>`
   height: 33px;
   padding: 0;
   font-size: 14px;
-  background-color: #0C131B;
-  color: #d0d0d0;
-  border: 0 solid #2F373E;
+  background-color: ${props => props.theme.containerBackground};
+  color: ${props => props.theme.normalText};
+  border: ${props => `0 solid ${props.theme.containerBorder}`};
   border-bottom-width: 1px;
   border-radius: 0;
   text-align: center;
@@ -42,6 +42,6 @@ const Container = styled.div<ContainerProps>`
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: #f0ad4e;
+    border-color: ${props => props.theme.borderFocus};
   }
 `

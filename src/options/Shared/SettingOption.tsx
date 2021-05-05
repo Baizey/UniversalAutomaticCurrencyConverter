@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from "styled-components";
+import {Theme} from '../../Atoms/Theme';
 
 type Props = {
     title: string,
@@ -24,7 +25,7 @@ const Label = styled.label`
   text-align: center;
   display: block;
   font-size: 14px;
-  color: grey;
+  color:${props => props.theme.subtitleText};
   font-weight: 700;
 `
 
@@ -33,5 +34,5 @@ const Help = styled.span`
   width: 100%;
   margin: auto;
   text-align: center;
-  color: #737373;
+  color:${({theme}: {theme: Theme}) => theme.helperText};
 `

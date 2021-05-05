@@ -18,15 +18,15 @@ const Container = styled.div`
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 10px;
-  background-color: #0C131B;
+  background-color: ${props => props.theme.containerBackground};
   display: flex;
   flex-direction: column;
   border-width: 1px;
-  border-color: #0C131B;
+  border-color: ${props => props.theme.containerBackground};
   border-style: solid;
 
   &:hover {
-    border-color: #352F24
+    border-color: ${props => props.theme.borderDimFocus};
   }
 `
 
