@@ -24,14 +24,16 @@ export type MyTheme = {
 export type PropsTheme<P> = ThemedStyledProps<P, MyTheme>
 export type StyleTheme = PropsTheme<{}>
 
-export function mapToTheme(theme: string): MyTheme {
+export type ThemeType = 'lightTheme' | 'darkTheme'
+
+export function mapToTheme(theme: ThemeType): MyTheme {
     switch (theme) {
         case 'lightTheme':
             return LightTheme
         case 'darkTheme':
             return DarkTheme
         default:
-            return DarkTheme
+            return LightTheme
     }
 }
 

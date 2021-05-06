@@ -14,10 +14,10 @@ import {AllowanceCard} from "./AllowanceCard";
 import {ShortcutCard} from "./ShortcutCard";
 import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
 import {useProvider} from "../Infrastructure";
-import {StyleTheme} from '../Atoms/StyleTheme';
+import {StyleTheme, ThemeType} from '../Atoms/StyleTheme';
 import {ThemeCard} from './ThemeCard';
 
-type Props = { setTheme: React.Dispatch<React.SetStateAction<string>> }
+type Props = { setTheme: React.Dispatch<React.SetStateAction<ThemeType>> }
 export default function OptionsApp(props: Props): JSX.Element {
     const [isLoading, setIsLoading] = useState(true);
     const [firstTimeProgress, setFirstTimeProgress] = useState(0);

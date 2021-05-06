@@ -1,6 +1,7 @@
 import {SyncSetting} from "./SyncSetting";
 import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 import {ISetting} from './ISetting';
+import {ThemeType} from '../../Atoms/StyleTheme';
 
 const isBool = (e: any) => typeof (e) === 'boolean';
 
@@ -96,10 +97,10 @@ export class ConfigurationFirstTime {
 }
 
 export class ThemeConfiguration {
-    readonly theme: SyncSetting<string>;
+    readonly theme: SyncSetting<ThemeType>;
 
     constructor({provider}: DependencyProvider) {
-        this.theme = new SyncSetting<string>(
+        this.theme = new SyncSetting<ThemeType>(
             provider,
             'uacc:theme:selection',
             'darkTheme',
