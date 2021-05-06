@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import * as ReactDOM from "react-dom";
 import OptionsApp from "./Options/OptionsApp";
 import {ThemeProvider} from 'styled-components';
@@ -11,6 +11,8 @@ const themeSetting = provider.themeConfiguration.theme;
 
 function OptionsPage() {
     const [theme, setTheme] = useState(themeSetting.value)
+    useEffect(() => {themeSetting.load().finally(() => setTheme(themeSetting.value))}, [])
+
     return <ThemeProvider theme={mapToTheme(theme)}>
         <OptionsApp setTheme={setTheme}/>
     </ThemeProvider>
