@@ -18,14 +18,13 @@ const options = [
 ]
 
 export function ThemeCard(props: Props) {
-    const {themeConfiguration} = useProvider()
-    const theme = themeConfiguration.theme;
+    const {colorTheme} = useProvider()
 
     return <OptionsSection title="Theme">
         <OptionRow>
             <SettingOption title="Color theme">
-                <Dropdown value={theme.value}
-                          onChange={async value => (await theme.setAndSaveValue(value as ThemeType)) && props.setTheme(value as ThemeType)}
+                <Dropdown value={colorTheme.value}
+                          onChange={async value => (await colorTheme.setAndSaveValue(value as ThemeType)) && props.setTheme(value as ThemeType)}
                           options={options}/>
             </SettingOption>
         </OptionRow>

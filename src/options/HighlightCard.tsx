@@ -1,27 +1,24 @@
 import * as React from 'react';
 import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useProvider} from "../Infrastructure";
+import {useSettings} from '../Infrastructure/DependencyInjection';
 
 export function HighlightCard() {
-    const {configurationHighlight} = useProvider()
-    const color = configurationHighlight.color;
-    const using = configurationHighlight.using;
-    const duration = configurationHighlight.duration;
+    const {highlightColor, highlightDuration, usingConversionHighlighting} = useSettings()
 
     return <OptionsSection title="Conversion highlighting">
         <OptionRow>
             <SettingOption title="Highlight conversions">
-                <Checkbox value={using.value}
-                          onChange={value => using.setAndSaveValue(value)}/>
+                <Checkbox value={usingConversionHighlighting.value}
+                          onChange={value => usingConversionHighlighting.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Color" help={"Allows oth names and HEX"}>
-                <Input type={"text"} value={color.value}
-                       onChange={value => color.setAndSaveValue(`${value}`)}/>
+                <Input type={"text"} value={highlightColor.value}
+                       onChange={value => highlightColor.setAndSaveValue(`${value}`)}/>
             </SettingOption>
             <SettingOption title="Duration" help={"1000 = 1 second"}>
-                <Input type="number" value={duration.value}
-                       onChange={value => duration.setAndSaveValue(+value)}/>
+                <Input type="number" value={highlightDuration.value}
+                       onChange={value => highlightDuration.setAndSaveValue(+value)}/>
             </SettingOption>
         </OptionRow>
     </OptionsSection>

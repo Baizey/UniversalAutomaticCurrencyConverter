@@ -1,5 +1,9 @@
 import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
-import {ConfigurationBlacklist, ConfigurationWhitelist} from '../../Infrastructure/Configuration';
+import {
+    blacklistedUrlsSetting,
+    usingBlacklistingSetting,
+    usingWhitelistingSetting, whitelistedUrlsSetting
+} from '../../Infrastructure/Configuration';
 
 type TrieNodeResult = { url: string, allowed: boolean }
 type AllowanceResult = { isAllowed: boolean, reasoning: TrieNodeResult[] }
@@ -11,27 +15,32 @@ export interface ISiteAllowance {
 }
 
 export class SiteAllowance implements ISiteAllowance {
-    private readonly blacklist: ConfigurationBlacklist;
-    private readonly whitelist: ConfigurationWhitelist;
     private allowance: TrieNode;
+    private usingWhitelisting: usingWhitelistingSetting;
+    private usingBlacklisting: usingBlacklistingSetting;
+    private blacklistedUrls: blacklistedUrlsSetting;
+    private whitelistedUrls: whitelistedUrlsSetting;
 
-    constructor({configurationBlacklist, configurationWhitelist}: DependencyProvider) {
-        this.blacklist = configurationBlacklist;
-        this.whitelist = configurationWhitelist;
-        const blacklist = this.blacklist.using.value ? this.blacklist.urls.value : [];
-        const whitelist = this.whitelist.using.value ? this.whitelist.urls.value : [];
+    constructor({usingWhitelisting, usingBlacklisting, blacklistedUrls, whitelistedUrls}: DependencyProvider) {
+        this.usingWhitelisting = usingWhitelisting;
+        this.usingBlacklisting = usingBlacklisting;
+        this.blacklistedUrls = blacklistedUrls;
+        this.whitelistedUrls = whitelistedUrls;
+
+        const blacklist = usingBlacklisting.value ? blacklistedUrls.value : [];
+        const whitelist = usingWhitelisting.value ? whitelistedUrls.value : [];
         this.allowance = new TrieNode(blacklist, whitelist);
     }
 
     getAllowance(url: string): AllowanceResult {
         // Only false when whitelist is on but blacklist is not
-        const defaultResult = this.blacklist.using.value || !this.whitelist.using.value;
+        const defaultResult = this.usingBlacklisting.value || !this.usingWhitelisting.value;
         return this.allowance.isAllowed(url, defaultResult);
     }
 
     updateFromConfig() {
-        const blacklist = this.blacklist.using.value ? this.blacklist.urls.value : [];
-        const whitelist = this.whitelist.using.value ? this.whitelist.urls.value : [];
+        const blacklist = this.usingBlacklisting.value ? this.blacklistedUrls.value : [];
+        const whitelist = this.usingWhitelisting.value ? this.whitelistedUrls.value : [];
         this.allowance = new TrieNode(blacklist, whitelist);
     }
 }

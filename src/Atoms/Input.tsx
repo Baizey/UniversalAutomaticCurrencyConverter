@@ -3,29 +3,50 @@ import * as React from 'react';
 import {useState} from 'react';
 import {StyleTheme} from './StyleTheme';
 
-type Props = {
-    placeholder?: string,
-    type: 'number' | 'text'
+type ReadonlyInputProps = {
+    center?: boolean
+    placeholder?: string
     value: number | string,
-    onChange?: (value: number | string) => void
-    onEnter?: (value: number | string) => void
 }
 
-export function Input({type, value, onChange, onEnter, placeholder}: Props) {
-    const [current, setCurrent] = useState(value)
+export function ReadonlyInput({value, placeholder, center}: ReadonlyInputProps) {
+    center = typeof center === 'boolean' ? center : true;
     return <Container
-        placeholder={placeholder} type={type} defaultValue={current}
+        center={center}
+        type="text"
+        readOnly={true}
+        placeholder={placeholder}
+        value={value}
+    />
+}
+
+type InputProps = {
+    type: 'number' | 'text'
+    onChange?: (value: number | string) => void
+    onEnter?: (value: number | string) => void
+} & ReadonlyInputProps
+
+export function Input({type, value, onChange, onEnter, placeholder, center}: InputProps) {
+    const [current, setCurrent] = useState(value)
+    center = typeof center === 'boolean' ? center : true;
+    return <Container
+        center={center}
+        placeholder={placeholder}
+        type={type}
+        defaultValue={current}
         onChange={event => {
             setCurrent(event.target.value)
             onChange && onChange(event.target.value);
         }}
         onKeyUp={event => {
-            if(event.key === 'Enter' && onEnter) onEnter(current)
+            if(event.key === 'Enter' && onEnter) {
+                onEnter(current)
+            }
         }}
     />
 }
 
-type ContainerProps = {}
+type ContainerProps = { center: boolean }
 const Container = styled.input<ContainerProps>`
   display: block;
   width: 100%;
@@ -35,11 +56,11 @@ const Container = styled.input<ContainerProps>`
   line-height: 1.42857143;
   background-color: ${(props: StyleTheme) => props.theme.containerBackground};
   color: ${(props: StyleTheme) => props.theme.normalText};
-  border: ${(props: StyleTheme) => `0 solid ${props.theme.containerBorder}`};
+  border: ${(props: StyleTheme) => `0 solid ${props.theme.inputUnderline}`};
   border-bottom-width: 1px;
   border-radius: 0;
-  text-align: center;
-  text-align-last: center;
+  text-align: ${props => props.center ? 'center' : 'right'};
+  text-align-last: ${props => props.center ? 'center' : 'right'};
   -webkit-appearance: none;
   -moz-appearance: none;;
 

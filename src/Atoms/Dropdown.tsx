@@ -2,7 +2,7 @@ import {useTheme} from "styled-components";
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Select from 'react-select';
-import {MyTheme} from './StyleTheme';
+import {MyTheme, StyleTheme} from './StyleTheme';
 
 type Props = {
     options: { label: string, value: string }[],
@@ -44,6 +44,7 @@ export function Dropdown({options, value, onChange}: Props) {
             }),
             singleValue: (provided: any) => ({
                 ...provided,
+                color: theme.normalText,
                 margin: 'auto',
                 maxWidth: '100%',
                 width: '100%',
@@ -51,6 +52,7 @@ export function Dropdown({options, value, onChange}: Props) {
             }),
             valueContainer: (provided: any) => ({
                 ...provided,
+                color: theme.normalText,
                 width: '100%',
                 fontSize: '14px',
                 height: '34px',
@@ -59,6 +61,7 @@ export function Dropdown({options, value, onChange}: Props) {
             }),
             input: (provided: any) => ({
                 ...provided,
+                color: theme.normalText,
                 width: '100%',
                 fontSize: '14px',
                 height: '34px',
@@ -72,7 +75,7 @@ export function Dropdown({options, value, onChange}: Props) {
                 borderBottomStyle: 'solid',
                 height: '34px',
                 borderBottomWidth: '1px',
-                borderBottomColor: state.isFocused ? theme.borderFocus : theme.headerText,
+                borderBottomColor: state.isFocused ? theme.borderFocus : theme.inputUnderline,
                 '&:hover': {
                     borderBottomColor: theme.borderFocus
                 },
@@ -82,15 +85,17 @@ export function Dropdown({options, value, onChange}: Props) {
             menu: (provided: any, state: any) => ({
                 ...provided,
                 padding: 0,
+                color: theme.normalText,
                 backgroundColor: theme.containerBackground,
-                borderColor: theme.headerText,
+                borderColor: theme.inputUnderline,
                 borderStyle: 'solid',
                 borderWidth: '1px'
             }),
             menuList: (provided: any, state: any) => ({
                 ...provided,
                 padding: 0,
-                borderColor: theme.headerText,
+                color: theme.normalText,
+                borderColor: theme.inputUnderline,
                 borderStyle: 'solid',
                 borderWidth: '1px'
             }),

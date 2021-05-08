@@ -7,8 +7,10 @@ type ProviderConstructor<T extends Provider> = BaseConstructor<T> & { new(contai
 
 type InjectionConstructor<T, P extends Provider> = BaseConstructor<T> & { new(provider: P): T }
 
+type ComplexInjectionConstructor<T, P extends Provider> = BaseConstructor<T> & { new(provider: P, ...args: any[]): T }
+
 export class Provider {
-    private container: Container<any>;
+    protected container: Container<any>;
 
     constructor(container: Container<any>) {
         this.container = container;
@@ -39,10 +41,18 @@ export class Container<P extends Provider> {
         this.lookup = {}
     }
 
-    addSingleton<T>(Item: InjectionConstructor<T, P>, name?: string): Container<P> {
-        name = name || Item.name;
+    addSingleton<T>(Item: InjectionConstructor<T, P> | ComplexInjectionConstructor<T, P>,
+                    options?: {
+                        args?: any[],
+                        name?: string
+                    }): Container<P> {
+
+        const name = options?.name || Item.name;
         if(this.lookup[name]) return this;
-        this.lookup[name] = new Singleton<T, P>(this, p => new Item(p));
+
+        const extraArguments = options?.args || []
+
+        this.lookup[name] = new Singleton<T, P>(this, p => new Item(p, ...extraArguments));
         return this;
     }
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {PropsTheme, StyleTheme} from './StyleTheme';
+import {StyleTheme} from './StyleTheme';
 
 type Props = {
     value: boolean,
@@ -27,7 +27,7 @@ const Container = styled.div<ContainerProps>`
   cursor: pointer;
   width: 30px;
   height: 30px;
-  border: ${(props: StyleTheme) => `1px solid ${props.theme.headerText}`};
+  border: ${(props: StyleTheme) => `1px solid ${props.theme.inputUnderline}`};
   position: relative;
   display: block;
 

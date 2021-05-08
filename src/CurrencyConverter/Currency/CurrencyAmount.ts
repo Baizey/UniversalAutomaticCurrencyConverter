@@ -1,27 +1,25 @@
 import {Configuration} from "../../Infrastructure";
 import {IBackendApi} from "../BackendApi";
-import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {DependencyProvider, SettingProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 export class CurrencyAmount {
     readonly tag: string;
     readonly amount: number[];
-    private readonly config: Configuration;
     private readonly backendApi: IBackendApi;
     private readonly provider: DependencyProvider;
 
-    constructor({provider, configuration, backendApi}: DependencyProvider, tag: string, amount: number | number[]) {
+    constructor({provider, backendApi}: DependencyProvider, tag: string, amount: number | number[]) {
         this.provider = provider;
-        this.config = configuration;
         this.backendApi = backendApi;
         this.tag = tag.toUpperCase();
         this.amount = Array.isArray(amount) ? amount : [amount];
     }
 
     get roundedAmount(): string[] {
-        const significant = this.config.display.rounding.value;
+        const significant = this.provider.significantDigits.value;
         return this.amount.map(fixed => {
-            if (this.config.tag.using.value) {
-                const factor = this.config.tag.value.value;
+            if (this.provider.usingCustomDisplay.value) {
+                const factor = this.provider.customConversionRateDisplay.value;
                 if (factor !== 1) fixed *= factor;
             }
             // Limit at 15 decimals, as anything more causes issues with .toFixed
@@ -59,8 +57,8 @@ export class CurrencyAmount {
     }
 
     get displayValue(): string[] {
-        const decimal = this.config.display.decimal.value;
-        const thousands = this.config.display.thousands.value;
+        const decimal = this.provider.decimalPoint.value;
+        const thousands = this.provider.thousandsSeparator.value;
         return this.roundedAmount.map(roundedAmount => {
             const [integers, digits] = roundedAmount.split('.');
             const leftSide = integers.split(/(?=(?:.{3})*$)/).join(thousands);
@@ -85,10 +83,10 @@ export class CurrencyAmount {
     toString(): string {
         const value = this.displayValue.join(' - ');
 
-        const usingCustom = this.config.tag.using.value;
+        const usingCustom = this.provider.usingCustomDisplay.value;
         if (!usingCustom) return `${value} ${this.tag}`;
 
-        const customTag = this.config.tag.display.value;
+        const customTag = this.provider.customDisplay.value;
         return customTag.replace('¤', value);
     }
 }

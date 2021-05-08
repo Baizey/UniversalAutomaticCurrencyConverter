@@ -24,6 +24,7 @@ export interface IBrowser {
 
     readonly reviewLink: string
     readonly author: string
+    readonly extensionName: string
     readonly extensionVersion: string
     readonly isProduction: boolean
     readonly isDevelopment: boolean
@@ -93,6 +94,10 @@ export class Browser implements IBrowser {
 
     get author(): string {
         return this.access.runtime.getManifest().author;
+    }
+
+    get extensionName(): string {
+        return this.access.runtime.getManifest().name;
     }
 
     get extensionVersion(): string {

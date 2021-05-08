@@ -1,26 +1,24 @@
 import * as React from 'react';
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useProvider} from "../Infrastructure";
 import {Shortcut} from "../Atoms/Shortcut";
+import {useSettings} from '../Infrastructure/DependencyInjection';
 
 export function ShortcutCard() {
-    const {configurationShortcut} = useProvider()
-    const convertHover = configurationShortcut.convertHover;
-    const convertAll = configurationShortcut.convertAll;
+    const {convertHoverShortcut, convertAllShortcut} = useSettings()
 
     return <OptionsSection title="Shortcuts">
         <OptionRow>
             <SettingOption title="Convert-hovered shortcut"
                            help={"Left-click, then click your desired shortcut key, right-click to remove shortcut"}>
                 <Shortcut
-                    defaultValue={convertHover.value}
-                    onChange={value => convertHover.setAndSaveValue(value)}/>
+                    defaultValue={convertHoverShortcut.value}
+                    onChange={value => convertHoverShortcut.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Convert-all shortcut"
                            help={"Left-click, then click your desired shortcut key, right-click to remove shortcut"}>
                 <Shortcut
-                    defaultValue={convertAll.value}
-                    onChange={value => convertAll.setAndSaveValue(value)}/>
+                    defaultValue={convertAllShortcut.value}
+                    onChange={value => convertAllShortcut.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
     </OptionsSection>

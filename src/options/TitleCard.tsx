@@ -6,7 +6,7 @@ import {StyleTheme} from '../Atoms/StyleTheme';
 
 export function TitleCard() {
     const {browser} = useProvider()
-    return <OptionsSection title={'UA Currency Converter'}>
+    return <OptionsSection title={browser.extensionName}>
         <OptionRow key="footer-option">
             <Footer>{`Version ${browser.extensionVersion} created by ${browser.author}`}</Footer>
         </OptionRow>

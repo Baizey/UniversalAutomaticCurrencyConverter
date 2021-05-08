@@ -2,8 +2,8 @@ import {IBrowser, ILogger} from "../../Infrastructure";
 import {CurrencyLocalization} from "./CurrencyLocalization";
 import {Localizations} from "./Localization";
 import {IBackendApi} from "../BackendApi";
-import {ConfigurationDisabledCurrencies} from "../../Infrastructure/Configuration";
 import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {disabledCurrenciesSetting} from '../../Infrastructure/Configuration';
 
 export interface IActiveLocalization {
     readonly krone: CurrencyLocalization;
@@ -36,7 +36,6 @@ export class ActiveLocalization implements IActiveLocalization {
 
     isLocked: boolean;
     private readonly browser: IBrowser;
-    private readonly disabledCurrenciesConfig: ConfigurationDisabledCurrencies;
     private readonly backendApi: IBackendApi;
     readonly krone: CurrencyLocalization;
     readonly yen: CurrencyLocalization;
@@ -46,17 +45,20 @@ export class ActiveLocalization implements IActiveLocalization {
     private readonly isDisabled: Record<string, boolean>;
     private symbols: Record<string, string>
     private logger: ILogger;
+    private disabledCurrencies: disabledCurrenciesSetting;
 
     constructor({
                     provider,
+                    kroneLocalization,
+                    yenLocalization,
+                    dollarLocalization,
+                    disabledCurrencies,
                     logger,
                     browser,
-                    configurationLocalization,
-                    configurationDisabledCurrencies,
                     backendApi
                 }: DependencyProvider) {
+        this.disabledCurrencies = disabledCurrencies;
         this.logger = logger;
-        this.disabledCurrenciesConfig = configurationDisabledCurrencies;
         this.backendApi = backendApi;
         this.browser = browser;
         const kroneKey = `uacc:site:localization:krone:${this.browser.hostname}`;
@@ -69,9 +71,9 @@ export class ActiveLocalization implements IActiveLocalization {
         this.symbols = {}
         this.isDisabled = {}
 
-        this.krone = new CurrencyLocalization(provider, kroneKey, configurationLocalization.krone);
-        this.dollar = new CurrencyLocalization(provider, dollarKey, configurationLocalization.dollar);
-        this.yen = new CurrencyLocalization(provider, yenKey, configurationLocalization.asian);
+        this.krone = new CurrencyLocalization(provider, kroneKey, kroneLocalization);
+        this.dollar = new CurrencyLocalization(provider, dollarKey, dollarLocalization);
+        this.yen = new CurrencyLocalization(provider, yenKey, yenLocalization);
     }
 
     get compact(): [string, string, string] {
@@ -102,7 +104,7 @@ export class ActiveLocalization implements IActiveLocalization {
         ]);
         await this.determineForSite()
         this.symbols = await this.backendApi.symbols();
-        this.disabledCurrenciesConfig.tags.value.forEach(v => this.isDisabled[v] = true);
+        this.disabledCurrencies.value.forEach(v => this.isDisabled[v] = true);
         this.updateLocalization(this.compact)
     }
 

@@ -2,6 +2,7 @@ import {SyncSetting} from "./SyncSetting";
 import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 import {ISetting} from './ISetting';
 import {ThemeType} from '../../Atoms/StyleTheme';
+import {LocalSetting} from './LocalSetting';
 
 const isBool = (e: any) => typeof (e) === 'boolean';
 
@@ -22,362 +23,124 @@ const isArrayWithRegexMatch = (e: any, match: RegExp) => isArray(e) && e.every((
 
 export class Configuration {
     readonly settings: ISetting<any>[];
-    readonly disabledCurrencies: ConfigurationDisabledCurrencies;
-    readonly alert: ConfigurationAlert;
-    readonly localization: ConfigurationLocalisation;
-    readonly whitelist: ConfigurationWhitelist;
-    readonly blacklist: ConfigurationBlacklist;
-    readonly currency: ConfigurationCurrency;
-    readonly utility: ConfigurationUtility;
-    readonly highlight: ConfigurationHighLight;
-    readonly tag: ConfigurationCustomTag;
-    readonly display: ConfigurationDisplay;
-    readonly shortcut: ConfigurationShortcuts;
-    readonly firstTime: ConfigurationFirstTime;
-    readonly theme: ThemeConfiguration;
 
-    constructor({
-                    themeConfiguration,
-                    configurationFirstTime,
-                    configurationDisabledCurrencies,
-                    configurationShortcut,
-                    configurationAlert,
-                    configurationLocalization,
-                    configurationWhitelist,
-                    configurationBlacklist,
-                    configurationCurrency,
-                    configurationUtility,
-                    configurationHighlight,
-                    configurationTag,
-                    configurationDisplay
-                }: DependencyProvider) {
-        const configs = [
-            this.theme = themeConfiguration,
-            this.firstTime = configurationFirstTime,
-            this.disabledCurrencies = configurationDisabledCurrencies,
-            this.shortcut = configurationShortcut,
-            this.alert = configurationAlert,
-            this.localization = configurationLocalization,
-            this.whitelist = configurationWhitelist,
-            this.blacklist = configurationBlacklist,
-            this.currency = configurationCurrency,
-            this.utility = configurationUtility,
-            this.highlight = configurationHighlight,
-            this.tag = configurationTag,
-            this.display = configurationDisplay,
-        ];
-        this.settings = configs.map(e => e.settings)
-            // @ts-ignore
-            .reduce((a, b) => [...a, ...b]);
+    constructor({allSettings}: DependencyProvider) {
+        this.settings = allSettings;
     }
 
     async load(): Promise<void> {
-        await Promise.all(this.settings.map(e => e.load()))
-    }
-
-    async save(): Promise<void> {
-        await Promise.all(this.settings.map(e => e.save()));
+        await Promise.all(this.settings.map(e => e.loadSetting()))
     }
 }
 
-export class ConfigurationFirstTime {
-    readonly isFirstTime: SyncSetting<boolean>;
+type MiniConverterRow = {
+    from: string,
+    to: string,
+    amount: number
+}
 
-    constructor({provider}: DependencyProvider) {
-        this.isFirstTime = new SyncSetting<boolean>(
-            provider,
-            'showFirstTimeGuide',
-            true,
-            isBool);
-    }
+// Never add this to all-settings as it is only required in popup and shouldn't be loaded elsewhere
+export class miniConverterSetting extends LocalSetting<MiniConverterRow[]> {
+    constructor(provider: DependencyProvider) {super(provider, 'uacc:global:converter', [], isArray);}
+}
 
-    get settings() {
-        return [this.isFirstTime]
+
+export class isFirstTimeSetting extends SyncSetting<boolean> {
+    constructor(provider: DependencyProvider) {super(provider, 'showFirstTimeGuide', true, isBool);}
+}
+
+export class colorThemeSetting extends SyncSetting<ThemeType> {
+    constructor(provider: DependencyProvider) {
+        super(provider, 'uacc:theme:selection', 'darkTheme', isString);
     }
 }
 
-export class ThemeConfiguration {
-    readonly theme: SyncSetting<ThemeType>;
-
-    constructor({provider}: DependencyProvider) {
-        this.theme = new SyncSetting<ThemeType>(
-            provider,
-            'uacc:theme:selection',
-            'darkTheme',
-            isString)
-    }
-
-    get settings() {
-        return [this.theme]
-    }
-}
-
-export class ConfigurationDisabledCurrencies {
-    readonly tags: SyncSetting<string[]>;
-
-    constructor({provider}: DependencyProvider) {
-        this.tags = new SyncSetting<string[]>(
+export class disabledCurrenciesSetting extends SyncSetting<string[]> {
+    constructor(provider: DependencyProvider) {
+        super(
             provider,
             'disabledCurrencies',
             [],
             array => isArrayWithRegexMatch(array, /^[A-Z]{3}$/) && isDistinctArray(array));
     }
+}
 
-    get settings() {
-        return [this.tags]
+export class significantDigitsSetting extends SyncSetting<number> {
+    constructor(provider: DependencyProvider) {
+        super(provider, 'decimalAmount', 2, isPositiveInt);
     }
 }
 
-export class ConfigurationDisplay {
-    readonly rounding: SyncSetting<number>;
-    readonly thousands: SyncSetting<string>;
-    readonly decimal: SyncSetting<string>;
-
-    constructor({provider}: DependencyProvider) {
-        this.rounding = new SyncSetting<number>(
-            provider,
-            'decimalAmount',
-            2,
-            isPositiveInt);
-        this.thousands = new SyncSetting<string>(
-            provider,
-            'thousandDisplay',
-            ' ',
-            e => hasLengthRange(e, 0, 1));
-        this.decimal = new SyncSetting<string>(
-            provider,
-            'decimalDisplay',
-            '.',
-            e => hasLength(e, 1));
-    }
-
-    get settings() {
-        return [this.rounding, this.thousands, this.decimal]
+export class thousandsSeparatorSetting extends SyncSetting<string> {
+    constructor(provider: DependencyProvider) {
+        super(provider, 'thousandDisplay', ' ', e => hasLengthRange(e, 0, 1));
     }
 }
 
-export class ConfigurationCustomTag {
-    readonly display: SyncSetting<string>;
-    readonly value: SyncSetting<number>;
-    readonly using: SyncSetting<boolean>;
-
-    constructor({provider}: DependencyProvider) {
-        this.display = new SyncSetting<string>(
-            provider,
-            'currencyCustomTag',
-            '$¤',
-            e => hasRegexMatch(e, /.*¤.*/));
-        this.value = new SyncSetting<number>(
-            provider,
-            'currencyCustomTagValue',
-            1,
-            isNumber);
-        this.using = new SyncSetting<boolean>(
-            provider,
-            'currencyUsingCustomTag',
-            false,
-            isBool);
-    }
-
-    get settings() {
-        return [this.using, this.display, this.value]
+export class decimalPointSetting extends SyncSetting<string> {
+    constructor(provider: DependencyProvider) {
+        super(provider, 'decimalDisplay', '.', e => hasLength(e, 1));
     }
 }
 
-export class ConfigurationHighLight {
-    readonly using: SyncSetting<boolean>;
-    readonly color: SyncSetting<string>;
-    readonly duration: SyncSetting<number>;
-
-    constructor({provider}: DependencyProvider) {
-        this.color = new SyncSetting<string>(
-            provider,
-            'currencyHighlightColor',
-            'yellow',
-            e => {
-                const div = document.createElement('div');
-                div.style.backgroundColor = e + '';
-                return !!div.style.backgroundColor
-            });
-        this.duration = new SyncSetting<number>(
-            provider,
-            'currencyHighlightDuration',
-            500,
-            isPositiveInt);
-        this.using = new SyncSetting<boolean>(
-            provider,
-            'currencyUsingHighlight',
-            true,
-            isBool);
-    }
-
-    get settings() {
-        return [this.using, this.color, this.duration]
+export class conversionDisplaySetting extends SyncSetting<string> {
+    constructor(provider: DependencyProvider) {
+        super(provider, 'currencyCustomTag', '$¤', e => hasRegexMatch(e, /.*¤.*/));
     }
 }
 
-export class ConfigurationBlacklist {
-    readonly using: SyncSetting<boolean>;
-    readonly urls: SyncSetting<string[]>;
-
-    constructor({provider}: DependencyProvider) {
-        this.using = new SyncSetting<boolean>(
-            provider,
-            'usingBlacklist',
-            true,
-            e => isBool(e));
-        this.urls = new SyncSetting<string[]>(
-            provider,
-            'blacklistingurls',
-            [],
-            array => isStringArray(array) && isDistinctArray(array));
-    }
-
-    get settings() {
-        return [this.using, this.urls]
+export class customConversionRateSetting extends SyncSetting<number> {
+    constructor(provider: DependencyProvider) {
+        super(provider, 'currencyCustomTagValue', 1, isNumber)
     }
 }
 
-export class ConfigurationWhitelist {
-    readonly using: SyncSetting<boolean>;
-    readonly urls: SyncSetting<string[]>;
-
-    constructor({provider}: DependencyProvider) {
-        this.using = new SyncSetting<boolean>(
-            provider,
-            'usingWhitelist',
-            false,
-            isBool);
-        this.urls = new SyncSetting<string[]>(
-            provider,
-            'whitelistingurls',
-            [],
-            array => isStringArray(array) && isDistinctArray(array));
-    }
-
-    get settings() {
-        return [this.using, this.urls]
+export class usingCustomDisplaySetting extends SyncSetting<boolean> {
+    constructor(provider: DependencyProvider) {
+        super(provider, 'currencyUsingCustomTag', false, isBool)
     }
 }
 
-export class ConfigurationLocalisation {
-    readonly krone: SyncSetting<string>;
-    readonly dollar: SyncSetting<string>;
-    readonly asian: SyncSetting<string>;
-
-    constructor({provider}: DependencyProvider) {
-        this.dollar = new SyncSetting<string>(
-            provider,
-            'currencyLocalizationDollar',
-            'USD',
-            e => hasLength(e, 3));
-
-        this.asian = new SyncSetting<string>(
-            provider,
-            'currencyLocalizationAsian',
-            'JPY',
-            e => hasLength(e, 3));
-
-        this.krone = new SyncSetting<string>(
-            provider,
-            'currencyLocalizationKroner',
-            'SEK',
-            e => hasLength(e, 3))
-    }
-
-    get settings() {
-        return [this.dollar, this.asian, this.krone];
+export class highlightColorSetting extends SyncSetting<string> {
+    constructor(provider: DependencyProvider) {
+        super(provider, 'currencyHighlightColor', 'yellow', e => {
+            const div = document.createElement('div');
+            div.style.backgroundColor = e + '';
+            return !!div.style.backgroundColor
+        });
     }
 }
 
-export class ConfigurationAlert {
-    readonly localization: SyncSetting<boolean>;
+export class highlightDurationSetting extends SyncSetting<number> {constructor(provider: DependencyProvider) { super(provider, 'currencyHighlightDuration', 500, isPositiveInt) }}
 
-    constructor({provider}: DependencyProvider) {
-        this.localization = new SyncSetting<boolean>(
-            provider,
-            'showNonDefaultCurrencyAlert',
-            true,
-            isBool);
-    }
+export class usingConversionHighlightingSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'currencyUsingHighlight', true, isBool) }}
 
-    get settings() {
-        return [this.localization]
-    }
-}
+export class usingBlacklistingSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'usingBlacklist', true, e => isBool(e)) }}
 
-export class ConfigurationCurrency {
-    readonly tag: SyncSetting<string>;
-    readonly showInBrackets: SyncSetting<boolean>;
+export class blacklistedUrlsSetting extends SyncSetting<string[]> {constructor(provider: DependencyProvider) { super(provider, 'blacklistingurls', [], array => isStringArray(array) && isDistinctArray(array)) }}
 
-    constructor({provider}: DependencyProvider) {
-        this.tag = new SyncSetting<string>(
-            provider,
-            'currency',
-            'USD',
-            e => hasLength(e, 3));
-        this.showInBrackets = new SyncSetting<boolean>(
-            provider,
-            'uacc:currency:brackets',
-            false,
-            isBool
-        );
-    }
+export class usingWhitelistingSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'usingWhitelist', false, isBool) }}
 
-    get settings() {
-        return [this.tag, this.showInBrackets];
-    }
-}
+export class whitelistedUrlsSetting extends SyncSetting<string[]> {constructor(provider: DependencyProvider) { super(provider, 'whitelistingurls', [], array => isStringArray(array) && isDistinctArray(array)) }}
 
-export class ConfigurationShortcuts {
-    readonly convertHover: SyncSetting<string>;
-    readonly convertAll: SyncSetting<string>;
+export class dollarLocalizationSetting extends SyncSetting<string> {constructor(provider: DependencyProvider) { super(provider, 'currencyLocalizationDollar', 'USD', e => hasLength(e, 3)) }}
 
-    constructor({provider}: DependencyProvider) {
-        this.convertHover = new SyncSetting<string>(
-            provider,
-            'currencyShortcut',
-            'Shift',
-            isString);
+export class yenLocalizationSetting extends SyncSetting<string> {constructor(provider: DependencyProvider) { super(provider, 'currencyLocalizationAsian', 'JPY', e => hasLength(e, 3)) }}
 
-        this.convertAll = new SyncSetting<string>(
-            provider,
-            'shortcut:convert:all',
-            '',
-            isString);
-    }
+export class kroneLocalizationSetting extends SyncSetting<string> {constructor(provider: DependencyProvider) { super(provider, 'currencyLocalizationKroner', 'SEK', e => hasLength(e, 3)) }}
 
-    get settings() {
-        return [this.convertHover, this.convertAll]
-    }
-}
+export class usingLocalizationAlertSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'showNonDefaultCurrencyAlert', true, isBool) }}
 
-export class ConfigurationUtility {
-    readonly click: SyncSetting<boolean>;
-    readonly using: SyncSetting<boolean>;
-    readonly hover: SyncSetting<boolean>;
+export class convertToSetting extends SyncSetting<string> {constructor(provider: DependencyProvider) { super(provider, 'currency', 'USD', e => hasLength(e, 3)) }}
 
-    constructor({provider}: DependencyProvider) {
-        this.click = new SyncSetting<boolean>(
-            provider,
-            'utilityClickConvert',
-            true,
-            isBool
-        );
-        this.using = new SyncSetting<boolean>(
-            provider,
-            'currencyUsingAutomatic',
-            true,
-            isBool);
-        this.hover = new SyncSetting<boolean>(
-            provider,
-            'utilityHoverConvert',
-            false,
-            isBool);
-    }
+export class showConversionInBracketsSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'uacc:currency:brackets', false, isBool) }}
 
-    get settings() {
-        return [this.using, this.hover, this.click]
-    }
-}
+export class convertHoverShortcutSetting extends SyncSetting<string> {constructor(provider: DependencyProvider) { super(provider, 'currencyShortcut', 'Shift', isString); }}
 
+export class convertAllShortcutSetting extends SyncSetting<string> {constructor(provider: DependencyProvider) { super(provider, 'shortcut:convert:all', '', isString) }}
+
+export class usingLeftClickFlipConversionSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'utilityClickConvert', true, isBool) }}
+
+export class usingAutoConversionOnPageLoadSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'currencyUsingAutomatic', true, isBool) }}
+
+export class usingHoverFlipConversionSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'utilityHoverConvert', false, isBool) }}

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as React from 'react'
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import {TitleCard} from "./TitleCard";
 import {CurrencyCard} from "./CurrencyCard";
 import {LoadingCard} from "./LoadingCard";
@@ -13,23 +13,19 @@ import {DisplayCard} from "./DisplayCard";
 import {AllowanceCard} from "./AllowanceCard";
 import {ShortcutCard} from "./ShortcutCard";
 import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
-import {useProvider} from "../Infrastructure";
 import {StyleTheme, ThemeType} from '../Atoms/StyleTheme';
 import {ThemeCard} from './ThemeCard';
+import {useSettings} from '../Infrastructure/DependencyInjection';
+import {Space} from '../Atoms';
 
-type Props = { setTheme: React.Dispatch<React.SetStateAction<ThemeType>> }
-export default function OptionsApp(props: Props): JSX.Element {
-    const [isLoading, setIsLoading] = useState(true);
+type Props = { isLoading: boolean, setTheme: React.Dispatch<React.SetStateAction<ThemeType>> }
+export default function OptionsApp({isLoading, setTheme}: Props): JSX.Element {
     const [firstTimeProgress, setFirstTimeProgress] = useState(0);
-    const {configuration} = useProvider()
-
-    useEffect(() => {
-        configuration.load().then(() => setIsLoading(false))
-    }, [])
+    const {isFirstTime} = useSettings()
 
     function wrap(children: any) {
         return <Background>
-            <Space/>
+            <Space height={20}/>
             <Wrapper>
                 <TitleCard key="TitleCard-card"/>
                 {children}
@@ -45,18 +41,18 @@ export default function OptionsApp(props: Props): JSX.Element {
         <ShortcutCard key="ShortcutCard-card"/>,
         <AccessibilityCard key="AccessibilityCard-card"/>,
         <LocalizationCard key="LocalizationCard-card"/>,
-        <ThemeCard setTheme={props.setTheme} key="ThemeCard-card"/>,
+        <ThemeCard setTheme={setTheme} key="ThemeCard-card"/>,
         <FormattingCard key="FormattingCard-card"/>,
         <HighlightCard key="HighlightCard-card"/>,
         <DisplayCard key="DisplayCard-card"/>,
         <AllowanceCard key="AllowanceCard-card"/>
     ]
 
-    if(configuration.firstTime.isFirstTime.value) return wrap([
+    if(false && isFirstTime.value) return wrap([
         <Wrapper>{settings[firstTimeProgress]}</Wrapper>,
         <FirstTimeProgressCard
             progress={Math.min(100, 100 * firstTimeProgress / settings.length)}
-            skip={() => configuration.firstTime.isFirstTime.setAndSaveValue(false)}
+            skip={() => isFirstTime.setAndSaveValue(false)}
             next={() => setFirstTimeProgress(firstTimeProgress + 1)}/>
     ])
 
@@ -72,10 +68,6 @@ const Background = styled.div`
   padding: 0;
   margin: 0;
 `;
-
-const Space = styled.div`
-  height: 20px;
-`
 
 const Wrapper = styled.div`
   max-width: 800px;

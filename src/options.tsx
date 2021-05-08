@@ -1,21 +1,7 @@
 import * as React from "react";
-import {useEffect, useState} from "react";
 import * as ReactDOM from "react-dom";
 import OptionsApp from "./Options/OptionsApp";
-import {ThemeProvider} from 'styled-components';
-import {mapToTheme} from './Atoms/StyleTheme';
-import {useProvider} from './Infrastructure';
+import {SelfStartingPage} from './Atoms';
 
-const provider = useProvider();
-const themeSetting = provider.themeConfiguration.theme;
+ReactDOM.render(<SelfStartingPage Child={OptionsApp}/>, document.getElementById("root"));
 
-function OptionsPage() {
-    const [theme, setTheme] = useState(themeSetting.value)
-    useEffect(() => {themeSetting.load().finally(() => setTheme(themeSetting.value))}, [])
-
-    return <ThemeProvider theme={mapToTheme(theme)}>
-        <OptionsApp setTheme={setTheme}/>
-    </ThemeProvider>
-}
-
-ReactDOM.render(<OptionsPage/>, document.getElementById("root"));

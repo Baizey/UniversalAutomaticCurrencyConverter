@@ -24,7 +24,7 @@ export class LocalSetting<T> implements ISetting<T> {
         return this._value;
     }
 
-    async load(): Promise<boolean> {
+    async loadSetting(): Promise<boolean> {
         return this.setValue(await this.browser.loadLocal<T>(this.storageKey))
     }
 

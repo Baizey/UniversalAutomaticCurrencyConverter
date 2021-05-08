@@ -4,7 +4,7 @@ import {ITextDetector} from "../Detection";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyAmount} from "./CurrencyAmount";
 import {IActiveLocalization} from "../Localization";
-import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {DependencyProvider, SettingProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 type CurrencyInfo = {
     original: CurrencyAmount,
@@ -20,7 +20,6 @@ export class CurrencyElement {
     readonly id: number;
 
     readonly element: HTMLElement;
-    private readonly config: Configuration;
     private readonly detector: ITextDetector;
     private readonly backendApi: IBackendApi;
 
@@ -29,11 +28,10 @@ export class CurrencyElement {
     private conversionTo: string;
     private isShowingConversion: boolean;
     private localization: IActiveLocalization;
-    private provider: DependencyProvider;
+    private readonly provider: DependencyProvider
 
     constructor({
                     provider,
-                    configuration,
                     backendApi,
                     textDetector,
                     activeLocalization
@@ -45,7 +43,6 @@ export class CurrencyElement {
         this.element = element;
 
         this.localization = activeLocalization;
-        this.config = configuration;
         this.backendApi = backendApi;
         this.detector = textDetector;
 
@@ -104,9 +101,9 @@ export class CurrencyElement {
         const self = this;
         this.element.classList.add('uacc-clickable');
 
-        const convertOnHoverAndShortcut = this.config.shortcut.convertHover.value
-        const convertOnClick = this.config.utility.click.value
-        const convertOnHover = this.config.utility.hover.value
+        const convertOnHoverAndShortcut = this.provider.convertHoverShortcut.value
+        const convertOnClick = this.provider.usingLeftClickFlipConversion.value
+        const convertOnHover = this.provider.usingHoverFlipConversion.value
 
         if(convertOnHoverAndShortcut)
             this.element.addEventListener('keyup', e => e.key === convertOnHoverAndShortcut && self.flipDisplay())
@@ -186,7 +183,7 @@ export class CurrencyElement {
 
         currencyInfo.reverse().forEach(info => {
             if(!info.converted) return;
-            const text = this.config.currency.showInBrackets.value
+            const text = this.provider.showConversionInBrackets.value
                 ? `${info.original.amount.join(' - ')} ${info.original.tag} (${info.converted.toString()})`
                 : info.converted.toString()
 
@@ -206,9 +203,9 @@ export class CurrencyElement {
     }
 
     highlight() {
-        if(!this.config.highlight.using.value) return;
-        const color = this.config.highlight.color.value;
-        const duration = this.config.highlight.duration.value;
+        if(!this.provider.usingConversionHighlighting.value) return;
+        const color = this.provider.highlightColor.value;
+        const duration = this.provider.highlightDuration.value;
         this.element.style.textShadow = `${color}  2px 0px 2px, ${color} -2px 0px 2px, ${color}  4px 0px 4px, ${color} -4px 0px 4px, ${color}  6px 0px 6px, ${color} -6px 0px 6px`;
         setTimeout(() => this.element.style.textShadow = '', Math.max(1, duration));
     }

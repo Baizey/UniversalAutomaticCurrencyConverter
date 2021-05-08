@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Dropdown, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useProvider} from "../Infrastructure";
+import {useSettings} from '../Infrastructure/DependencyInjection';
 
 const thousandsOptions = [
     {value: ' ', label: '100 000 (space)'},
@@ -16,23 +16,21 @@ const commaOptions = [
 ]
 
 export function FormattingCard() {
-    const {configurationDisplay} = useProvider()
-    const decimal = configurationDisplay.decimal;
-    const thousands = configurationDisplay.thousands;
-    const rounding = configurationDisplay.rounding;
+    const {decimalPoint, thousandsSeparator, significantDigits} = useSettings()
 
     return <OptionsSection title="Number formatting">
         <OptionRow>
             <SettingOption title="Thousands">
-                <Dropdown options={thousandsOptions} value={thousands.value}
-                          onChange={value => thousands.setAndSaveValue(value)}/>
+                <Dropdown options={thousandsOptions} value={thousandsSeparator.value}
+                          onChange={value => thousandsSeparator.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Decimal">
-                <Dropdown options={commaOptions} value={decimal.value}
-                          onChange={value => decimal.setAndSaveValue(value)}/>
+                <Dropdown options={commaOptions} value={decimalPoint.value}
+                          onChange={value => decimalPoint.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Important digits">
-                <Input type="number" value={rounding.value} onChange={value => rounding.setAndSaveValue(+value)}/>
+                <Input type="number" value={significantDigits.value}
+                       onChange={value => significantDigits.setAndSaveValue(+value)}/>
             </SettingOption>
         </OptionRow>
     </OptionsSection>

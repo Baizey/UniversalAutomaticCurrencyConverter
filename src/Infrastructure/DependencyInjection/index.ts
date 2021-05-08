@@ -1,2 +1,2 @@
 export {Container, Provider} from './package'
-export {useProvider} from './DependencyInjector'
+export {useProvider, useSettings, SettingProvider} from './DependencyInjector'

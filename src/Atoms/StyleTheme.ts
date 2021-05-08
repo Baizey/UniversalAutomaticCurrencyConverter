@@ -4,6 +4,10 @@ export type MyTheme = {
     wrapperBackground: string
     containerBackground: string
     containerBorder: string,
+    inputUnderline: string,
+
+    buttonPrimary: string
+    buttonSecondary: string
 
     borderDimFocus: string
     borderFocus: string
@@ -42,6 +46,10 @@ export const LightTheme = {
 
     containerBackground: '#fffefc',
     containerBorder: '#9e9e9e',
+    inputUnderline: '#dfdedc',
+
+    buttonSecondary: '#467aa8',
+    buttonPrimary: '#46badc',
 
     borderDimFocus: '#C2DCE7',
     borderFocus: '#1e81b0',
@@ -52,11 +60,11 @@ export const LightTheme = {
     normalText: '#101010',
     footerText: '#535353',
 
-    link: '#000088',
-    linkHover: '',
+    link: '#337ab7',
+    linkHover: '#23527c',
 
-    success: '#008800',
-    error: '#880000'
+    success: '#00aa00',
+    error: '#aa0000'
 } as MyTheme
 
 export const DarkTheme = {
@@ -64,6 +72,10 @@ export const DarkTheme = {
 
     containerBackground: '#0C131B',
     containerBorder: '#808080',
+    inputUnderline: '#2F373E',
+
+    buttonPrimary: '#265a88',
+    buttonSecondary: '#269abc',
 
     borderDimFocus: '#352F24',
     borderFocus: '#f0ad4e',
@@ -74,8 +86,8 @@ export const DarkTheme = {
     headerText: '#808080',
     footerText: '#737373',
 
-    link: '#0000FF',
-    linkHover: '',
+    link: '#337ab7',
+    linkHover: '#23527c',
 
     success: '#008800',
     error: '#880000'

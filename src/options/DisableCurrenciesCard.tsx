@@ -6,10 +6,11 @@ import {useProvider} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
 import styled from "styled-components";
 import {StyleTheme} from '../Atoms/StyleTheme';
+import {useSettings} from '../Infrastructure/DependencyInjection';
 
 export function DisableCurrenciesCard() {
-    const {backendApi, configurationDisabledCurrencies} = useProvider()
-    const disabledCurrencies = configurationDisabledCurrencies.tags;
+    const {backendApi} = useProvider()
+    const {disabledCurrencies} = useSettings()
 
     const [list, setList] = useState<string[]>(disabledCurrencies.value || []);
     const [options, setOptions] = useState<{ value: string, label: string }[]>([]);
@@ -70,7 +71,7 @@ const ListItem = styled.div`
   width: 99%;
   margin: auto;
   text-align: center;
-  border-bottom: ${(props: StyleTheme) => `solid 1px ${props.theme.containerBorder}`};
+  border-bottom: ${(props: StyleTheme) => `solid 1px ${props.theme.inputUnderline}`};
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 14px;

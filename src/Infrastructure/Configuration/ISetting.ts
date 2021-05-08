@@ -8,7 +8,7 @@ export interface ISetting<T> {
 
     save(): Promise<void>
 
-    load(): Promise<boolean>
+    loadSetting(): Promise<boolean>
 
     setAndSaveValue(v: T): Promise<boolean>
 }

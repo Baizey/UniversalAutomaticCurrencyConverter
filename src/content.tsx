@@ -2,6 +2,8 @@
 import * as React from "react";
 import {TabMessage, TabMessageType, useProvider} from "./Infrastructure";
 import {CurrencyElement} from './CurrencyConverter/Currency/CurrencyElement';
+import * as ReactDOM from 'react-dom';
+import {MenuWrapper} from './Content/MenuWrapper';
 
 const provider = useProvider()
 
@@ -19,7 +21,7 @@ const elements: CurrencyElement[] = [];
         logger.info(`Initialized`);
         const browser = provider.browser;
 
-        isShowingConversions = provider.configurationUtility.using.value;
+        isShowingConversions = provider.usingAutoConversionOnPageLoad.value;
 
         // Check if blacklisted
         const allowance = provider.siteAllowance.getAllowance(browser.href)
@@ -31,11 +33,15 @@ const elements: CurrencyElement[] = [];
         // TODO: Check if paused
 
         // TODO: Setup infrastructure for context-alert system
+        const div = document.createElement('div')
+        div.id = 'uacc-root'
+        document.body.appendChild(div)
+        ReactDOM.render(<MenuWrapper/>, document.getElementById('uacc-root'));
 
         // TODO: Show alert if localization conflict
 
         // Add shortcut for convert all
-        const convertAllShortcut = provider.configurationShortcut.convertAll.value;
+        const convertAllShortcut = provider.convertAllShortcut.value;
         if(convertAllShortcut) window.addEventListener('keyup', e => {
             if(e.key !== convertAllShortcut) return;
             isShowingConversions = !isShowingConversions;
@@ -65,7 +71,7 @@ const elements: CurrencyElement[] = [];
     }).catch(err => provider.logger.error(err))
 
 async function detectAllElements(parent: HTMLElement): Promise<CurrencyElement[]> {
-    const currency = provider.configurationCurrency.tag.value;
+    const currency = provider.convertTo.value;
     const detector = provider.elementDetector;
 
     const discovered = detector.find(parent)

@@ -32,7 +32,7 @@ const Container = styled.div<ContainerProps>`
   font-size: 14px;
   background-color: ${(props: StyleTheme) => props.theme.containerBackground};
   color: ${(props: StyleTheme) => props.theme.normalText};
-  border: ${(props: StyleTheme) => `0 solid ${props.theme.containerBorder}`};
+  border: ${(props: StyleTheme) => `0 solid ${props.theme.inputUnderline}`};
   border-bottom-width: 1px;
   border-radius: 0;
   text-align: center;

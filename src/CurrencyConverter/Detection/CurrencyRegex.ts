@@ -194,14 +194,14 @@ export class CurrencyRegex {
 
         const amounts = [{
             neg: group.negLeft || '+',
-            integer: group.integerLeft || '',
-            decimal: group.decimalLeft || ''
+            integer: (group.integerLeft || '').replace(/[^\d]+/gm, ''),
+            decimal: (group.decimalLeft || '').replace(/[^\d]+/gm, '')
         }]
         if(group.integerRight)
             amounts.push({
                 neg: group.negRight || '+',
-                integer: group.integerRight || '',
-                decimal: group.decimalRight || ''
+                integer: (group.integerRight || '').replace(/[^\d]+/gm, ''),
+                decimal: (group.decimalRight || '').replace(/[^\d]+/gm, '')
             })
 
         return {

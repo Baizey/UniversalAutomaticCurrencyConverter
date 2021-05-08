@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {useProvider} from "../Infrastructure";
+import {useSettings} from '../Infrastructure/DependencyInjection';
 
 const dollarOptions = [
     {value: 'USD', label: 'American'},
@@ -27,32 +28,28 @@ const asianOptions = [
 ]
 
 export function LocalizationCard() {
-    const {configurationAlert, configurationLocalization} = useProvider()
-    const alert = configurationAlert.localization;
-    const asian = configurationLocalization.asian;
-    const dollar = configurationLocalization.dollar;
-    const krone = configurationLocalization.krone;
+    const {usingLocalizationAlert, kroneLocalization, yenLocalization, dollarLocalization} = useSettings()
 
     return <OptionsSection title="Default Localization">
         <OptionRow>
             <SettingOption title="Show localization alerts">
                 <Checkbox
-                    value={alert.value}
-                    onChange={value => alert.setAndSaveValue(value)}/>
+                    value={usingLocalizationAlert.value}
+                    onChange={value => usingLocalizationAlert.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
         <OptionRow>
             <SettingOption title="Dollar$">
-                <Dropdown options={dollarOptions} value={dollar.value}
-                          onChange={value => dollar.setAndSaveValue(value)}/>
+                <Dropdown options={dollarOptions} value={dollarLocalization.value}
+                          onChange={value => dollarLocalization.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Kr.">
-                <Dropdown options={kroneOptions} value={krone.value}
-                          onChange={value => krone.setAndSaveValue(value)}/>
+                <Dropdown options={kroneOptions} value={kroneLocalization.value}
+                          onChange={value => kroneLocalization.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="¥en">
-                <Dropdown options={asianOptions} value={asian.value}
-                          onChange={value => asian.setAndSaveValue(value)}/>
+                <Dropdown options={asianOptions} value={yenLocalization.value}
+                          onChange={value => yenLocalization.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
     </OptionsSection>

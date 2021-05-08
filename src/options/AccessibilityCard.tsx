@@ -1,24 +1,24 @@
 import * as React from 'react';
 import {Checkbox} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useProvider} from "../Infrastructure";
+import {useSettings} from '../Infrastructure/DependencyInjection';
 
 export function AccessibilityCard() {
-    const {configurationUtility} = useProvider()
-    const hover = configurationUtility.hover;
-    const click = configurationUtility.click;
-    const autoConvert = configurationUtility.using;
+    const {usingHoverFlipConversion, usingLeftClickFlipConversion, usingAutoConversionOnPageLoad} = useSettings()
 
     return <OptionsSection title="Accessibility">
         <OptionRow>
             <SettingOption title="Convert pages automatically on load">
-                <Checkbox value={autoConvert.value} onChange={value => autoConvert.setAndSaveValue(value)}/>
+                <Checkbox value={usingAutoConversionOnPageLoad.value}
+                          onChange={value => usingAutoConversionOnPageLoad.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Convert prices by left clicking">
-                <Checkbox value={click.value} onChange={value => click.setAndSaveValue(value)}/>
+                <Checkbox value={usingLeftClickFlipConversion.value}
+                          onChange={value => usingLeftClickFlipConversion.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Convert prices on hover over">
-                <Checkbox value={hover.value} onChange={value => hover.setAndSaveValue(value)}/>
+                <Checkbox value={usingHoverFlipConversion.value}
+                          onChange={value => usingHoverFlipConversion.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
     </OptionsSection>

@@ -2,28 +2,22 @@ import * as React from 'react';
 import {useState} from 'react';
 import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {ISetting, useProvider} from "../Infrastructure";
+import {ISetting} from "../Infrastructure";
 import styled from "styled-components";
+import {useSettings} from '../Infrastructure/DependencyInjection';
 
 export function AllowanceCard() {
-    const {configurationBlacklist, configurationWhitelist} = useProvider()
-    const useBlacklist = configurationBlacklist.using;
-    const blackurls = configurationBlacklist.urls;
-    const useWhitelist = configurationWhitelist.using;
-    const whiteurls = configurationWhitelist.urls;
-
-    const [blacklist, setBlacklist] = useState(blackurls.value || [])
-    const [whitelist, setWhitelist] = useState(whiteurls.value || [])
+    const {blacklistedUrls, usingBlacklisting, whitelistedUrls, usingWhitelisting} = useSettings()
 
     return <OptionsSection title="Site allowance">
         <OptionRow>
             <SettingOption title="Use blacklist">
-                <Checkbox value={useBlacklist.value}
-                          onChange={value => useBlacklist.setAndSaveValue(value)}/>
+                <Checkbox value={usingBlacklisting.value}
+                          onChange={value => usingBlacklisting.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Use whitelist">
-                <Checkbox value={useWhitelist.value}
-                          onChange={value => useWhitelist.setAndSaveValue(value)}/>
+                <Checkbox value={usingWhitelisting.value}
+                          onChange={value => usingWhitelisting.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
         <OptionRow>
@@ -36,10 +30,10 @@ export function AllowanceCard() {
         </OptionRow>
         <OptionRow>
             <SettingOption title="Blacklist">
-                <ListHandler setting={blackurls}/>
+                <ListHandler setting={blacklistedUrls}/>
             </SettingOption>
             <SettingOption title="Whitelist">
-                <ListHandler setting={whiteurls}/>
+                <ListHandler setting={whitelistedUrls}/>
             </SettingOption>
         </OptionRow>
     </OptionsSection>

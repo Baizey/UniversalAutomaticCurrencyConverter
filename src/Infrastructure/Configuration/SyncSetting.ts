@@ -40,12 +40,13 @@ export class SyncSetting<T> implements ISetting<T> {
         return await this.browser.saveSync(this.storageKey, this.value)
     }
 
-    async load(): Promise<boolean> {
+    async loadSetting(): Promise<boolean> {
         return this.setValue(await this.browser.loadSync<T>(this.storageKey))
     }
 
     async setAndSaveValue(v: T): Promise<boolean> {
         const result = this.setValue(v);
+
         await this.save();
         return result;
     }
