@@ -2,7 +2,13 @@ import styled from 'styled-components';
 import * as React from 'react'
 import {StyleTheme} from './StyleTheme';
 
-type ContainerProps = {
+type SpaceProps = { height?: number, width?: number }
+export const Space = styled.div<SpaceProps>`
+  width: ${props => `${props.width}px`};
+  height: ${props => `${props.height}px`};
+`
+
+export type ButtonProps = {
     color: string
     connect?: {
         left?: boolean,
@@ -11,14 +17,7 @@ type ContainerProps = {
         down?: boolean
     }
 }
-
-type SpaceProps = { height?: number, width?: number }
-export const Space = styled.div<SpaceProps>`
-  width: ${props => `${props.width}px`};
-  height: ${props => `${props.height}px`};
-`
-
-export const Button = styled.div<ContainerProps>`
+export const Button = styled.div<ButtonProps>`
   cursor: pointer;
   background-color: ${props => props.color};
   color: ${(props: StyleTheme) => props.theme.normalText};

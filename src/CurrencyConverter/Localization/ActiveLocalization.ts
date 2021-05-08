@@ -137,8 +137,8 @@ export class ActiveLocalization implements IActiveLocalization {
 
     hasConflict(): boolean {
         if(this.krone.hasConflict() || this.yen.hasConflict() || this.dollar.hasConflict())
-            return false;
-        return !this.isLocked;
+            return !this.isLocked;
+        return false;
     }
 
     determineForSite(siteAsText?: string): void {

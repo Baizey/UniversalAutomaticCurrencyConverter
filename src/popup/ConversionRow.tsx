@@ -44,7 +44,6 @@ export function ConversionRow(props: Props) {
 
     if(isLoading) return <></>
 
-    console.log(toAmount)
     return <Container>
         <IconContainer onClick={() => props.onDelete()}>
             <DeleteIcon height="20px" width="20px" color={theme.error}/>

@@ -4,7 +4,7 @@ import {DependencyProvider} from '../../Infrastructure/DependencyInjection/Depen
 export class CurrencyLocalization {
     value: string;
 
-    private defaultValue: string;
+    defaultValue: string;
     private browser: IBrowser;
 
     private readonly key: string;

@@ -7,7 +7,6 @@ import {LoadingCard} from "./LoadingCard";
 
 export function CurrencyCard() {
     const {backendApi, showConversionInBrackets, convertTo} = useProvider()
-    console.log(convertTo)
 
     const [currency, setCurrency] = useState<string>(convertTo.value);
     const [checked, setChecked] = useState(showConversionInBrackets.value);

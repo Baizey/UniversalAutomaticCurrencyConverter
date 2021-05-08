@@ -48,8 +48,8 @@ export const LightTheme = {
     containerBorder: '#9e9e9e',
     inputUnderline: '#dfdedc',
 
-    buttonSecondary: '#467aa8',
     buttonPrimary: '#46badc',
+    buttonSecondary: '#7c858d',
 
     borderDimFocus: '#C2DCE7',
     borderFocus: '#1e81b0',
@@ -71,11 +71,11 @@ export const DarkTheme = {
     wrapperBackground: '#0F171E',
 
     containerBackground: '#0C131B',
-    containerBorder: '#808080',
+    containerBorder: '#2C333B',
     inputUnderline: '#2F373E',
 
     buttonPrimary: '#265a88',
-    buttonSecondary: '#269abc',
+    buttonSecondary: '#5c656d',
 
     borderDimFocus: '#352F24',
     borderFocus: '#f0ad4e',
