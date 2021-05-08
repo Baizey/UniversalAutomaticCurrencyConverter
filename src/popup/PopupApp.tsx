@@ -43,6 +43,7 @@ const Title = styled.h2`
   color: ${(props: StyleTheme) => props.theme.titleText};
   width: 100%;
   text-align: center;
+  max-height: 800px;
   margin: auto;
   font-size: 18px;
   line-height: 1.1;

@@ -1,20 +1,10 @@
 import {Browser, IBrowser} from '../Browser';
 import {BackendApi, IBackendApi} from '../../CurrencyConverter/BackendApi';
 import {ILogger, Logger} from '../Logger';
-import {Configuration} from '../Configuration';
-import {
-    ElementDetector,
-    IElementDetector,
-    ISiteAllowance,
-    ITextDetector,
-    SiteAllowance,
-    TextDetector,
-} from '../../CurrencyConverter/Detection';
-import {ActiveLocalization, IActiveLocalization} from '../../CurrencyConverter/Localization';
-import {Container, Provider} from './';
 import {
     blacklistedUrlsSetting,
     colorThemeSetting,
+    Configuration,
     conversionDisplaySetting,
     convertAllShortcutSetting,
     convertHoverShortcutSetting,
@@ -41,11 +31,22 @@ import {
     whitelistedUrlsSetting,
     yenLocalizationSetting
 } from '../Configuration';
+import {
+    ElementDetector,
+    IElementDetector,
+    ISiteAllowance,
+    ITextDetector,
+    SiteAllowance,
+    TextDetector,
+} from '../../CurrencyConverter/Detection';
+import {ActiveLocalization, IActiveLocalization} from '../../CurrencyConverter/Localization';
+import {Container, Provider} from './';
 import {ISetting} from '../Configuration/ISetting';
 import {miniConverterSetting} from '../Configuration/Configuration';
 
 export class SettingProvider extends Provider {
 
+    // Only used in popup, keep away from allSettings or we will waste time loading it outside of popup
     get miniConverterRows(): miniConverterSetting { return this.getRequired(miniConverterSetting) }
 
     get isFirstTime(): isFirstTimeSetting { return this.getRequired(isFirstTimeSetting) }

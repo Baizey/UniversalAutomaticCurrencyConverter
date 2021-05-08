@@ -3,8 +3,9 @@ import {useProvider} from '../Infrastructure';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Dropdown, Input, ReadonlyInput} from '../Atoms';
-import styled from 'styled-components';
-import {StyleTheme} from '../Atoms/StyleTheme';
+import styled, {useTheme} from 'styled-components';
+import {MyTheme, StyleTheme} from '../Atoms/StyleTheme';
+import {DeleteIcon, ExchangeIcon} from '../assets'
 
 type Props = {
     from: string,
@@ -15,6 +16,7 @@ type Props = {
 }
 
 export function ConversionRow(props: Props) {
+    const theme = useTheme() as MyTheme
     const {backendApi, provider} = useProvider();
 
     const [from, setFrom] = useState<string>(props.from)
@@ -44,8 +46,8 @@ export function ConversionRow(props: Props) {
 
     console.log(toAmount)
     return <Container>
-        <IconContainer>
-
+        <IconContainer onClick={() => props.onDelete()}>
+            <DeleteIcon height="20px" width="20px" color={theme.error}/>
         </IconContainer>
 
         <AmountContainer>
@@ -62,15 +64,15 @@ export function ConversionRow(props: Props) {
                       onChange={value => setFrom(value)}/>
         </CurrencyContainer>
 
-        <IconContainer>
-            <ExchangeIcon onClick={() => {
-                const oldFrom = from;
-                const oldTo = to;
-                const oldToAmount = toAmount;
-                setFrom(oldTo);
-                setTo(oldFrom);
-                setFromAmount(+oldToAmount.roundedAmount[0])
-            }}/>
+        <IconContainer onClick={() => {
+            const oldFrom = from;
+            const oldTo = to;
+            const oldToAmount = toAmount;
+            setFrom(oldTo);
+            setTo(oldFrom);
+            setFromAmount(+oldToAmount.roundedAmount[0])
+        }}>
+            <ExchangeIcon height="20px" width="20px" color={theme.normalText}/>
         </IconContainer>
 
         <AmountContainer>
@@ -86,36 +88,28 @@ export function ConversionRow(props: Props) {
     </Container>
 }
 
-const ExchangeIcon = styled.div`
-  font-family: "grupoico", serif;
-  cursor: pointer;
-  border: solid 0px transparent;
-  height: 100%;
-  width: 100%;
-  text-align: center;
+const AmountContainer = styled.div`
+  width: 30%;
+`
 
-  &:before {
-    line-height: 34px;
-    color: ${(props: StyleTheme) => props.theme.normalText};
-    font-family: "grupoico", serif;
-    content: '\\e896';
-  }
+const IconContainer = styled.div`
+  text-align: center;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+  cursor: pointer;
+  height: 34px;
+  width: 5%;
 
   &:hover {
     background-color: ${(props: StyleTheme) => props.theme.borderDimFocus};
   }
 `
 
-const AmountContainer = styled.div`
-  width: 25%;
-`
-
-const IconContainer = styled.div`
-  width: 8.33333333333333333%;
-`
-
 const CurrencyContainer = styled.div`
-  width: 16.666666666666666%;
+  width: 15%;
 `
 
 const Container = styled.div`

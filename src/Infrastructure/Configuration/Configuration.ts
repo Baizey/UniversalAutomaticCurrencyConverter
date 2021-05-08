@@ -39,7 +39,6 @@ type MiniConverterRow = {
     amount: number
 }
 
-// Never add this to all-settings as it is only required in popup and shouldn't be loaded elsewhere
 export class miniConverterSetting extends LocalSetting<MiniConverterRow[]> {
     constructor(provider: DependencyProvider) {super(provider, 'uacc:global:converter', [], isArray);}
 }
