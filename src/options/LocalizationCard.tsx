@@ -22,7 +22,7 @@ const kroneOptions = [
     {value: 'CZK', label: 'Czechia'},
 ]
 
-const asianOptions = [
+const yenOptions = [
     {value: 'CNY', label: 'Chinese'},
     {value: 'JPY', label: 'Japanese'},
 ]
@@ -48,7 +48,7 @@ export function LocalizationCard() {
                           onChange={value => kroneLocalization.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="¥en">
-                <Dropdown options={asianOptions} value={yenLocalization.value}
+                <Dropdown options={yenOptions} value={yenLocalization.value}
                           onChange={value => yenLocalization.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
