@@ -13,9 +13,9 @@ export default function useMockContainer(): [Container<DependencyProvider>, Depe
             EUR: {USD: 1, DKK: 1},
             DKK: {USD: 1, EUR: 1}
         }, {
-            'USD': 'y',
-            'EUR': 'y',
-            'DKK': 'y',
+            'USD': 'USD',
+            'EUR': 'EUR',
+            'DKK': 'DKK',
         }))
     return [container, container.build()];
 }

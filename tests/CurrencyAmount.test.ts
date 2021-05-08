@@ -44,7 +44,7 @@ describe('CurrencyAmount', () => {
             it(`Input: ${test.input}, Expected: ${test.expect}, Rounding: ${test.rounding}`, () => {
                 // Setup
                 const [container, provider] = useMockContainer()
-                provider.configurationDisplay.rounding.setValue(test.rounding);
+                provider.significantDigits.setValue(test.rounding);
                 const amount = new CurrencyAmount(provider, 'EUR', test.input);
 
                 // Act
@@ -132,13 +132,13 @@ describe('CurrencyAmount', () => {
             it(`Rounding: ${test.rounding}, amount: ${test.amount}, currency: ${test.currency}, expect: ${test.expect}`, async () => {
                 // Setup
                 const [container, provider] = useMockContainer()
-                provider.configurationDisplay.rounding.setValue(test.rounding)
-                provider.configurationDisplay.decimal.setValue(test.decimal)
-                provider.configurationDisplay.thousands.setValue(test.thousands)
+                provider.significantDigits.setValue(test.rounding)
+                provider.decimalPoint.setValue(test.decimal)
+                provider.thousandsSeparator.setValue(test.thousands)
 
-                provider.configurationTag.using.setValue(test.using)
-                provider.configurationTag.value.setValue(test.value)
-                provider.configurationTag.display.setValue(test.tag)
+                provider.usingCustomDisplay.setValue(test.using)
+                provider.customDisplay.setValue(test.tag)
+                provider.customConversionRateDisplay.setValue(test.value)
 
                 const original = new CurrencyAmount(provider, test.currency, test.amount);
 

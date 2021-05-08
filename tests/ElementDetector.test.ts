@@ -1,6 +1,4 @@
 import useMockContainer from './Container.mock';
-import {BackendApi, IBackendApi} from '../src/CurrencyConverter/BackendApi';
-import {BackendApiMock} from './BackendApi.mock';
 
 describe('ElementDetector', () => {
     const create = (html: string): HTMLElement => {
@@ -8,24 +6,24 @@ describe('ElementDetector', () => {
         div.innerHTML = html;
         return div.children[0] as HTMLElement;
     }
-    const tests = [
+    const originalShowTest = [
         {
-            name: 'Amazon one',
+            name: 'Amazon one original',
             element: create(`<span class="a-price" data-a-size="l" data-a-color="base"><span class="a-offscreen">DKK&nbsp;21.44</span><span aria-hidden="true"><span class="a-price-symbol">DKK</span><span class="a-price-whole">21<span class="a-price-decimal">.</span></span><span class="a-price-fraction">44</span></span></span>`),
-            expect: [8]
+            expect: ['DKK 21.44', 'DKK21.44']
         },
         {
-            name: 'Amazon hidden',
+            name: 'Amazon hidden original',
             element: create(`<span class="a-offscreen">DKK&nbsp;21.44</span>`),
-            expect: [8]
+            expect: ['DKK 21.44']
         },
         {
-            name: 'Amazon visible',
+            name: 'Amazon visible original',
             element: create(`<span aria-hidden="true"><span class="a-price-symbol">DKK</span><span class="a-price-whole">21<span class="a-price-decimal">.</span></span><span class="a-price-fraction">44</span></span>`),
-            expect: [8]
+            expect: ['DKK21.44']
         }
     ];
-    tests.forEach((test: { name: string, element: HTMLElement, expect: any }) => {
+    originalShowTest.forEach((test: { name: string, element: HTMLElement, expect: any }) => {
         it(`${test.name}`, async () => {
             // Setup
             const [container, provider] = useMockContainer();
@@ -35,10 +33,47 @@ describe('ElementDetector', () => {
 
             // Act
             const actual = elementDetector.find(test.element);
+            await Promise.all(actual.map(e => e.showOriginal()));
 
 
             // Assert
-            expect(actual).toEqual(test.expect);
+            expect(actual.map(e => e.element.innerText)).toEqual(test.expect);
+        });
+    })
+
+    const convertedShowTest = [
+        {
+            name: 'Amazon one converted',
+            element: create(`<span class="a-price" data-a-size="l" data-a-color="base"><span class="a-offscreen">DKK&nbsp;21.44</span><span aria-hidden="true"><span class="a-price-symbol">DKK</span><span class="a-price-whole">21<span class="a-price-decimal">.</span></span><span class="a-price-fraction">44</span></span></span>`),
+            expect: ['21 DKK', '21 DKK']
+        },
+        {
+            name: 'Amazon hidden converted',
+            element: create(`<span class="a-offscreen">DKK&nbsp;21.44</span>`),
+            expect: ['21 DKK']
+        },
+        {
+            name: 'Amazon visible converted',
+            element: create(`<span aria-hidden="true"><span class="a-price-symbol">DKK</span><span class="a-price-whole">21<span class="a-price-decimal">.</span></span><span class="a-price-fraction">44</span></span>`),
+            expect: ['21 DKK']
+        }
+    ];
+    convertedShowTest.forEach((test: { name: string, element: HTMLElement, expect: any }) => {
+        it(`${test.name}`, async () => {
+            // Setup
+            const [container, provider] = useMockContainer();
+            await provider.activeLocalization.load()
+            await provider.activeLocalization.overload({dollar: 'USD', krone: 'DKK'})
+            const elementDetector = provider.elementDetector;
+
+            // Act
+            const actual = elementDetector.find(test.element);
+            await Promise.all(actual.map(e => e.convertTo('USD')));
+            await Promise.all(actual.map(e => e.showConverted()));
+
+
+            // Assert
+            expect(actual.map(e => e.element.innerText)).toEqual(test.expect);
         });
     })
 });

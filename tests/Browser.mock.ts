@@ -5,6 +5,8 @@ import {Browsers, Environments} from "../src/Infrastructure/Browser/Browser";
 import {IBackgroundMessenger} from "../src/Infrastructure/BrowserMessengers/BackgroundMessenger";
 
 export class BrowserMock implements IBrowser {
+
+    readonly extensionName: string;
     readonly access: typeof chrome;
     readonly author: string;
     readonly background: IBackgroundMessenger;
@@ -27,6 +29,7 @@ export class BrowserMock implements IBrowser {
     readonly type: Browsers;
 
     constructor() {
+        this.extensionName = 'Universal Automatic Currency Converter'
         // @ts-ignore
         this.access = {}
         this.author = 'Baizey'
