@@ -3,8 +3,8 @@ import {DependencyProvider} from '../../Infrastructure/DependencyInjection/Depen
 
 export class CurrencyLocalization {
     value: string;
-
     defaultValue: string;
+    detectedValue: string;
     private browser: IBrowser;
 
     private readonly key: string;
@@ -16,6 +16,7 @@ export class CurrencyLocalization {
         this.key = key
         this.value = '';
         this.defaultValue = '';
+        this.detectedValue = '';
     }
 
     override(value: string | undefined): void {
@@ -28,17 +29,22 @@ export class CurrencyLocalization {
         await this.browser.saveLocal(this.key, this.value);
     }
 
+    setDetected(value: string): void {
+        this.override(value)
+        this.detectedValue = this.value;
+    }
+
     async load(): Promise<void> {
         const localValue = await this.browser.loadLocal<string>(this.key);
         this.value = localValue || this.setting.value;
         this.defaultValue = this.value;
     }
 
-    reset(): void {
-        this.value = this.defaultValue;
+    reset(toDefault: boolean): void {
+        this.value = toDefault ? this.defaultValue : this.detectedValue;
     }
 
     hasConflict(): boolean {
-        return this.value !== this.defaultValue;
+        return this.detectedValue !== this.defaultValue;
     }
 }

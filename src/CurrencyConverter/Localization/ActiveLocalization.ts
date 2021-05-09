@@ -19,7 +19,7 @@ export interface IActiveLocalization {
 
     save(): Promise<void>
 
-    reset(): Promise<void>
+    reset(toDefault: boolean): Promise<void>
 
     overload(input?: Partial<Compact>): Promise<void>
 
@@ -120,10 +120,10 @@ export class ActiveLocalization implements IActiveLocalization {
         await this.browser.saveLocal(this.lockedKey, bool);
     }
 
-    async reset(): Promise<void> {
-        this.krone.reset();
-        this.yen.reset();
-        this.dollar.reset();
+    async reset(toDefault: boolean): Promise<void> {
+        this.krone.reset(toDefault);
+        this.yen.reset(toDefault);
+        this.dollar.reset(toDefault);
         await this.setLocked(false);
     }
 
@@ -146,9 +146,9 @@ export class ActiveLocalization implements IActiveLocalization {
         // If the user has locked localization for site, do nothing
         if(this.isLocked) return;
         const shared = Localizations.shared;
-        this.yen.override(this._determine(this.yen.value, siteAsText, shared['¥']))
-        this.dollar.override(this._determine(this.dollar.value, siteAsText, shared.$))
-        this.krone.override(this._determine(this.krone.value, siteAsText, shared.kr))
+        this.yen.setDetected(this._determine(this.yen.value, siteAsText, shared['¥']))
+        this.dollar.setDetected(this._determine(this.dollar.value, siteAsText, shared.$))
+        this.krone.setDetected(this._determine(this.krone.value, siteAsText, shared.kr))
         this.logger.debug(`Found localization conflict: ${this.hasConflict()}`);
     }
 

@@ -1,16 +1,20 @@
 import {AlertSection} from './AlertSection';
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import styled, {useTheme} from 'styled-components';
 import {useProvider} from '../Infrastructure';
 import {Button, RadioBox, Space} from '../Atoms';
-import {ButtonProps} from '../Atoms/Button';
 import {MyTheme, StyleTheme} from '../Atoms/StyleTheme';
 
 export function LocalizationAlert() {
+    const [isDismissed, setIsDismissed] = useState(false);
+    if(isDismissed) return <></>
+
     const [useDetected, setUseDetected] = useState(true);
     const {activeLocalization} = useProvider();
     const theme = useTheme() as MyTheme;
+
+    useEffect(() => { activeLocalization.reset(!useDetected) }, [useDetected])
 
     const kroneConflict = activeLocalization.krone.hasConflict();
     const dollarConflict = activeLocalization.dollar.hasConflict();
@@ -20,9 +24,9 @@ export function LocalizationAlert() {
         <OptionWrapper height={120}>
             <Option>
                 <Currency>Detected</Currency>
-                {kroneConflict ? <Currency>{activeLocalization.krone.value}</Currency> : <></>}
-                {dollarConflict ? <Currency>{activeLocalization.dollar.value}</Currency> : <></>}
-                {yenConflict ? <Currency>{activeLocalization.yen.value}</Currency> : <></>}
+                {kroneConflict ? <Currency>{activeLocalization.krone.detectedValue}</Currency> : <></>}
+                {dollarConflict ? <Currency>{activeLocalization.dollar.detectedValue}</Currency> : <></>}
+                {yenConflict ? <Currency>{activeLocalization.yen.detectedValue}</Currency> : <></>}
                 <Space height={5}/>
                 <RadioBox value={useDetected} onClick={() => setUseDetected(true)}/>
             </Option>
@@ -35,9 +39,22 @@ export function LocalizationAlert() {
                 <RadioBox value={!useDetected} onClick={() => setUseDetected(false)}/>
             </Option>
         </OptionWrapper>
-        <OptionWrapper height={50}>
-            <ConfirmButton connect={{right: true}} color={theme.buttonPrimary}>Save as site default</ConfirmButton>
-            <DismissButton connect={{left: true}} color={theme.buttonSecondary}>Dismiss alert for now</DismissButton>
+        <OptionWrapper height={40}>
+            <ConfirmButton
+                onClick={async () => {
+                    await activeLocalization.save();
+                    await activeLocalization.setLocked(true);
+                    setIsDismissed(true);
+                }}
+                connect={{right: true}}
+                color={theme.buttonPrimary}>Save as site default</ConfirmButton>
+            <DismissButton
+                onClick={async () => {
+                    await activeLocalization.setLocked(false);
+                    setIsDismissed(true);
+                }}
+                connect={{left: true}}
+                color={theme.buttonSecondary}>Dismiss alert for now</DismissButton>
         </OptionWrapper>
     </AlertSection>
 }
@@ -48,7 +65,7 @@ const Currency = styled.div`
   text-align: center;
 `
 
-const ConfirmButton = styled(Button)<ButtonProps>`
+const ConfirmButton = styled(Button)`
   width: 50%;
 `
 
