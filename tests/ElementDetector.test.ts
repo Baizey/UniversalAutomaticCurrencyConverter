@@ -68,7 +68,7 @@ describe('ElementDetector', () => {
 
             // Act
             const actual = elementDetector.find(test.element);
-            await Promise.all(actual.map(e => e.convertTo('USD')));
+            await Promise.all(actual.map(e => e.convertTo('DKK')));
             await Promise.all(actual.map(e => e.showConverted()));
 
 

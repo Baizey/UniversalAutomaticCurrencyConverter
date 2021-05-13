@@ -1,7 +1,6 @@
 import {CurrencyLocalization} from '../src/CurrencyConverter/Localization/CurrencyLocalization';
 import {SyncSetting} from '../src/Infrastructure/Configuration/SyncSetting';
 import useMockContainer from './Container.mock';
-import {BrowserMock} from './Browser.mock';
 
 describe('CurrencyLocalization', () => {
     [
@@ -27,30 +26,15 @@ describe('CurrencyLocalization', () => {
     }));
 
     [
-        {input: 'AAA', expect: true},
-        {input: '', expect: false},
+        {input: 'AAA', default: 'BBB', expect: true},
+        {input: 'CCC', default: 'CCC', expect: false},
     ].forEach(test => it(`Conflict ${test.input} => ${test.expect}`, () => {
         // Setup
         const [container, provider] = useMockContainer();
         const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
-        localization.override(test.input)
-
-        // Assert
-        expect(localization.hasConflict()).toBe(test.expect)
-    }));
-
-    [
-        {input: 'AAA', expect: false},
-    ].forEach(test => it(`Reset removes conflict ${test.input} => ${test.expect}`, () => {
-        // Setup
-        const [container, provider] = useMockContainer();
-        const setting = new SyncSetting<string>(provider, '', '', () => true)
-        const localization = new CurrencyLocalization(provider, '', setting);
-        localization.override(test.input)
-
-        // Act
-        localization.reset()
+        localization.defaultValue = test.default;
+        localization.setDetected(test.input)
 
         // Assert
         expect(localization.hasConflict()).toBe(test.expect)

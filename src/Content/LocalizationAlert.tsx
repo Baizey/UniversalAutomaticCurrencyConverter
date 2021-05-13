@@ -4,12 +4,11 @@ import {useEffect, useState} from 'react';
 import styled, {useTheme} from 'styled-components';
 import {useProvider} from '../Infrastructure';
 import {Button, RadioBox, Space} from '../Atoms';
-import {MyTheme, StyleTheme} from '../Atoms/StyleTheme';
+import {MyTheme, ThemeProps} from '../Atoms/ThemeProps';
 
-export function LocalizationAlert() {
-    const [isDismissed, setIsDismissed] = useState(false);
-    if(isDismissed) return <></>
+type Props = { setDismissed: () => void }
 
+export function LocalizationAlert({setDismissed}: Props) {
     const [useDetected, setUseDetected] = useState(true);
     const {activeLocalization} = useProvider();
     const theme = useTheme() as MyTheme;
@@ -20,10 +19,10 @@ export function LocalizationAlert() {
     const dollarConflict = activeLocalization.dollar.hasConflict();
     const yenConflict = activeLocalization.yen.hasConflict();
 
-    return <AlertSection title="Localization alert">
+    return <AlertSection onDismiss={setDismissed} title="Localization alert">
         <OptionWrapper height={120}>
             <Option>
-                <Currency>Detected</Currency>
+                <Subtitle>Use detected</Subtitle>
                 {kroneConflict ? <Currency>{activeLocalization.krone.detectedValue}</Currency> : <></>}
                 {dollarConflict ? <Currency>{activeLocalization.dollar.detectedValue}</Currency> : <></>}
                 {yenConflict ? <Currency>{activeLocalization.yen.detectedValue}</Currency> : <></>}
@@ -31,7 +30,7 @@ export function LocalizationAlert() {
                 <RadioBox value={useDetected} onClick={() => setUseDetected(true)}/>
             </Option>
             <Option>
-                <Currency>Your defaults</Currency>
+                <Subtitle>Use your defaults</Subtitle>
                 {kroneConflict ? <Currency>{activeLocalization.krone.defaultValue}</Currency> : <></>}
                 {dollarConflict ? <Currency>{activeLocalization.dollar.defaultValue}</Currency> : <></>}
                 {yenConflict ? <Currency>{activeLocalization.yen.defaultValue}</Currency> : <></>}
@@ -39,38 +38,28 @@ export function LocalizationAlert() {
                 <RadioBox value={!useDetected} onClick={() => setUseDetected(false)}/>
             </Option>
         </OptionWrapper>
-        <OptionWrapper height={40}>
-            <ConfirmButton
-                onClick={async () => {
-                    await activeLocalization.save();
-                    await activeLocalization.setLocked(true);
-                    setIsDismissed(true);
-                }}
-                connect={{right: true}}
-                color={theme.buttonPrimary}>Save as site default</ConfirmButton>
-            <DismissButton
-                onClick={async () => {
-                    await activeLocalization.setLocked(false);
-                    setIsDismissed(true);
-                }}
-                connect={{left: true}}
-                color={theme.buttonSecondary}>Dismiss alert for now</DismissButton>
-        </OptionWrapper>
+        <Button
+            onClick={async () => {
+                await activeLocalization.save();
+                await activeLocalization.setLocked(true);
+                setDismissed()
+            }}
+            color={theme.buttonPrimary}>Save as site default and dont ask again
+        </Button>
     </AlertSection>
 }
 
-const Currency = styled.div`
-  color: ${(props: StyleTheme) => props.theme.normalText};
+const Subtitle = styled.div`
+  color: ${(props: ThemeProps) => props.theme.normalText};
+  font-weight: 600;
   width: 100%;
   text-align: center;
 `
 
-const ConfirmButton = styled(Button)`
-  width: 50%;
-`
-
-const DismissButton = styled(Button)`
-  width: 50%;
+const Currency = styled.div`
+  color: ${(props: ThemeProps) => props.theme.normalText};
+  width: 100%;
+  text-align: center;
 `
 
 type OptionWrapperType = { height: number }

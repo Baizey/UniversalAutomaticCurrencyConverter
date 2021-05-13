@@ -16,7 +16,7 @@ export class Provider {
         this.container = container;
     }
 
-    get<T, P extends Provider>(item: string | InjectionConstructor<T, P>): T | undefined { return this.container.get<T>(item)?.instance }
+    getOptional<T, P extends Provider>(item: string | InjectionConstructor<T, P>): T | undefined { return this.container.get<T>(item)?.instance }
 
     getRequired<T, P extends Provider>(item: string | InjectionConstructor<T, P>): T { return this.container.getRequired<T>(item).instance }
 }

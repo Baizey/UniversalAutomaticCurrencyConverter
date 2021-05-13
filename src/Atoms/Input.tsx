@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as React from 'react';
 import {useState} from 'react';
-import {StyleTheme} from './StyleTheme';
+import {ThemeProps} from './ThemeProps';
 
 type ReadonlyInputProps = {
     center?: boolean
@@ -38,11 +38,7 @@ export function Input({type, value, onChange, onEnter, placeholder, center}: Inp
             setCurrent(event.target.value)
             onChange && onChange(event.target.value);
         }}
-        onKeyUp={event => {
-            if(event.key === 'Enter' && onEnter) {
-                onEnter(current)
-            }
-        }}
+        onKeyUp={event => event.key === 'Enter' && onEnter && onEnter(current)}
     />
 }
 
@@ -54,9 +50,9 @@ const Container = styled.input<ContainerProps>`
   padding: 0;
   font-size: 14px;
   line-height: 1.42857143;
-  background-color: ${(props: StyleTheme) => props.theme.containerBackground};
-  color: ${(props: StyleTheme) => props.theme.normalText};
-  border: ${(props: StyleTheme) => `0 solid ${props.theme.inputUnderline}`};
+  background-color: ${(props: ThemeProps) => props.theme.containerBackground};
+  color: ${(props: ThemeProps) => props.theme.normalText};
+  border: ${(props: ThemeProps) => `0 solid ${props.theme.inputUnderline}`};
   border-bottom-width: 1px;
   border-radius: 0;
   text-align: ${props => props.center ? 'center' : 'right'};
@@ -70,6 +66,6 @@ const Container = styled.input<ContainerProps>`
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: ${(props: StyleTheme) => props.theme.borderFocus};
+    border-color: ${(props: ThemeProps) => props.theme.borderFocus};
   }
 `

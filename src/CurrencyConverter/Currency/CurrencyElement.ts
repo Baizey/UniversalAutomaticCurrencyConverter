@@ -1,10 +1,9 @@
-import {Configuration} from "../../Infrastructure";
 import {ElementSnapshot} from "./ElementSnapshot";
 import {ITextDetector} from "../Detection";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyAmount} from "./CurrencyAmount";
 import {IActiveLocalization} from "../Localization";
-import {DependencyProvider, SettingProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 
 type CurrencyInfo = {
     original: CurrencyAmount,
@@ -26,7 +25,7 @@ export class CurrencyElement {
     private original: ElementSnapshot;
     private converted: ElementSnapshot;
     private conversionTo: string;
-    private isShowingConversion: boolean;
+    private _isShowingConversion: boolean;
     private localization: IActiveLocalization;
     private readonly provider: DependencyProvider
 
@@ -49,8 +48,12 @@ export class CurrencyElement {
         this.original = new ElementSnapshot(element)
         this.converted = this.original.clone()
 
-        this.isShowingConversion = false;
+        this._isShowingConversion = false;
         this.conversionTo = '';
+    }
+
+    get isShowingConversion(): boolean {
+        return this._isShowingConversion;
     }
 
     async convertTo(currency: string): Promise<void> {
@@ -65,7 +68,7 @@ export class CurrencyElement {
     }
 
     async showConverted(force: boolean = false): Promise<boolean> {
-        this.isShowingConversion = true;
+        this._isShowingConversion = true;
         let updated = false;
         if(!force && this.updateSnapshot()) {
             await this.convert();
@@ -76,7 +79,7 @@ export class CurrencyElement {
     }
 
     async showOriginal(): Promise<boolean> {
-        this.isShowingConversion = false;
+        this._isShowingConversion = false;
         let updated = false;
         if(this.updateSnapshot()) {
             await this.convert();
@@ -87,11 +90,11 @@ export class CurrencyElement {
     }
 
     async updateDisplay(force: boolean = false): Promise<void> {
-        if(this.isShowingConversion) await this.showConverted(force);
+        if(this._isShowingConversion) await this.showConverted(force);
     }
 
     async flipDisplay(): Promise<void> {
-        if(this.isShowingConversion) {
+        if(this._isShowingConversion) {
             const updated = await this.showOriginal();
             if(updated) await this.showConverted();
         } else await this.showConverted();
@@ -113,9 +116,11 @@ export class CurrencyElement {
 
         if(convertOnHover) {
             this.element.addEventListener('mouseover', () => {
-                return self.flipDisplay(); });
+                return self.flipDisplay();
+            });
             this.element.addEventListener('mouseout', () => {
-                return self.flipDisplay(); });
+                return self.flipDisplay();
+            });
         }
     }
 
@@ -206,8 +211,9 @@ export class CurrencyElement {
         if(!this.provider.usingConversionHighlighting.value) return;
         const color = this.provider.highlightColor.value;
         const duration = this.provider.highlightDuration.value;
+        const oldColor = this.element.style.textShadow;
         this.element.style.textShadow = `${color}  2px 0px 2px, ${color} -2px 0px 2px, ${color}  4px 0px 4px, ${color} -4px 0px 4px, ${color}  6px 0px 6px, ${color} -6px 0px 6px`;
-        setTimeout(() => this.element.style.textShadow = '', Math.max(1, duration));
+        setTimeout(() => this.element.style.textShadow = oldColor, Math.max(1, duration));
     }
 }
 

@@ -1,6 +1,6 @@
 // This file is injected as a content script
 import * as React from "react";
-import {TabMessage, TabMessageType, useProvider} from "./Infrastructure";
+import {useProvider} from "./Infrastructure";
 import {CurrencyElement} from './CurrencyConverter/Currency/CurrencyElement';
 import * as ReactDOM from 'react-dom';
 import {MenuWrapper} from './Content/MenuWrapper';
@@ -36,7 +36,7 @@ const elements: CurrencyElement[] = [];
         const div = document.createElement('div')
         div.id = 'uacc-root'
         document.body.appendChild(div)
-        ReactDOM.render(<MenuWrapper/>, document.getElementById('uacc-root'));
+        ReactDOM.render(<MenuWrapper conversions={elements}/>, document.getElementById('uacc-root'));
 
         // TODO: Show alert if localization conflict
 
@@ -62,8 +62,6 @@ const elements: CurrencyElement[] = [];
             }
         }).observe(document.body, {childList: true, subtree: true, attributes: true, characterData: true});
 
-        // Listen for UACC messages from popup/background
-        listenForUaccMessages();
     }))
     .then(async () => {
         // Detect all currencies on page
@@ -109,15 +107,4 @@ function childOfUACCWatched(element: HTMLElement): boolean {
     if(!element.parentElement)
         return false;
     return childOfUACCWatched(element.parentElement)
-}
-
-function listenForUaccMessages() {
-    chrome.runtime.onMessage.addListener(async function (data: TabMessage, sender, senderResponse) {
-        switch (data.type) {
-            case TabMessageType.openContextMenu:
-                throw 'not implemented';
-        }
-        senderResponse({success: true});
-        return true;
-    });
 }

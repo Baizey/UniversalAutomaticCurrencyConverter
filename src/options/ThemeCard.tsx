@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {useProvider} from "../Infrastructure";
-import {ThemeType} from '../Atoms/StyleTheme';
+import {ThemeType} from '../Atoms/ThemeProps';
 
 type Props = { setTheme: React.Dispatch<React.SetStateAction<ThemeType>> }
 

@@ -3,7 +3,7 @@ import {Button} from '../Atoms';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {useTheme} from 'styled-components';
-import {MyTheme} from '../Atoms/StyleTheme';
+import {MyTheme} from '../Atoms/ThemeProps';
 import {useSettings} from '../Infrastructure/DependencyInjection';
 
 export function Converter() {

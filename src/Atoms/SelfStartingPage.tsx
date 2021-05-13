@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {ThemeProvider} from 'styled-components';
-import {mapToTheme, ThemeType} from './StyleTheme';
+import {mapToTheme, ThemeType} from './ThemeProps';
 import {useProvider} from '../Infrastructure';
 import {useSettings} from '../Infrastructure/DependencyInjection';
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {OptionRow, OptionsSection} from "./Shared";
 import styled from "styled-components";
-import {StyleTheme} from '../Atoms/StyleTheme';
+import {ThemeProps} from '../Atoms/ThemeProps';
 
 type Props = {
     progress: number
@@ -38,14 +38,14 @@ const Button = styled.button`
   font-weight: 700;
 
   &:hover {
-    background-color: ${(props: StyleTheme) => props.theme.backgroundFocus}
+    background-color: ${(props: ThemeProps) => props.theme.backgroundFocus}
   }
 `
 
 type ProgressProps = { progress: number }
 const Progress = styled.div<ProgressProps>`
   height: 10px;
-  background-color: ${(props: StyleTheme) => props.theme.success};
+  background-color: ${(props: ThemeProps) => props.theme.success};
   width: ${({progress}) => `${progress}%`};
   float: left;
 `

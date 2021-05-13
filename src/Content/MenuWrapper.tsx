@@ -1,18 +1,42 @@
-import styled, {ThemeProvider} from 'styled-components';
+import styled from 'styled-components';
 import * as React from 'react'
-import {mapToTheme, StyleTheme} from '../Atoms/StyleTheme';
-import {useProvider} from '../Infrastructure';
+import {useEffect, useState} from 'react'
+import {ThemeProps} from '../Atoms/ThemeProps';
+import {TabMessage, TabMessageType, useProvider} from '../Infrastructure';
 import {TitleAlert} from './TitleAlert';
 import {LocalizationAlert} from './LocalizationAlert';
+import {MenuAlert} from './MenuAlert';
+import {CurrencyElement} from '../CurrencyConverter/Currency/CurrencyElement';
+import {BasicPage} from '../Atoms';
 
-export function MenuWrapper() {
-    const {colorTheme, activeLocalization} = useProvider();
-    return <ThemeProvider theme={mapToTheme(colorTheme.value)}>
+type Props = {
+    conversions: CurrencyElement[]
+}
+
+export function MenuWrapper(props: Props) {
+    const {activeLocalization} = useProvider();
+
+    const [showLocalization, setShowLocalization] = useState(activeLocalization.hasConflict())
+    const [showMenu, setShowMenu] = useState(true);
+
+    useEffect(() => {
+        chrome.runtime.onMessage.addListener(async function (data: TabMessage, sender, senderResponse) {
+            switch (data.type) {
+                case TabMessageType.openContextMenu:
+                    setShowMenu(true);
+            }
+            senderResponse({success: true});
+            return true;
+        });
+    }, [])
+
+    return <BasicPage>
         <Container>
             <TitleAlert/>
-            {activeLocalization.hasConflict() ? <LocalizationAlert/> : <></>}
+            {showLocalization ? <LocalizationAlert setDismissed={() => setShowLocalization(false)}/> : <></>}
+            {showMenu ? <MenuAlert setDismissed={() => setShowMenu(false)}/> : <></>}
         </Container>
-    </ThemeProvider>
+    </BasicPage>
 }
 
 const Container = styled.div`
@@ -23,7 +47,7 @@ const Container = styled.div`
 
   & > div {
     border-width: 1px;
-    border-color: ${(props: StyleTheme) => props.theme.containerBorder};
+    border-color: ${(props: ThemeProps) => props.theme.containerBorder};
     border-style: solid;
   }
 

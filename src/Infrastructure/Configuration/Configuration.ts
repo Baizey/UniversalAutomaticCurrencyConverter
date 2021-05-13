@@ -1,7 +1,7 @@
 import {SyncSetting} from "./SyncSetting";
 import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 import {ISetting} from './ISetting';
-import {ThemeType} from '../../Atoms/StyleTheme';
+import {ThemeType} from '../../Atoms/ThemeProps';
 import {LocalSetting} from './LocalSetting';
 
 const isBool = (e: any) => typeof (e) === 'boolean';

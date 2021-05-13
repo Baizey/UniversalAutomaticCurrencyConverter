@@ -34,23 +34,7 @@ describe('ActiveLocalization', () => {
         const [container, provider] = useMockContainer();
         const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
-        localization.override(test.input)
-
-        // Assert
-        expect(localization.hasConflict()).toBe(test.expect)
-    }));
-
-    [
-        {input: 'AAA', expect: false},
-    ].forEach(test => it(`Reset removes conflict ${test.input} => ${test.expect}`, () => {
-        // Setup
-        const [container, provider] = useMockContainer();
-        const setting = new SyncSetting<string>(provider, '', '', () => true)
-        const localization = new CurrencyLocalization(provider, '', setting);
-        localization.override(test.input)
-
-        // Act
-        localization.reset()
+        localization.setDetected(test.input)
 
         // Assert
         expect(localization.hasConflict()).toBe(test.expect)

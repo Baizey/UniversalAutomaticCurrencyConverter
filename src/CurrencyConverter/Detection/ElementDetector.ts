@@ -43,7 +43,7 @@ export class ElementDetector implements IElementDetector {
         if(result.length > 0)
             return result;
 
-        if(this.detectConverterTagDown(element)) return []
+        if(this.isElementUnavailable(element, 3)) return []
 
         element.setAttribute('uacc:watched', 'true')
         return [new CurrencyElement(this.provider, element)]
@@ -53,10 +53,11 @@ export class ElementDetector implements IElementDetector {
         return this.textDetector.detect(element.innerText)
     }
 
-    private detectConverterTagDown(element: Element): boolean {
+    private isElementUnavailable(element: Element, maxDepth: number): boolean {
+        if(maxDepth < 0) return true;
         if(element.hasAttribute('uacc:watched')) return true;
         for (let i = 0; i < element.children.length; i++) {
-            if(this.detectConverterTagDown(element.children[i]))
+            if(this.isElementUnavailable(element.children[i], maxDepth - 1))
                 return true;
         }
         return false;

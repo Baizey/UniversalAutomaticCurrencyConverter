@@ -4,7 +4,7 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Dropdown, Input, ReadonlyInput} from '../Atoms';
 import styled, {useTheme} from 'styled-components';
-import {MyTheme, StyleTheme} from '../Atoms/StyleTheme';
+import {MyTheme, ThemeProps} from '../Atoms/ThemeProps';
 import {DeleteIcon, ExchangeIcon} from '../assets'
 
 type Props = {
@@ -103,7 +103,7 @@ const IconContainer = styled.div`
   width: 5%;
 
   &:hover {
-    background-color: ${(props: StyleTheme) => props.theme.borderDimFocus};
+    background-color: ${(props: ThemeProps) => props.theme.borderDimFocus};
   }
 `
 

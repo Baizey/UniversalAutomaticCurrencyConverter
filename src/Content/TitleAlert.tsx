@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {useProvider} from '../Infrastructure';
-import {StyleTheme} from '../Atoms/StyleTheme';
+import {ThemeProps} from '../Atoms/ThemeProps';
 
 export function TitleAlert() {
     const {browser} = useProvider();
@@ -13,8 +13,8 @@ export function TitleAlert() {
 const Container = styled.div`
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: ${(props: StyleTheme) => props.theme.containerBorder};
-  color: ${(props: StyleTheme) => props.theme.headerText};
+  background-color: ${(props: ThemeProps) => props.theme.containerBorder};
+  color: ${(props: ThemeProps) => props.theme.headerText};
   width: 100%;
   text-align: center;
   height: fit-content;

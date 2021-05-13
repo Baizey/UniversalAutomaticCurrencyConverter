@@ -1,7 +1,7 @@
 import * as React from "react";
 import {useProvider} from '../Infrastructure';
 import styled, {useTheme} from 'styled-components';
-import {MyTheme, StyleTheme} from '../Atoms/StyleTheme';
+import {MyTheme, ThemeProps} from '../Atoms/ThemeProps';
 import {Button, Space} from "../Atoms";
 import {ConversionRow} from './ConversionRow';
 import {Converter} from './Converter';
@@ -40,7 +40,7 @@ export default function PopupApp({isLoading}: Props) {
 }
 
 const Title = styled.h2`
-  color: ${(props: StyleTheme) => props.theme.titleText};
+  color: ${(props: ThemeProps) => props.theme.titleText};
   width: 100%;
   text-align: center;
   max-height: 800px;
@@ -56,8 +56,8 @@ const Container = styled.div`
   width: 700px;
   height: fit-content;
   padding: 20px;
-  background-color: ${(props: StyleTheme) => props.theme.containerBackground};
-  border: ${(props: StyleTheme) => `1px solid ${props.theme.containerBackground}`};
+  background-color: ${(props: ThemeProps) => props.theme.containerBackground};
+  border: ${(props: ThemeProps) => `1px solid ${props.theme.containerBackground}`};
 `
 
 const HiddenLink = styled.a`
@@ -68,12 +68,12 @@ const HiddenLink = styled.a`
 const Footer = styled.div`
   margin: auto;
   text-align: center;
-  color: ${(props: StyleTheme) => props.theme.footerText};
+  color: ${(props: ThemeProps) => props.theme.footerText};
 `
 const Link = styled.a`
-  color: ${(props: StyleTheme) => props.theme.link};
+  color: ${(props: ThemeProps) => props.theme.link};
 
   &:hover {
-    color: ${(props: StyleTheme) => props.theme.linkHover};
+    color: ${(props: ThemeProps) => props.theme.linkHover};
   }
 `

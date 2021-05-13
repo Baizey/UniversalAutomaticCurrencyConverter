@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import * as React from 'react'
-import {StyleTheme} from './StyleTheme';
+import {ThemeProps} from './ThemeProps';
 
 type SpaceProps = { height?: number, width?: number }
 export const Space = styled.div<SpaceProps>`
@@ -20,7 +20,7 @@ export type ButtonProps = {
 export const Button = styled.div<ButtonProps>`
   cursor: pointer;
   background-color: ${props => props.color};
-  color: ${(props: StyleTheme) => props.theme.normalText};
+  color: ${(props: ThemeProps) => props.theme.normalText};
   height: 40px;
   line-height: 40px;
   width: 100%;

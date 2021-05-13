@@ -25,8 +25,7 @@ export type MyTheme = {
     error: string
 }
 
-export type PropsTheme<P> = ThemedStyledProps<P, MyTheme>
-export type StyleTheme = PropsTheme<{}>
+export type ThemeProps<P = {}> =ThemedStyledProps<P, MyTheme>
 
 export type ThemeType = 'lightTheme' | 'darkTheme'
 

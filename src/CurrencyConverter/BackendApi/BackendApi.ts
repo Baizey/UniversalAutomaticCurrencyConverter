@@ -8,6 +8,11 @@ export interface IBackendApi {
     rate(from: string, to: string): Promise<ICurrencyRate | null>
 }
 
+type RateStorage = {
+    rate: number,
+    timestamp: number
+}
+
 export class BackendApi implements IBackendApi {
     private readonly _rates: Record<string, Record<string, ICurrencyRate>>;
     private _symbols: Record<string, string> | undefined;
@@ -29,8 +34,8 @@ export class BackendApi implements IBackendApi {
         const diff = Date.now() - (this._symbolsExpireDate || 1);
         const isExpired: boolean = diff >= 1000 * 60 * 60 * 24 * 7
 
-        if (!forceUpdate && !isExpired) {
-            if (!this._symbols) this._symbols = await this._browser.loadLocal<Record<string, string>>(symbolsKey)
+        if(!forceUpdate && !isExpired) {
+            if(!this._symbols) this._symbols = await this._browser.loadLocal<Record<string, string>>(symbolsKey)
             return this._symbols;
         }
 
@@ -46,27 +51,22 @@ export class BackendApi implements IBackendApi {
     }
 
     async rate(from: string, to: string): Promise<ICurrencyRate | null> {
-        if (from === to) return new CurrencyRate(from, to, 1, Date.now());
+        if(from === to) return new CurrencyRate(from, to, 1, Date.now());
 
-        const rateKey = `uacc:rate:${from}:${to}`;
-        const dateKey = `uacc:rate:date:${from}:${to}`;
+        const rateKey = `uacc:rate:info:${from}:${to}`;
 
-        if (!this._rates[from]) this._rates[from] = {}
+        if(!this._rates[from]) this._rates[from] = {}
 
-        if (!this._rates[from][to]) {
-            const [rate, date]: [number, number] = await Promise.all([
-                this._browser.loadLocal<number>(rateKey),
-                this._browser.loadLocal<number>(dateKey)])
-            this._rates[from][to] = new CurrencyRate(from, to, rate, date || 0);
+        if(!this._rates[from][to]) {
+            const info = await this._browser.loadLocal<RateStorage | undefined>(rateKey)
+            this._rates[from][to] = new CurrencyRate(from, to, info?.rate || 0, info?.timestamp || 0);
         }
 
-        if (!this._rates[from][to].isExpired) return this._rates[from][to];
+        if(!this._rates[from][to].isExpired) return this._rates[from][to];
 
         const rate = await this._browser.background.getRate(from, to).then(e => e.rate);
 
-        await Promise.all([
-            this._browser.saveLocal(rateKey, rate),
-            this._browser.saveLocal(dateKey, Date.now())])
+        await this._browser.saveLocal(rateKey, {rate: rate, timestamp: Date.now()} as RateStorage)
 
         return (this._rates[from][to] = new CurrencyRate(from, to, rate, Date.now()))
 

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as React from 'react';
-import {StyleTheme} from './StyleTheme';
+import {ThemeProps} from './ThemeProps';
 
 type Props = {
     value: boolean,
@@ -22,13 +22,13 @@ const Container = styled.div<ContainerProps>`
   width: 30px;
   height: 30px;
   border-radius: 15px;
-  border: ${(props: StyleTheme) => `1px solid ${props.theme.inputUnderline}`};
+  border: ${(props: ThemeProps) => `1px solid ${props.theme.inputUnderline}`};
   position: relative;
   display: block;
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: ${(props: StyleTheme) => props.theme.borderFocus};
+    border-color: ${(props: ThemeProps) => props.theme.borderFocus};
   }
 
   & div {
@@ -37,7 +37,7 @@ const Container = styled.div<ContainerProps>`
     margin: auto;
     margin-top: 5px;
     border-radius: 10px;
-    background-color: ${(props: StyleTheme) => props.theme.success};
+    background-color: ${(props: ThemeProps) => props.theme.success};
     transition: opacity 0.3s ease-in-out;
     opacity: ${(props) => props.checked ? 1 : 0};
   }

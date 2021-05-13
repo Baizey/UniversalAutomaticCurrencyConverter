@@ -5,7 +5,7 @@ import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {useProvider} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
 import styled from "styled-components";
-import {StyleTheme} from '../Atoms/StyleTheme';
+import {ThemeProps} from '../Atoms/ThemeProps';
 import {useSettings} from '../Infrastructure/DependencyInjection';
 
 export function DisableCurrenciesCard() {
@@ -71,15 +71,15 @@ const ListItem = styled.div`
   width: 99%;
   margin: auto;
   text-align: center;
-  border-bottom: ${(props: StyleTheme) => `solid 1px ${props.theme.inputUnderline}`};
+  border-bottom: ${(props: ThemeProps) => `solid 1px ${props.theme.inputUnderline}`};
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 14px;
-  background-color: ${(props: StyleTheme) => props.theme.containerBackground};
+  background-color: ${(props: ThemeProps) => props.theme.containerBackground};
 
   &:hover {
-    background-color: ${(props: StyleTheme) => props.theme.backgroundFocus};
-    border-color: ${(props: StyleTheme) => props.theme.error};
+    background-color: ${(props: ThemeProps) => props.theme.backgroundFocus};
+    border-color: ${(props: ThemeProps) => props.theme.error};
     cursor: pointer;
   }
 `

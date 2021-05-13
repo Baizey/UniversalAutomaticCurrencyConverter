@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as React from 'react';
-import {StyleTheme} from '../../Atoms/StyleTheme';
+import {ThemeProps} from '../../Atoms/ThemeProps';
 
 type Props = {
     title?: string
@@ -19,15 +19,15 @@ const Container = styled.div`
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 10px;
-  background-color: ${(props: StyleTheme) => props.theme.containerBackground};
+  background-color: ${(props: ThemeProps) => props.theme.containerBackground};
   display: flex;
   flex-direction: column;
   border-width: 1px;
-  border-color: ${(props: StyleTheme) => props.theme.containerBackground};
+  border-color: ${(props: ThemeProps) => props.theme.containerBackground};
   border-style: solid;
 
   &:hover {
-    border-color: ${(props: StyleTheme) => props.theme.borderDimFocus};
+    border-color: ${(props: ThemeProps) => props.theme.borderDimFocus};
   }
 `
 

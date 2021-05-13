@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as React from 'react';
 import {useState} from 'react';
-import {StyleTheme} from './StyleTheme';
+import {ThemeProps} from './ThemeProps';
 
 type Props<> = {
     defaultValue: string,
@@ -30,9 +30,9 @@ const Container = styled.div<ContainerProps>`
   height: 33px;
   padding: 0;
   font-size: 14px;
-  background-color: ${(props: StyleTheme) => props.theme.containerBackground};
-  color: ${(props: StyleTheme) => props.theme.normalText};
-  border: ${(props: StyleTheme) => `0 solid ${props.theme.inputUnderline}`};
+  background-color: ${(props: ThemeProps) => props.theme.containerBackground};
+  color: ${(props: ThemeProps) => props.theme.normalText};
+  border: ${(props: ThemeProps) => `0 solid ${props.theme.inputUnderline}`};
   border-bottom-width: 1px;
   border-radius: 0;
   text-align: center;
@@ -43,6 +43,6 @@ const Container = styled.div<ContainerProps>`
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: ${(props: StyleTheme) => props.theme.borderFocus};
+    border-color: ${(props: ThemeProps) => props.theme.borderFocus};
   }
 `

@@ -2,7 +2,7 @@ import {useTheme} from "styled-components";
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Select from 'react-select';
-import {MyTheme, StyleTheme} from './StyleTheme';
+import {MyTheme} from './ThemeProps';
 
 type Props = {
     options: { label: string, value: string }[],
