@@ -1,9 +1,11 @@
 // This file is injected as a content script
 import * as React from "react";
-import {useProvider} from "./Infrastructure";
+import {ILogger, useProvider} from "./Infrastructure";
 import {CurrencyElement} from './CurrencyConverter/Currency/CurrencyElement';
 import * as ReactDOM from 'react-dom';
 import {MenuWrapper} from './Content/MenuWrapper';
+import {IElementDetector} from './CurrencyConverter/Detection';
+import {convertToSetting} from './Infrastructure/Configuration';
 
 const provider = useProvider()
 
@@ -69,8 +71,8 @@ const elements: CurrencyElement[] = [];
     }).catch(err => provider.logger.error(err))
 
 async function detectAllElements(parent: HTMLElement): Promise<CurrencyElement[]> {
-    const currency = provider.convertTo.value;
-    const detector = provider.elementDetector;
+    const currency = (provider.convertTo as convertToSetting).value;
+    const detector = provider.elementDetector as IElementDetector;
 
     const discovered = detector.find(parent)
 
@@ -95,9 +97,10 @@ async function detectAllNewElements(attempt: number = 0): Promise<CurrencyElemen
 }
 
 async function detectAllNewElementsRecurring(time: number = 1000, attempt: number = 1): Promise<void> {
+    const logger = provider.logger as ILogger;
     const newElements = await detectAllNewElements(attempt)
     time = newElements.length > 0 ? 1000 : time * 2
-    if(attempt >= 4) return provider.logger.debug(`Done auto-checking for currencies`)
+    if(attempt >= 4) return logger.debug(`Done auto-checking for currencies`)
     setTimeout(() => detectAllNewElementsRecurring(time, attempt + 1), time)
 }
 

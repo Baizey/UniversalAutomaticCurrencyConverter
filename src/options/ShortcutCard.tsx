@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {Shortcut} from "../Atoms/Shortcut";
-import {useSettings} from '../Infrastructure/DependencyInjection';
+import {useProvider} from '../Infrastructure';
 
 export function ShortcutCard() {
-    const {convertHoverShortcut, convertAllShortcut} = useSettings()
+    const {convertHoverShortcut, convertAllShortcut} = useProvider()
 
     return <OptionsSection title="Shortcuts">
         <OptionRow>

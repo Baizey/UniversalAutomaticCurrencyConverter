@@ -1,4 +1,4 @@
-export {Container, useProvider, Provider} from './DependencyInjection'
+export {Container, useProvider, IProvider} from './DependencyInjection'
 export {IBrowser, Browser} from "./Browser"
 export {Configuration} from './Configuration'
 export {ILogger, Logger} from './Logger'

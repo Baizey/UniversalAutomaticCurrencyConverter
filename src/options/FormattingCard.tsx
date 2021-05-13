@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Dropdown, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useSettings} from '../Infrastructure/DependencyInjection';
+import {useProvider} from '../Infrastructure';
 
 const thousandsOptions = [
     {value: ' ', label: '100 000 (space)'},
@@ -16,7 +16,7 @@ const commaOptions = [
 ]
 
 export function FormattingCard() {
-    const {decimalPoint, thousandsSeparator, significantDigits} = useSettings()
+    const {decimalPoint, thousandsSeparator, significantDigits} = useProvider()
 
     return <OptionsSection title="Number formatting">
         <OptionRow>

@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Checkbox, Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {useProvider} from "../Infrastructure";
-import {useSettings} from '../Infrastructure/DependencyInjection';
 
 const dollarOptions = [
     {value: 'USD', label: 'American'},
@@ -28,7 +27,7 @@ const yenOptions = [
 ]
 
 export function LocalizationCard() {
-    const {usingLocalizationAlert, kroneLocalization, yenLocalization, dollarLocalization} = useSettings()
+    const {usingLocalizationAlert, kroneLocalization, yenLocalization, dollarLocalization} = useProvider()
 
     return <OptionsSection title="Default Localization">
         <OptionRow>

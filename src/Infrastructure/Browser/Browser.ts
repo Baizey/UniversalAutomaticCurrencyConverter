@@ -3,7 +3,7 @@ import LocalStorageArea = chrome.storage.LocalStorageArea;
 import {ITabMessenger, TabMessenger} from "../BrowserMessengers/TabMessenger";
 import {BackgroundMessenger, IBackgroundMessenger} from "../BrowserMessengers/BackgroundMessenger";
 import {IPopupMessenger, PopupMessenger} from "../BrowserMessengers/PopupMessenger";
-import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
+import {DependencyProvider} from '../DependencyInjection';
 
 
 export enum Browsers {
@@ -61,7 +61,7 @@ export class Browser implements IBrowser {
     readonly type: Browsers;
     readonly access: any;
 
-    constructor({}: DependencyProvider) {
+    constructor() {
         this.environment = process.env.NODE_ENV as Environments;
 
         this.tab = new TabMessenger(this);

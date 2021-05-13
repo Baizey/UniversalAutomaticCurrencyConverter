@@ -1,1 +1,2 @@
-export {Container, Provider} from './Container'
+export {Container, IContainer} from './Container'
+export {IProvider, useGlobalProvider} from './Provider'

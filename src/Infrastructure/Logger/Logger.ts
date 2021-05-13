@@ -1,5 +1,5 @@
 import {IBrowser} from "../Browser";
-import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
+import {DependencyProvider} from '../DependencyInjection';
 
 export interface ILogger {
     debug(message: string): void

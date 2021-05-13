@@ -3,7 +3,7 @@ import {Configuration, ILogger} from "../../Infrastructure";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyElement} from "../Currency/CurrencyElement";
 import {IActiveLocalization} from "../Localization";
-import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection';
 
 export interface IElementDetector {
 

@@ -1,6 +1,6 @@
 import {IBrowser} from "../../Infrastructure";
 import {CurrencyRate, ICurrencyRate} from "./CurrencyRate";
-import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection';
 
 export interface IBackendApi {
     symbols(): Promise<Record<string, string>>

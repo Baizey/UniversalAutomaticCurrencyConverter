@@ -4,10 +4,10 @@ import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {ISetting} from "../Infrastructure";
 import styled from "styled-components";
-import {useSettings} from '../Infrastructure/DependencyInjection';
+import {useProvider} from '../Infrastructure';
 
 export function AllowanceCard() {
-    const {blacklistedUrls, usingBlacklisting, whitelistedUrls, usingWhitelisting} = useSettings()
+    const {blacklistedUrls, usingBlacklisting, whitelistedUrls, usingWhitelisting} = useProvider()
 
     return <OptionsSection title="Site allowance">
         <OptionRow>

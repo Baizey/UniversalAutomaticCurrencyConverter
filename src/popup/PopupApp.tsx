@@ -3,7 +3,6 @@ import {useProvider} from '../Infrastructure';
 import styled, {useTheme} from 'styled-components';
 import {MyTheme, ThemeProps} from '../Atoms/ThemeProps';
 import {Button, Space} from "../Atoms";
-import {ConversionRow} from './ConversionRow';
 import {Converter} from './Converter';
 
 type Props = { isLoading: boolean }

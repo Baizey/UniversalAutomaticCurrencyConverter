@@ -15,13 +15,13 @@ import {ShortcutCard} from "./ShortcutCard";
 import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
 import {ThemeProps, ThemeType} from '../Atoms/ThemeProps';
 import {ThemeCard} from './ThemeCard';
-import {useSettings} from '../Infrastructure/DependencyInjection';
+import {useProvider} from '../Infrastructure';
 import {Space} from '../Atoms';
 
 type Props = { isLoading: boolean, setTheme: React.Dispatch<React.SetStateAction<ThemeType>> }
 export default function OptionsApp({isLoading, setTheme}: Props): JSX.Element {
     const [firstTimeProgress, setFirstTimeProgress] = useState(0);
-    const {isFirstTime} = useSettings()
+    const {isFirstTime} = useProvider()
 
     function wrap(children: any) {
         return <Background>

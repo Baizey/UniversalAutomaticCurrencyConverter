@@ -1,6 +1,4 @@
 import useMockContainer from './Container.mock';
-import {BackendApi, IBackendApi} from '../src/CurrencyConverter/BackendApi';
-import {BackendApiMock} from './BackendApi.mock';
 import {TextDetector} from '../src/CurrencyConverter/Detection';
 
 describe('TextDetector', () => {

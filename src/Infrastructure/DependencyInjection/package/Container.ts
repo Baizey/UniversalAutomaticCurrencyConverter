@@ -1,74 +1,109 @@
-import {Singleton} from "./Singleton";
-import {IScopedService} from "./IScopedService";
+import {ILifetime, SingletonLifetime, TransientLifetime} from "./ILifetime";
+import {IProvider, Provider} from "./Provider";
+import {ContainerLifetimeInput, ContainerLookupKey, InjectionConstructor, LifetimeOptions} from './Types';
 
-type BaseConstructor<T> = Function & { prototype: T, name: string }
+export interface IContainer<E extends IProvider<E>> {
+    addSingleton<T>(Item: ContainerLifetimeInput<T, E>, options?: Partial<LifetimeOptions<T, E>>): IContainer<E>
 
-type ProviderConstructor<T extends Provider> = BaseConstructor<T> & { new(container: Container<T>): T }
+    addTransient<T>(Item: ContainerLifetimeInput<T, E>, options?: Partial<LifetimeOptions<T, E>>): IContainer<E>
 
-type InjectionConstructor<T, P extends Provider> = BaseConstructor<T> & { new(provider: P): T }
+    addLifetime<T>(key: string | string[], lifetime: ILifetime<T, E>): IContainer<E>
 
-type ComplexInjectionConstructor<T, P extends Provider> = BaseConstructor<T> & { new(provider: P, ...args: any[]): T }
+    getOptional<T>(item: ContainerLookupKey<T, E>): ILifetime<T, E> | undefined
 
-export class Provider {
-    protected container: Container<any>;
+    getRequired<T>(item: ContainerLookupKey<T, E>): ILifetime<T, E>
 
-    constructor(container: Container<any>) {
-        this.container = container;
-    }
-
-    getOptional<T, P extends Provider>(item: string | InjectionConstructor<T, P>): T | undefined { return this.container.get<T>(item)?.instance }
-
-    getRequired<T, P extends Provider>(item: string | InjectionConstructor<T, P>): T { return this.container.getRequired<T>(item).instance }
+    build(): E
 }
 
-export class Container<P extends Provider> {
-    private static instance?: Container<any>
+export class Container<E extends IProvider<E>> implements IContainer<E> {
+    private static instance?: IContainer<any>
 
-    static create<P extends Provider>(instance: ProviderConstructor<P>): Container<P> {
-        return this.instance || (this.instance = new Container<P>(instance))
+    static create<E extends IProvider<E>>(): IContainer<E> {
+        if (this.instance) return this.instance;
+        return this.instance = new Container<E>()
     }
 
-    static build<P extends Provider>(): P | undefined {
+    static build<E extends IProvider<E>>(): E | undefined {
         return this.instance?.build()
     }
 
-    private readonly providerConstructor: ProviderConstructor<P>
-    private readonly lookup: Record<string, IScopedService<any, P>>
-    private provider?: P;
+    private readonly lookup: Record<string, ILifetime<any, E>>
+    private provider?: E;
 
-    constructor(providerConstructor: ProviderConstructor<P>) {
-        this.providerConstructor = providerConstructor;
+    constructor() {
         this.lookup = {}
+        this.addSingleton(() => this.build(), {name: 'provider'})
     }
 
-    addSingleton<T>(Item: InjectionConstructor<T, P> | ComplexInjectionConstructor<T, P>,
-                    options?: {
-                        args?: any[],
-                        name?: string
-                    }): Container<P> {
+    addSingleton<T>(factory: ContainerLifetimeInput<T, E>, options?: LifetimeOptions<T, E>): IContainer<E> {
+        if ('prototype' in factory) {
+            const Constructor = factory as InjectionConstructor<T, E>;
+            return this.addLifetime(options?.name || factory.name, new SingletonLifetime<T, E>(this, p => new Constructor(p)))
+        } else {
+            return this.addLifetime(options?.name, new SingletonLifetime<T, E>(this, factory))
+        }
+    }
 
-        const name = options?.name || Item.name;
-        if(this.lookup[name]) return this;
+    addTransient<T>(factory: ContainerLifetimeInput<T, E>, options?: LifetimeOptions<T, E>): IContainer<E> {
+        if ('prototype' in factory) {
+            const Constructor = factory as InjectionConstructor<T, E>;
+            return this.addLifetime(options?.name || factory.name, new TransientLifetime<T, E>(this, p => new Constructor(p)))
+        } else {
+            return this.addLifetime(options?.name, new TransientLifetime<T, E>(this, factory))
+        }
+    }
 
-        const extraArguments = options?.args || []
-
-        this.lookup[name] = new Singleton<T, P>(this, p => new Item(p, ...extraArguments));
+    addLifetime<T>(names: string | string[], lifetime: ILifetime<T, E>): IContainer<E> {
+        if (!names || (Array.isArray(names) && names.length === 0)) throw new Error(`No keys provided`);
+        const keys = Container.secureKeys(names);
+        keys.forEach(key => {
+            if (!this.lookup[key])
+                this.lookup[key] = lifetime
+        })
         return this;
     }
 
-    get<T>(item: string | InjectionConstructor<T, P>): IScopedService<T, P> | undefined {
-        const key = typeof item === 'string' ? item : item.name;
-        return this.lookup[key];
+    getOptional<T>(item: ContainerLookupKey<T, E>): ILifetime<T, E> | undefined {
+        return this.getScope<T>(
+            typeof item === 'string' ? item : item.name,
+            false)
     }
 
-    getRequired<T>(item: string | InjectionConstructor<T, P>): IScopedService<T, P> {
-        const key = typeof item === 'string' ? item : item.name;
-        const scope = this.get<T>(key);
-        if(!scope) throw `Scoped item not found for ${key}`;
-        return scope;
+    getRequired<T>(item: ContainerLookupKey<T, E>): ILifetime<T, E> {
+        return this.getScope<T>(
+            typeof item === 'string' ? item : item.name,
+            true)
     }
 
-    build(): P {
-        return this.provider || (this.provider = new this.providerConstructor(this))
+    private getScope<T>(key: string, isRequired: boolean): ILifetime<T, E> {
+        key = Container.secureKey(key);
+        const result = this.lookup[key]
+        if (isRequired && typeof result === 'undefined')
+            throw new Error(`Container cannot resolve '${key}'`);
+        return result;
+    }
+
+    build(): E {
+        return this.provider || (this.provider = this.buildProvider());
+    }
+
+    private static secureKeys(keys: string | string[]): string[] {
+        if (!Array.isArray(keys)) keys = [keys]
+        return keys.map(Container.secureKey);
+    }
+
+    private static secureKey(key: string): string {
+        return key.toLowerCase()
+    }
+
+    private buildProvider(): E {
+        // @ts-ignore
+        return new Proxy(new Provider<E>(this), {
+            get: function (obj, key) {
+                if (!obj.hasOwnProperty(key))
+                    return obj.getRequired(key as string)
+            }
+        });
     }
 }

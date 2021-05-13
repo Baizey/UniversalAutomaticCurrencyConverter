@@ -1,9 +1,9 @@
-import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 import {
     blacklistedUrlsSetting,
     usingBlacklistingSetting,
     usingWhitelistingSetting, whitelistedUrlsSetting
 } from '../../Infrastructure/Configuration';
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection';
 
 type TrieNodeResult = { url: string, allowed: boolean }
 type AllowanceResult = { isAllowed: boolean, reasoning: TrieNodeResult[] }

@@ -3,7 +3,7 @@ import {ITextDetector} from "../Detection";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyAmount} from "./CurrencyAmount";
 import {IActiveLocalization} from "../Localization";
-import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection';
 
 type CurrencyInfo = {
     original: CurrencyAmount,

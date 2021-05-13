@@ -1,11 +1,13 @@
 import {Browser, Container, IBrowser} from '../src/Infrastructure';
-import {addDependencies, DependencyProvider} from '../src/Infrastructure/DependencyInjection/DependencyInjector';
+import {addDependencies} from '../src/Infrastructure/DependencyInjection';
 import {BackendApi, IBackendApi} from '../src/CurrencyConverter/BackendApi';
 import {BackendApiMock} from './BackendApi.mock';
 import {BrowserMock} from './Browser.mock';
+import {IContainer} from '../src/Infrastructure/DependencyInjection/package';
+import {DependencyProvider} from '../src/Infrastructure/DependencyInjection';
 
-export default function useMockContainer(): [Container<DependencyProvider>, DependencyProvider] {
-    const container = addDependencies(new Container(DependencyProvider));
+export default function useMockContainer(): [IContainer<DependencyProvider>, DependencyProvider] {
+    const container = addDependencies(new Container<DependencyProvider>());
     container.getRequired<IBrowser>(Browser).overrideFactory(() => new BrowserMock())
     container.getRequired<IBackendApi>(BackendApi).overrideFactory(() => new BackendApiMock(
         {

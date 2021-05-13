@@ -4,11 +4,11 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {useTheme} from 'styled-components';
 import {MyTheme} from '../Atoms/ThemeProps';
-import {useSettings} from '../Infrastructure/DependencyInjection';
+import {useProvider} from '../Infrastructure';
 
 export function Converter() {
     const theme = useTheme() as MyTheme
-    const {miniConverterRows, convertTo} = useSettings()
+    const {miniConverterRows, convertTo} = useProvider()
     const [rows, setRows] = useState(miniConverterRows.value);
     const [isLoading, setIsLoading] = useState(true);
 

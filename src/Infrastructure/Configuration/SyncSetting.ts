@@ -1,6 +1,6 @@
 import {IBrowser, ILogger} from "../";
-import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 import {ISetting} from './ISetting';
+import {DependencyProvider} from '../DependencyInjection';
 
 export class SyncSetting<T> implements ISetting<T> {
     readonly defaultValue: T

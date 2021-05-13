@@ -1,5 +1,4 @@
 import {IBrowser} from "../index";
-import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 
 export enum TabMessageType {
     openContextMenu,

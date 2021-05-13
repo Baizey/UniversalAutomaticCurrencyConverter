@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Checkbox, Input} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useSettings} from '../Infrastructure/DependencyInjection';
+import {useProvider} from '../Infrastructure';
 
 export function DisplayCard() {
-    const {customDisplay, usingCustomDisplay, customConversionRateDisplay} = useSettings()
+    const {customDisplay, usingCustomDisplay, customConversionRateDisplay} = useProvider()
 
     return <OptionsSection title="Custom display">
         <OptionRow>

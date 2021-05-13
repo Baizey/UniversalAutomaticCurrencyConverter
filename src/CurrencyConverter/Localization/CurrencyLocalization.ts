@@ -1,5 +1,5 @@
 import {IBrowser, ISetting} from "../../Infrastructure";
-import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection';
 
 export class CurrencyLocalization {
     value: string;

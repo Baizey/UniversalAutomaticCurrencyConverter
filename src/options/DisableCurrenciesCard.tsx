@@ -2,15 +2,15 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Dropdown} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useProvider} from "../Infrastructure";
 import {LoadingCard} from "./LoadingCard";
 import styled from "styled-components";
 import {ThemeProps} from '../Atoms/ThemeProps';
-import {useSettings} from '../Infrastructure/DependencyInjection';
+import {useProvider} from '../Infrastructure';
+import {IBackendApi} from '../CurrencyConverter/BackendApi';
 
 export function DisableCurrenciesCard() {
     const {backendApi} = useProvider()
-    const {disabledCurrencies} = useSettings()
+    const {disabledCurrencies} = useProvider()
 
     const [list, setList] = useState<string[]>(disabledCurrencies.value || []);
     const [options, setOptions] = useState<{ value: string, label: string }[]>([]);
@@ -18,7 +18,7 @@ export function DisableCurrenciesCard() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        backendApi.symbols()
+        (backendApi as IBackendApi).symbols()
             .then(symbols => Object.entries(symbols)
                 .map(([key, value]) => ({
                         label: `${value} (${key})`,
@@ -29,7 +29,7 @@ export function DisableCurrenciesCard() {
             .then(() => setIsLoading(false))
     }, [])
 
-    if (isLoading) return <LoadingCard title="Disable conversion from currencies"/>
+    if(isLoading) return <LoadingCard title="Disable conversion from currencies"/>
     return <OptionsSection title="Disable conversion from currencies">
         <OptionRow>
             <SettingOption title="Search for currencies to disable">
@@ -38,7 +38,7 @@ export function DisableCurrenciesCard() {
                     onChange={value => {
                         const newList = list.concat([value])
                         newList.sort();
-                        if (disabledCurrencies.setValue(newList)) {
+                        if(disabledCurrencies.setValue(newList)) {
                             setList(newList)
                             disabledCurrencies.save();
                         }

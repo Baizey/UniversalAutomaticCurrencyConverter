@@ -3,14 +3,13 @@ import {useEffect, useState} from 'react';
 import {ThemeProvider} from 'styled-components';
 import {mapToTheme, ThemeType} from './ThemeProps';
 import {useProvider} from '../Infrastructure';
-import {useSettings} from '../Infrastructure/DependencyInjection';
 
 type BasicPageProps = {
     children: React.ReactNode
 }
 
 export function BasicPage({children}: BasicPageProps) {
-    const {colorTheme} = useSettings();
+    const {colorTheme} = useProvider();
     return <ThemeProvider theme={mapToTheme(colorTheme.value)}>{children}</ThemeProvider>
 }
 

@@ -1,6 +1,6 @@
 import {IBrowser} from '../Browser';
-import {DependencyProvider} from '../DependencyInjection/DependencyInjector';
 import {ISetting} from './ISetting';
+import {DependencyProvider} from '../DependencyInjection';
 
 export class LocalSetting<T> implements ISetting<T> {
     private _value: T

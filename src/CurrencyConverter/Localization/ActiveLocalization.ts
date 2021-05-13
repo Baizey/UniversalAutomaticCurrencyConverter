@@ -2,8 +2,8 @@ import {IBrowser, ILogger} from "../../Infrastructure";
 import {CurrencyLocalization} from "./CurrencyLocalization";
 import {Localizations} from "./Localization";
 import {IBackendApi} from "../BackendApi";
-import {DependencyProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
 import {disabledCurrenciesSetting} from '../../Infrastructure/Configuration';
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection';
 
 export interface IActiveLocalization {
     readonly krone: CurrencyLocalization;

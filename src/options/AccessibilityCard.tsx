@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Checkbox} from "../Atoms";
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useSettings} from '../Infrastructure/DependencyInjection';
+import {useProvider} from '../Infrastructure';
 
 export function AccessibilityCard() {
-    const {usingHoverFlipConversion, usingLeftClickFlipConversion, usingAutoConversionOnPageLoad} = useSettings()
+    const {usingHoverFlipConversion, usingLeftClickFlipConversion, usingAutoConversionOnPageLoad} = useProvider()
 
     return <OptionsSection title="Accessibility">
         <OptionRow>

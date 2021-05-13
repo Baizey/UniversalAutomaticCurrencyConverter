@@ -1,6 +1,5 @@
-import {Configuration} from "../../Infrastructure";
 import {IBackendApi} from "../BackendApi";
-import {DependencyProvider, SettingProvider} from '../../Infrastructure/DependencyInjection/DependencyInjector';
+import {DependencyProvider} from '../../Infrastructure/DependencyInjection';
 
 export class CurrencyAmount {
     readonly tag: string;
