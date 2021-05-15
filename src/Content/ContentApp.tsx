@@ -1,26 +1,21 @@
-import styled from 'styled-components';
+import styled, {ThemeProvider} from 'styled-components';
 import * as React from 'react'
 import {useEffect, useState} from 'react'
-import {ThemeProps} from '../Atoms/ThemeProps';
 import {TabMessage, TabMessageType, useProvider} from '../Infrastructure';
 import {TitleAlert} from './TitleAlert';
 import {LocalizationAlert} from './LocalizationAlert';
 import {MenuAlert} from './MenuAlert';
-import {CurrencyElement} from '../CurrencyConverter/Currency/CurrencyElement';
-import {BasicPage} from '../Atoms';
+import {ThemeProps} from '../Infrastructure/Theme';
 
-type Props = {
-    conversions: CurrencyElement[]
-}
 
-export function MenuWrapper(props: Props) {
-    const {activeLocalization} = useProvider();
+export function ContentApp() {
+    const {activeLocalization, theme, browser} = useProvider();
 
     const [showLocalization, setShowLocalization] = useState(activeLocalization.hasConflict())
-    const [showMenu, setShowMenu] = useState(true);
+    const [showMenu, setShowMenu] = useState(false);
 
     useEffect(() => {
-        chrome.runtime.onMessage.addListener(async function (data: TabMessage, sender, senderResponse) {
+        browser.runtime.onMessage.addListener(async function (data: TabMessage, sender, senderResponse) {
             switch (data.type) {
                 case TabMessageType.openContextMenu:
                     setShowMenu(true);
@@ -30,16 +25,20 @@ export function MenuWrapper(props: Props) {
         });
     }, [])
 
-    return <BasicPage>
+    return <ThemeProvider theme={theme}>
         <Container>
             <TitleAlert/>
-            {showLocalization ? <LocalizationAlert setDismissed={() => setShowLocalization(false)}/> : <></>}
-            {showMenu ? <MenuAlert setDismissed={() => setShowMenu(false)}/> : <></>}
+            {showLocalization ? <LocalizationAlert
+                key="uacc-alert-localization"
+                setDismissed={() => setShowLocalization(false)}/> : <></>}
+            {showMenu ? <MenuAlert
+                key="uacc-alert-menu"
+                setDismissed={() => setShowMenu(false)}/> : <></>}
         </Container>
-    </BasicPage>
+    </ThemeProvider>
 }
 
-const Container = styled.div`
+const Container = styled.div<ThemeProps>`
   font-family: Arial, sans-serif;
   width: 100%;
   border-radius: 5px;
@@ -47,7 +46,7 @@ const Container = styled.div`
 
   & > div {
     border-width: 1px;
-    border-color: ${(props: ThemeProps) => props.theme.containerBorder};
+    border-color: ${props => props.theme.containerBorder};
     border-style: solid;
   }
 

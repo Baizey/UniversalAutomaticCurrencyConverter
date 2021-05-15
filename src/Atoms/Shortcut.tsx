@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as React from 'react';
 import {useState} from 'react';
-import {ThemeProps} from './ThemeProps';
+import {ThemeProps} from '../Infrastructure/Theme';
 
 type Props<> = {
     defaultValue: string,
@@ -11,7 +11,7 @@ type Props<> = {
 export function Shortcut({defaultValue, onChange}: Props) {
     const [value, setValue] = useState(defaultValue);
     return <Container
-        tabIndex={0}
+                tabIndex={0}
         onClick={() => {
             setValue('');
             onChange('');
@@ -22,7 +22,7 @@ export function Shortcut({defaultValue, onChange}: Props) {
         }}>{value}</Container>
 }
 
-type ContainerProps = {}
+type ContainerProps = {} & ThemeProps
 const Container = styled.div<ContainerProps>`
   display: block;
   width: 100%;
@@ -30,9 +30,9 @@ const Container = styled.div<ContainerProps>`
   height: 33px;
   padding: 0;
   font-size: 14px;
-  background-color: ${(props: ThemeProps) => props.theme.containerBackground};
-  color: ${(props: ThemeProps) => props.theme.normalText};
-  border: ${(props: ThemeProps) => `0 solid ${props.theme.inputUnderline}`};
+  background-color: ${(props) => props.theme.containerBackground};
+  color: ${(props) => props.theme.normalText};
+  border: ${(props) => `0 solid ${props.theme.inputUnderline}`};
   border-bottom-width: 1px;
   border-radius: 0;
   text-align: center;
@@ -43,6 +43,6 @@ const Container = styled.div<ContainerProps>`
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: ${(props: ThemeProps) => props.theme.borderFocus};
+    border-color: ${(props) => props.theme.borderFocus};
   }
 `

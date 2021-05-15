@@ -1,7 +1,8 @@
 import {
     blacklistedUrlsSetting,
     usingBlacklistingSetting,
-    usingWhitelistingSetting, whitelistedUrlsSetting
+    usingWhitelistingSetting,
+    whitelistedUrlsSetting
 } from '../../Infrastructure/Configuration';
 import {DependencyProvider} from '../../Infrastructure/DependencyInjection';
 
@@ -15,7 +16,7 @@ export interface ISiteAllowance {
 }
 
 export class SiteAllowance implements ISiteAllowance {
-    private allowance: TrieNode;
+    private allowance?: TrieNode;
     private usingWhitelisting: usingWhitelistingSetting;
     private usingBlacklisting: usingBlacklistingSetting;
     private blacklistedUrls: blacklistedUrlsSetting;
@@ -26,13 +27,10 @@ export class SiteAllowance implements ISiteAllowance {
         this.usingBlacklisting = usingBlacklisting;
         this.blacklistedUrls = blacklistedUrls;
         this.whitelistedUrls = whitelistedUrls;
-
-        const blacklist = usingBlacklisting.value ? blacklistedUrls.value : [];
-        const whitelist = usingWhitelisting.value ? whitelistedUrls.value : [];
-        this.allowance = new TrieNode(blacklist, whitelist);
     }
 
     getAllowance(url: string): AllowanceResult {
+        this.allowance = this.allowance || this.updateFromConfig()
         // Only false when whitelist is on but blacklist is not
         const defaultResult = this.usingBlacklisting.value || !this.usingWhitelisting.value;
         return this.allowance.isAllowed(url, defaultResult);
@@ -41,7 +39,7 @@ export class SiteAllowance implements ISiteAllowance {
     updateFromConfig() {
         const blacklist = this.usingBlacklisting.value ? this.blacklistedUrls.value : [];
         const whitelist = this.usingWhitelisting.value ? this.whitelistedUrls.value : [];
-        this.allowance = new TrieNode(blacklist, whitelist);
+        return new TrieNode(blacklist, whitelist);
     }
 }
 
@@ -54,14 +52,14 @@ class TrieNode {
     constructor(disallowedUrls: string[] = [], allowedUrls: string[] = []) {
         this.hosts = {}
         this.paths = {}
-        if(disallowedUrls.length > 0)
+        if (disallowedUrls.length > 0)
             this.addUrls(disallowedUrls, false);
-        if(allowedUrls.length > 0)
+        if (allowedUrls.length > 0)
             this.addUrls(allowedUrls, true);
     }
 
     isAllowed(url: URL | string, defaultResult: boolean): AllowanceResult {
-        if(typeof url === 'string') {
+        if (typeof url === 'string') {
             url = url.startsWith('https://') || url.startsWith('http://') ? url : `https://${url}`;
             url = new URL(url);
         }
@@ -74,25 +72,25 @@ class TrieNode {
 
         let at: TrieNode = this;
         const hosts = url.hostname.split('.');
-        if(hosts[0] === 'www') hosts.shift();
+        if (hosts[0] === 'www') hosts.shift();
         const paths = url.pathname.split('/').reverse();
 
         while (hosts.length > 0) {
             const part = hosts.pop();
-            if(!part) continue;
+            if (!part) continue;
             at = at.hosts[part];
-            if(!at) return result;
-            if(typeof at._isAllowed === 'boolean') {
+            if (!at) return result;
+            if (typeof at._isAllowed === 'boolean') {
                 result.isAllowed = at._isAllowed;
                 result.reasoning.push({url: `${at._url?.hostname}${at._url?.pathname}`, allowed: at._isAllowed})
             }
         }
         while (paths.length > 0) {
             const part = paths.pop();
-            if(!part) continue;
+            if (!part) continue;
             at = at.paths[part];
-            if(!at) return result;
-            if(typeof at._isAllowed === 'boolean') {
+            if (!at) return result;
+            if (typeof at._isAllowed === 'boolean') {
                 result.isAllowed = at._isAllowed;
                 result.reasoning.push({url: `${at._url?.hostname}${at._url?.pathname}`, allowed: at._isAllowed})
             }
@@ -102,7 +100,7 @@ class TrieNode {
     }
 
     private addUrls(urls: string[], isAllowed: boolean) {
-        if(!urls) return;
+        if (!urls) return;
         urls.map(url => url.startsWith('https://') || url.startsWith('http://')
             ? url
             : `https://${url}`)
@@ -112,20 +110,20 @@ class TrieNode {
     private addUrl(url: URL, isAllowed: boolean) {
         let at: TrieNode = this;
         const hosts = url.hostname.split('.');
-        if(hosts[0] === 'www') hosts.shift();
+        if (hosts[0] === 'www') hosts.shift();
         const paths = url.pathname.split('/').reverse();
 
         while (hosts.length > 0) {
             const part = hosts.pop();
-            if(!part) continue;
-            if(!at.hosts[part]) at.hosts[part] = new TrieNode();
+            if (!part) continue;
+            if (!at.hosts[part]) at.hosts[part] = new TrieNode();
             at = at.hosts[part];
         }
 
         while (paths.length > 0) {
             const part = paths.pop();
-            if(!part) continue;
-            if(!at.paths[part]) at.paths[part] = new TrieNode();
+            if (!part) continue;
+            if (!at.paths[part]) at.paths[part] = new TrieNode();
             at = at.paths[part];
         }
 

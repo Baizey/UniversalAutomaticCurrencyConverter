@@ -84,13 +84,13 @@ export class ActiveLocalization implements IActiveLocalization {
         // Convert from display to currency tag
         const localized = this.localizationMapping[raw] || raw;
 
-        if(!localized) return null;
+        if (!localized) return null;
 
         // Verify it exists in our known currency tags
-        if(!this.symbols[localized]) return null;
+        if (!this.symbols[localized]) return null;
 
         // Verify it is not disabled
-        if(this.isDisabled[localized]) return null;
+        if (this.isDisabled[localized]) return null;
 
         return localized;
     }
@@ -136,7 +136,7 @@ export class ActiveLocalization implements IActiveLocalization {
     }
 
     hasConflict(): boolean {
-        if(this.krone.hasConflict() || this.yen.hasConflict() || this.dollar.hasConflict())
+        if (this.krone.hasConflict() || this.yen.hasConflict() || this.dollar.hasConflict())
             return !this.isLocked;
         return false;
     }
@@ -144,11 +144,18 @@ export class ActiveLocalization implements IActiveLocalization {
     determineForSite(siteAsText?: string): void {
         siteAsText = siteAsText || document.body.innerText;
         // If the user has locked localization for site, do nothing
-        if(this.isLocked) return;
+        if (this.isLocked) return;
         const shared = Localizations.shared;
+
         this.yen.setDetected(this._determine(this.yen.value, siteAsText, shared['¥']))
-        this.dollar.setDetected(this._determine(this.dollar.value, siteAsText, shared.$))
-        this.krone.setDetected(this._determine(this.krone.value, siteAsText, shared.kr))
+        this.logger.debug(`Detected ${this.yen.detectedValue}, default ${this.yen.defaultValue}`)
+
+        this.dollar.setDetected(this._determine(this.dollar.value, siteAsText, shared['$']))
+        this.logger.debug(`Detected ${this.dollar.detectedValue}, default ${this.dollar.defaultValue}`)
+
+        this.krone.setDetected(this._determine(this.krone.value, siteAsText, shared['kr']))
+        this.logger.debug(`Detected ${this.krone.detectedValue}, default ${this.krone.defaultValue}`)
+
         this.logger.debug(`Found localization conflict: ${this.hasConflict()}`);
     }
 

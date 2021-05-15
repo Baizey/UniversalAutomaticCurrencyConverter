@@ -29,11 +29,12 @@ class SingletonLifetime<T, E extends IProvider<E>> implements ILifetime<T, E> {
 
     overrideFactory(input: ContainerFactory<T, E>): ILifetime<T, E> {
         this.factoryFunction = input;
-        this.value = undefined;
+        this.dispose();
         return this;
     }
 
     dispose(): void {
+        this.value = undefined;
     }
 }
 
@@ -55,6 +56,7 @@ class TransientLifetime<T, E extends IProvider<E>> implements ILifetime<T, E> {
 
     overrideFactory(input: ContainerFactory<T, E>): ILifetime<T, E> {
         this.factoryFunction = input;
+        this.dispose();
         return this;
     }
 

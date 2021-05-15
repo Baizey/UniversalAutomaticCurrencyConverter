@@ -1,15 +1,14 @@
 import * as React from "react";
 import {useProvider} from '../Infrastructure';
-import styled, {useTheme} from 'styled-components';
-import {MyTheme, ThemeProps} from '../Atoms/ThemeProps';
+import styled from 'styled-components';
+import {ThemeProps} from '../Infrastructure/Theme';
 import {Button, Space} from "../Atoms";
 import {Converter} from './Converter';
 
 type Props = { isLoading: boolean }
 export default function PopupApp({isLoading}: Props) {
-    if(isLoading) return <>Loading...</>
-    const theme = useTheme() as MyTheme
-    const {browser} = useProvider();
+    if (isLoading) return <>Loading...</>
+    const {browser, theme} = useProvider();
 
     return <Container>
 
@@ -19,15 +18,19 @@ export default function PopupApp({isLoading}: Props) {
 
         <Space height={20}/>
 
-        <Button color={theme.buttonSecondary}
-                onClick={() => {browser.tab.contextMenu()}}
-                connect={{down: true}}>
+        <Button
+            
+            color={theme.buttonSecondary}
+            onClick={() => {browser.tab.contextMenu()}}
+            connect={{down: true}}>
             Open context menu
         </Button>
 
         <HiddenLink href="./options.html" target="_blank">
-            <Button color={theme.buttonPrimary}
-                    connect={{up: true}}>
+            <Button
+                
+                color={theme.buttonPrimary}
+                connect={{up: true}}>
                 Go to settings
             </Button>
         </HiddenLink>
@@ -52,7 +55,7 @@ const Title = styled.h2`
 `
 
 const Container = styled.div`
-  width: 700px;
+  width: 600px;
   height: fit-content;
   padding: 20px;
   background-color: ${(props: ThemeProps) => props.theme.containerBackground};

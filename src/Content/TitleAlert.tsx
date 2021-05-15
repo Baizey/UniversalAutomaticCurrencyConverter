@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {useProvider} from '../Infrastructure';
-import {ThemeProps} from '../Atoms/ThemeProps';
+import {ThemeProps} from '../Infrastructure/Theme';
 
 export function TitleAlert() {
     const {browser} = useProvider();
@@ -10,17 +10,17 @@ export function TitleAlert() {
     </Container>
 }
 
-const Container = styled.div`
+const Container = styled.div<ThemeProps>`
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: ${(props: ThemeProps) => props.theme.containerBorder};
-  color: ${(props: ThemeProps) => props.theme.headerText};
+  background-color: ${props => props.theme.containerBorder};
+  color: ${props => props.theme.headerText};
   width: 100%;
   text-align: center;
   height: fit-content;
 `
 
-const MenuTitle = styled.span`
+const MenuTitle = styled.span<ThemeProps>`
   font-size: 10px;
   text-align: center;
   margin: auto;

@@ -1,8 +1,8 @@
 import {SyncSetting} from "./SyncSetting";
 import {ISetting} from './ISetting';
-import {ThemeType} from '../../Atoms/ThemeProps';
 import {LocalSetting} from './LocalSetting';
 import {DependencyProvider} from '../DependencyInjection';
+import {themes} from '../Theme';
 
 const isBool = (e: any) => typeof (e) === 'boolean';
 
@@ -48,7 +48,7 @@ export class isFirstTimeSetting extends SyncSetting<boolean> {
     constructor(provider: DependencyProvider) {super(provider, 'showFirstTimeGuide', true, isBool);}
 }
 
-export class colorThemeSetting extends SyncSetting<ThemeType> {
+export class colorThemeSetting extends SyncSetting<keyof typeof themes> {
     constructor(provider: DependencyProvider) {
         super(provider, 'uacc:theme:selection', 'darkTheme', isString);
     }
@@ -109,6 +109,10 @@ export class highlightColorSetting extends SyncSetting<string> {
         });
     }
 }
+
+export class IsPausedSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'uacc:pause', false, isBool) }}
+
+export class useDebugLoggingSetting extends SyncSetting<boolean> {constructor(provider: DependencyProvider) { super(provider, 'uacc:debug:logging', false, isBool) }}
 
 export class highlightDurationSetting extends SyncSetting<number> {constructor(provider: DependencyProvider) { super(provider, 'currencyHighlightDuration', 500, isPositiveInt) }}
 

@@ -3,7 +3,6 @@ import LocalStorageArea = chrome.storage.LocalStorageArea;
 import {ITabMessenger, TabMessenger} from "../BrowserMessengers/TabMessenger";
 import {BackgroundMessenger, IBackgroundMessenger} from "../BrowserMessengers/BackgroundMessenger";
 import {IPopupMessenger, PopupMessenger} from "../BrowserMessengers/PopupMessenger";
-import {DependencyProvider} from '../DependencyInjection';
 
 
 export enum Browsers {
@@ -18,7 +17,6 @@ export enum Environments {
 }
 
 export interface IBrowser {
-    readonly access: typeof chrome
     readonly type: Browsers
     readonly environment: Environments
 
@@ -41,6 +39,10 @@ export interface IBrowser {
     readonly tab: ITabMessenger;
     readonly background: IBackgroundMessenger;
     readonly popup: IPopupMessenger;
+    readonly contextMenus: typeof chrome.contextMenus;
+    readonly storage: typeof chrome.storage;
+    readonly runtime: typeof chrome.runtime;
+    readonly tabs: typeof chrome.tabs;
 
     openReviewLink(): void
 
@@ -59,7 +61,7 @@ export class Browser implements IBrowser {
     readonly popup: IPopupMessenger;
     readonly environment: Environments;
     readonly type: Browsers;
-    readonly access: any;
+    private readonly access: typeof chrome;
 
     constructor() {
         this.environment = process.env.NODE_ENV as Environments;
@@ -68,10 +70,10 @@ export class Browser implements IBrowser {
         this.background = new BackgroundMessenger(this);
         this.popup = new PopupMessenger(this);
 
-        if(window.navigator.userAgent.indexOf(' Edg/') >= 0)
+        if (window.navigator.userAgent.indexOf(' Edg/') >= 0)
             this.type = Browsers.Edge;
         // @ts-ignore (browser is not recognized, but it exists on Firefox)
-        else if(typeof browser !== "undefined")
+        else if (typeof browser !== "undefined")
             this.type = Browsers.Firefox;
         else
             this.type = Browsers.Chrome;
@@ -79,6 +81,22 @@ export class Browser implements IBrowser {
         // @ts-ignore
         this.access = this.isFirefox ? browser : chrome
 
+    }
+
+    get tabs(): typeof chrome.tabs {
+        return this.access.tabs
+    }
+
+    get runtime(): typeof chrome.runtime {
+        return this.access.runtime
+    }
+
+    get contextMenus(): typeof chrome.contextMenus {
+        return this.access.contextMenus
+    }
+
+    get storage(): typeof chrome.storage {
+        return this.access.storage
     }
 
     get reviewLink(): string {
@@ -93,15 +111,15 @@ export class Browser implements IBrowser {
     }
 
     get author(): string {
-        return this.access.runtime.getManifest().author;
+        return this.runtime.getManifest().author;
     }
 
     get extensionName(): string {
-        return this.access.runtime.getManifest().name;
+        return this.runtime.getManifest().name;
     }
 
     get extensionVersion(): string {
-        return this.access.runtime.getManifest().version;
+        return this.runtime.getManifest().version;
     }
 
     get isProduction(): boolean {
@@ -124,7 +142,7 @@ export class Browser implements IBrowser {
     }
 
     get id(): string {
-        return this.access.runtime.id;
+        return this.runtime.id;
     }
 
     get href(): string {
@@ -158,39 +176,39 @@ export class Browser implements IBrowser {
     }
 
     openReviewLink(): void {
-        this.access.tabs.create({url: this.reviewLink});
+        this.tabs.create({url: this.reviewLink});
     }
 
     async loadLocal<T>(key: string): Promise<T> {
-        return await this.loadSingle<T>(this.access.storage.local, key);
+        return await this.loadSingle<T>(this.storage.local, key);
     }
 
     async loadSync<T>(key: string): Promise<T> {
-        return await this.loadSingle<T>(this.access.storage.sync, key);
+        return await this.loadSingle<T>(this.storage.sync, key);
     }
 
     async saveLocal(key: string, value: any): Promise<void> {
-        return await this.saveSingle(this.access.storage.local, key, value);
+        return await this.saveSingle(this.storage.local, key, value);
     }
 
     async saveSync<T>(key: string, value: T): Promise<void> {
-        return await this.saveSingle(this.access.storage.sync, key, value);
+        return await this.saveSingle(this.storage.sync, key, value);
     }
 
     private loadSingle<T>(storage: LocalStorageArea | SyncStorageArea, key: string): Promise<T> {
-        const access = this.access;
+        const self = this;
         return new Promise<T>((resolve, reject) =>
-            storage.get([key], resp => access.runtime.lastError ?
-                reject(Error(access.runtime.lastError.message))
+            storage.get([key], resp => self.runtime.lastError ?
+                reject(Error(self.runtime.lastError.message))
                 : resolve(resp[key])));
     }
 
     private saveSingle(storage: LocalStorageArea | SyncStorageArea, key: string, value: any): Promise<void> {
-        const access = this.access;
+        const self = this;
         return new Promise<void>((resolve, reject) =>
-            storage.set({[key]: value}, () => access.runtime.lastError ?
-                reject(Error(access.runtime.lastError.message))
+            storage.set({[key]: value}, () => self.runtime.lastError ?
+                reject(Error(self.runtime.lastError.message))
                 : resolve())
-        );
+        )
     }
 }

@@ -1,4 +1,4 @@
-import {IBrowser, ILogger} from "../";
+import {IBrowser} from "../";
 import {ISetting} from './ISetting';
 import {DependencyProvider} from '../DependencyInjection';
 
@@ -7,12 +7,10 @@ export class SyncSetting<T> implements ISetting<T> {
     readonly storageKey: string
     readonly validation: (v: T) => boolean
     private browser: IBrowser;
-    private logger: ILogger;
 
-    constructor({browser, logger}: DependencyProvider, storageKey: string,
+    constructor({browser}: DependencyProvider, storageKey: string,
                 defaultValue: T,
                 validation: (v: T) => boolean = () => true,) {
-        this.logger = logger;
         this.browser = browser;
         this.storageKey = storageKey;
         this.validation = validation;

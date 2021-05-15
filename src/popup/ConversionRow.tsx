@@ -1,11 +1,11 @@
-import {CurrencyAmount} from '../CurrencyConverter/Currency/CurrencyAmount';
+import {CurrencyAmount} from '../CurrencyConverter/Currency';
 import {useProvider} from '../Infrastructure';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Dropdown, Input, ReadonlyInput} from '../Atoms';
 import styled, {useTheme} from 'styled-components';
-import {MyTheme, ThemeProps} from '../Atoms/ThemeProps';
-import {DeleteIcon, ExchangeIcon} from '../assets'
+import {DeleteIcon, ExchangeIcon} from '../assets';
+import {MyTheme, ThemeProps} from '../Infrastructure/Theme';
 
 type Props = {
     from: string,
@@ -42,7 +42,7 @@ export function ConversionRow(props: Props) {
         [fromAmount, from, to])
     useEffect(() => {getSymbols()}, [])
 
-    if(isLoading) return <></>
+    if (isLoading) return <></>
 
     return <Container>
         <IconContainer onClick={() => props.onDelete()}>
@@ -52,12 +52,13 @@ export function ConversionRow(props: Props) {
         <AmountContainer>
             <Input key={`conversion_row_from_amount_${fromAmount}`}
                    center={false} type={'number'}
-                   value={fromAmount}
+                   defaultValue={fromAmount}
                    onChange={value => setFromAmount(+value)}/>
         </AmountContainer>
 
         <CurrencyContainer>
             <Dropdown key={`conversion_row_from_${from}`}
+                      compact={true}
                       options={options}
                       value={from}
                       onChange={value => setFrom(value)}/>
@@ -75,11 +76,12 @@ export function ConversionRow(props: Props) {
         </IconContainer>
 
         <AmountContainer>
-            <ReadonlyInput center={false} value={toAmount.displayValue[0]}/>
+            <ReadonlyInput center={false} defaultValue={toAmount.displayValue[0]}/>
         </AmountContainer>
 
         <CurrencyContainer>
             <Dropdown key={`conversion_row_to_${to}`}
+                      compact={true}
                       options={options}
                       value={to}
                       onChange={value => setTo(value)}/>
@@ -88,7 +90,7 @@ export function ConversionRow(props: Props) {
 }
 
 const AmountContainer = styled.div`
-  width: 30%;
+  width: 35%;
 `
 
 const IconContainer = styled.div`
@@ -108,7 +110,7 @@ const IconContainer = styled.div`
 `
 
 const CurrencyContainer = styled.div`
-  width: 15%;
+  width: 10%;
 `
 
 const Container = styled.div`

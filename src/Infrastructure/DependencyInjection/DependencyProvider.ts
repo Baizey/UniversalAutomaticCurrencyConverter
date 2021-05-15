@@ -40,12 +40,16 @@ import {
     TextDetector,
 } from '../../CurrencyConverter/Detection';
 import {ActiveLocalization, IActiveLocalization} from '../../CurrencyConverter/Localization';
-import {IProvider} from './';
-import {miniConverterSetting} from '../Configuration/Configuration';
-import {IContainer, useGlobalProvider} from './package';
+import {Container, IProvider} from './';
+import {IsPausedSetting, miniConverterSetting, useDebugLoggingSetting} from '../Configuration/Configuration';
+import {IContainer} from './package';
 import {ISetting} from '../Configuration/ISetting';
+import {TabInformation} from '../../CurrencyConverter/Live/TabInformation';
+import {mapToTheme, MyTheme, themes} from '../Theme';
 
 interface DependencyProvider extends IProvider<DependencyProvider> {
+    theme: MyTheme
+    tabInformation: TabInformation
     browser: IBrowser
     logger: ILogger
     backendApi: IBackendApi
@@ -55,6 +59,7 @@ interface DependencyProvider extends IProvider<DependencyProvider> {
     elementDetector: IElementDetector
     activeLocalization: IActiveLocalization
 
+    useLogging: useDebugLoggingSetting
     miniConverter: miniConverterSetting
     isFirstTime: isFirstTimeSetting
     colorTheme: colorThemeSetting
@@ -83,14 +88,18 @@ interface DependencyProvider extends IProvider<DependencyProvider> {
     usingLeftClickFlipConversion: usingLeftClickFlipConversionSetting
     usingAutoConversionOnPageLoad: usingAutoConversionOnPageLoadSetting
     usingHoverFlipConversion: usingHoverFlipConversionSetting
+    isPaused: IsPausedSetting
     allSettings: ISetting<any>[]
 }
 
 function addSettingDependencies(container: IContainer<DependencyProvider>): IContainer<DependencyProvider> {
     return container
+        .addSingleton(IsPausedSetting, {name: 'isPaused'})
+        .addSingleton(useDebugLoggingSetting, {name: 'useLogging'})
         .addSingleton(miniConverterSetting, {name: 'miniConverter'})
         .addSingleton(isFirstTimeSetting, {name: 'isFirstTime'})
         .addSingleton(colorThemeSetting, {name: 'colorTheme'})
+        .addTransient<MyTheme>(p => mapToTheme(p.colorTheme.value as keyof typeof themes), {name: 'theme'})
         .addSingleton(disabledCurrenciesSetting, {name: 'disabledCurrencies'})
         .addSingleton(significantDigitsSetting, {name: 'significantDigits'})
         .addSingleton(thousandsSeparatorSetting, {name: 'thousandsSeparator'})
@@ -117,6 +126,8 @@ function addSettingDependencies(container: IContainer<DependencyProvider>): ICon
         .addSingleton(usingAutoConversionOnPageLoadSetting, {name: 'usingAutoConversionOnPageLoad'})
         .addSingleton(usingHoverFlipConversionSetting, {name: 'usingHoverFlipConversion'})
         .addSingleton<ISetting<any>[]>(p => [
+            p.isPaused,
+            p.useLogging,
             p.isFirstTime,
             p.colorTheme,
             p.disabledCurrencies,
@@ -149,6 +160,7 @@ function addSettingDependencies(container: IContainer<DependencyProvider>): ICon
 
 function addDependencies(container: IContainer<DependencyProvider>): IContainer<DependencyProvider> {
     return addSettingDependencies(container)
+        .addSingleton(TabInformation)
         .addSingleton(Browser)
 
         .addSingleton(Logger)
@@ -162,6 +174,6 @@ function addDependencies(container: IContainer<DependencyProvider>): IContainer<
         .addSingleton(ActiveLocalization)
 }
 
-const useProvider = () => useGlobalProvider(addDependencies)
+const useProvider = () => Container.use(addDependencies)
 
 export {useProvider, addDependencies, DependencyProvider}

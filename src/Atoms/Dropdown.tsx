@@ -1,23 +1,25 @@
-import {useTheme} from "styled-components";
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Select from 'react-select';
-import {MyTheme} from './ThemeProps';
+import {useProvider} from '../Infrastructure';
 
 type Props = {
+    compact?: boolean
+    maxOptions?: number
     options: { label: string, value: string }[],
     value?: string,
     onChange: (value: string) => void
 }
 
-export function Dropdown({options, value, onChange}: Props) {
+export function Dropdown({options, value, onChange, compact, maxOptions}: Props) {
     const [selected, setSelected] = useState<{ label: string, value: string } | null>(null);
     useEffect(() => setSelected(options.filter(e => e.value === value)[0]), [])
-    const theme = useTheme() as MyTheme;
-
+    const {theme} = useProvider()
+    const visibleOptions = (maxOptions || 8) + 1
+    const optionHeight = (compact ? 2 : 10) * 2 + 14;
     return <Select
         onChange={option => {
-            if(option && option.value && option.value !== selected?.value) {
+            if (option && option.value && option.value !== selected?.value) {
                 onChange(option.value)
                 setSelected(option);
             }
@@ -32,7 +34,9 @@ export function Dropdown({options, value, onChange}: Props) {
             option: (provided: any, state: any) => ({
                 ...provided,
                 backgroundColor: state.isFocused ? theme.backgroundFocus : theme.containerBackground,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                padding: compact ? '2px' : '10px',
+                textAlign: 'center'
             }),
             placeholder: (provided: any) => ({
                 ...provided,
@@ -89,7 +93,8 @@ export function Dropdown({options, value, onChange}: Props) {
                 backgroundColor: theme.containerBackground,
                 borderColor: theme.inputUnderline,
                 borderStyle: 'solid',
-                borderWidth: '1px'
+                borderWidth: '1px',
+                maxHeight: (visibleOptions * optionHeight) + 'px'
             }),
             menuList: (provided: any, state: any) => ({
                 ...provided,
@@ -97,7 +102,8 @@ export function Dropdown({options, value, onChange}: Props) {
                 color: theme.normalText,
                 borderColor: theme.inputUnderline,
                 borderStyle: 'solid',
-                borderWidth: '1px'
+                borderWidth: '1px',
+                maxHeight: (visibleOptions * optionHeight) + 'px'
             }),
             container: (provided: any, state: any) => ({
                 ...provided,

@@ -16,10 +16,9 @@ export class PopupMessenger implements IPopupMessenger {
     }
 
     private sendMessage<Response>(data: PopupMessage): Promise<Response> {
-        const access = this.browser.access;
         return new Promise((resolve, reject) => {
             try {
-                access.runtime.sendMessage(data, (resp: { success: boolean, data: Response }) => {
+                this.browser.runtime.sendMessage(data, (resp: { success: boolean, data: Response }) => {
                     if (!resp) return reject('No response');
                     resp.success ? resolve(resp.data) : reject(resp.data)
                 })

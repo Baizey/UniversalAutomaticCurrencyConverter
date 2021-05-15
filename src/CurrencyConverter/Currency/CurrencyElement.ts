@@ -16,6 +16,7 @@ type CurrencyInfo = {
 export class CurrencyElement {
     private static nextId: number = 1;
 
+    isHovered: boolean = false
     readonly id: number;
 
     readonly element: HTMLElement;
@@ -63,14 +64,14 @@ export class CurrencyElement {
     }
 
     show(showConverted: boolean): Promise<boolean> {
-        if(showConverted) return this.showConverted()
+        if (showConverted) return this.showConverted()
         return this.showOriginal();
     }
 
     async showConverted(force: boolean = false): Promise<boolean> {
         this._isShowingConversion = true;
         let updated = false;
-        if(!force && this.updateSnapshot()) {
+        if (!force && this.updateSnapshot()) {
             await this.convert();
             updated = true;
         }
@@ -81,7 +82,7 @@ export class CurrencyElement {
     async showOriginal(): Promise<boolean> {
         this._isShowingConversion = false;
         let updated = false;
-        if(this.updateSnapshot()) {
+        if (this.updateSnapshot()) {
             await this.convert();
             updated = true;
         }
@@ -90,13 +91,13 @@ export class CurrencyElement {
     }
 
     async updateDisplay(force: boolean = false): Promise<void> {
-        if(this._isShowingConversion) await this.showConverted(force);
+        if (this._isShowingConversion) await this.showConverted(force);
     }
 
     async flipDisplay(): Promise<void> {
-        if(this._isShowingConversion) {
+        if (this._isShowingConversion) {
             const updated = await this.showOriginal();
-            if(updated) await this.showConverted();
+            if (updated) await this.showConverted();
         } else await this.showConverted();
     }
 
@@ -104,28 +105,26 @@ export class CurrencyElement {
         const self = this;
         this.element.classList.add('uacc-clickable');
 
-        const convertOnHoverAndShortcut = this.provider.convertHoverShortcut.value
         const convertOnClick = this.provider.usingLeftClickFlipConversion.value
         const convertOnHover = this.provider.usingHoverFlipConversion.value
+        const shortcutHover = this.provider.convertHoverShortcut.value
 
-        if(convertOnHoverAndShortcut)
-            this.element.addEventListener('keyup', e => e.key === convertOnHoverAndShortcut && self.flipDisplay())
-
-        if(convertOnClick)
+        if (convertOnClick)
             this.element.addEventListener('click', () => self.flipDisplay());
 
-        if(convertOnHover) {
-            this.element.addEventListener('mouseover', () => {
-                return self.flipDisplay();
-            });
-            this.element.addEventListener('mouseout', () => {
-                return self.flipDisplay();
-            });
+        if (shortcutHover) {
+            this.element.addEventListener('mouseover', () => this.isHovered = true);
+            this.element.addEventListener('mouseout', () => this.isHovered = false);
+        }
+
+        if (convertOnHover) {
+            this.element.addEventListener('mouseover', () => self.flipDisplay());
+            this.element.addEventListener('mouseout', () => self.flipDisplay());
         }
     }
 
     async convert(): Promise<void> {
-        if(!this.conversionTo) return;
+        if (!this.conversionTo) return;
         this.converted = this.original.clone();
 
         const texts = this.converted.texts;
@@ -142,7 +141,7 @@ export class CurrencyElement {
             const amount = new CurrencyAmount(this.provider, currency, numbers)
 
             let left, right;
-            if(this.localization.parseCurrency(r.currencies[0])) {
+            if (this.localization.parseCurrency(r.currencies[0])) {
                 left = r.indexes[0]
                 right = r.indexes[4]
             } else {
@@ -160,13 +159,13 @@ export class CurrencyElement {
         let node = texts.length - 1
 
         function replace(start: number, end: number, replacement?: string): any {
-            if(start === end) return;
+            if (start === end) return;
             // Move through nodes until we find contact
             while (indexes[node] >= end) node--;
-            if(node < 0) return;
+            if (node < 0) return;
 
             // If replacing, expect to only be within 1 node
-            if(replacement) {
+            if (replacement) {
                 return texts[node] =
                     texts[node].substr(0, start - indexes[node]) +
                     replacement +
@@ -174,7 +173,7 @@ export class CurrencyElement {
             }
 
             // If both start end end is within same node
-            if(start >= indexes[node])
+            if (start >= indexes[node])
                 return texts[node] =
                     texts[node].substr(0, start - indexes[node]) +
                     texts[node].substr(end - indexes[node])
@@ -187,7 +186,7 @@ export class CurrencyElement {
         }
 
         currencyInfo.reverse().forEach(info => {
-            if(!info.converted) return;
+            if (!info.converted) return;
             const text = this.provider.showConversionInBrackets.value
                 ? `${info.original.amount.join(' - ')} ${info.original.tag} (${info.converted.toString()})`
                 : info.converted.toString()
@@ -200,15 +199,15 @@ export class CurrencyElement {
 
     updateSnapshot(): boolean {
         const snapshot = new ElementSnapshot(this.element);
-        if(snapshot.isEqual(this.original)) return false;
-        if(snapshot.isEqual(this.converted)) return false;
+        if (snapshot.isEqual(this.original)) return false;
+        if (snapshot.isEqual(this.converted)) return false;
         this.original = snapshot;
         this.converted = snapshot.clone();
         return true;
     }
 
     highlight() {
-        if(!this.provider.usingConversionHighlighting.value) return;
+        if (!this.provider.usingConversionHighlighting.value) return;
         const color = this.provider.highlightColor.value;
         const duration = this.provider.highlightDuration.value;
         const oldColor = this.element.style.textShadow;

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {OptionsSection} from "./Shared";
+import {OptionsSection} from "./";
 
 type Props = {
     title?: string

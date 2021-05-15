@@ -33,10 +33,9 @@ export class BackgroundMessenger implements IBackgroundMessenger {
     }
 
     private sendMessage<Response>(data: BackgroundMessage): Promise<Response> {
-        const access = this.browser.access;
         return new Promise((resolve, reject) => {
             try {
-                access.runtime.sendMessage(data, function (resp: { success: boolean, data: Response }) {
+                this.browser.runtime.sendMessage(data, function (resp: { success: boolean, data: Response }) {
                     if(!resp) return reject('No response');
                     return resp.success ? resolve(resp.data) : reject(resp.data);
                 })

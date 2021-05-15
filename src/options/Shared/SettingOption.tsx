@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from "styled-components";
-import {ThemeProps} from '../../Atoms/ThemeProps';
+import {ThemeProps} from '../../Infrastructure/Theme';
 
 type Props = {
     title: string,

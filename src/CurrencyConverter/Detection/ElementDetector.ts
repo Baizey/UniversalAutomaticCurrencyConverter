@@ -30,20 +30,20 @@ export class ElementDetector implements IElementDetector {
     }
 
     find(element: HTMLElement) {
-        if(!element) return [];
+        if (!element) return [];
 
-        if(this.detectConverterTagUp(element)) return []
+        if (this.detectConverterTagUp(element)) return []
 
-        if(!this.detect(element)) return []
+        if (!this.detect(element)) return []
 
         let result: CurrencyElement[] = []
         for (let i = 0; i < element.children.length; i++)
             result = result.concat(this.find(element.children[i] as HTMLElement))
 
-        if(result.length > 0)
+        if (result.length > 0)
             return result;
 
-        if(this.isElementUnavailable(element, 3)) return []
+        if (this.isElementUnavailable(element, 3)) return []
 
         element.setAttribute('uacc:watched', 'true')
         return [new CurrencyElement(this.provider, element)]
@@ -54,18 +54,22 @@ export class ElementDetector implements IElementDetector {
     }
 
     private isElementUnavailable(element: Element, maxDepth: number): boolean {
-        if(maxDepth < 0) return true;
-        if(element.hasAttribute('uacc:watched')) return true;
+        if (maxDepth < 0) return true;
+        if (element.tagName.toLowerCase() === 'script') return true;
+        if (element.tagName.toLowerCase() === 'svg') return true;
+        if (element.hasAttribute('uacc:watched')) return true;
+
         for (let i = 0; i < element.children.length; i++) {
-            if(this.isElementUnavailable(element.children[i], maxDepth - 1))
+            if (this.isElementUnavailable(element.children[i], maxDepth - 1))
                 return true;
         }
+
         return false;
     }
 
     private detectConverterTagUp(element: Element | null): boolean {
-        if(!element) return false;
-        if(element.hasAttribute('uacc:watched')) return true;
+        if (!element) return false;
+        if (element.hasAttribute('uacc:watched')) return true;
         return this.detectConverterTagUp(element.parentElement)
     }
 

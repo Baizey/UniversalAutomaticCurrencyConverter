@@ -7,3 +7,7 @@
     bottom: 10px;
     position: fixed;
 }
+
+.uacc-clickable {
+    cursor: pointer;
+}

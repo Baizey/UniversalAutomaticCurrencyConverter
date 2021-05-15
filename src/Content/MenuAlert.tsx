@@ -1,7 +1,11 @@
 import {AlertSection} from './AlertSection';
 import * as React from 'react'
 import styled from 'styled-components';
-import {ThemeProps} from '../Atoms/ThemeProps';
+import {ThemeProps} from '../Infrastructure/Theme';
+// noinspection ES6UnusedImports We need to import everything for it to work in browser
+import {RadioBox, RadioBoxContainer, RadioBoxContainerProps, RadioBoxProps} from '../Atoms/RadioBox';
+// noinspection ES6UnusedImports We need to import everything for it to work in browser
+import {Button, ButtonProps, Space, SpaceProps} from '../Atoms/Button';
 
 type Props = { setDismissed: () => void }
 
@@ -22,17 +26,17 @@ export function MenuAlert({setDismissed}: Props) {
     </AlertSection>
 }
 
-const Section = styled.div`
+const Section = styled.div<ThemeProps>`
   width: 100%;
   text-align: center;
-  color: ${(props: ThemeProps) => props.theme.normalText};
+  color: ${props => props.theme.normalText};
   display: flex;
   flex-direction: column;
 `
 
-const Title = styled.h2`
+const Title = styled.h2<ThemeProps>`
   width: 100%;
   font-size: 1.2em;
   font-weight: bold;
-  color: ${(props: ThemeProps) => props.theme.titleText};
+  color: ${props => props.theme.titleText};
 `

@@ -19,13 +19,19 @@ export interface IContainer<E extends IProvider<E>> {
 export class Container<E extends IProvider<E>> implements IContainer<E> {
     private static instance?: IContainer<any>
 
-    static create<E extends IProvider<E>>(): IContainer<E> {
-        if (this.instance) return this.instance;
-        return this.instance = new Container<E>()
+    static modify<E extends IProvider<E>>(addDependencies: (container: IContainer<E>) => IContainer<E>): IContainer<E> {
+        Container.instance = Container.instance || new Container<E>()
+        return addDependencies(Container.instance)
     }
 
-    static build<E extends IProvider<E>>(): E | undefined {
-        return this.instance?.build()
+    static build<E extends IProvider<E>>(): E {
+        const container = Container.instance;
+        if (!container) throw new Error(`Expected container to be instantiated and configured, but it wasn't, did you forget to do Container.modify(...)?`)
+        return container.build()
+    }
+
+    static use<E extends IProvider<E>>(addDependencies: (container: IContainer<E>) => IContainer<E>): E {
+        return Container.instance?.build() || Container.modify(addDependencies).build()
     }
 
     private readonly lookup: Record<string, ILifetime<any, E>>
@@ -33,6 +39,7 @@ export class Container<E extends IProvider<E>> implements IContainer<E> {
 
     constructor() {
         this.lookup = {}
+        this.addSingleton(() => this, {name: 'container'})
         this.addSingleton(() => this.build(), {name: 'provider'})
     }
 
@@ -41,7 +48,7 @@ export class Container<E extends IProvider<E>> implements IContainer<E> {
             const Constructor = factory as InjectionConstructor<T, E>;
             return this.addLifetime(options?.name || factory.name, new SingletonLifetime<T, E>(this, p => new Constructor(p)))
         } else {
-            return this.addLifetime(options?.name, new SingletonLifetime<T, E>(this, factory))
+            return this.addLifetime(options?.name || '', new SingletonLifetime<T, E>(this, factory))
         }
     }
 
@@ -50,7 +57,7 @@ export class Container<E extends IProvider<E>> implements IContainer<E> {
             const Constructor = factory as InjectionConstructor<T, E>;
             return this.addLifetime(options?.name || factory.name, new TransientLifetime<T, E>(this, p => new Constructor(p)))
         } else {
-            return this.addLifetime(options?.name, new TransientLifetime<T, E>(this, factory))
+            return this.addLifetime(options?.name || '', new TransientLifetime<T, E>(this, factory))
         }
     }
 
@@ -99,10 +106,12 @@ export class Container<E extends IProvider<E>> implements IContainer<E> {
 
     private buildProvider(): E {
         // @ts-ignore
-        return new Proxy(new Provider<E>(this), {
+        const provider = new Provider(this) as E;
+
+        return new Proxy(provider, {
             get: function (obj, key) {
                 if (!obj.hasOwnProperty(key))
-                    return obj.getRequired(key as string)
+                    return obj.getRequired(key.toString())
             }
         });
     }

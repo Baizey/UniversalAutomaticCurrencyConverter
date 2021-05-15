@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useProvider} from "../Infrastructure";
 import styled from "styled-components";
 import {OptionRow, OptionsSection} from "./Shared";
-import {ThemeProps} from '../Atoms/ThemeProps';
+import {ThemeProps} from '../Infrastructure/Theme';
 
 export function TitleCard() {
     const {browser} = useProvider()

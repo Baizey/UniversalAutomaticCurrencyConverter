@@ -1,27 +1,19 @@
 import styled from "styled-components";
 import * as React from 'react'
-import {useState} from 'react'
 import {TitleCard} from "./TitleCard";
-import {CurrencyCard} from "./CurrencyCard";
-import {LoadingCard} from "./LoadingCard";
-import {DisableCurrenciesCard} from "./DisableCurrenciesCard";
-import {AccessibilityCard} from "./AccessibilityCard";
-import {LocalizationCard} from "./LocalizationCard";
-import {FormattingCard} from "./FormattingCard";
-import {HighlightCard} from "./HighlightCard";
-import {DisplayCard} from "./DisplayCard";
-import {AllowanceCard} from "./AllowanceCard";
-import {ShortcutCard} from "./ShortcutCard";
-import {FirstTimeProgressCard} from "./FirstTimeProgressCard";
-import {ThemeProps, ThemeType} from '../Atoms/ThemeProps';
-import {ThemeCard} from './ThemeCard';
-import {useProvider} from '../Infrastructure';
+import {LoadingCard} from "./Shared";
+import {ThemeProps, themes} from '../Infrastructure/Theme';
 import {Space} from '../Atoms';
+import {CurrencyCard} from './Currency/CurrencyCard';
+import {VisualsCard} from './Visual/VisualsCard';
+import {AccessibilityCard} from './Accessibility/AccessibilityCard';
 
-type Props = { isLoading: boolean, setTheme: React.Dispatch<React.SetStateAction<ThemeType>> }
-export default function OptionsApp({isLoading, setTheme}: Props): JSX.Element {
-    const [firstTimeProgress, setFirstTimeProgress] = useState(0);
-    const {isFirstTime} = useProvider()
+type Props = {
+    isLoading: boolean,
+    setTheme: React.Dispatch<React.SetStateAction<keyof typeof themes>>,
+    symbols: { label: string, value: string }[]
+}
+export default function OptionsApp({isLoading, setTheme, symbols}: Props): JSX.Element {
 
     function wrap(children: any) {
         return <Background>
@@ -33,38 +25,21 @@ export default function OptionsApp({isLoading, setTheme}: Props): JSX.Element {
         </Background>
     }
 
-    if(isLoading) return wrap(<LoadingCard key="LoadingCard-card"/>)
+    if (isLoading) return wrap(<LoadingCard key="LoadingCard-card"/>)
 
-    const settings = [
-        <CurrencyCard key="CurrencyCard-card"/>,
-        <DisableCurrenciesCard key="DisableCurrenciesCard-card"/>,
-        <ShortcutCard key="ShortcutCard-card"/>,
-        <AccessibilityCard key="AccessibilityCard-card"/>,
-        <LocalizationCard key="LocalizationCard-card"/>,
-        <ThemeCard setTheme={setTheme} key="ThemeCard-card"/>,
-        <FormattingCard key="FormattingCard-card"/>,
-        <HighlightCard key="HighlightCard-card"/>,
-        <DisplayCard key="DisplayCard-card"/>,
-        <AllowanceCard key="AllowanceCard-card"/>
-    ]
-
-    if(false && isFirstTime.value) return wrap([
-        <Wrapper>{settings[firstTimeProgress]}</Wrapper>,
-        <FirstTimeProgressCard
-            progress={Math.min(100, 100 * firstTimeProgress / settings.length)}
-            skip={() => isFirstTime.setAndSaveValue(false)}
-            next={() => setFirstTimeProgress(firstTimeProgress + 1)}/>
-    ])
-
-    return wrap(settings);
+    return wrap([
+        <CurrencyCard symbols={symbols} key="CurrencyCard-card"/>,
+        <VisualsCard setTheme={setTheme} key="VisualsCard-card"/>,
+        <AccessibilityCard symbols={symbols} key="AccessibilityCard-card"/>,
+    ]);
 }
 
-const Background = styled.div`
+const Background = styled.div<ThemeProps>`
   width: 100%;
   min-height: 100%;
   height: fit-content;
-  background-color: ${(props: ThemeProps) => props.theme.wrapperBackground};
-  color: ${(props: ThemeProps) => props.theme.normalText};
+  background-color: ${props => props.theme.wrapperBackground};
+  color: ${props => props.theme.normalText};
   padding: 0;
   margin: 0;
 `;

@@ -1,5 +1,6 @@
 export {
     Configuration,
+    useDebugLoggingSetting,
     convertAllShortcutSetting,
     convertHoverShortcutSetting,
     convertToSetting,

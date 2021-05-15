@@ -1,22 +1,22 @@
 import styled from "styled-components";
 import * as React from 'react';
 import {useState} from 'react';
-import {ThemeProps} from './ThemeProps';
+import {ThemeProps} from '../Infrastructure/Theme';
 
 type ReadonlyInputProps = {
     center?: boolean
     placeholder?: string
-    value: number | string,
+    defaultValue: number | string,
 }
 
-export function ReadonlyInput({value, placeholder, center}: ReadonlyInputProps) {
+export function ReadonlyInput({defaultValue, placeholder, center}: ReadonlyInputProps) {
     center = typeof center === 'boolean' ? center : true;
     return <Container
         center={center}
         type="text"
         readOnly={true}
         placeholder={placeholder}
-        value={value}
+        value={defaultValue}
     />
 }
 
@@ -26,23 +26,23 @@ type InputProps = {
     onEnter?: (value: number | string) => void
 } & ReadonlyInputProps
 
-export function Input({type, value, onChange, onEnter, placeholder, center}: InputProps) {
-    const [current, setCurrent] = useState(value)
+export function Input({type, defaultValue, onChange, onEnter, placeholder, center}: InputProps) {
+    const [current, setCurrent] = useState(defaultValue)
     center = typeof center === 'boolean' ? center : true;
     return <Container
         center={center}
         placeholder={placeholder}
         type={type}
         defaultValue={current}
-        onChange={event => {
+        onChange={(event: any) => {
             setCurrent(event.target.value)
             onChange && onChange(event.target.value);
         }}
-        onKeyUp={event => event.key === 'Enter' && onEnter && onEnter(current)}
+        onKeyUp={(event: any) => event.key === 'Enter' && onEnter && onEnter(current)}
     />
 }
 
-type ContainerProps = { center: boolean }
+type ContainerProps = { center: boolean } & ThemeProps
 const Container = styled.input<ContainerProps>`
   display: block;
   width: 100%;
@@ -50,9 +50,9 @@ const Container = styled.input<ContainerProps>`
   padding: 0;
   font-size: 14px;
   line-height: 1.42857143;
-  background-color: ${(props: ThemeProps) => props.theme.containerBackground};
-  color: ${(props: ThemeProps) => props.theme.normalText};
-  border: ${(props: ThemeProps) => `0 solid ${props.theme.inputUnderline}`};
+  background-color: ${(props) => props.theme.containerBackground};
+  color: ${(props) => props.theme.normalText};
+  border: ${(props) => `0 solid ${props.theme.inputUnderline}`};
   border-bottom-width: 1px;
   border-radius: 0;
   text-align: ${props => props.center ? 'center' : 'right'};
@@ -66,6 +66,6 @@ const Container = styled.input<ContainerProps>`
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: ${(props: ThemeProps) => props.theme.borderFocus};
+    border-color: ${(props) => props.theme.borderFocus};
   }
 `

@@ -2,19 +2,16 @@ import {ConversionRow} from './ConversionRow';
 import {Button} from '../Atoms';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {useTheme} from 'styled-components';
-import {MyTheme} from '../Atoms/ThemeProps';
 import {useProvider} from '../Infrastructure';
 
 export function Converter() {
-    const theme = useTheme() as MyTheme
-    const {miniConverterRows, convertTo} = useProvider()
-    const [rows, setRows] = useState(miniConverterRows.value);
+    const {miniConverter, convertTo, theme} = useProvider()
+    const [rows, setRows] = useState(miniConverter.value);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        miniConverterRows.loadSetting()
-            .then(() => setRows(miniConverterRows.value))
+        miniConverter.loadSetting()
+            .then(() => setRows(miniConverter.value))
             .finally(() => setIsLoading(false))
     }, [])
 
@@ -24,19 +21,20 @@ export function Converter() {
             onDelete={() => setRows(rows.filter((e, j) => j !== i))}
             onChange={async data => {
                 rows[i] = data
-                if(await miniConverterRows.setAndSaveValue(rows))
+                if (await miniConverter.setAndSaveValue(rows))
                     setRows(rows)
             }}
             from={row.from}
             to={row.to} amount={row.amount}/>)}
-        <Button color={theme.success}
-                onClick={async () => {
-                    if(isLoading) return;
-                    const newRows = rows.concat([{from: convertTo.value, to: convertTo.value, amount: 1}])
-                    if(await miniConverterRows.setAndSaveValue(newRows))
-                        setRows(newRows)
-                }}
-                connect={{up: true}}>
+        <Button
+            color={theme.success}
+            onClick={async () => {
+                if (isLoading) return;
+                const newRows = rows.concat([{from: convertTo.value, to: convertTo.value, amount: 1}])
+                if (await miniConverter.setAndSaveValue(newRows))
+                    setRows(newRows)
+            }}
+            connect={{up: true}}>
             Add conversion row
         </Button>
     </>

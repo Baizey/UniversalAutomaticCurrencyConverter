@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {ThemeProps} from './ThemeProps';
+import {ThemeProps} from '../Infrastructure/Theme';
 
 type Props = {
     value: boolean,
@@ -10,7 +10,6 @@ type Props = {
 
 export function Checkbox({value, onChange}: Props) {
     const [isChecked, setIsChecked] = useState(value);
-
     useEffect(() => onChange(isChecked), [isChecked]);
 
     return <Container
@@ -21,25 +20,25 @@ export function Checkbox({value, onChange}: Props) {
     </Container>
 }
 
-type ContainerProps = { checked: boolean, onClick: () => void }
+type ContainerProps = { checked: boolean, onClick: () => void } & ThemeProps
 const Container = styled.div<ContainerProps>`
   margin: auto;
   cursor: pointer;
   width: 30px;
   height: 30px;
-  border: ${(props: ThemeProps) => `1px solid ${props.theme.inputUnderline}`};
+  border: ${props => `1px solid ${props.theme.inputUnderline}`};
   position: relative;
   display: block;
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: ${(props: ThemeProps) => props.theme.borderFocus};
+    border-color: ${(props) => props.theme.borderFocus};
   }
 
   & div {
     position: absolute;
     height: 5px;
-    background-color: ${(props: ThemeProps) => props.theme.success};
+    background-color: ${(props) => props.theme.success};
     transition: opacity 0.3s ease-in-out;
     opacity: ${(props) => props.checked ? 1 : 0};
   }

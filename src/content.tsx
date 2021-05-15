@@ -1,113 +1,142 @@
 // This file is injected as a content script
 import * as React from "react";
-import {ILogger, useProvider} from "./Infrastructure";
-import {CurrencyElement} from './CurrencyConverter/Currency/CurrencyElement';
-import * as ReactDOM from 'react-dom';
-import {MenuWrapper} from './Content/MenuWrapper';
-import {IElementDetector} from './CurrencyConverter/Detection';
-import {convertToSetting} from './Infrastructure/Configuration';
+import * as ReactDOM from 'react-dom'
+import {useProvider} from "./Infrastructure";
+import {CurrencyElement} from './CurrencyConverter/Currency';
+import {ContentApp} from './Content/';
+import {LogLevel} from './Infrastructure/Logger';
 
-const provider = useProvider()
+const isBlacklistedErrorMessage = `Site is blacklisted`;
 
-let isShowingConversions = false;
-const elements: CurrencyElement[] = [];
+(async () => await useProvider().configuration.load())()
+    .then(() => {
+        const {browser, siteAllowance, tabInformation, logger} = useProvider()
+        logger.info(`Loaded settings`)
 
-(async () => {
-    // Load configuration
-    await provider.configuration.load();
-    // Localize currencies for website
-    await provider.activeLocalization.load();
-})()
-    .then((() => {
-        const logger = provider.logger;
-        logger.info(`Initialized`);
-        const browser = provider.browser;
-
-        isShowingConversions = provider.usingAutoConversionOnPageLoad.value;
-
-        // Check if blacklisted
-        const allowance = provider.siteAllowance.getAllowance(browser.href)
+        // Check if blacklisted, if so abandon tab and dont do anything
+        const allowance = siteAllowance.getAllowance(browser.href)
+        tabInformation.setIsAllowed(allowance.isAllowed);
 
         logger.debug(`Allowed: ${allowance.isAllowed}, Last reason: ${allowance.reasoning.pop()?.url}`)
 
-        if(!allowance.isAllowed) return logger.warning(`${browser.href} is blacklisted`)
+        if (!tabInformation.isAllowed) {
+            logger.warn(`${browser.href} is blacklisted`)
+            throw new Error(isBlacklistedErrorMessage)
+        }
 
-        // TODO: Check if paused
+        logger.info(`Verified whitelisted website`)
+    })
+    .then(async () => {
+        // Localize currencies for website
+        const {activeLocalization, logger} = useProvider()
+        await activeLocalization.load();
+        logger.info(`Localization completed`)
+    })
+    .then((() => {
+        const {
+            logger,
+            tabInformation,
+            usingAutoConversionOnPageLoad,
+            convertAllShortcut,
+            convertHoverShortcut
+        } = useProvider()
 
-        // TODO: Setup infrastructure for context-alert system
+        tabInformation.setIsShowingConversions(usingAutoConversionOnPageLoad.value);
+
+        // TODO: handle being paused somehow
+
         const div = document.createElement('div')
         div.id = 'uacc-root'
         document.body.appendChild(div)
-        ReactDOM.render(<MenuWrapper conversions={elements}/>, document.getElementById('uacc-root'));
-
-        // TODO: Show alert if localization conflict
+        ReactDOM.render(<ContentApp/>, document.getElementById('uacc-root'));
 
         // Add shortcut for convert all
-        const convertAllShortcut = provider.convertAllShortcut.value;
-        if(convertAllShortcut) window.addEventListener('keyup', e => {
-            if(e.key !== convertAllShortcut) return;
-            isShowingConversions = !isShowingConversions;
-            elements.forEach(e => e.show(isShowingConversions));
+        if (convertAllShortcut.value) window.addEventListener('keyup', e => {
+            if (e.key !== convertAllShortcut.value) return;
+            logger.debug(`Convert all shortcut activated`)
+            tabInformation.flipAllConversions()
+        });
+
+        // Add shortcut for convert hover
+        if (convertHoverShortcut.value) window.addEventListener('keyup', e => {
+            if (e.key !== convertHoverShortcut.value) return;
+            logger.debug(`Convert hovered shortcut activated`)
+            tabInformation.flipHovered();
         });
 
         // Listen for new elements added and convert if needed
         new MutationObserver(async mutations => {
-            for (const mutation of mutations) {
-                const addedNodes = mutation.addedNodes;
-                for (let i = 0; i < addedNodes.length; i++) {
-                    const node = addedNodes[i];
-                    const element = node.parentElement;
-                    if(!element || childOfUACCWatched(element))
-                        continue;
-                    await detectAllElements(element);
+            try {
+                for (const mutation of mutations) {
+                    const addedNodes = mutation.addedNodes;
+                    for (let i = 0; i < addedNodes.length; i++) {
+                        const node = addedNodes[i];
+                        const element = node.parentElement;
+                        if (!element || childOfUACCWatched(element))
+                            continue;
+                        const detected = await detectAllElements(element);
+                        logger.log({
+                            logLevel: detected.length ? LogLevel.info : LogLevel.debug,
+                            message: `Newly loaded content, found ${detected.length} currencies`
+                        })
+                    }
                 }
+            } catch (err) {
+                logger.error(err);
             }
         }).observe(document.body, {childList: true, subtree: true, attributes: true, characterData: true});
-
     }))
     .then(async () => {
+        const {logger, tabInformation} = useProvider()
         // Detect all currencies on page
+        logger.info(`Starting checking for currencies on page`)
         await detectAllNewElementsRecurring();
-    }).catch(err => provider.logger.error(err))
+        logger.info(`Done checking for currencies, found ${tabInformation.conversions.length} currencies`)
+    })
+    .catch(err => {
+        // Ignore error if blacklisted, this is already logged and on throws to dont do anything after
+        if (err.message === isBlacklistedErrorMessage) { return }
+        const {logger} = useProvider()
+        logger.error(err);
+    })
 
 async function detectAllElements(parent: HTMLElement): Promise<CurrencyElement[]> {
-    const currency = (provider.convertTo as convertToSetting).value;
-    const detector = provider.elementDetector as IElementDetector;
+    const {convertTo, elementDetector, tabInformation} = useProvider()
+    const currency = convertTo.value;
 
-    const discovered = detector.find(parent)
+    const discovered: CurrencyElement[] = elementDetector.find(parent)
 
     for (let element of discovered) {
         await element.convertTo(currency);
         element.setupListener();
-        if(isShowingConversions) {
+        if (tabInformation.isShowingConversions) {
             await element.showConverted();
             element.highlight();
         }
     }
 
-    discovered.forEach(e => elements.push(e));
+    discovered.forEach(e => tabInformation.conversions.push(e));
     return discovered;
 }
 
-async function detectAllNewElements(attempt: number = 0): Promise<CurrencyElement[]> {
-    provider.logger.debug(`Checking for currencies, attempt ${attempt}`)
-    const result = await detectAllElements(document.body)
-    provider.logger.debug(`Found ${result.length} new currencies`)
-    return result;
+async function detectAllNewElementsRecurring(): Promise<void> {
+    const {logger} = useProvider()
+    const attempts = 4;
+    for (let i = 1, time = 0; i <= attempts; i++, time = (time || 1000) * 2) {
+        await wait(time)
+        const result = await detectAllElements(document.body)
+        logger.info(`Auto check ${i}/${attempts}, found ${result.length} currencies`)
+    }
 }
 
-async function detectAllNewElementsRecurring(time: number = 1000, attempt: number = 1): Promise<void> {
-    const logger = provider.logger as ILogger;
-    const newElements = await detectAllNewElements(attempt)
-    time = newElements.length > 0 ? 1000 : time * 2
-    if(attempt >= 4) return logger.debug(`Done auto-checking for currencies`)
-    setTimeout(() => detectAllNewElementsRecurring(time, attempt + 1), time)
+function wait(milliseconds: number): Promise<void> {
+    return new Promise(resolve => setTimeout(() => resolve(), milliseconds))
 }
 
 function childOfUACCWatched(element: HTMLElement): boolean {
-    if(!element || element.hasAttribute('uacc:watched'))
+    if (!element || element.hasAttribute('uacc:watched'))
         return true;
-    if(!element.parentElement)
+    if (!element.parentElement)
         return false;
     return childOfUACCWatched(element.parentElement)
 }

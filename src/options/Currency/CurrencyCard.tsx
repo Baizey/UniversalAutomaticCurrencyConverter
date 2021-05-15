@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {Checkbox, Dropdown} from "../Atoms";
-import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {useProvider} from "../Infrastructure";
+import {Checkbox, Dropdown} from "../../Atoms";
+import {OptionRow, OptionsSection, SettingOption} from "../Shared";
+import {useProvider} from "../../Infrastructure";
 
 const dollarOptions = [
     {value: 'USD', label: 'American'},
@@ -26,10 +26,35 @@ const yenOptions = [
     {value: 'JPY', label: 'Japanese'},
 ]
 
-export function LocalizationCard() {
-    const {usingLocalizationAlert, kroneLocalization, yenLocalization, dollarLocalization} = useProvider()
+type Props = { symbols: { label: string, value: string }[] }
 
-    return <OptionsSection title="Default Localization">
+export function CurrencyCard(props: Props) {
+    const {
+        usingLocalizationAlert,
+        kroneLocalization,
+        yenLocalization,
+        dollarLocalization,
+        showConversionInBrackets,
+        convertTo
+    } = useProvider()
+
+    return <OptionsSection title="Currency settings">
+        <OptionRow key="convert_to_row">
+            <SettingOption key="convert_to_option" title="Convert to">
+                <Dropdown
+                    options={props.symbols}
+                    value={convertTo.value}
+                    onChange={value => convertTo.setAndSaveValue(value)}/>
+            </SettingOption>
+        </OptionRow>
+
+        <OptionRow key="brackets_row">
+            <SettingOption key="brackets_option" title="Display conversion in brackets beside original price">
+                <Checkbox value={showConversionInBrackets.value}
+                          onChange={value => showConversionInBrackets.setAndSaveValue(value)}/>
+            </SettingOption>
+        </OptionRow>
+
         <OptionRow>
             <SettingOption title="Show localization alerts">
                 <Checkbox
@@ -37,6 +62,7 @@ export function LocalizationCard() {
                     onChange={value => usingLocalizationAlert.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
+
         <OptionRow>
             <SettingOption title="Dollar$">
                 <Dropdown options={dollarOptions} value={dollarLocalization.value}

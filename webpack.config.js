@@ -1,10 +1,14 @@
-const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require('zip-webpack-plugin')
 
+const {NODE_ENV} = process.env
+
+const isDevelopment = NODE_ENV === 'development'
+const isProduction = !isDevelopment
+
 const config = {
-    devtool: false,
+    devtool: isDevelopment,
     entry: {
         popup: path.join(__dirname, "src/popup.tsx"),
         content: path.join(__dirname, "src/content.tsx"),
@@ -71,7 +75,9 @@ const config = {
     },
     plugins: [
         new CopyPlugin({
-            patterns: [{from: "public", to: "."}],
+            patterns: [
+                {from: "public", to: "."}
+            ],
         }),
         new ZipPlugin({
             path: '../',

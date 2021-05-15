@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as React from 'react';
-import {ThemeProps} from '../../Atoms/ThemeProps';
+import {ThemeProps} from '../../Infrastructure/Theme';
 
 type Props = {
     title?: string
@@ -26,6 +26,10 @@ const Container = styled.div`
   border-color: ${(props: ThemeProps) => props.theme.containerBackground};
   border-style: solid;
 
+  & > not:first-child {
+    margin-top: 40px;
+  }
+  
   &:hover {
     border-color: ${(props: ThemeProps) => props.theme.borderDimFocus};
   }
