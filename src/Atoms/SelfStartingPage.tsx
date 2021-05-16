@@ -18,6 +18,7 @@ export function SelfStartingPage({Child}: SelfStartingPageProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [symbols, setSymbols] = useState<{ label: string, value: string }[]>([])
     const [, setTheme] = useState(colorTheme.value as keyof typeof themes)
+
     useEffect(() => {
         configuration.load()
             .then(() => setTheme(colorTheme.value as keyof typeof themes))

@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import * as React from 'react';
-import {useProvider} from '../Infrastructure';
 import {ThemeProps} from '../Infrastructure/Theme';
 
 export type RadioBoxProps = {
@@ -9,7 +8,6 @@ export type RadioBoxProps = {
 }
 
 export function RadioBox({value, onClick}: RadioBoxProps) {
-    const {theme} = useProvider()
     return <RadioBoxContainer
         checked={value}
         onClick={() => onClick()}>
