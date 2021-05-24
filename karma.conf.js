@@ -5,8 +5,8 @@ require('webpack');
 require('karma-firefox-launcher');
 module.exports = config => config.set({
     files: [
-        {pattern: "src/CurrencyConverter/**/*.ts"},
-        {pattern: "src/Infrastructure/**/*.ts"},
+        {pattern: "src/currencyConverter/**/*.ts"},
+        {pattern: "src/infrastructure/**/*.ts"},
         {pattern: 'tests/*.mock.ts'},
         {pattern: 'tests/*.test.ts'},
     ],
@@ -17,7 +17,10 @@ module.exports = config => config.set({
     },
     webpack: {mode: 'development'},
     singleRun: true,
-    bundlerOptions: {sourceMap: true},
+    bundlerOptions: {
+        sourceMap: true,
+        esModuleInterop: true
+    },
     reporters: ["karma-typescript"],
     frameworks: ["jasmine", "karma-typescript"],
     browsers: ["ChromeHeadless", "FirefoxHeadless"],

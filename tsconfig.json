@@ -3,16 +3,19 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "module": "es6",
     "moduleResolution": "node",
     "target": "es5",
     "allowJs": true,
-    "jsx": "react",
+    "jsx": "react"
   },
   "include": [
-    "./src/**/*",
-    "src/custom.d.ts"
+    "./src/components/**/*",
+    "./src/currencyConverter/**/*",
+    "./src/infrastructure/**/*"
   ]
 }

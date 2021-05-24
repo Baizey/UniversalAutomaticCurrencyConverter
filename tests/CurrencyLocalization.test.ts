@@ -1,5 +1,5 @@
-import {CurrencyLocalization} from '../src/CurrencyConverter/Localization/CurrencyLocalization';
-import {SyncSetting} from '../src/Infrastructure/Configuration/SyncSetting';
+import {CurrencyLocalization} from '../src/currencyConverter/Localization/CurrencyLocalization';
+import {SyncSetting} from '../src/infrastructure/Configuration/SyncSetting';
 import useMockContainer from './Container.mock';
 
 describe('CurrencyLocalization', () => {

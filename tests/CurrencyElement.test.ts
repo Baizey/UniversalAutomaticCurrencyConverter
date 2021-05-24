@@ -1,7 +1,5 @@
 import useMockContainer from './Container.mock';
-import {BackendApi, IBackendApi} from '../src/CurrencyConverter/BackendApi';
-import {BackendApiMock} from './BackendApi.mock';
-import {CurrencyElement} from '../src/CurrencyConverter/Currency/CurrencyElement';
+import {CurrencyElement} from '../src/currencyConverter/Currency';
 
 describe('CurrencyElement', () => {
     const create = (html: string): HTMLElement => {
@@ -50,10 +48,6 @@ describe('CurrencyElement', () => {
         it(`${test.name}`, async () => {
             // Setup
             const [container, provider] = useMockContainer()
-            container.getRequired<IBackendApi>(BackendApi).overrideFactory(() => new BackendApiMock({
-                USD: {EUR: 1},
-                EUR: {USD: 1}
-            }, {USD: 'y', EUR: 'y'}))
             await provider.activeLocalization.load()
             await provider.activeLocalization.overload({dollar: 'USD'})
             provider.showConversionInBrackets.setValue(test.showInBrackets);

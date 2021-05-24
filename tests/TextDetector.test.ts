@@ -1,5 +1,5 @@
 import useMockContainer from './Container.mock';
-import {TextDetector} from '../src/CurrencyConverter/Detection';
+import {TextDetector} from '../src/currencyConverter/Detection';
 
 describe('TextDetector', () => {
     const create = (html: string): string => {

@@ -1,5 +1,5 @@
 // This file is ran as a background script
-import {BackgroundMessage, BackgroundMessageType, useProvider} from "./Infrastructure";
+import {BackgroundMessage, BackgroundMessageType, useProvider} from "./infrastructure";
 
 function isCurrencyTag(value: any): boolean {
     return ((typeof value) === 'string') && /^[A-Z]{3}$/.test(value);
@@ -14,7 +14,8 @@ enum ContextMenuItem {
     await useLogging.loadSetting();
     logger.info('Initializing background');
 
-    browser.tabs.create({url: "options.html"});
+    // For testing
+    // browser.tabs.create({url: "options.html"});
 
     browser.contextMenus.create({
         id: ContextMenuItem.openContextMenu,
@@ -25,7 +26,7 @@ enum ContextMenuItem {
     browser.contextMenus.onClicked.addListener(function (info, tab) {
         switch (info.menuItemId) {
             case ContextMenuItem.openContextMenu:
-                browser.tab.contextMenu()
+                browser.tab.openContextMenu()
                 break;
         }
     });

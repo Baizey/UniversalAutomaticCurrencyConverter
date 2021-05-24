@@ -1,4 +1,4 @@
-import {CurrencyRate} from "../src/CurrencyConverter/BackendApi/CurrencyRate";
+import {CurrencyRate} from "../src/currencyConverter/BackendApi/CurrencyRate";
 
 describe('CurrencyRate', () => {
     it(`very old is expired`, () => {

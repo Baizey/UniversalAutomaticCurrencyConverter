@@ -1,10 +1,10 @@
 // This file is injected as a content script
 import * as React from "react";
 import * as ReactDOM from 'react-dom'
-import {useProvider} from "./Infrastructure";
-import {CurrencyElement} from './CurrencyConverter/Currency';
-import {ContentApp} from './Content/';
-import {LogLevel} from './Infrastructure/Logger';
+import {useProvider} from "./infrastructure";
+import {CurrencyElement} from './currencyConverter/Currency';
+import {LogLevel} from './infrastructure/Logger';
+import {ContentApp} from './components/content';
 
 const isBlacklistedErrorMessage = `Site is blacklisted`;
 

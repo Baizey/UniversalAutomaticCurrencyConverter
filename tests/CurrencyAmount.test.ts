@@ -1,7 +1,6 @@
-import {CurrencyAmount} from "../src/CurrencyConverter/Currency/CurrencyAmount";
-import {BackendApiMock} from "./BackendApi.mock";
+import {CurrencyAmount} from "../src/currencyConverter/Currency";
 import useMockContainer from './Container.mock';
-import {BackendApi, IBackendApi} from '../src/CurrencyConverter/BackendApi';
+import {BrowserMock} from './Browser.mock';
 
 describe('CurrencyAmount', () => {
     describe('Rounding', () => {
@@ -51,7 +50,7 @@ describe('CurrencyAmount', () => {
                 const actual = amount.roundedAmount;
 
                 // Assert
-                if(!Array.isArray(test.expect)) test.expect = [test.expect]
+                if (!Array.isArray(test.expect)) test.expect = [test.expect]
                 expect(actual).toEqual(test.expect);
             });
         });
@@ -69,36 +68,36 @@ describe('CurrencyAmount', () => {
         tests.forEach((test: { amount: number | number[], expect: number | number[], rate: number }) => {
             it(`Input: ${test.amount}, Expected: ${test.expect}, Rate: ${test.rate}`, async () => {
                 // Setup
-                const [container, provider] = useMockContainer()
-                container.getRequired<IBackendApi>(BackendApi).overrideFactory(() => new BackendApiMock({'AAA': {'BBB': test.rate}}))
-                const original = new CurrencyAmount(provider, 'AAA', test.amount);
+                const [container, provider] = useMockContainer();
+                (provider.browser as BrowserMock).addRate('USD', 'EUR', test.rate);
+                const original = new CurrencyAmount(provider, 'USD', test.amount);
 
                 // Act
-                const actual = await original.convertTo('BBB');
+                const actual = await original.convertTo('EUR');
 
                 // Assert
                 expect(actual).not.toBeNull()
-                if(!actual) return;
-                if(!Array.isArray(test.amount)) test.amount = [test.amount]
+                if (!actual) return;
+                if (!Array.isArray(test.amount)) test.amount = [test.amount]
                 expect(original.amount).toEqual(test.amount);
-                expect(original.tag).toEqual('AAA');
-                if(!Array.isArray(test.expect)) test.expect = [test.expect]
+                expect(original.tag).toEqual('USD');
+                if (!Array.isArray(test.expect)) test.expect = [test.expect]
                 expect(actual.amount).toEqual(test.expect);
-                expect(actual.tag).toEqual('BBB');
+                expect(actual.tag).toEqual('EUR');
             });
         });
 
         it(`Unknown currency`, async () => {
             // Setup
             const [container, provider] = useMockContainer()
-            const original = new CurrencyAmount(provider, 'UNK', 0);
+            const original = new CurrencyAmount(provider, 'EUR', 0);
 
             // Act
             const actual = await original.convertTo('UNK4');
 
             // Assert
             expect(original.amount).toEqual([0]);
-            expect(original.tag).toEqual('UNK');
+            expect(original.tag).toEqual('EUR');
             expect(actual).toEqual(null);
         });
     });
