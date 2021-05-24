@@ -49,6 +49,7 @@
     }
   },
   "permissions": [
+    "https://uacc-bff-api.azurewebsites.net/*",
     "contextMenus",
     "activeTab",
     "storage",
