@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start:dev": "nodemon -r dotenv/config dist/Api.js localhost 3000",
-    "start": "nodemon -r dotenv/config dist/Api.js localhost 8080",
+    "start": "nodemon -r dotenv/config dist/Api.js",
     "build:dev": "tsc --watch --preserveWatchOutput",
     "build": "tsc"
   },
