@@ -1,10 +1,17 @@
 {
   "name": "uacc",
   "version": "1.0.0",
+  "scripts": {
+    "start": "",
+    "build": "",
+    "serve": "",
+    "test": ""
+  },
   "dependencies": {
-    "esm": "^3.2.25",
-    "applicationinsights": "^1.4.0",
+    "@types/node": "^15.6.0",
+    "typescript": "^4.2.4",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "node-fetch": "latest"
+    "node-fetch": "^2.6.1"
   }
 }
