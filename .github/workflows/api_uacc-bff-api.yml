@@ -15,7 +15,7 @@ jobs:
     steps:
     # checkout the repo
     - name: 'Checkout Github Action'
-      uses: actions/checkout@Api
+      uses: actions/checkout@master
 
 
     - name: Set up Node.js version
