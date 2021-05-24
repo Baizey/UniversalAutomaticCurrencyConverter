@@ -12,7 +12,7 @@ export type ReadonlyInputProps = {
 
 export function ReadonlyInput({defaultValue, placeholder, center}: ReadonlyInputProps) {
     center = typeof center === 'boolean' ? center : true;
-    return <Container
+    return <StyledInputContainer
         center={center}
         type="text"
         readOnly={true}
@@ -30,7 +30,7 @@ export type StyledInputProps = {
 export function StyledInput({type, defaultValue, onChange, onEnter, placeholder, center}: StyledInputProps) {
     const [current, setCurrent] = useState(defaultValue)
     center = typeof center === 'boolean' ? center : true;
-    return <Container
+    return <StyledInputContainer
         center={center}
         placeholder={placeholder}
         type={type}
@@ -43,18 +43,20 @@ export function StyledInput({type, defaultValue, onChange, onEnter, placeholder,
     />
 }
 
-export type ContainerProps = { center: boolean } & ThemeProps
+export type StyledInputContainerProps = { center: boolean } & ThemeProps
 
-export const Container = styled(Input)<ContainerProps>`
-  text-align: ${props => props.center ? 'center' : 'right'};
-  text-align-last: ${props => props.center ? 'center' : 'right'};
-  
-  &:focus {
-    outline: 0;
-  }
+function align(props: StyledInputContainerProps): 'right' | 'center' {
+    if (props.center) return 'center';
+    return 'right'
+}
 
-  &:hover {
-    transition: border-color 0.3s ease-in-out;
-    border-color: ${(props) => props.theme.borderFocus};
-  }
-`
+export const StyledInputContainer = styled(Input)((props: StyledInputContainerProps) => ({
+    textAlign: align(props),
+    textAlignLast: align(props),
+    '&:focus': {
+        outline: 0,
+    },
+    '&:hover': {
+        borderColor: props.theme.formBorderFocus,
+    }
+}))

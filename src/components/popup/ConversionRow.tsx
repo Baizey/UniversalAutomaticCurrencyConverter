@@ -46,7 +46,7 @@ export function ConversionRow(props: ConversionRowProps) {
 
     return <Container>
         <IconContainer onClick={() => props.onDelete()}>
-            <DeleteIcon height="20px" width="20px" color={theme.error}/>
+            <DeleteIcon height="20px" width="20px" color={theme.errorBackground}/>
         </IconContainer>
 
         <AmountContainer>
@@ -58,7 +58,6 @@ export function ConversionRow(props: ConversionRowProps) {
 
         <CurrencyContainer>
             <Dropdown key={`conversion_row_from_${from}`}
-                      compact={true}
                       options={options}
                       value={from}
                       onChange={value => setFrom(value)}/>
@@ -81,7 +80,6 @@ export function ConversionRow(props: ConversionRowProps) {
 
         <CurrencyContainer>
             <Dropdown key={`conversion_row_to_${to}`}
-                      compact={true}
                       options={options}
                       value={to}
                       onChange={value => setTo(value)}/>
@@ -104,7 +102,7 @@ const IconContainer = styled(Div)`
   width: 5%;
 
   &:hover {
-    background-color: ${(props: ThemeProps) => props.theme.borderDimFocus};
+    background-color: ${(props: ThemeProps) => props.theme.formBorderDimFocus};
   }
 `
 

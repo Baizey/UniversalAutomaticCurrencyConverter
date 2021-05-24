@@ -19,7 +19,6 @@ export const dropdown = Template.bind({
 });
 
 dropdown.args = {
-    compact: false,
     maxOptions: 8,
     options: options.map(e => ({label: e, value: e})),
     value: options[0],

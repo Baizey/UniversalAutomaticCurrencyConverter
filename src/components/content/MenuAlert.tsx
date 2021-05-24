@@ -4,7 +4,7 @@ import styled from 'styled-components';
 // noinspection ES6UnusedImports We need to import everything for it to work in browser
 import {RadioBox, RadioBoxContainer, RadioBoxContainerProps, RadioBoxProps} from '../atoms/RadioBox';
 // noinspection ES6UnusedImports We need to import everything for it to work in browser
-import {Button, ButtonProps, Div, Space, SpaceProps, Title} from '../atoms';
+import {Button, ButtonProps, Div, HeaderText, Space, SpaceProps, Title} from '../atoms';
 import {ThemeProps} from '../../infrastructure';
 
 type Props = { setDismissed: () => void }
@@ -12,16 +12,16 @@ type Props = { setDismissed: () => void }
 export function MenuAlert({setDismissed}: Props) {
     return <AlertSection onDismiss={setDismissed} title="Context menu">
         <Section>
-            <Title>Site allowance</Title>
+            <HeaderText>Site allowance</HeaderText>
         </Section>
         <Section>
-            <Title>Conversions</Title>
+            <HeaderText>Conversions</HeaderText>
         </Section>
         <Section>
-            <Title>Current page localization</Title>
+            <HeaderText>Current page localization</HeaderText>
         </Section>
         <Section>
-            <Title>Convert to</Title>
+            <HeaderText>Convert to</HeaderText>
         </Section>
     </AlertSection>
 }
@@ -29,7 +29,7 @@ export function MenuAlert({setDismissed}: Props) {
 const Section = styled(Div)<ThemeProps>`
   width: 100%;
   text-align: center;
-  color: ${props => props.theme.normalText};
+  color: ${(props: ThemeProps) => props.theme.normalText};
   display: flex;
   flex-direction: column;
 `

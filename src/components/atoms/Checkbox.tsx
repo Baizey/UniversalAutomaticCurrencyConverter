@@ -32,13 +32,13 @@ const Container = styled(Div)<ContainerProps>`
 
   &:hover {
     transition: border-color 0.3s ease-in-out;
-    border-color: ${(props) => props.theme.borderFocus};
+    border-color: ${({theme}: ThemeProps) => theme.formBorderFocus};
   }
 
   & div {
     position: absolute;
     height: 5px;
-    background-color: ${(props) => props.theme.success};
+    background-color: ${(props: ThemeProps) => props.theme.successBackground};
     transition: opacity 0.3s ease-in-out;
     opacity: ${(props) => props.checked ? 1 : 0};
   }

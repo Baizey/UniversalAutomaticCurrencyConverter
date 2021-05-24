@@ -49,7 +49,7 @@ const Container = styled(Div)<ThemeProps>`
 
   & > div {
     border-width: 1px;
-    border-color: ${props => props.theme.containerBorder};
+    border-color: ${(props: ThemeProps) => props.theme.containerBorder};
     border-style: solid;
     width: calc(100% - 2px);
   }

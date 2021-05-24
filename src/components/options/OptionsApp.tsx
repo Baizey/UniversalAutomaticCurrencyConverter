@@ -28,26 +28,30 @@ export default function OptionsApp({isLoading, setTheme, symbols}: OptionsAppPro
     if (isLoading) return wrap(<LoadingCard key="LoadingCard-card"/>)
 
     return wrap([
-        <Gap height={20}/>,
         <CurrencyCard symbols={symbols} key="CurrencyCard-card"/>,
-        <Gap height={20}/>,
         <VisualsCard setTheme={setTheme} key="VisualsCard-card"/>,
-        <Gap height={20}/>,
         <AccessibilityCard symbols={symbols} key="AccessibilityCard-card"/>,
     ]);
 }
 
-const Gap = styled(Space)(props => ({
-    backgroundColor: props.theme.wrapperBackground
+const Gap = styled(Space)((props: ThemeProps) => ({
+    backgroundColor: props.theme.wrapperBackground,
+    borderColor: props.theme.containerBorder,
+    borderStyle: 'dashed',
+    borderRadius: 0,
+    borderWidth: 0,
+    borderLeftWidth: '1px',
+    borderRightWidth: '1px',
 }))
 
 const Background = styled(Div)<ThemeProps>`
   min-height: 100%;
   height: fit-content;
-  background-color: ${props => props.theme.wrapperBackground};
+  background-color: ${(props: ThemeProps) => props.theme.wrapperBackground};
   margin: 0;
 `;
 
 const Wrapper = styled(Div)`
+  background-color: ${(props: ThemeProps) => props.theme.wrapperBackground};
   max-width: 800px;
 `;

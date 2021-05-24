@@ -170,14 +170,14 @@ const DisabledListItem = styled(Div)`
   width: 99%;
   margin: auto;
   text-align: center;
-  border-bottom: ${(props: ThemeProps) => `solid 1px ${props.theme.inputUnderline}`};
+  border-bottom: ${(props: ThemeProps) => `solid 1px ${props.theme.formBorder}`};
   padding-top: 10px;
   padding-bottom: 10px;
   background-color: ${(props: ThemeProps) => props.theme.containerBackground};
 
   &:hover {
-    background-color: ${(props: ThemeProps) => props.theme.backgroundFocus};
-    border-color: ${(props: ThemeProps) => props.theme.error};
+    background-color: ${(props: ThemeProps) => props.theme.backgroundBorderFocus};
+    border-color: ${(props: ThemeProps) => props.theme.errorBackground};
     cursor: pointer;
   }
 `

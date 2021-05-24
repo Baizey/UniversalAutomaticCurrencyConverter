@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from "styled-components";
 import {Div} from '../../atoms';
+import {ThemeProps} from '../../../infrastructure';
 
 export type OptionRowProps = {
     children: JSX.Element | JSX.Element[]
@@ -21,6 +22,6 @@ const Container = styled(Div)<ContainerProps>`
   flex-direction: row;
 
   & > * {
-    width: ${props => (100 / props.childrenCount) + '%'}
+    width: ${(props: ContainerProps) => (100 / props.childrenCount) + '%'}
   }
 `

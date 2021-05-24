@@ -14,7 +14,7 @@ export function AlertSection({title, children, onDismiss}: AlertSectionProps): J
     const theme = useTheme() as MyTheme;
     return <Container>
         <DismissWrapper onClick={onDismiss}>
-            <DeleteIcon width={'30px'} height={'30px'} color={theme.error}/>
+            <DeleteIcon width={'30px'} height={'30px'} color={theme.errorBackground}/>
         </DismissWrapper>
         <InnerWrapper>
             {title ? <Header>{title}</Header> : <></>}
@@ -37,8 +37,8 @@ const DismissWrapper = styled(Div)`
 `
 
 const InnerWrapper = styled(Div)`
-  margin: 2%;
-  width: 96%;
+  width: calc(100% - 10px);
+  padding: 5px;
   height: fit-content;
   display: flex;
   flex-direction: column;
@@ -48,7 +48,7 @@ const Container = styled(Div)<ThemeProps>`
   width: 100%;
   height: fit-content;
   margin: 0;
-  background-color: ${props => props.theme.containerBackground};
+  background-color: ${(props: ThemeProps) => props.theme.containerBackground};
 `
 
 const Header = styled(Title)<ThemeProps>`

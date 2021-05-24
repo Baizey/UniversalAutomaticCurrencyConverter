@@ -12,7 +12,7 @@ export type ShortcutProps = {
 export function Shortcut({defaultValue, onChange}: ShortcutProps) {
     const [value, setValue] = useState(defaultValue);
     return <Container
-                tabIndex={0}
+        tabIndex={0}
         onClick={() => {
             setValue('');
             onChange('');
@@ -24,18 +24,17 @@ export function Shortcut({defaultValue, onChange}: ShortcutProps) {
 }
 
 type ContainerProps = {} & ThemeProps
-const Container = styled(Div)<ContainerProps>`
-  display: block;
-  line-height: 33px;
-  height: 33px;
-  border-bottom-width: 1px;
-  border-radius: 0;
-  cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;;
 
-  &:hover {
-    transition: border-color 0.3s ease-in-out;
-    border-color: ${(props) => props.theme.borderFocus};
-  }
-`
+const Container = styled(Div)((props: ContainerProps) => ({
+    display: 'block',
+    lineHeight: '33px',
+    height: '33px',
+    borderBottomWidth: '1px',
+    borderRadius: 0,
+    cursor: 'pointer',
+    '-webkit-appearance': 'none',
+    '-moz-appearance': 'none',
+    '&:hover': {
+        borderColor: props.theme.formBorderFocus,
+    }
+}))

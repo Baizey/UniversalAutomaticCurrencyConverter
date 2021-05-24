@@ -6,7 +6,7 @@ import {Button, Div, Link, Space, Title} from '../atoms';
 
 export type PopupAppProps = { isLoading: boolean }
 export default function PopupApp({isLoading}: PopupAppProps) {
-    if (isLoading) return <>Loading...</>
+    if (isLoading) return <Title>Loading...</Title>
     const {browser} = useProvider();
 
     return <Container>

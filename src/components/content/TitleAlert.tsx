@@ -14,8 +14,8 @@ const Container = styled(Div)<ThemeProps>`
   padding-top: 10px;
   padding-bottom: 10px;
   border-width: 1px;
-  background-color: ${props => props.theme.containerBorder};
-  color: ${props => props.theme.headerText};
+  background-color: ${(props: ThemeProps) => props.theme.containerBorder};
+  color: ${(props: ThemeProps) => props.theme.headerText};
   text-align: center;
   height: fit-content;
 `

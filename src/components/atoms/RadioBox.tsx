@@ -17,28 +17,25 @@ export function RadioBox({value, onClick}: RadioBoxProps) {
 }
 
 export type RadioBoxContainerProps = { checked: boolean, onClick: () => void } & ThemeProps
-export const RadioBoxContainer = styled(Div)<RadioBoxContainerProps>`
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
-  border-width: 1px;
-  position: relative;
-  display: block;
 
-  &:hover {
-    transition: border-color 0.3s ease-in-out;
-    border-color: ${props => props.theme.borderFocus};
-  }
-
-  & div {
-    height: 20px;
-    width: 20px;
-    margin: auto;
-    margin-top: 5px;
-    border-radius: 10px;
-    background-color: ${props => props.theme.success};
-    transition: opacity 0.3s ease-in-out;
-    opacity: ${props => props.checked ? 1 : 0};
-  }
-`
+export const RadioBoxContainer = styled(Div)((props: RadioBoxContainerProps) => ({
+    cursor: 'pointer',
+    width: '30px',
+    height: '30px',
+    borderRadius: '15px',
+    borderWidth: '1px',
+    display: 'block',
+    '&:hover': {
+        borderColor: props.theme.formBorderFocus,
+    },
+    '& div': {
+        height: '20px',
+        width: '20px',
+        margin: 'auto',
+        marginTop: '5px',
+        borderRadius: '10px',
+        backgroundColor: props.theme.successBackground,
+        transition: 'opacity 0.3s ease-in-out',
+        opacity: props.checked ? 1 : 0,
+    }
+}))

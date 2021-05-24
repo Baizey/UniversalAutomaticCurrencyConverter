@@ -1,27 +1,25 @@
 import {MyTheme} from './MyTheme';
 
 export const darkTheme = {
-    wrapperBackground: '#0F171E',
+    wrapperBackground: '#22272e',
+    containerBackground: '#22272e',
+    buttonPrimaryBackground: '#265a88',
+    buttonSecondaryBackground: '#5c656d',
+    successBackground: '#008800',
+    errorBackground: '#880000',
 
-    containerBackground: '#0C131B',
-    containerBorder: '#2C333B',
-    inputUnderline: '#2F373E',
+    containerBorder: '#444c56',
+    formBorder: '#333b45',
+    formBorderDimFocus: '#352F24',
+    formBorderFocus: '#f0ad4e',
+    backgroundBorderFocus: '#1C232B',
 
-    buttonPrimary: '#265a88',
-    buttonSecondary: '#5c656d',
-
-    borderDimFocus: '#352F24',
-    borderFocus: '#f0ad4e',
-    backgroundFocus: '#1C232B',
-
+    buttonText: '#f0f0f0',
     titleText: '#f0f0f0',
-    normalText: '#d0d0d0',
+    normalText: '#adbac7',
     headerText: '#808080',
     footerText: '#737373',
 
-    link: '#337ab7',
-    linkHover: '#23527c',
-
-    success: '#008800',
-    error: '#880000',
+    linkText: '#337ab7',
+    linkTextHover: '#23527c',
 } as MyTheme

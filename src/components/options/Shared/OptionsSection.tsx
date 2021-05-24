@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as React from 'react';
-import {ThemeProps} from '../../../infrastructure';
+import {MyTheme, ThemeProps, themes, useProvider} from '../../../infrastructure';
 import {Div, Title} from '../../atoms';
 
 type Props = {
@@ -9,26 +9,43 @@ type Props = {
 }
 
 export function OptionsSection({title, children}: Props): JSX.Element {
-    return <Container>
+    const {colorTheme} = useProvider();
+    return <Container colorTheme={colorTheme.value}>
         {title ? <Title>{title}</Title> : <></>}
         {children}
     </Container>
 }
 
-const Container = styled(Div)`
+export type ContainerProps = {
+    colorTheme: keyof typeof themes
+} & ThemeProps
+
+const Container = styled(Div)<ContainerProps>`
   padding: 10px;
   background-color: ${(props: ThemeProps) => props.theme.containerBackground};
   display: flex;
   flex-direction: column;
   border-width: 1px;
-  border-color: ${(props: ThemeProps) => props.theme.containerBackground};
-  border-style: solid;
+  border-color: ${(props: ThemeProps) => props.theme.containerBorder};
 
-  & > not:first-child {
-    margin-top: 40px;
+  &:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
   }
-  
+
+  &:not(:first-child) {
+    border-top-width: 0;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  &:not(:last-child) {
+  }
+
   &:hover {
-    border-color: ${(props: ThemeProps) => props.theme.borderDimFocus};
+    filter: invert(1%);
   }
 `

@@ -7,7 +7,8 @@ type ElementType = 'div' | 'input' | 'a' | 'span' | 'h2' | 'label';
 export const basicStyle = (props: ThemeProps) => ({
     backgroundColor: props.theme.containerBackground,
     color: props.theme.normalText,
-    borderColor: props.theme.inputUnderline,
+    borderColor: props.theme.formBorder,
+    transition: 'border-color 0.2s ease-in-out',
     borderStyle: 'solid',
     borderWidth: 0,
     fontFamily: 'Calibri, monospace',
@@ -52,40 +53,43 @@ export type ButtonProps = {
     }
 } & ThemeProps & ({ primary: any } | { secondary: any } | { success: any } | { error: any })
 
-export const Button = styled(Div)<ButtonProps>`
-  cursor: pointer;
-  padding: 2px 25px;
-  height: ${() => asPixel(FieldHeight)};
-  line-height: ${() => asPixel(FieldHeight)};
-  ${props => ('primary' in props) && `background-color: ${props.theme.buttonPrimary}`}
-  ${props => ('secondary' in props) && `background-color: ${props.theme.buttonSecondary}`}
-  ${props => ('success' in props) && `background-color: ${props.theme.success}`}
-  ${props => ('error' in props) && `background-color: ${props.theme.error}`};
+function buttonColor(props: ButtonProps): string {
+    if ('primary' in props) return props.theme.buttonPrimaryBackground
+    if ('secondary' in props) return props.theme.buttonSecondaryBackground
+    if ('success' in props) return props.theme.successBackground
+    if ('error' in props) return props.theme.errorBackground
+    throw new Error('No button color found')
+}
 
-  user-select: none;
-
-  border-bottom-left-radius: ${props => props.connect?.left || props.connect?.down ? '0' : '5px'};
-  border-bottom-right-radius: ${props => props.connect?.right || props.connect?.down ? '0' : '5px'};
-  border-top-left-radius: ${props => props.connect?.left || props.connect?.up ? '0' : '5px'};
-  border-top-right-radius: ${props => props.connect?.right || props.connect?.up ? '0' : '5px'};
-
-  &:hover {
-    filter: brightness(85%);
-  }
-`;
+export const Button = styled(Div)<ButtonProps>((props: ButtonProps) => ({
+    cursor: 'pointer',
+    padding: '2px 25px',
+    'user-select': 'none',
+    height: asPixel(FieldHeight),
+    lineHeight: asPixel(FieldHeight),
+    color: props.theme.buttonText,
+    backgroundColor: buttonColor(props),
+    borderBottomLeftRadius: props.connect?.left || props.connect?.down ? '0' : '5px',
+    borderBottomRightRadius: props.connect?.right || props.connect?.down ? '0' : '5px',
+    borderTopLeftRadius: props.connect?.left || props.connect?.up ? '0' : '5px',
+    borderTopRightRadius: props.connect?.right || props.connect?.up ? '0' : '5px',
+    '&:hover': {
+        filter: 'brightness(90%)'
+    },
+}))
 
 export const NormalText = styled(BasicSpan)({
     width: '100%',
     display: 'inline-block'
 })
-export const HeaderText = styled(BasicLabel)(props => ({
+export const HeaderText = styled(BasicLabel)((props: ThemeProps) => ({
     width: '100%',
     display: 'inline-block',
     fontSize: asPixel(TextSize),
     color: props.theme.headerText,
     fontWeight: 600
 }))
-export const FooterText = styled(BasicSpan)(props => ({
+export const FooterText = styled(BasicSpan)((props: ThemeProps) => ({
     width: '100%',
     display: 'inline-block',
     fontSize: asPixel(SmallTextSize),

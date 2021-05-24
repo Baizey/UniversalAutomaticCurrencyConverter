@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {ThemeProvider, useTheme} from 'styled-components';
-import {MyTheme, themes, useProvider} from '../../infrastructure';
+import {mapToTheme, MyTheme, themes, useProvider} from '../../infrastructure';
 
 type SelfStartingPageProps = {
     Child: React.ReactNode &
@@ -14,10 +14,9 @@ type SelfStartingPageProps = {
 
 export function SelfStartingPage({Child}: SelfStartingPageProps) {
     const {configuration, colorTheme, backendApi} = useProvider();
-    const theme = useTheme() as MyTheme;
     const [isLoading, setIsLoading] = useState(true);
     const [symbols, setSymbols] = useState<{ label: string, value: string }[]>([])
-    const [, setTheme] = useState(colorTheme.value as keyof typeof themes)
+    const [theme, setTheme] = useState(colorTheme.value as keyof typeof themes)
 
     useEffect(() => {
         configuration.load()
@@ -29,7 +28,7 @@ export function SelfStartingPage({Child}: SelfStartingPageProps) {
             .then(() => setIsLoading(false))
     }, [])
 
-    return <ThemeProvider theme={theme}>
+    return <ThemeProvider theme={mapToTheme(theme)}>
         <Child symbols={symbols} isLoading={isLoading} setTheme={setTheme}/>
     </ThemeProvider>
 }
