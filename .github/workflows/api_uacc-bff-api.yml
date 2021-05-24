@@ -36,6 +36,6 @@ jobs:
       with:
         app-name: uacc-bff-api
         slot-name: Production
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7EC88C5B9C214F03ACC38AC6C7CF825E }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_UACC }}
         package: .
 
