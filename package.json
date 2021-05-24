@@ -2,16 +2,20 @@
   "name": "uacc",
   "version": "1.0.0",
   "scripts": {
-    "start": "",
-    "build": "",
-    "serve": "",
-    "test": ""
+    "start:dev": "nodemon -r dotenv/config ist/Api.js localhost 3000",
+    "start": "nodemon -r dotenv/config dist/Api.js",
+    "build": "tsc --watch --preserveWatchOutput"
   },
   "dependencies": {
-    "@types/node": "^15.6.0",
+    "concurrently": "^6.2.0",
+    "nodemon": "^2.0.7",
     "typescript": "^4.2.4",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/node": "^15.6.0"
   }
 }
