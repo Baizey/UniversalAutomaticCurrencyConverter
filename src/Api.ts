@@ -89,6 +89,11 @@ api.get('/api/v4/symbols/:apikey', (request, response) => {
     response.status(200).send(data.symbols)
 });
 
+// Health check
+api.get('/health', (request, response) => {
+    response.status(200).send()
+});
+
 const port: number = +(process.env.PORT || 3000);
 api.listen(port, () => {
     console.log('Started');
