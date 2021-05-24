@@ -4,10 +4,8 @@
   "description": "",
   "scripts": {
     "test": "karma start karma.conf.js",
-    "prod": "webpack --mode=production",
-    "prod:watch": "webpack --watch --mode=production --profile",
-    "dev": "webpack --mode=development",
-    "dev:watch": "webpack --watch --mode=development --profile",
+    "start:dev": "webpack --mode=development",
+    "start:dev:watch": "webpack --mode=development --watch",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
