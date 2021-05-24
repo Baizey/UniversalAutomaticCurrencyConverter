@@ -2,7 +2,7 @@
   "name": "uacc",
   "version": "1.0.0",
   "scripts": {
-    "start:dev": "nodemon -r dotenv/config ist/Api.js localhost 3000",
+    "start:dev": "nodemon -r dotenv/config dist/Api.js localhost 3000",
     "start": "nodemon -r dotenv/config dist/Api.js localhost 8080",
     "build:dev": "tsc --watch --preserveWatchOutput",
     "build": "tsc --preserveWatchOutput"
