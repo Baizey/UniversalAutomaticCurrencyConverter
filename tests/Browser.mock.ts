@@ -2,7 +2,7 @@ import {IBrowser} from "../src/infrastructure";
 import {ITabMessenger} from "../src/infrastructure/BrowserMessengers/TabMessenger";
 import {IPopupMessenger} from "../src/infrastructure/BrowserMessengers/PopupMessenger";
 import {Browsers, Environments} from "../src/infrastructure/Browser/Browser";
-import {IBackgroundMessenger} from "../src/infrastructure/BrowserMessengers/BackgroundMessenger";
+import {IBackgroundMessenger, RateResponse} from "../src/infrastructure/BrowserMessengers/BackgroundMessenger";
 
 export class BrowserMock implements IBrowser {
 
@@ -42,12 +42,12 @@ export class BrowserMock implements IBrowser {
         this.author = 'Baizey'
         // @ts-ignore
         this.background = {
-            getRate: async (from: string, to: string): Promise<{ rate: number } | null> => {
+            getRate: async (from: string, to: string): Promise<RateResponse | null> => {
                 const symbols = await this.background.getSymbols();
                 if (!(from in symbols) || !(to in symbols)) return null;
                 if (this.rates[from] && this.rates[from][to])
-                    return {rate: this.rates[from][to]}
-                return {rate: 1};
+                    return {from: from, to: to, timestamp: Date.now(), rate: this.rates[from][to], path: []}
+                return {from: from, to: to, timestamp: Date.now(), rate: 1, path: []}
             },
             getSymbols: (): Promise<{ [key: string]: string }> => {
                 return Promise.resolve({

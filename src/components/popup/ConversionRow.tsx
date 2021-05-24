@@ -50,15 +50,14 @@ export function ConversionRow(props: ConversionRowProps) {
         </IconContainer>
 
         <AmountContainer>
-            <StyledInput key={`conversion_row_from_amount_${fromAmount}`}
+            <StyledInput
                          center={false} type={'number'}
                          defaultValue={fromAmount}
                          onChange={value => setFromAmount(+value)}/>
         </AmountContainer>
 
         <CurrencyContainer>
-            <Dropdown key={`conversion_row_from_${from}`}
-                      options={options}
+            <Dropdown options={options}
                       value={from}
                       onChange={value => setFrom(value)}/>
         </CurrencyContainer>
@@ -79,8 +78,7 @@ export function ConversionRow(props: ConversionRowProps) {
         </AmountContainer>
 
         <CurrencyContainer>
-            <Dropdown key={`conversion_row_to_${to}`}
-                      options={options}
+            <Dropdown options={options}
                       value={to}
                       onChange={value => setTo(value)}/>
         </CurrencyContainer>

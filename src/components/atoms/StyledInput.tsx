@@ -50,7 +50,7 @@ function align(props: StyledInputContainerProps): 'right' | 'center' {
     return 'right'
 }
 
-export const StyledInputContainer = styled(Input)((props: StyledInputContainerProps) => ({
+export const StyledInputContainer = styled(Input)<StyledInputContainerProps>((props: StyledInputContainerProps) => ({
     textAlign: align(props),
     textAlignLast: align(props),
     '&:focus': {

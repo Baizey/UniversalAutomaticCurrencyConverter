@@ -2,7 +2,7 @@ import {MyTheme} from './MyTheme';
 
 export const darkTheme = {
     wrapperBackground: '#22272e',
-    containerBackground: '#22272e',
+    containerBackground: '#262a32',
     buttonPrimaryBackground: '#265a88',
     buttonSecondaryBackground: '#5c656d',
     successBackground: '#008800',

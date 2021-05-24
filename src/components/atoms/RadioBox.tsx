@@ -18,7 +18,7 @@ export function RadioBox({value, onClick}: RadioBoxProps) {
 
 export type RadioBoxContainerProps = { checked: boolean, onClick: () => void } & ThemeProps
 
-export const RadioBoxContainer = styled(Div)((props: RadioBoxContainerProps) => ({
+export const RadioBoxContainer = styled(Div)<RadioBoxContainerProps>((props: RadioBoxContainerProps) => ({
     cursor: 'pointer',
     width: '30px',
     height: '30px',

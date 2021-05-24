@@ -1,38 +1,43 @@
 import * as React from 'react';
+import {ReactNode, useEffect, useState} from 'react';
 import {useProvider} from '../../infrastructure';
-import {useEffect, useState} from 'react';
 import {ConversionRow} from './ConversionRow';
 import {Button} from '../atoms';
 
 export function Converter() {
     const {miniConverter, convertTo} = useProvider()
-    const [rows, setRows] = useState(miniConverter.value);
+    const [rowsData, setRowsData] = useState(miniConverter.value);
     const [isLoading, setIsLoading] = useState(true);
+    const [rows, setRows] = useState<ReactNode[]>([])
+
+    useEffect(() => {
+        console.log('update rows')
+        setRows(rowsData.map((row, i) => <ConversionRow
+            key={`conversion_row_${i}_${row.from}_${row.to}`}
+            onDelete={() => setRowsData(rowsData.filter((e, j) => j !== i))}
+            onChange={async data => {
+                rowsData[i] = data
+                await miniConverter.setAndSaveValue(rowsData)
+            }}
+            from={row.from}
+            to={row.to} amount={row.amount}/>))
+    }, [rowsData.length])
 
     useEffect(() => {
         miniConverter.loadSetting()
-            .then(() => setRows(miniConverter.value))
+            .then(() => setRowsData(miniConverter.value))
             .finally(() => setIsLoading(false))
     }, [])
 
     return <>
-        {rows.map((row, i) => <ConversionRow
-            key={`conversion_row_${i}_${row.from}_${row.to}_${row.amount}`}
-            onDelete={() => setRows(rows.filter((e, j) => j !== i))}
-            onChange={async data => {
-                rows[i] = data
-                if (await miniConverter.setAndSaveValue(rows))
-                    setRows(rows)
-            }}
-            from={row.from}
-            to={row.to} amount={row.amount}/>)}
+        {rows}
         <Button
             success={true}
             onClick={async () => {
                 if (isLoading) return;
-                const newRows = rows.concat([{from: convertTo.value, to: convertTo.value, amount: 1}])
+                const newRows = rowsData.concat([{from: convertTo.value, to: convertTo.value, amount: 1}])
                 if (await miniConverter.setAndSaveValue(newRows))
-                    setRows(newRows)
+                    setRowsData(newRows)
             }}
             connect={{up: true}}>
             Add conversion row

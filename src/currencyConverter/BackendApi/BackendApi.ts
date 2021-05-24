@@ -29,8 +29,8 @@ export class BackendApi implements IBackendApi {
     }
 
     async symbols(forceUpdate: boolean = false): Promise<Record<string, string>> {
-        const symbolsKey = `uacc:symbols`;
-        const dateKey = `uacc:symbols:date`;
+        const symbolsKey = `uacc:v4:symbols`;
+        const dateKey = `uacc:v4:symbols:date`;
 
         this._symbolsExpireDate = this._symbolsExpireDate || (await this._browser.loadLocal<number>(dateKey));
         const diff = Date.now() - (this._symbolsExpireDate || 1);

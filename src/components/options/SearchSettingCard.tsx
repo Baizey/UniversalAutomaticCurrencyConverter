@@ -5,7 +5,6 @@ import {StyledInput} from '../atoms';
 type Props = { onChange: (value: string) => void }
 
 export function SearchSettingCard(props: Props) {
-    console.log('render')
     return <OptionsSection title="Search for setting">
         <OptionRow>
             <SettingOption title="">

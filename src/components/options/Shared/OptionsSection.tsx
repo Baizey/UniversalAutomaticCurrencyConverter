@@ -34,7 +34,7 @@ const Container = styled(Div)<ContainerProps>`
   }
 
   &:not(:first-child) {
-    border-top-width: 0;
+    margin-top: 15px;
   }
 
   &:last-child {
@@ -43,9 +43,5 @@ const Container = styled(Div)<ContainerProps>`
   }
 
   &:not(:last-child) {
-  }
-
-  &:hover {
-    filter: invert(1%);
   }
 `
