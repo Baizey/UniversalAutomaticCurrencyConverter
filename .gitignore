@@ -7,3 +7,6 @@ ignored
 debug.log
 deployed.zip
 package-lock.json
+dist
+coverage
+.env
