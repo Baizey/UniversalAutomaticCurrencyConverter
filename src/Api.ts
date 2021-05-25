@@ -34,19 +34,34 @@ setInterval(() => update().catch(console.error), updateInterval);
 const api = express();
 
 const apiKey = process.env.ownApiKey
-api.param('apikey', (request, response, next, key) => {
-    if (apiKey === key) next();
-    else response.status(401).send('This endpoint requires a valid API key');
-});
+api.use((request, response, next) => {
+    if (!('x-apikey' in request.headers))
+        return response.status(401).send('This service requires an API key');
+
+    if (apiKey !== request.headers['x-apikey'])
+        return response.status(401).send('This service requires a valid API key');
+
+    next();
+})
 
 api.param('from', (request, response, next, key) => {
-    if (/^[A-Z]{3}$/.test(key)) next();
-    else response.status(400).send(`From '${key}' is invalid currency tag`);
+    if (!(/^[A-Z]{3}$/.test(key)))
+        return response.status(400).send(`From '${key}' is invalid currency tag`);
+
+    if (!(key in data.rates.nodes))
+        return response.status(404).send(`From '${key}' is not found in currencies`);
+
+    next();
 });
 
 api.param('to', (request, response, next, key) => {
-    if (/^[A-Z]{3}$/.test(key)) next();
-    else response.status(400).send(`To '${key}' is invalid currency tag`);
+    if (!(/^[A-Z]{3}$/.test(key)))
+        return response.status(400).send(`To '${key}' is invalid currency tag`);
+
+    if (!(key in data.rates.nodes))
+        return response.status(404).send(`To '${key}' is not found in currencies`);
+
+    next();
 });
 
 type RateResponse = {
@@ -58,7 +73,7 @@ type RateResponse = {
 }
 
 // Currency rates endpoint
-api.get('/api/v4/rate/:from/:to/:apikey', (request, response) => {
+api.get('/api/v4/rate/:from/:to', (request, response) => {
     if (!data || !data.rates) return response.status(500).send(`Dont have any rates`)
     const from = request.params.from;
     const to = request.params.to;
@@ -84,7 +99,7 @@ api.get('/api/v4/rate/:from/:to/:apikey', (request, response) => {
 });
 
 // Currency symbols endpoint
-api.get('/api/v4/symbols/:apikey', (request, response) => {
+api.get('/api/v4/symbols', (request, response) => {
     if (!data || !data.symbols) return response.status(500).send(`Dont have any rates`)
     response.status(200).send(data.symbols)
 });
