@@ -74,7 +74,6 @@ type RateResponse = {
 
 // Currency rates endpoint
 api.get('/api/v4/rate/:from/:to', (request, response) => {
-    if (!data || !data.rates) return response.status(500).send(`Dont have any rates`)
     const from = request.params.from;
     const to = request.params.to;
 
@@ -94,20 +93,15 @@ api.get('/api/v4/rate/:from/:to', (request, response) => {
             timestamp: e.timestamp
         }))
     }
-
+    
     return response.status(200).send(result)
 });
 
 // Currency symbols endpoint
-api.get('/api/v4/symbols', (request, response) => {
-    if (!data || !data.symbols) return response.status(500).send(`Dont have any rates`)
-    response.status(200).send(data.symbols)
-});
+api.get('/api/v4/symbols', (request, response) => response.status(200).send(data.symbols));
 
 // Health check
-api.get('/health', (request, response) => {
-    response.status(200).send()
-});
+api.get('/health', (request, response) => response.status(200).send());
 
 const port: number = +(process.env.PORT || 3000);
 api.listen(port, () => {
