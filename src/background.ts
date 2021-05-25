@@ -10,6 +10,8 @@ enum ContextMenuItem {
 }
 
 (async () => {
+    const apikey = {'x-apikey': 'a8685f3f-9955-4d80-bff8-a927be128ece'}
+
     const {browser, logger, useLogging} = useProvider()
     await useLogging.loadSetting();
     logger.info('Initializing background');
@@ -51,10 +53,8 @@ enum ContextMenuItem {
                 if (!isCurrencyTag(request.to) || !isCurrencyTag(request.from))
                     return failure(`Invalid currency tags given (${request.from}, ${request.to})`)
                 if (request.from === request.to) return success(1)
-                fetch(`https://uacc-bff-api.azurewebsites.net/api/v4/rate/${request.from}/${request.to}/a8685f3f-9955-4d80-bff8-a927be128ece`, {
-                    headers: {
-                        'Access-Control-Allow-Origin': 'https://uacc-bff-api.azurewebsites.net'
-                    }
+                fetch(`https://uacc-bff-api.azurewebsites.net/api/v4/rate/${request.from}/${request.to}`, {
+                    headers: {...apikey}
                 })
                     .then(async resp => {
                         const text: string = await resp.text()
@@ -66,10 +66,8 @@ enum ContextMenuItem {
                 break;
             case BackgroundMessageType.getSymbols:
                 logger.info('getSymbols')
-                fetch(`https://uacc-bff-api.azurewebsites.net/api/v4/symbols/a8685f3f-9955-4d80-bff8-a927be128ece`, {
-                    headers: {
-                        'Access-Control-Allow-Origin': 'https://uacc-bff-api.azurewebsites.net'
-                    }
+                fetch(`https://uacc-bff-api.azurewebsites.net/api/v4/symbols`, {
+                    headers: {...apikey}
                 })
                     .then(async resp => {
                         const text: string = await resp.text()
