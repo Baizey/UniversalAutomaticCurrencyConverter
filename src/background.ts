@@ -12,12 +12,16 @@ enum ContextMenuItem {
 (async () => {
     const apikey = {'x-apikey': 'a8685f3f-9955-4d80-bff8-a927be128ece'}
 
-    const {browser, logger, useLogging} = useProvider()
+    const {browser, logger, useLogging, lastVersion} = useProvider()
     await useLogging.loadSetting();
     logger.info('Initializing background');
 
-    // For testing
-    browser.tabs.create({url: "options.html"});
+    // Force open options if updating to new major version
+    lastVersion.loadSetting().then(() => {
+        const current = browser.extensionVersion.split('.').map(e => +e)[0]
+        const last = lastVersion.value.split('.').map(e => +e)[0]
+        if (last < current) browser.tabs.create({url: "options.html"});
+    })
 
     browser.contextMenus.create({
         id: ContextMenuItem.openContextMenu,

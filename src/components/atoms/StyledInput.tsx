@@ -23,15 +23,17 @@ export function ReadonlyInput({defaultValue, placeholder, center}: ReadonlyInput
 
 export type StyledInputProps = {
     type: 'number' | 'text'
+    borderHoverColor?: string
     onChange?: (value: number | string) => void
     onEnter?: (value: number | string) => void
 } & ReadonlyInputProps
 
-export function StyledInput({type, defaultValue, onChange, onEnter, placeholder, center}: StyledInputProps) {
+export function StyledInput({type, defaultValue, onChange, onEnter, placeholder, center, borderHoverColor}: StyledInputProps) {
     const [current, setCurrent] = useState(defaultValue)
     center = typeof center === 'boolean' ? center : true;
     return <StyledInputContainer
         center={center}
+        borderHoverColor={borderHoverColor}
         placeholder={placeholder}
         type={type}
         defaultValue={current}
@@ -43,7 +45,7 @@ export function StyledInput({type, defaultValue, onChange, onEnter, placeholder,
     />
 }
 
-export type StyledInputContainerProps = { center: boolean } & ThemeProps
+export type StyledInputContainerProps = { center: boolean, borderHoverColor?: string } & ThemeProps
 
 function align(props: StyledInputContainerProps): 'right' | 'center' {
     if (props.center) return 'center';
@@ -57,6 +59,6 @@ export const StyledInputContainer = styled(Input)<StyledInputContainerProps>((pr
         outline: 0,
     },
     '&:hover': {
-        borderColor: props.theme.formBorderFocus,
+        borderColor: props.borderHoverColor || props.theme.formBorderFocus,
     }
 }))

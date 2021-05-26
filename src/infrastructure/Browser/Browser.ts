@@ -1,6 +1,7 @@
 import {ITabMessenger, TabMessenger} from "../BrowserMessengers/TabMessenger";
 import {BackgroundMessenger, IBackgroundMessenger} from "../BrowserMessengers/BackgroundMessenger";
 import {IPopupMessenger, PopupMessenger} from "../BrowserMessengers/PopupMessenger";
+import {useProvider} from '../DependencyInjection';
 
 type SyncStorageArea = chrome.storage.SyncStorageArea;
 type LocalStorageArea = chrome.storage.LocalStorageArea;
@@ -14,6 +15,12 @@ export enum Browsers {
 export enum Environments {
     Dev = 'development',
     Prod = 'production'
+}
+
+export type BrowserDataStorage = {
+    type: 'local' | 'sync'
+    key: string
+    value: any
 }
 
 export interface IBrowser {
@@ -53,6 +60,10 @@ export interface IBrowser {
     saveSync(key: string, value: any): Promise<void>
 
     saveLocal(key: string, value: any): Promise<void>
+
+    clearSettings(): Promise<void>;
+
+    allStorage(): Promise<BrowserDataStorage[]>;
 }
 
 export class Browser implements IBrowser {
@@ -210,5 +221,56 @@ export class Browser implements IBrowser {
                 reject(Error(self.runtime.lastError.message))
                 : resolve())
         )
+    }
+
+    async allStorage(): Promise<BrowserDataStorage[]> {
+        const self = this;
+        const [local, sync]: [BrowserDataStorage[], BrowserDataStorage[]] = await Promise.all([
+            new Promise(resolve => {
+                self.storage.local.get(null, function (items) {
+                    resolve(items)
+                })
+            }).then(items => Object.entries(items as object).map(([key, value]) => ({
+                type: 'local',
+                key: key,
+                value: value
+            } as BrowserDataStorage))),
+            new Promise(resolve => {
+                self.storage.sync.get(null, function (items) {
+                    resolve(items)
+                })
+            }).then(items => Object.entries(items as object).map(([key, value]) => ({
+                type: 'sync',
+                key: key,
+                value: value
+            } as BrowserDataStorage)))
+        ])
+
+        return local.concat(sync)
+    }
+
+    async clearSettings(): Promise<void> {
+        const self = this;
+        const {logger} = useProvider()
+        await Promise.all([
+            new Promise<void>(resolve => {
+                self.storage.local.get(null, function (items) {
+                    const keys = Object.keys(items);
+                    self.storage.local.remove(keys, () => {
+                        logger.info(`Deleted locally stored keys:\n${keys.join('\n')}`)
+                        resolve();
+                    })
+                })
+            }),
+            new Promise<void>(resolve => {
+                self.storage.sync.get(null, function (items) {
+                    const keys = Object.keys(items);
+                    self.storage.sync.remove(keys, () => {
+                        logger.info(`Deleted sync stored keys:\n${keys.join('\n')}`)
+                        resolve();
+                    })
+                })
+            })
+        ])
     }
 }

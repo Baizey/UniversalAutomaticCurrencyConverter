@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react'
 import {TitleAlert} from './TitleAlert';
 import {LocalizationAlert} from './LocalizationAlert';
 import {MenuAlert} from './MenuAlert';
-import {MyTheme, TabMessage, TabMessageType, ThemeProps, useProvider} from '../../infrastructure';
+import {mapToTheme, MyTheme, TabMessage, TabMessageType, ThemeProps, useProvider} from '../../infrastructure';
 import {Div} from '../atoms';
 
 export type ContentAppProps = {
@@ -13,8 +13,7 @@ export type ContentAppProps = {
 }
 
 export function ContentApp({storyShowConflict, storyShowMenu}: ContentAppProps = {}) {
-    const {activeLocalization, browser} = useProvider();
-    const theme = useTheme() as MyTheme
+    const {activeLocalization, browser, colorTheme} = useProvider();
 
     const [showLocalization, setShowLocalization] = useState<boolean>(activeLocalization.hasConflict() || !!storyShowConflict)
     const [showMenu, setShowMenu] = useState<boolean>(!!storyShowMenu);
@@ -30,7 +29,7 @@ export function ContentApp({storyShowConflict, storyShowMenu}: ContentAppProps =
         });
     }, [])
 
-    return <ThemeProvider theme={theme}>
+    return <ThemeProvider theme={mapToTheme(colorTheme.value)}>
         <Container>
             <TitleAlert/>
             {showLocalization ? <LocalizationAlert

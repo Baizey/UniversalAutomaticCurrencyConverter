@@ -4,14 +4,13 @@ import {HighlightCard} from './HighlightCard';
 import {CustomDisplayCard} from './CustomDisplayCard';
 import {NumberFormatCard} from './NumberFormatCard';
 import {ThemeCard} from './ThemeCard';
+import {OptionCardProps} from '../OptionsApp';
 
-export type VisualCardProps = { setTheme: React.Dispatch<React.SetStateAction<keyof typeof themes>> }
-
-export function VisualsCard(props: VisualCardProps) {
+export function VisualsCard(props: OptionCardProps) {
     return <>
-        <NumberFormatCard/>
-        <HighlightCard/>
-        <CustomDisplayCard/>
-        <ThemeCard setTheme={props.setTheme}/>
+        <NumberFormatCard {...props}/>
+        <HighlightCard {...props}/>
+        <CustomDisplayCard {...props}/>
+        <ThemeCard {...props}/>
     </>
 }

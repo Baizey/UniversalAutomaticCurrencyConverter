@@ -2,6 +2,8 @@ import {useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Dropdown, StyledInput} from '../../atoms';
 import * as React from 'react';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
 const thousandsOptions = [
     {value: ' ', label: '100 000 (space)'},
@@ -15,8 +17,12 @@ const commaOptions = [
     {value: '.', label: '0.50 (dot)'}
 ]
 
-export function NumberFormatCard() {
+export function NumberFormatCard(props: OptionCardProps) {
     const {decimalPoint, thousandsSeparator, significantDigits} = useProvider()
+
+    if (isFilteredOut(['decimal', 'rounding', 'thousand', 'significant', 'digit', 'format', 'number'], props.filter))
+        return <></>
+
     return <OptionsSection title="Number formatting and rounding">
         <OptionRow key="visual_format">
             <SettingOption title="Thousands separator">

@@ -2,6 +2,8 @@ import {useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Checkbox, Dropdown} from '../../atoms';
 import * as React from 'react';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
 const dollarOptions = [
     {value: 'USD', label: 'American'},
@@ -26,13 +28,16 @@ const yenOptions = [
     {value: 'JPY', label: 'Japanese'},
 ]
 
-export function LocalizationCard() {
+export function LocalizationCard(props: OptionCardProps) {
     const {
         kroneLocalization,
         yenLocalization,
         dollarLocalization,
         usingLocalizationAlert
     } = useProvider()
+
+    if (isFilteredOut(['localization', 'krone', 'dollar', 'yen'], props.filter))
+        return <></>
 
     return <OptionsSection title="Default localization">
         <OptionRow>

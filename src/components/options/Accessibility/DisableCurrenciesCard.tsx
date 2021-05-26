@@ -3,11 +3,17 @@ import * as React from 'react';
 import {useState} from 'react';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Dropdown} from '../../atoms';
-import {AccessibilityCardProps, DisabledListContainer, DisabledListItem} from './AccessibilityCard';
+import {DisabledListContainer, DisabledListItem} from './AccessibilityCard';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
-export function DisableCurrenciesCard(props: AccessibilityCardProps) {
+export function DisableCurrenciesCard(props: OptionCardProps) {
     const {disabledCurrencies} = useProvider()
     const [listOfDisabledCurrencies, setListOfDisabledCurrencies] = useState<string[]>(disabledCurrencies.value);
+
+    if (isFilteredOut(['disabled', 'currencies'], props.filter))
+        return <></>
+
     return <OptionsSection title="Disable currencies">
         <OptionRow>
             <SettingOption title="Search for currencies to disable">

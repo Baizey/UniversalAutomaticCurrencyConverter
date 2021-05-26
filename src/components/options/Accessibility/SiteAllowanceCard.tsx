@@ -3,14 +3,19 @@ import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Checkbox, StyledInput} from '../../atoms';
 import * as React from 'react';
 import {ListHandler} from './AccessibilityCard';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
-export function SiteAllowanceCard() {
+export function SiteAllowanceCard(props: OptionCardProps) {
     const {
         blacklistedUrls,
         usingBlacklisting,
         whitelistedUrls,
         usingWhitelisting,
     } = useProvider()
+
+    if (isFilteredOut(['whitelist',  'blacklist', 'allowance', 'site', 'url'], props.filter))
+        return <></>
 
     return <OptionsSection title="Site allowance">
         <OptionRow>
@@ -21,14 +26,6 @@ export function SiteAllowanceCard() {
             <SettingOption title="Use whitelist">
                 <Checkbox value={usingWhitelisting.value}
                           onChange={value => usingWhitelisting.setAndSaveValue(value)}/>
-            </SettingOption>
-        </OptionRow>
-        <OptionRow>
-            <SettingOption title="Check a url against your allowance settings">
-                <StyledInput type={"text"} defaultValue={''}
-                             onChange={() => {
-                                 // TODO: this
-                             }}/>
             </SettingOption>
         </OptionRow>
         <OptionRow>

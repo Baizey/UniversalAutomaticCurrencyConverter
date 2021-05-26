@@ -2,7 +2,8 @@ import {themes, useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Dropdown} from '../../atoms';
 import * as React from 'react';
-import {VisualCardProps} from './VisualsCard';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
 const themeOptions = Object.entries(themes).map(([key]) => ({
     value: key,
@@ -10,8 +11,12 @@ const themeOptions = Object.entries(themes).map(([key]) => ({
         .map(e => e[0].toUpperCase() + e.substr(1, e.length).toLowerCase())[0]
 }))
 
-export function ThemeCard(props: VisualCardProps) {
+export function ThemeCard(props: OptionCardProps) {
     const {colorTheme} = useProvider()
+
+    if (isFilteredOut(['theme', 'color'], props.filter))
+        return <></>
+
     return <OptionsSection title="Theme">
         <OptionRow key="visual_theme">
             <SettingOption title="Color theme">

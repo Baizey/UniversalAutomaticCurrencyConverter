@@ -8,16 +8,17 @@ import {DisableCurrenciesCard} from './DisableCurrenciesCard';
 import {MiscCard} from './MiscCard';
 import {MouseInteractionCard} from './MouseInteractionCard';
 import {ShortcutsCard} from './ShortcutsCard';
+import {StorageManagementCard} from './StorageManagementCard';
+import {OptionCardProps} from '../OptionsApp';
 
-export type AccessibilityCardProps = { symbols: { label: string, value: string }[] }
-
-export function AccessibilityCard(props: AccessibilityCardProps) {
+export function AccessibilityCard(props: OptionCardProps) {
     return <>
-        <ShortcutsCard/>
-        <MouseInteractionCard/>
-        <MiscCard/>
-        <DisableCurrenciesCard symbols={props.symbols}/>
-        <SiteAllowanceCard/>
+        <ShortcutsCard {...props}/>
+        <MouseInteractionCard {...props}/>
+        <MiscCard {...props}/>
+        <DisableCurrenciesCard {...props}/>
+        <SiteAllowanceCard {...props}/>
+        <StorageManagementCard {...props}/>
     </>
 }
 

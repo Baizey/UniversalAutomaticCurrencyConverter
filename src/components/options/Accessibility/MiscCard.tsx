@@ -2,9 +2,15 @@ import {useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Checkbox} from '../../atoms';
 import * as React from 'react';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
-export function MiscCard() {
+export function MiscCard(props: OptionCardProps) {
     const {useLogging, showConversionInBrackets} = useProvider()
+
+    if (isFilteredOut(['debug',  'logging', 'brackets', 'misc'], props.filter))
+        return <></>
+
     return <OptionsSection title="Misc">
         <OptionRow>
             <SettingOption title="Show debug logging">

@@ -41,7 +41,12 @@ import {
 } from '../../currencyConverter/Detection';
 import {ActiveLocalization, IActiveLocalization} from '../../currencyConverter/Localization';
 import {Container, IProvider} from './';
-import {IsPausedSetting, miniConverterSetting, useDebugLoggingSetting} from '../Configuration/Configuration';
+import {
+    LastVersionSetting,
+    IsPausedSetting,
+    miniConverterSetting,
+    useDebugLoggingSetting
+} from '../Configuration/Configuration';
 import {IContainer} from './package';
 import {ISetting} from '../Configuration/ISetting';
 import {TabInformation} from '../../currencyConverter/Live/TabInformation';
@@ -57,6 +62,7 @@ interface DependencyProvider extends IProvider<DependencyProvider> {
     elementDetector: IElementDetector
     activeLocalization: IActiveLocalization
 
+    lastVersion: LastVersionSetting,
     useLogging: useDebugLoggingSetting
     miniConverter: miniConverterSetting
     isFirstTime: isFirstTimeSetting
@@ -92,6 +98,7 @@ interface DependencyProvider extends IProvider<DependencyProvider> {
 
 function addSettingDependencies(container: IContainer<DependencyProvider>): IContainer<DependencyProvider> {
     return container
+        .addSingleton(LastVersionSetting, {name: 'lastVersion'})
         .addSingleton(IsPausedSetting, {name: 'isPaused'})
         .addSingleton(useDebugLoggingSetting, {name: 'useLogging'})
         .addSingleton(miniConverterSetting, {name: 'miniConverter'})

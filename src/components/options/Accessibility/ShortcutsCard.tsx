@@ -2,9 +2,15 @@ import {useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Shortcut} from '../../atoms/Shortcut';
 import * as React from 'react';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
-export function ShortcutsCard() {
+export function ShortcutsCard(props: OptionCardProps) {
     const {convertHoverShortcut, convertAllShortcut} = useProvider()
+
+    if (isFilteredOut(['keyboard',  'shortcut', 'hover'], props.filter))
+        return <></>
+
     return <OptionsSection title="Shortcuts">
         <OptionRow>
             <SettingOption title="Convert-hovered shortcut"

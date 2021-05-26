@@ -2,10 +2,14 @@ import {useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Checkbox, Dropdown} from '../../atoms';
 import * as React from 'react';
-import {CurrencyCardProps} from './CurrencyCard';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
-export function ConvertToCard(props: CurrencyCardProps) {
+export function ConvertToCard(props: OptionCardProps) {
     const {convertTo, usingAutoConversionOnPageLoad} = useProvider()
+
+    if (isFilteredOut(['currency', 'automatically', 'convert'], props.filter))
+        return <></>
 
     return <OptionsSection title="Currency">
         <OptionRow key="convert_to_row">

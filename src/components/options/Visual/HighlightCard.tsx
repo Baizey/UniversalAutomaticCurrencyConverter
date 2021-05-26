@@ -2,9 +2,19 @@ import {useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
 import {Checkbox, StyledInput} from '../../atoms';
 import * as React from 'react';
+import styled from 'styled-components';
+import {StyledInputProps} from '../../atoms/StyledInput';
+import {useState} from 'react';
+import {OptionCardProps} from '../OptionsApp';
+import {isFilteredOut} from '../FilterOptionsCard';
 
-export function HighlightCard() {
+export function HighlightCard(props: OptionCardProps) {
     const {usingConversionHighlighting, highlightColor, highlightDuration} = useProvider()
+    const [color, setColor] = useState(highlightColor.value);
+
+    if (isFilteredOut(['highlight', 'color', 'duration'], props.filter))
+        return <></>
+
     return <OptionsSection title="Conversion highlight">
         <OptionRow key="visual_highlight">
             <SettingOption title="Highlight conversions">
@@ -12,8 +22,10 @@ export function HighlightCard() {
                           onChange={value => usingConversionHighlighting.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Highlight color" help={"Allows oth names and HEX"}>
-                <StyledInput type={"text"} defaultValue={highlightColor.value}
-                             onChange={value => highlightColor.setAndSaveValue(`${value}`)}/>
+                <StyledInput type={"text"}
+                              borderHoverColor={color}
+                              defaultValue={color}
+                              onChange={async value => (await highlightColor.setAndSaveValue(`${value}`)) && setColor(highlightColor.value)}/>
             </SettingOption>
             <SettingOption title="Highlight duration" help={"1000 = 1 second"}>
                 <StyledInput type="number" defaultValue={highlightDuration.value}

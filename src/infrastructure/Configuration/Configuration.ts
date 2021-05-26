@@ -39,6 +39,10 @@ type MiniConverterRow = {
     amount: number
 }
 
+export class LastVersionSetting extends SyncSetting<string> {
+    constructor(provider: DependencyProvider) {super(provider, 'lastVersion', '0.0.0', e => hasRegexMatch(e, /^\d+\.\d+\.\d+$/));}
+}
+
 export class miniConverterSetting extends LocalSetting<MiniConverterRow[]> {
     constructor(provider: DependencyProvider) {super(provider, 'uacc:global:converter', [], isArray);}
 }
