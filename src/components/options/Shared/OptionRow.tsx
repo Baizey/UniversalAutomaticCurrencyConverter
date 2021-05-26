@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from "styled-components";
 import {Div} from '../../atoms';
-import {ThemeProps} from '../../../infrastructure';
 
 export type OptionRowProps = {
     children: JSX.Element | JSX.Element[]
@@ -22,6 +21,19 @@ const Container = styled(Div)<ContainerProps>`
   flex-direction: row;
 
   & > * {
-    width: ${(props: ContainerProps) => (100 / props.childrenCount) + '%'}
+    width: ${(props: ContainerProps) => (100 / props.childrenCount) + '%'};
+  }
+
+  // On small screens force column-mode, breakpoint is ~655px but 700px sounds nicer
+  @media (max-width: 700px) {
+    flex-direction: column;
+    
+    & > * {
+      width: 100%;
+    }
+
+    & > :not(:first-child) {
+      margin-top: 10px;
+    }
   }
 `

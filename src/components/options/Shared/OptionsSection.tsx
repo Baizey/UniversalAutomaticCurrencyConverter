@@ -34,7 +34,7 @@ const Container = styled(Div)<ContainerProps>`
   }
 
   &:not(:first-child) {
-    margin-top: 15px;
+    margin-top: 10px;
   }
 
   &:last-child {
@@ -43,5 +43,11 @@ const Container = styled(Div)<ContainerProps>`
   }
 
   &:not(:last-child) {
+  }
+  
+  // On small screens force column-mode, breakpoint is ~655px but 700px sounds nicer
+  @media (max-width: 820px) {
+    margin-left: 10px;
+    margin-right: 10px;
   }
 `

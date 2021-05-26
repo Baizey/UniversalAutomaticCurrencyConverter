@@ -29,13 +29,14 @@ export default function OptionsApp(props: OptionsAppProps): JSX.Element {
 
     function wrap(children: JSX.Element[] | JSX.Element) {
         return <Background>
-            <Space height={20}/>
+            <Space height={10}/>
             <Wrapper>
                 <TitleCard key="TitleCard-card"/>
                 <NewUpdateCard/>
                 <FilterOptionsCard onChange={filter => setFilter(filter)}/>
                 {children}
             </Wrapper>
+            <Space height={10}/>
         </Background>
     }
 

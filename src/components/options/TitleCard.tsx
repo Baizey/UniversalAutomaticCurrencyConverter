@@ -1,14 +1,16 @@
 import * as React from 'react'
 import styled from "styled-components";
-import {OptionRow, OptionsSection} from "./Shared";
+import {OptionRow, OptionsSection, SettingOption} from "./Shared";
 import {ThemeProps, useProvider} from '../../infrastructure';
-import {Div, FooterText} from '../atoms';
+import {Div, FooterText, HeaderText} from '../atoms';
 
 export function TitleCard() {
     const {browser} = useProvider()
     return <OptionsSection title={browser.extensionName}>
         <OptionRow key="footer-option">
-            <Footer>{`Version ${browser.extensionVersion} created by ${browser.author}`}</Footer>
+            <SettingOption title="Options page">
+                <Footer>{`Version ${browser.extensionVersion} created by ${browser.author}`}</Footer>
+            </SettingOption>
         </OptionRow>
     </OptionsSection>
 }
