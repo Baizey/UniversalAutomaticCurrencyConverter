@@ -1,7 +1,7 @@
 import {IBrowser} from "../src/infrastructure";
 import {ITabMessenger} from "../src/infrastructure/BrowserMessengers/TabMessenger";
 import {IPopupMessenger} from "../src/infrastructure/BrowserMessengers/PopupMessenger";
-import {Browsers, Environments} from "../src/infrastructure/Browser/Browser";
+import {BrowserDataStorage, Browsers, Environments} from "../src/infrastructure/Browser/Browser";
 import {IBackgroundMessenger, RateResponse} from "../src/infrastructure/BrowserMessengers/BackgroundMessenger";
 
 export class BrowserMock implements IBrowser {
@@ -280,10 +280,13 @@ export class BrowserMock implements IBrowser {
     get tabs(): typeof chrome.tabs {
         // @ts-ignore
         return {
-            create: () => {},
+            create: () => {
+            },
             // @ts-ignore
-            query: () => {},
-            sendMessage: () => {}
+            query: () => {
+            },
+            sendMessage: () => {
+            }
         }
     }
 
@@ -292,7 +295,8 @@ export class BrowserMock implements IBrowser {
         return {
             // @ts-ignore
             onMessage: {
-                addListener: () => {}
+                addListener: () => {
+                }
             }
         }
     }
@@ -300,10 +304,12 @@ export class BrowserMock implements IBrowser {
     // @ts-ignore
     get contextMenus(): typeof chrome.contextMenus {
         return {
-            create: () => {},
+            create: () => {
+            },
             // @ts-ignore
             onClicked: {
-                addListener: () => {}
+                addListener: () => {
+                }
             }
         }
     }
@@ -312,6 +318,14 @@ export class BrowserMock implements IBrowser {
     get storage(): typeof chrome.storage {
         // @ts-ignore
         return {}
+    }
+
+    allStorage(): Promise<BrowserDataStorage[]> {
+        return Promise.resolve([]);
+    }
+
+    clearSettings(): Promise<void> {
+        return Promise.resolve();
     }
 
 }

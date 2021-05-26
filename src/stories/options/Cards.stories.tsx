@@ -2,9 +2,10 @@ import * as React from 'react';
 import {Meta, Story} from '@storybook/react';
 import {LoadingCard} from '../../components/options/Shared';
 import {TitleCard} from '../../components/options/TitleCard';
-import {CurrencyCard, CurrencyCardProps} from '../../components/options/Currency/CurrencyCard';
-import {AccessibilityCard, AccessibilityCardProps} from '../../components/options/Accessibility/AccessibilityCard';
-import {VisualCardProps, VisualsCard} from '../../components/options/Visual/VisualsCard';
+import {CurrencyCard} from '../../components/options/Currency/CurrencyCard';
+import {AccessibilityCard} from '../../components/options/Accessibility/AccessibilityCard';
+import {VisualsCard} from '../../components/options/Visual/VisualsCard';
+import {OptionCardProps} from "../../components/options/OptionsApp";
 
 export default {
     title: 'options/Cards',
@@ -21,14 +22,17 @@ const LoadingCardTemplate: Story = (args) => <LoadingCard {...args} />
 export const loadingCard = LoadingCardTemplate.bind({});
 loadingCard.args = {title: ''}
 
-const CurrencyCardTemplate: Story = (args) => <CurrencyCard {...args as CurrencyCardProps} />
+const CurrencyCardTemplate: Story = (args) => <CurrencyCard {...args as OptionCardProps} />
 export const currencyCard = CurrencyCardTemplate.bind({});
-currencyCard.args = {symbols: options} as CurrencyCardProps
+currencyCard.args = {symbols: options}
 
-const AccessibilityCardTemplate: Story = (args) => <AccessibilityCard {...args as AccessibilityCardProps} />
+const AccessibilityCardTemplate: Story = (args) => <AccessibilityCard {...args as OptionCardProps} />
 export const accessibilityCard = AccessibilityCardTemplate.bind({});
-accessibilityCard.args = {symbols: options} as AccessibilityCardProps
+accessibilityCard.args = {symbols: options}
 
-const VisualCardTemplate: Story = (args) => <VisualsCard {...args as VisualCardProps} />
+const VisualCardTemplate: Story = (args) => <VisualsCard {...args as OptionCardProps} />
 export const visualCard = VisualCardTemplate.bind({});
-visualCard.args = {setTheme: () => {}} as VisualCardProps
+visualCard.args = {
+    setTheme: () => {
+    }
+}
