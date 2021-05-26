@@ -1,8 +1,10 @@
-require('dotenv').config();
+import {RatesService} from "./services/RatesService";
 
-import {CurrencyRateGraph} from './CurrencyRateGraph';
-import {CurrencyRateApiProxy} from './CurrencyRateApiProxy';
+require('dotenv').config();
 import express from 'express'
+import {Time} from "./Time";
+import {Conversion, CurrencyRateGraph} from './CurrencyRateGraph';
+import {SymbolsService} from "./services/SymbolsService";
 
 class Data {
     symbols: Record<string, string> = {}
@@ -12,23 +14,19 @@ class Data {
 const data = new Data();
 
 async function update() {
-    const api = new CurrencyRateApiProxy()
-    const [rawRates, rawSymbols] = await Promise.all([api.getRates(), api.getSymbols()])
+    const [rawRates, rawSymbols] = await Promise.all([
+        new RatesService().getRates(),
+        new SymbolsService().getSymbols()])
 
-    const symbols = {...data.symbols, ...rawSymbols};
+    const symbols = {...rawSymbols};
     const graph = new CurrencyRateGraph(rawRates)
 
     data.symbols = symbols
     data.rates = graph;
 }
 
-const milliToSeconds = 1000;
-const secondsToMinutes = 60;
-const minutesToHours = 60;
-const hours = 6;
-const updateInterval = milliToSeconds * secondsToMinutes * minutesToHours * hours; // every 6 hour
 update().catch(console.error);
-setInterval(() => update().catch(console.error), updateInterval);
+setInterval(() => update().catch(console.error), Time.fromHours(6).getTime());
 
 
 const api = express();
@@ -72,6 +70,24 @@ type RateResponse = {
     path: { source: string, from: string, to: string, rate: number, timestamp: number }[]
 }
 
+class Mapper {
+    static mapRate(rate: Conversion): RateResponse {
+        return {
+            from: rate.from,
+            to: rate.to,
+            rate: rate.rate,
+            timestamp: rate.path.map(e => e.timestamp).reduce((a, b) => a < b ? a : b, Date.now()),
+            path: rate.path.map(e => ({
+                source: e.source,
+                from: e.from.tag,
+                to: e.to.tag,
+                rate: e.rate,
+                timestamp: e.timestamp
+            }))
+        }
+    }
+}
+
 // Currency rates endpoint
 api.get('/api/v4/rate/:from/:to', (request, response) => {
     const from = request.params.from;
@@ -80,21 +96,7 @@ api.get('/api/v4/rate/:from/:to', (request, response) => {
     const rate = data.rates.rate(from, to);
     if (!rate) return response.status(404).send(`Conversion between '${to}' and '${from}' not found`)
 
-    const result: RateResponse = {
-        from: rate.from,
-        to: rate.to,
-        rate: rate.rate,
-        timestamp: rate.path.map(e => e.timestamp).reduce((a, b) => a < b ? a : b, Date.now()),
-        path: rate.path.map(e => ({
-            source: e.source,
-            from: e.from.tag,
-            to: e.to.tag,
-            rate: e.rate,
-            timestamp: e.timestamp
-        }))
-    }
-    
-    return response.status(200).send(result)
+    return response.status(200).send(Mapper.mapRate(rate))
 });
 
 // Currency symbols endpoint

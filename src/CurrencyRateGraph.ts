@@ -1,4 +1,4 @@
-import {CurrencyRateLookup} from './CurrencyRateApiProxy';
+import {CurrencyRateLookup} from './services/SymbolsService';
 
 export class CurrencyRateNode {
     readonly tag: string
@@ -43,7 +43,7 @@ export class CurrencyRateGraph {
                     from: fromNode,
                     to: toNode,
                     rate: rate.rate,
-                    timestamp: rate.timestamp
+                    timestamp: rate.timestamp.getTime()
                 }
 
                 if (!toNode.to[from]) toNode.to[from] = {
@@ -51,7 +51,7 @@ export class CurrencyRateGraph {
                     from: toNode,
                     to: fromNode,
                     rate: 1 / rate.rate,
-                    timestamp: rate.timestamp
+                    timestamp: rate.timestamp.getTime()
                 }
 
             })
