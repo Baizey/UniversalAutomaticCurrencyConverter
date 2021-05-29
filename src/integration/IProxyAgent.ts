@@ -1,7 +1,9 @@
+import {Time} from "../Time";
+
 export type RateResponse = {
     base: string
     rates: Record<string, number>
-    timestamp: Date
+    timestamp: Time
     source: string
 }
 

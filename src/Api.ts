@@ -14,6 +14,7 @@ class Data {
 const data = new Data();
 
 async function update() {
+    console.log(`Updating rates`)
     const [rawRates, rawSymbols] = await Promise.all([
         new RatesService().getRates(),
         new SymbolsService().getSymbols()])
@@ -26,7 +27,7 @@ async function update() {
 }
 
 update().catch(console.error);
-setInterval(() => update().catch(console.error), Time.fromHours(6).getTime());
+setInterval(() => update().catch(console.error), new Time({hours: 6}).milliseconds);
 
 
 const api = express();
@@ -76,13 +77,13 @@ class Mapper {
             from: rate.from,
             to: rate.to,
             rate: rate.rate,
-            timestamp: rate.path.map(e => e.timestamp).reduce((a, b) => a < b ? a : b, Date.now()),
+            timestamp: rate.path.map(e => e.timestamp.milliseconds).reduce((a, b) => a < b ? a : b, Date.now()),
             path: rate.path.map(e => ({
                 source: e.source,
                 from: e.from.tag,
                 to: e.to.tag,
                 rate: e.rate,
-                timestamp: e.timestamp
+                timestamp: e.timestamp.milliseconds
             }))
         }
     }
@@ -105,7 +106,7 @@ api.get('/api/v4/symbols', (request, response) => response.status(200).send(data
 // Health check
 api.get('/health', (request, response) => response.status(200).send());
 
-const port: number = +(process.env.PORT || 3000);
+const port: number = +(process.env.PORT || 3001);
 api.listen(port, () => {
     console.log('Started');
     console.log(`Port: ${port}`);

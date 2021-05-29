@@ -4,7 +4,10 @@ import {RateResponse} from "../integration/IProxyAgent";
 import {CurrencyRateLookup} from "./SymbolsService";
 
 export class RatesService {
-    private apis = [new FixerProxyAgent(), new OpenExchangeProxyAgent()]
+    private apis = [
+        // new FixerProxyAgent(),
+        new OpenExchangeProxyAgent()
+    ]
 
     private addRates(response: RateResponse, result: CurrencyRateLookup) {
         result[response.base] = result[response.base] || {}

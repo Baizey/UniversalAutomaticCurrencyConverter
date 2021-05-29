@@ -1,6 +1,7 @@
 import {SymbolsResponse} from "../integration/IProxyAgent";
 import {FixerProxyAgent} from "../integration/FixerProxyAgent";
 import {OpenExchangeProxyAgent} from "../integration/OpenExchangeProxyAgent";
+import {Time} from "../Time";
 
 global.fetch = require("node-fetch");
 
@@ -10,12 +11,15 @@ export type CurrencyRate = {
     from: string
     to: string
     rate: number
-    timestamp: Date,
+    timestamp: Time,
     source: string
 }
 
 export class SymbolsService {
-    private apis = [new FixerProxyAgent(), new OpenExchangeProxyAgent()]
+    private apis = [
+        //new FixerProxyAgent(),
+        new OpenExchangeProxyAgent()
+    ]
 
     async getSymbols(): Promise<SymbolsResponse> {
         const calls = await Promise.all(this.apis.map(e => e.getSymbols()));

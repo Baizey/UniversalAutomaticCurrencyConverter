@@ -21,9 +21,10 @@ interface SymbolsResponse {
 
 export class FixerProxyAgent implements IProxyAgent {
     async getRates() {
-        const response: RatesResponse = await fetch(fixerRatesUrl).then(async e => await e.json())
+        const response: RatesResponse = await fetch(fixerRatesUrl)
+            .then(async e => await e.json())
         return {
-            timestamp: Time.fromSeconds(response.timestamp),
+            timestamp: new Time({seconds: response.timestamp}),
             base: response.base,
             rates: response.rates,
             source: 'fixer.io',

@@ -1,4 +1,5 @@
 import {CurrencyRateLookup} from './services/SymbolsService';
+import {Time} from "./Time";
 
 export class CurrencyRateNode {
     readonly tag: string
@@ -19,7 +20,7 @@ export interface CurrencyRateEdge {
     from: CurrencyRateNode
     to: CurrencyRateNode
     rate: number
-    timestamp: number;
+    timestamp: Time;
 }
 
 export interface Conversion {
@@ -43,7 +44,7 @@ export class CurrencyRateGraph {
                     from: fromNode,
                     to: toNode,
                     rate: rate.rate,
-                    timestamp: rate.timestamp.getTime()
+                    timestamp: rate.timestamp
                 }
 
                 if (!toNode.to[from]) toNode.to[from] = {
@@ -51,7 +52,7 @@ export class CurrencyRateGraph {
                     from: toNode,
                     to: fromNode,
                     rate: 1 / rate.rate,
-                    timestamp: rate.timestamp.getTime()
+                    timestamp: rate.timestamp
                 }
 
             })
