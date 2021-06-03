@@ -1,6 +1,6 @@
 import styled, {useTheme} from "styled-components";
 import * as React from 'react';
-import {MyTheme, ThemeProps, useProvider} from '../../infrastructure';
+import {MyTheme, ThemeProps} from '../../infrastructure';
 import {DeleteIcon} from '../assets';
 import {Div, Title} from '../atoms';
 
@@ -28,10 +28,10 @@ const DismissWrapper = styled(Div)`
   height: 30px;
   position: absolute;
   margin-top: 5px;
-  right: 5px;
+  left: 5px;
   cursor: pointer;
 
-  &:hover {
+  &:hover * {
     filter: brightness(85%);
   }
 `
@@ -42,6 +42,7 @@ const InnerWrapper = styled(Div)`
   height: fit-content;
   display: flex;
   flex-direction: column;
+  border-radius: 5px;
 `
 
 const Container = styled(Div)<ThemeProps>`

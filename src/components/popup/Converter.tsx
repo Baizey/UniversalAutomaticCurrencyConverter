@@ -11,7 +11,6 @@ export function Converter() {
     const [rows, setRows] = useState<ReactNode[]>([])
 
     useEffect(() => {
-        console.log('update rows')
         setRows(rowsData.map((row, i) => <ConversionRow
             key={`conversion_row_${i}_${row.from}_${row.to}`}
             onDelete={() => setRowsData(rowsData.filter((e, j) => j !== i))}

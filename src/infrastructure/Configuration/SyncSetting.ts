@@ -18,7 +18,7 @@ export class SyncSetting<T> implements ISetting<T> {
         this._value = defaultValue;
     }
 
-    private _value: T
+    protected _value: T
 
     get value(): T {
         return this._value;

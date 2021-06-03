@@ -1,7 +1,3 @@
-export {BackgroundMessageType} from './BackgroundMessenger'
-export {PopupMessageType} from './PopupMessenger'
-export {TabMessageType} from './TabMessenger'
-
-export type {BackgroundMessage} from './BackgroundMessenger'
-export type {PopupMessage} from './PopupMessenger'
-export type {TabMessage} from './TabMessenger'
+export {BackgroundMessageType, BackgroundMessage} from './BackgroundMessenger'
+export {PopupMessageType, PopupMessage} from './PopupMessenger'
+export {TabMessageType, TabMessage} from './TabMessenger'

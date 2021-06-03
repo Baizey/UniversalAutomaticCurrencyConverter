@@ -23,8 +23,14 @@ export class TabInformation {
         return this._isShowingConversions
     }
 
+    async updateDisplay(to?: string): Promise<void> {
+        if (to) await this.conversions.forEach(e => e.convertTo(to))
+        else await this.conversions.filter(e => e.updateDisplay())
+    }
+
     setIsShowingConversions(value: boolean) {
         this._isShowingConversions = value
+        this.conversions.forEach(e => e.show(value));
     }
 
     flipAllConversions() {

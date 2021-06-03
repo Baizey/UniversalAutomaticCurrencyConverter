@@ -74,9 +74,9 @@ const InnerWrapperOptions = styled.div`
 const InnerWrapperContent = styled.div`
   width: 450px;
   height: fit-content;
-  z-index: 1000;
+  z-index: 99999;
   right: 10px;
-  bottom: 10px;
+  top: 10px;
   position: fixed;
 `
 

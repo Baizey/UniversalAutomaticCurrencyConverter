@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {ISetting, ThemeProps} from '../../../infrastructure';
-import {Div, StyledInput} from '../../atoms';
+import {Div, Input} from '../../atoms';
 import {SiteAllowanceCard} from './SiteAllowanceCard';
 import {DisableCurrenciesCard} from './DisableCurrenciesCard';
 import {MiscCard} from './MiscCard';
@@ -10,6 +10,8 @@ import {MouseInteractionCard} from './MouseInteractionCard';
 import {ShortcutsCard} from './ShortcutsCard';
 import {StorageManagementCard} from './StorageManagementCard';
 import {OptionCardProps} from '../OptionsApp';
+import {OptionRow, SettingOption} from "../Shared";
+import {borderRadius} from "react-select/src/theme";
 
 export function AccessibilityCard(props: OptionCardProps) {
     return <>
@@ -22,39 +24,81 @@ export function AccessibilityCard(props: OptionCardProps) {
     </>
 }
 
-export type ListHandlerProps = { setting: ISetting<string[]> }
+export type ListHandlerProps = { whitelistSetting: ISetting<string[]>, blacklistSetting: ISetting<string[]> }
 
-export function ListHandler({setting}: ListHandlerProps) {
-    const [list, setList] = useState(setting.value || [])
-    return <AllowanceListContainer>
-        {list.filter(e => e).map((e, i) => {
-            return <StyledInput
-                key={`list_${e}`}
-                type="text"
-                placeholder={"https://..."}
-                defaultValue={e}
-                onChange={value => {
-                    if (value) return;
-                    let newList = list.filter((e, j) => j !== i)
-                    setList(newList)
-                    setting.setAndSaveValue(newList)
-                }}
-                onEnter={value => {
-                    if (!value) return;
-                    let newList = list.map(e => e)
-                    newList[i] = '' + value;
-                    setList(newList)
-                    setting.setAndSaveValue(newList)
+export function ListHandler({whitelistSetting, blacklistSetting}: ListHandlerProps) {
+    const [whitelist, setWhitelist] = useState(whitelistSetting.value || [])
+    const [blacklist, setBlacklist] = useState(blacklistSetting.value || [])
 
-                }}/>
-        })}
-        <StyledInput key={`${Math.random()}_unique`} type="text" defaultValue="" placeholder={"https://..."}
-                     onEnter={value => {
-                         const newList = list.concat(['' + value])
-                         setList(newList)
-                         setting.setAndSaveValue(newList)
-                     }}/>
-    </AllowanceListContainer>
+    async function removeIfExist(text: string, allowed: boolean) {
+        const setting = allowed ? whitelistSetting : blacklistSetting;
+        const setter = allowed ? setWhitelist : setBlacklist;
+        const list = setting.value.filter((e) => e !== text);
+        await setting.setAndSaveValue(list)
+        setter(setting.value)
+    }
+
+    async function addNew(text: string, allowed: boolean) {
+        const setting = allowed ? whitelistSetting : blacklistSetting;
+        const setter = allowed ? setWhitelist : setBlacklist;
+        const list = setting.value.concat([text]);
+        await setting.setAndSaveValue(list)
+        await removeIfExist(setting.value[setting.value.length - 1], !allowed);
+        setter(setting.value)
+    }
+
+    async function removeIfEmpty(text: string, index: number, allowed: boolean) {
+        if (text) return;
+        const setting = allowed ? whitelistSetting : blacklistSetting;
+        const setter = allowed ? setWhitelist : setBlacklist;
+        const list = setting.value.filter((e, j) => j !== index);
+        await setting.setAndSaveValue(list)
+        setter(setting.value)
+    }
+
+    async function update(text: string, index: number, allowed: boolean) {
+        const setting = allowed ? whitelistSetting : blacklistSetting;
+        const setter = allowed ? setWhitelist : setBlacklist;
+        const copy = setting.value;
+        copy[index] = text;
+
+        await setting.setAndSaveValue(copy)
+        await removeIfExist(setting.value[index], !allowed)
+        setter(setting.value)
+    }
+
+    return <OptionRow>
+        <SettingOption title="Blacklist">
+            <AllowanceListContainer>
+                {blacklist.filter(e => e).map((e, i) => {
+                    return <Input
+                        key={`list_${e}`}
+                        type="text"
+                        placeholder={"https://..."}
+                        defaultValue={e}
+                        onChange={async value => removeIfEmpty(`${value}`, i, false)}
+                        onEnter={async value => update(`${value}`, i, false)}/>
+                })}
+                <Input key={`${Math.random()}_unique`} type="text" defaultValue="" placeholder={"https://..."}
+                       onEnter={async value => addNew(`${value}`, false)}/>
+            </AllowanceListContainer>
+        </SettingOption>
+        <SettingOption title="Whitelist">
+            <AllowanceListContainer>
+                {whitelist.filter(e => e).map((e, i) => {
+                    return <Input
+                        key={`list_${e}`}
+                        type="text"
+                        placeholder={"https://..."}
+                        defaultValue={e}
+                        onChange={async value => removeIfEmpty(`${value}`, i, true)}
+                        onEnter={async value => update(`${value}`, i, true)}/>
+                })}
+                <Input key={`${Math.random()}_unique`} type="text" defaultValue="" placeholder={"https://..."}
+                       onEnter={async value => addNew(`${value}`, true)}/>
+            </AllowanceListContainer>
+        </SettingOption>
+    </OptionRow>
 }
 
 export const AllowanceListContainer = styled(Div)`

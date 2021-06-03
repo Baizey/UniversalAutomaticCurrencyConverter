@@ -21,7 +21,11 @@ export interface IActiveLocalization {
 
     reset(toDefault: boolean): Promise<void>
 
-    overload(input?: Partial<Compact>): Promise<void>
+    overloadWithDefaults(): Promise<void>
+
+    overloadWithDetected(): Promise<void>
+
+    overload(input?: Partial<CompactCurrencyLocalization>): Promise<void>
 
     hasConflict(): boolean
 
@@ -30,7 +34,7 @@ export interface IActiveLocalization {
     determineForSite(siteAsText: string): void
 }
 
-type Compact = { dollar: string, yen: string, krone: string }
+export type CompactCurrencyLocalization = { dollar: string, yen: string, krone: string }
 
 export class ActiveLocalization implements IActiveLocalization {
 
@@ -61,10 +65,10 @@ export class ActiveLocalization implements IActiveLocalization {
         this.logger = logger;
         this.backendApi = backendApi;
         this.browser = browser;
-        const kroneKey = `uacc:site:localization:krone:${this.browser.hostname}`;
-        const yenKey = `uacc:site:localization:yen:${this.browser.hostname}`;
-        const dollarKey = `uacc:site:localization:dollar:${this.browser.hostname}`;
-        this.lockedKey = `uacc:site:localization:locked:${this.browser.hostname}`;
+        const kroneKey = `uacc:site:localization:krone:${this.browser.url.hostname}`;
+        const yenKey = `uacc:site:localization:yen:${this.browser.url.hostname}`;
+        const dollarKey = `uacc:site:localization:dollar:${this.browser.url.hostname}`;
+        this.lockedKey = `uacc:site:localization:locked:${this.browser.url.hostname}`;
 
         this.isLocked = false;
         this.localizationMapping = Localizations.uniqueSymbols;
@@ -127,7 +131,23 @@ export class ActiveLocalization implements IActiveLocalization {
         await this.setLocked(false);
     }
 
-    async overload(input?: Partial<Compact>): Promise<void> {
+    async overloadWithDefaults() {
+        await this.overload({
+            dollar: this.dollar.defaultValue,
+            krone: this.krone.defaultValue,
+            yen: this.yen.defaultValue,
+        })
+    }
+
+    async overloadWithDetected() {
+        await this.overload({
+            dollar: this.dollar.detectedValue,
+            krone: this.krone.detectedValue,
+            yen: this.yen.detectedValue,
+        })
+    }
+
+    async overload(input?: Partial<CompactCurrencyLocalization>): Promise<void> {
         this.krone.override(input?.krone);
         this.yen.override(input?.yen);
         this.dollar.override(input?.dollar);
@@ -147,30 +167,36 @@ export class ActiveLocalization implements IActiveLocalization {
         if (this.isLocked) return;
         const shared = Localizations.shared;
 
-        this.yen.setDetected(this._determine(this.yen.value, siteAsText, shared['¥']))
+        this.yen.setDetected(this.determineLocalization(this.yen.value, siteAsText, shared['¥']))
         this.logger.debug(`Detected ${this.yen.detectedValue}, default ${this.yen.defaultValue}`)
 
-        this.dollar.setDetected(this._determine(this.dollar.value, siteAsText, shared['$']))
+        this.dollar.setDetected(this.determineLocalization(this.dollar.value, siteAsText, shared['$']))
         this.logger.debug(`Detected ${this.dollar.detectedValue}, default ${this.dollar.defaultValue}`)
 
-        this.krone.setDetected(this._determine(this.krone.value, siteAsText, shared['kr']))
+        this.krone.setDetected(this.determineLocalization(this.krone.value, siteAsText, shared['kr']))
         this.logger.debug(`Detected ${this.krone.detectedValue}, default ${this.krone.defaultValue}`)
 
         this.logger.debug(`Found localization conflict: ${this.hasConflict()}`);
     }
 
-    private _determine(currentTag: string, text: string, tags: string[]): string {
+    private determineLocalization(currentTag: string, text: string, tags: string[]): string {
         const hostMapping = Localizations.hostCurrency;
         const host = this.browser.host as keyof typeof hostMapping
         const hostCurrency: string | undefined = hostMapping[host];
 
         // Add 1 to counter if host is same as currency and add 1 if current default is same
-        const counter = tags.map(t => ({tag: t, count: (hostCurrency === t ? 1 : 0) + (currentTag === t ? 1 : 0)}));
+        const counter = tags.map(t => ({
+            isHostCurrency: hostCurrency === t,
+            isCurrentTag: currentTag === t,
+            tag: t,
+            count: (hostCurrency === t ? 1 : 0) + (currentTag === t ? 1 : 0)
+        }));
         counter.forEach(tag => {
             const re = new RegExp('(^|[\\W_])' + tag.tag + '($|[\\W_])', 'gm');
             tag.count += ((text || '').match(re) || []).length
         });
-        return counter.reduce((p, n) => p.count > n.count ? p : n).tag
+        this.logger.debug(`${JSON.stringify(counter)}`);
+        return counter.reduce((p, n) => p.count > n.count ? p : n).tag;
     }
 
     private updateLocalization(values: string[]) {

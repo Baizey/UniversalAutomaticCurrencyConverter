@@ -1,6 +1,6 @@
 import {useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
-import {Dropdown, StyledInput} from '../../atoms';
+import {Dropdown, Input} from '../../atoms';
 import * as React from 'react';
 import {OptionCardProps} from '../OptionsApp';
 import {isFilteredOut} from '../FilterOptionsCard';
@@ -34,8 +34,8 @@ export function NumberFormatCard(props: OptionCardProps) {
                           onChange={value => decimalPoint.setAndSaveValue(value)}/>
             </SettingOption>
             <SettingOption title="Important digits on rounding">
-                <StyledInput type="number" defaultValue={significantDigits.value}
-                             onChange={value => significantDigits.setAndSaveValue(+value)}/>
+                <Input type="number" defaultValue={significantDigits.value}
+                       onChange={value => significantDigits.setAndSaveValue(+value)}/>
             </SettingOption>
         </OptionRow>
     </OptionsSection>

@@ -27,6 +27,10 @@ export interface IBrowser {
     readonly type: Browsers
     readonly environment: Environments
 
+    readonly url: URL
+    readonly hostAndPath: string
+    readonly host: string
+
     readonly reviewLink: string
     readonly author: string
     readonly extensionName: string
@@ -35,10 +39,6 @@ export interface IBrowser {
     readonly isDevelopment: boolean
     readonly extensionUrl: string
     readonly id: string
-    readonly href: string
-    readonly hostAndPath: string
-    readonly hostname: string
-    readonly host: string
     readonly isFirefox: boolean
     readonly isChrome: boolean
     readonly isEdge: boolean
@@ -156,17 +156,22 @@ export class Browser implements IBrowser {
         return this.runtime.id;
     }
 
-    get href(): string {
-        return window.location.href;
+    get url(): URL {
+        let href = window.location.href;
+        // noinspection HttpUrlsUsage
+        if (href.startsWith('http://')) // noinspection HttpUrlsUsage
+            href = href.substr('http://'.length, href.length)
+
+        if (!href.startsWith('https://')) href = 'https://' + href;
+        return new URL(window.location.href)
     }
 
     get hostAndPath(): string {
-        const url = new URL(this.href);
-        return url.hostname + url.pathname;
+        return this.url.hostname + this.url.pathname;
     }
 
     get hostname(): string {
-        return window.location.hostname;
+        return this.url.hostname
     }
 
     get host(): string {

@@ -1,5 +1,6 @@
 import {DependencyProvider} from '../DependencyInjection';
 import {useDebugLoggingSetting} from '../Configuration';
+import {LoggingSettingType} from "../Configuration/Configuration";
 
 export interface ILogger {
     debug(message: string): void
@@ -29,34 +30,38 @@ type LogEvent = {
     error: Error
 }
 
+const LogLevelConversion = {
+    ['nothing' as LoggingSettingType]: 0,
+    ['error' as LoggingSettingType]: 1,
+    ['info' as LoggingSettingType]: 2,
+    ['debug' as LoggingSettingType]: 3,
+} as Record<LoggingSettingType, number>
+
 export class Logger implements ILogger {
 
     private readonly useLogging: useDebugLoggingSetting;
     private readonly startTime: number;
+    private isFirstLog: boolean;
 
     constructor({useLogging}: DependencyProvider) {
+        this.isFirstLog = true;
         this.useLogging = useLogging;
         this.startTime = Date.now();
     }
 
     debug(message: string) {
-        if (!this.useLogging.value) return;
         this._log(message, LogLevel.debug);
     }
 
     info(message: string) {
-        if (!this.useLogging.value) return;
         this._log(message, LogLevel.info);
     }
 
     warn(message: string) {
-        if (!this.useLogging.value) return;
         this._log(message, LogLevel.warn);
     }
 
     error(error: Error, message?: string) {
-        // We always log errors, but if logging is off we warn that it is off
-        if (!this.useLogging.value) this.warnLoggingTurnedOff()
         message = message || 'Unexpected error'
         this._log(`${message}\n${error.stack || error.message}`, LogLevel.error)
     }
@@ -72,10 +77,6 @@ export class Logger implements ILogger {
             case LogLevel.error:
                 return this.error(logEvent.error, logEvent.message)
         }
-    }
-
-    private warnLoggingTurnedOff() {
-        this._log(`Debug logging is turned off, turn it on for more information in settings`, LogLevel.warn)
     }
 
     private timestamp(): string {
@@ -100,15 +101,24 @@ export class Logger implements ILogger {
     }
 
     private _log(message: string, level: LogLevel) {
+        if (this.isFirstLog) {
+            this.isFirstLog = false;
+            this._log(`LogLevel: ${this.useLogging.value}`, LogLevel.debug)
+        }
+
         message = `[UACC ${this.timestamp()}] ${message}`
         switch (level) {
             case LogLevel.debug:
+                if (LogLevelConversion[this.useLogging.value] < LogLevelConversion['debug' as LoggingSettingType]) return;
                 return console.debug(message)
             case LogLevel.info:
+                if (LogLevelConversion[this.useLogging.value] < LogLevelConversion['info' as LoggingSettingType]) return;
                 return console.info(message)
             case LogLevel.warn:
+                if (LogLevelConversion[this.useLogging.value] < LogLevelConversion['error' as LoggingSettingType]) return;
                 return console.warn(message)
             case LogLevel.error:
+                if (LogLevelConversion[this.useLogging.value] < LogLevelConversion['error' as LoggingSettingType]) return;
                 return console.error(message)
         }
     }

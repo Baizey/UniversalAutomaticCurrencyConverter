@@ -4,6 +4,8 @@ import {LocalizationAlert} from '../../components/content/LocalizationAlert';
 import {MenuAlert} from '../../components/content/MenuAlert';
 import {TitleAlert} from '../../components/content/TitleAlert';
 import {useProvider} from '../../infrastructure';
+import {CurrencyElement} from "../../currencyConverter/Currency";
+import {BrowserMock} from "../../../tests/Browser.mock";
 
 export default {
     title: 'content/Alerts',
@@ -24,7 +26,8 @@ const LocalizationAlertTemplate: Story = (args) => {
     else activeLocalization.yen.detectedValue = activeLocalization.yen.defaultValue
     if (args.dollarConflict) activeLocalization.dollar.detectedValue = 'CAD'
     else activeLocalization.dollar.detectedValue = activeLocalization.dollar.defaultValue
-    return <LocalizationAlert setDismissed={() => {}}/>;
+    return <LocalizationAlert setDismissed={() => {
+    }}/>;
 }
 export const localization = LocalizationAlertTemplate.bind({});
 localization.args = {
@@ -33,5 +36,24 @@ localization.args = {
     dollarConflict: true,
 }
 
-const MenuAlertTemplate: Story = (args) => <MenuAlert setDismissed={() => {}}/>
+type MenuAlertArgs = {
+    isAllowed: true,
+    conversions: 0
+}
+const MenuAlertTemplate: Story = (args) => {
+    const {isAllowed, conversions} = args as MenuAlertArgs
+    const {tabInformation, browser} = useProvider()
+    if (browser instanceof BrowserMock) browser.setUrl(new URL(`https://www.totally.is.website.youtube.com/path/to/video/watch?v=dQw4w9WgXcQ`))
+    tabInformation.setIsAllowed(isAllowed)
+    tabInformation.conversions = []
+    for (let i = 0; i < Math.min(conversions, 100); i++) { // @ts-ignore
+        tabInformation.conversions.push(null);
+    }
+    return <MenuAlert setDismissed={() => {
+    }}/>;
+}
 export const menu = MenuAlertTemplate.bind({});
+menu.args = {
+    isAllowed: true,
+    conversions: 0
+}

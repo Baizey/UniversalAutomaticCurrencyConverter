@@ -10,6 +10,26 @@ An extension for Chrome, Firefox and (the new) Edge
 
 [![Build Status](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter.svg?branch=deployed-v3)](https://travis-ci.com/Baizey/UniversalAutomaticCurrencyConverter)
 
+# Source code submission guide
+
+## Environment
+
+- NodeJs (LTS v14.X.X)
+- Npm (v7.X.X)
+- Windows 10 (which OS compiles it should hopefully not matter)
+
+The exact sub-versions should not matter
+
+## Build
+Run the following commands: 
+1. ```npm install```
+1. ```npm run start:dev```
+
+Individual components can also be viewed in storybook
+- ```npm run storybook``` (```http://localhost:6006```)
+
+Deployment code is placed in dist.zip
+
 ## This extension provides for all your conversion desires. The primary focuses being:
 
 - Intelligent conversion and detection of currencies

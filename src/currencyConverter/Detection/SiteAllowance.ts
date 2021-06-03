@@ -12,6 +12,8 @@ type AllowanceResult = { isAllowed: boolean, reasoning: TrieNodeResult[] }
 export interface ISiteAllowance {
     getAllowance(url: string): AllowanceResult
 
+    addUri(uri: string, allowed: boolean): Promise<void>
+
     updateFromConfig(): void
 }
 
@@ -21,6 +23,13 @@ export class SiteAllowance implements ISiteAllowance {
     private usingBlacklisting: usingBlacklistingSetting;
     private blacklistedUrls: blacklistedUrlsSetting;
     private whitelistedUrls: whitelistedUrlsSetting;
+
+    public static parseUri(uri: string | URL): URL {
+        if (uri instanceof URL) return uri;
+        if (!(uri.startsWith('https://') || uri.startsWith('http://')))
+            uri = 'https://' + uri;
+        return new URL(uri);
+    }
 
     constructor({usingWhitelisting, usingBlacklisting, blacklistedUrls, whitelistedUrls}: DependencyProvider) {
         this.usingWhitelisting = usingWhitelisting;
@@ -34,6 +43,21 @@ export class SiteAllowance implements ISiteAllowance {
         // Only false when whitelist is on but blacklist is not
         const defaultResult = this.usingBlacklisting.value || !this.usingWhitelisting.value;
         return this.allowance.isAllowed(url, defaultResult);
+    }
+
+    async addUri(uri: string, allowed: boolean) {
+        this.allowance = this.allowance || this.updateFromConfig()
+        const url = SiteAllowance.parseUri(uri);
+        this.allowance.addUrls([url], allowed);
+
+        const remove = allowed ? this.blacklistedUrls : this.whitelistedUrls
+        const add = allowed ? this.whitelistedUrls : this.blacklistedUrls
+
+        const expected = add.parseUri(uri)
+        if (!expected) return;
+
+        await add.setAndSaveValue(add.value.concat([expected]))
+        await remove.setAndSaveValue(remove.value.filter(e => e !== expected))
     }
 
     updateFromConfig() {
@@ -59,11 +83,7 @@ class TrieNode {
     }
 
     isAllowed(url: URL | string, defaultResult: boolean): AllowanceResult {
-        if (typeof url === 'string') {
-            url = url.startsWith('https://') || url.startsWith('http://') ? url : `https://${url}`;
-            url = new URL(url);
-        }
-
+        url = SiteAllowance.parseUri(url);
         const result = {
             isAllowed: defaultResult,
             reasoning: [{url: 'Default allowance', allowed: defaultResult}]
@@ -99,15 +119,12 @@ class TrieNode {
         return result;
     }
 
-    private addUrls(urls: string[], isAllowed: boolean) {
+    public addUrls(urls: (string | URL)[], isAllowed: boolean) {
         if (!urls) return;
-        urls.map(url => url.startsWith('https://') || url.startsWith('http://')
-            ? url
-            : `https://${url}`)
-            .forEach(url => this.addUrl(new URL(url), isAllowed));
+        urls.map(url => SiteAllowance.parseUri(url)).forEach(url => this.addUrl(url, isAllowed));
     }
 
-    private addUrl(url: URL, isAllowed: boolean) {
+    public addUrl(url: URL, isAllowed: boolean) {
         let at: TrieNode = this;
         const hosts = url.hostname.split('.');
         if (hosts[0] === 'www') hosts.shift();

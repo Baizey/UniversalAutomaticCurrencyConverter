@@ -16,6 +16,7 @@ export const basicStyle = (props: ThemeProps) => ({
     fontWeight: 500,
     textAlign: 'center',
     textAlignLast: 'center',
+    appearance: 'none',
     margin: '0 auto',
     padding: 0
 })
@@ -27,7 +28,19 @@ function BasicStyle<T>(element: ElementType): StyledComponent<ElementType, any> 
 
 const BasicDiv = BasicStyle('div');
 const BasicA = BasicStyle('a');
-const BasicInput = BasicStyle('input');
+
+// @ts-ignore
+const BasicInput = styled(BasicStyle('input'))((props: ThemeProps) => ({
+    '&[type="text"]': basicStyle(props),
+    '&[type="text"]:hover': basicStyle(props),
+    '&[type="text"]:focus': basicStyle(props),
+    '&[type="number"]': basicStyle(props),
+    '&[type="number"]:hover': basicStyle(props),
+    '&[type="number"]:focus': basicStyle(props),
+    '&[type="range"]': basicStyle(props),
+    '&[type="range"]:hover': basicStyle(props),
+    '&[type="range"]:focus': basicStyle(props),
+}))
 const BasicH2 = BasicStyle('h2');
 const BasicSpan = BasicStyle('span');
 const BasicLabel = BasicStyle('label');
@@ -35,10 +48,11 @@ const BasicLabel = BasicStyle('label');
 export const Div = BasicDiv;
 
 export type InputProps = { type?: string, readOnly?: boolean, value?: any }
-export const Input = styled(BasicInput)<InputProps>`
+export const BaseInput = styled(BasicInput)<InputProps>`
   height: ${asPixel(HalfBorderFieldHeight)};
-  line-height: ${asPixel(HalfBorderFieldHeight)};
-  border-bottom-width: 1px;
+  line -height: ${asPixel(HalfBorderFieldHeight)};
+  border - bottom - width
+  : 1px;
   appearance: none;
   width: 100%;
 `;

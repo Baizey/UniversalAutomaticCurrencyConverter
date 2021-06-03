@@ -7,18 +7,29 @@ import {RadioBox, RadioBoxContainer, RadioBoxContainerProps, RadioBoxProps} from
 // noinspection ES6UnusedImports We need to import everything for it to work in browser
 import {Button, ButtonProps, Div, HeaderText, NormalText, Space, SpaceProps} from '../atoms';
 import {MyTheme, ThemeProps, useProvider} from '../../infrastructure';
+import {CompactCurrencyLocalization} from "../../currencyConverter/Localization/ActiveLocalization";
 
 type Props = { setDismissed: () => void }
 
 export function LocalizationAlert(props: Props) {
     const [useDetected, setUseDetected] = useState(true);
-    const {activeLocalization} = useProvider();
+    const {activeLocalization, tabInformation} = useProvider();
 
-    useEffect(() => { activeLocalization.reset(!useDetected) }, [useDetected])
+    useEffect(() => {
+        activeLocalization.reset(!useDetected)
+    }, [useDetected])
 
     const kroneConflict = activeLocalization.krone.hasConflict();
     const dollarConflict = activeLocalization.dollar.hasConflict();
     const yenConflict = activeLocalization.yen.hasConflict();
+
+    async function updateLocalization(useDetected: boolean) {
+        setUseDetected(useDetected)
+        if(useDetected) await activeLocalization.overloadWithDetected()
+        else await activeLocalization.overloadWithDefaults()
+        await activeLocalization.save();
+        await tabInformation.updateDisplay()
+    }
 
     return <AlertSection onDismiss={props.setDismissed} title="Localization alert">
         <OptionWrapper height={120}>
@@ -31,7 +42,7 @@ export function LocalizationAlert(props: Props) {
                 {yenConflict ?
                     <Currency>{activeLocalization.yen.detectedValue}</Currency> : <></>}
                 <Space height={5}/>
-                <RadioBox value={useDetected} onClick={() => setUseDetected(true)}/>
+                <RadioBox value={useDetected} onClick={() => updateLocalization(true)}/>
             </Option>
             <Option>
                 <Header>Use your defaults</Header>
@@ -42,13 +53,12 @@ export function LocalizationAlert(props: Props) {
                 {yenConflict ?
                     <Currency>{activeLocalization.yen.defaultValue}</Currency> : <></>}
                 <Space height={5}/>
-                <RadioBox value={!useDetected} onClick={() => setUseDetected(false)}/>
+                <RadioBox value={!useDetected} onClick={() => updateLocalization(false)}/>
             </Option>
         </OptionWrapper>
         <Button
             primary
             onClick={async () => {
-                await activeLocalization.save();
                 await activeLocalization.setLocked(true);
                 props.setDismissed()
             }}>Save as site default and dont ask again

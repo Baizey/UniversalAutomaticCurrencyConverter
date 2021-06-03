@@ -2,7 +2,7 @@ import styled from "styled-components";
 import * as React from 'react';
 import {useState} from 'react';
 import {ThemeProps} from '../../infrastructure';
-import {Input} from './Basics';
+import {BaseInput} from './Basics';
 
 export type ReadonlyInputProps = {
     center?: boolean
@@ -12,7 +12,7 @@ export type ReadonlyInputProps = {
 
 export function ReadonlyInput({defaultValue, placeholder, center}: ReadonlyInputProps) {
     center = typeof center === 'boolean' ? center : true;
-    return <StyledInputContainer
+    return <InputContainer
         center={center}
         type="text"
         readOnly={true}
@@ -21,17 +21,26 @@ export function ReadonlyInput({defaultValue, placeholder, center}: ReadonlyInput
     />
 }
 
-export type StyledInputProps = {
-    type: 'number' | 'text'
+export type InputProps = {
+    type: 'number' | 'text' | 'range'
     borderHoverColor?: string
     onChange?: (value: number | string) => void
     onEnter?: (value: number | string) => void
 } & ReadonlyInputProps
 
-export function StyledInput({type, defaultValue, onChange, onEnter, placeholder, center, borderHoverColor}: StyledInputProps) {
+
+export function Input({
+                                type,
+                                defaultValue,
+                                onChange,
+                                onEnter,
+                                placeholder,
+                                center,
+                                borderHoverColor
+                            }: InputProps) {
     const [current, setCurrent] = useState(defaultValue)
     center = typeof center === 'boolean' ? center : true;
-    return <StyledInputContainer
+    return <InputContainer
         center={center}
         borderHoverColor={borderHoverColor}
         placeholder={placeholder}
@@ -45,14 +54,21 @@ export function StyledInput({type, defaultValue, onChange, onEnter, placeholder,
     />
 }
 
-export type StyledInputContainerProps = { center: boolean, borderHoverColor?: string } & ThemeProps
+export type InputContainerProps =
+    {
+        center: boolean,
+        borderHoverColor?: string,
+        min?: number,
+        max?: number
+    }
+    & ThemeProps
 
-function align(props: StyledInputContainerProps): 'right' | 'center' {
+function align(props: InputContainerProps): 'right' | 'center' {
     if (props.center) return 'center';
     return 'right'
 }
 
-export const StyledInputContainer = styled(Input)<StyledInputContainerProps>((props: StyledInputContainerProps) => ({
+export const InputContainer = styled(BaseInput)<InputContainerProps>((props: InputContainerProps) => ({
     textAlign: align(props),
     textAlignLast: align(props),
     '&:focus': {

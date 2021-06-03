@@ -10,15 +10,17 @@ export type DropdownProps = {
     maxOptions?: number
     options: { label: string, value: string }[],
     value?: string,
-    onChange: (value: string) => void
+    onChange: (value: string) => void,
+    menuPlacement?: 'bottom' | 'top' | 'auto'
 }
 
-export function Dropdown({options, value, onChange, maxOptions}: DropdownProps) {
+export function Dropdown({options, value, onChange, maxOptions, menuPlacement}: DropdownProps) {
     const [selected, setSelected] = useState<{ label: string, value: string } | null>(null);
     useEffect(() => setSelected(options.filter(e => e.value === value)[0]), [])
     const theme = useTheme() as MyTheme
     const visibleOptions = (maxOptions || 4)
     const optionHeight = 40;
+    const menuHeight = visibleOptions * optionHeight;
     return <Select
         onChange={option => {
             if (option && option.value && option.value !== selected?.value) {
@@ -30,6 +32,7 @@ export function Dropdown({options, value, onChange, maxOptions}: DropdownProps) 
         options={options}
         cacheOptions
         defaultOptions
+        menuPlacement={menuPlacement || 'auto'}
         placeholder={"Search and select..."}
         components={{DropdownIndicator: () => null, IndicatorSeparator: () => null}}
         styles={{
@@ -88,12 +91,12 @@ export function Dropdown({options, value, onChange, maxOptions}: DropdownProps) 
                 ...provided,
                 ...basicStyle({theme: theme}),
                 borderWidth: '1px',
-                maxHeight: (visibleOptions * optionHeight) + 'px'
+                maxHeight: `${menuHeight}px`
             }),
             menuList: (provided: any, state: any) => ({
                 ...provided,
                 ...basicStyle({theme: theme}),
-                maxHeight: (visibleOptions * optionHeight) + 'px'
+                maxHeight: `${menuHeight}px`
             }),
             container: (provided: any, state: any) => ({
                 ...provided,

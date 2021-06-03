@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {MyTheme, ThemeProps, useProvider} from '../../infrastructure';
 import {CurrencyAmount} from '../../currencyConverter/Currency';
 import {DeleteIcon, ExchangeIcon} from '../assets';
-import {Div, Dropdown, ReadonlyInput, StyledInput} from '../atoms';
+import {Div, Dropdown, ReadonlyInput, Input} from '../atoms';
 import styled, {useTheme} from 'styled-components';
 import {asPixel, FieldHeight} from '../atoms/Constants';
 
@@ -50,7 +50,7 @@ export function ConversionRow(props: ConversionRowProps) {
         </IconContainer>
 
         <AmountContainer>
-            <StyledInput
+            <Input
                          center={false} type={'number'}
                          defaultValue={fromAmount}
                          onChange={value => setFromAmount(+value)}/>

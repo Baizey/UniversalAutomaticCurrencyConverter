@@ -1,4 +1,4 @@
-import {IBrowser, ISetting} from "../../infrastructure";
+import {IBrowser, ILogger, ISetting} from "../../infrastructure";
 import {DependencyProvider} from '../../infrastructure/DependencyInjection';
 
 export class CurrencyLocalization {
@@ -9,8 +9,10 @@ export class CurrencyLocalization {
 
     private readonly key: string;
     private readonly setting: ISetting<string>;
+    private readonly logger: ILogger;
 
-    constructor({browser}: DependencyProvider, key: string, setting: ISetting<string>) {
+    constructor({browser, logger}: DependencyProvider, key: string, setting: ISetting<string>) {
+        this.logger = logger;
         this.browser = browser;
         this.setting = setting;
         this.key = key
@@ -20,8 +22,8 @@ export class CurrencyLocalization {
     }
 
     override(value: string | undefined): void {
-        if(!value) return;
-        if(/^[A-Z]{3}$/.test(value))
+        if (!value) return;
+        if (/^[A-Z]{3}$/.test(value))
             this.value = value;
     }
 
@@ -32,12 +34,14 @@ export class CurrencyLocalization {
     setDetected(value: string): void {
         this.override(value)
         this.detectedValue = this.value;
+        this.logger.debug(`Detected localization: ${this.detectedValue}`)
     }
 
     async load(): Promise<void> {
         const localValue = await this.browser.loadLocal<string>(this.key);
         this.value = localValue || this.setting.value;
         this.defaultValue = this.value;
+        this.logger.debug(`Default localization: ${this.defaultValue}`)
     }
 
     reset(toDefault: boolean): void {

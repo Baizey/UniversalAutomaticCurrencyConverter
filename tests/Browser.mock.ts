@@ -13,10 +13,6 @@ export class BrowserMock implements IBrowser {
     readonly environment: Environments;
     readonly extensionUrl: string;
     readonly extensionVersion: string;
-    readonly host: string;
-    readonly hostAndPath: string;
-    readonly hostname: string;
-    readonly href: string;
     readonly id: string;
     readonly isChrome: boolean;
     readonly isDevelopment: boolean;
@@ -29,10 +25,15 @@ export class BrowserMock implements IBrowser {
     readonly type: Browsers;
 
     readonly rates: Record<string, Record<string, number>> = {}
+    private _url?: URL;
 
     addRate(from: string, to: string, rate: number) {
         if (!this.rates[from]) this.rates[from] = {}
         this.rates[from][to] = rate;
+    }
+
+    setUrl(url: URL) {
+        this._url = url;
     }
 
     constructor() {
@@ -241,11 +242,7 @@ export class BrowserMock implements IBrowser {
         this.isDevelopment = false;
         this.environment = Environments.Prod;
         this.reviewLink = '';
-        this.href = '';
-        this.host = '';
         this.id = '';
-        this.hostname = '';
-        this.hostAndPath = '';
         this.extensionVersion = '4.0.0'
         this.extensionUrl = ''
         const useragent = window.navigator.userAgent;
@@ -253,6 +250,25 @@ export class BrowserMock implements IBrowser {
             this.type = Browsers.Chrome
         else
             this.type = Browsers.Firefox
+    }
+
+    get url(){
+        return this._url || new URL('https://google.com');
+    }
+
+    get host() {
+        if (!this._url) return ''
+        return this._url.host;
+    }
+
+    get hostname() {
+        if (!this._url) return ''
+        return this._url.hostname;
+    }
+
+    get hostAndPath() {
+        if (!this._url) return ''
+        return this._url.hostname + this._url.pathname;
     }
 
     loadLocal<T>(key: string): Promise<T> {

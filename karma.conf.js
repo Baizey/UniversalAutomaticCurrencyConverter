@@ -19,7 +19,8 @@ module.exports = config => config.set({
     singleRun: true,
     bundlerOptions: {
         sourceMap: true,
-        esModuleInterop: true
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
     },
     reporters: ["karma-typescript"],
     frameworks: ["jasmine", "karma-typescript"],

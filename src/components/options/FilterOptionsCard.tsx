@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {OptionRow, OptionsSection, SettingOption} from "./Shared";
-import {StyledInput} from '../atoms';
+import {Input} from '../atoms';
 
 type Props = { onChange: (value: string) => void }
 
@@ -15,10 +15,10 @@ export function FilterOptionsCard({onChange}: Props) {
     return <OptionsSection title="Search for what you need">
         <OptionRow>
             <SettingOption title="" help="Leave empty and click enter to show all options">
-                <StyledInput type="text"
-                             defaultValue=""
-                             placeholder="Filter here..."
-                             onEnter={value => onChange(value as string)}/>
+                <Input type="text"
+                       defaultValue=""
+                       placeholder="Filter here..."
+                       onEnter={value => onChange(value as string)}/>
             </SettingOption>
         </OptionRow>
     </OptionsSection>

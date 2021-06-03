@@ -80,6 +80,7 @@ export class Localizations {
 
     static get hostCurrency() {
         return {
+            'com': 'USD',
             'cn': 'CNY',
             'jp': 'JPY',
             'in': 'INR',

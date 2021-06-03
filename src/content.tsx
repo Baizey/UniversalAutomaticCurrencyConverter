@@ -14,13 +14,13 @@ const isBlacklistedErrorMessage = `Site is blacklisted`;
         logger.info(`Loaded settings`)
 
         // Check if blacklisted, if so abandon tab and dont do anything
-        const allowance = siteAllowance.getAllowance(browser.href)
+        const allowance = siteAllowance.getAllowance(browser.url.href)
         tabInformation.setIsAllowed(allowance.isAllowed);
 
         logger.debug(`Allowed: ${allowance.isAllowed}, Last reason: ${allowance.reasoning.pop()?.url}`)
 
         if (!tabInformation.isAllowed) {
-            logger.warn(`${browser.href} is blacklisted`)
+            logger.warn(`${browser.url.href} is blacklisted`)
             throw new Error(isBlacklistedErrorMessage)
         }
 

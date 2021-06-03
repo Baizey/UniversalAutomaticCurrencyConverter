@@ -4,6 +4,7 @@ import {IBackendApi} from "../BackendApi";
 import {CurrencyAmount} from "./CurrencyAmount";
 import {IActiveLocalization} from "../Localization";
 import {DependencyProvider} from '../../infrastructure/DependencyInjection';
+import {ILogger} from "../../infrastructure";
 
 type CurrencyInfo = {
     original: CurrencyAmount,
@@ -29,14 +30,17 @@ export class CurrencyElement {
     private _isShowingConversion: boolean;
     private localization: IActiveLocalization;
     private readonly provider: DependencyProvider
+    private logger: ILogger;
 
     constructor({
                     provider,
                     backendApi,
                     textDetector,
-                    activeLocalization
+                    activeLocalization,
+                    logger
                 }: DependencyProvider,
                 element: HTMLElement) {
+        this.logger = logger;
         this.id = ++CurrencyElement.nextId;
         this.provider = provider;
 
@@ -59,39 +63,33 @@ export class CurrencyElement {
 
     async convertTo(currency: string): Promise<void> {
         this.conversionTo = currency;
-        this.updateSnapshot();
-        await this.convert();
+        await this.updateDisplay()
     }
 
     show(showConverted: boolean): Promise<boolean> {
-        if (showConverted) return this.showConverted()
-        return this.showOriginal();
+        return showConverted
+            ? this.showConverted()
+            : this.showOriginal();
     }
 
-    async showConverted(force: boolean = false): Promise<boolean> {
+    async showConverted(): Promise<boolean> {
         this._isShowingConversion = true;
-        let updated = false;
-        if (!force && this.updateSnapshot()) {
-            await this.convert();
-            updated = true;
+        if (this.hasUpdatedSnapshots()) {
+            this.converted.display();
+            return false;
         }
-        this.converted.display();
-        return updated;
+        await this.updateDisplay()
+        return true;
     }
 
     async showOriginal(): Promise<boolean> {
         this._isShowingConversion = false;
-        let updated = false;
-        if (this.updateSnapshot()) {
-            await this.convert();
-            updated = true;
+        if (this.hasUpdatedSnapshots()) {
+            this.original.display();
+            return false;
         }
-        this.original.display();
-        return updated;
-    }
-
-    async updateDisplay(force: boolean = false): Promise<void> {
-        if (this._isShowingConversion) await this.showConverted(force);
+        await this.updateDisplay()
+        return true;
     }
 
     async flipDisplay(): Promise<void> {
@@ -99,6 +97,13 @@ export class CurrencyElement {
             const updated = await this.showOriginal();
             if (updated) await this.showConverted();
         } else await this.showConverted();
+    }
+
+    async updateDisplay(): Promise<void> {
+        this.updateSnapshots()
+        await this.convert();
+        if (this._isShowingConversion) this.converted.display()
+        else this.original.display()
     }
 
     setupListener(): void {
@@ -197,13 +202,18 @@ export class CurrencyElement {
         });
     }
 
-    updateSnapshot(): boolean {
+    hasUpdatedSnapshots(): boolean {
         const snapshot = new ElementSnapshot(this.element);
-        if (snapshot.isEqual(this.original)) return false;
-        if (snapshot.isEqual(this.converted)) return false;
+        if (snapshot.isEqual(this.original)) return true;
+        return snapshot.isEqual(this.converted);
+
+    }
+
+    updateSnapshots(): void {
+        if (this.hasUpdatedSnapshots()) return;
+        const snapshot = new ElementSnapshot(this.element);
         this.original = snapshot;
         this.converted = snapshot.clone();
-        return true;
     }
 
     highlight() {

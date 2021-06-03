@@ -1,9 +1,10 @@
-export {StyledInput, ReadonlyInput} from "./StyledInput";
+export {Input, ReadonlyInput} from "./Input";
+export {Range} from './Range'
 export {Dropdown} from "./Dropdown";
 export {Checkbox} from "./Checkbox";
 export {RadioBox} from './RadioBox'
 export {
-    Input,
+    BaseInput,
     Button, ButtonProps,
     Div,
     Title, NormalText, FooterText, HeaderText,

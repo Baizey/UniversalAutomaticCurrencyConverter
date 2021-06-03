@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Meta, Story} from '@storybook/react';
 import {ReadonlyInput} from '../../components/atoms';
-import {ReadonlyInputProps} from '../../components/atoms/StyledInput';
+import {ReadonlyInputProps} from '../../components/atoms/Input';
 
 export default {
     title: 'atoms/Input Readonly',

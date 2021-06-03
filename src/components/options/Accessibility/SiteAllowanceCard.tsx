@@ -1,6 +1,6 @@
 import {useProvider} from '../../../infrastructure';
 import {OptionRow, OptionsSection, SettingOption} from '../Shared';
-import {Checkbox, StyledInput} from '../../atoms';
+import {Checkbox, Input} from '../../atoms';
 import * as React from 'react';
 import {ListHandler} from './AccessibilityCard';
 import {OptionCardProps} from '../OptionsApp';
@@ -28,13 +28,6 @@ export function SiteAllowanceCard(props: OptionCardProps) {
                           onChange={value => usingWhitelisting.setAndSaveValue(value)}/>
             </SettingOption>
         </OptionRow>
-        <OptionRow>
-            <SettingOption title="Blacklist">
-                <ListHandler setting={blacklistedUrls}/>
-            </SettingOption>
-            <SettingOption title="Whitelist">
-                <ListHandler setting={whitelistedUrls}/>
-            </SettingOption>
-        </OptionRow>
+        <ListHandler whitelistSetting={whitelistedUrls} blacklistSetting={blacklistedUrls}/>
     </OptionsSection>
 }
