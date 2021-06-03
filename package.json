@@ -1,6 +1,6 @@
 {
   "name": "uacc",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "",
   "scripts": {
     "test": "karma start karma.conf.js",

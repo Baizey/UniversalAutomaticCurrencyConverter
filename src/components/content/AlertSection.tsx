@@ -28,7 +28,7 @@ const DismissWrapper = styled(Div)`
   height: 30px;
   position: absolute;
   margin-top: 5px;
-  left: 5px;
+  right: 5px;
   cursor: pointer;
 
   &:hover * {

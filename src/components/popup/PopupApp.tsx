@@ -39,6 +39,7 @@ export default function PopupApp({isLoading}: PopupAppProps) {
 }
 
 const Container = styled(Div)`
+  max-width: calc(100% - 20px);
   width: 600px;
   height: fit-content;
   padding: 20px;

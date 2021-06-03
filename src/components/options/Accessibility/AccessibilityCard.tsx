@@ -72,10 +72,7 @@ export function ListHandler({whitelistSetting, blacklistSetting}: ListHandlerPro
             <AllowanceListContainer>
                 {blacklist.filter(e => e).map((e, i) => {
                     return <Input
-                        key={`list_${e}`}
-                        type="text"
-                        placeholder={"https://..."}
-                        defaultValue={e}
+                        key={`list_${e}`} type="text" placeholder={"https://..."} defaultValue={e}
                         onChange={async value => removeIfEmpty(`${value}`, i, false)}
                         onEnter={async value => update(`${value}`, i, false)}/>
                 })}
@@ -87,15 +84,13 @@ export function ListHandler({whitelistSetting, blacklistSetting}: ListHandlerPro
             <AllowanceListContainer>
                 {whitelist.filter(e => e).map((e, i) => {
                     return <Input
-                        key={`list_${e}`}
-                        type="text"
-                        placeholder={"https://..."}
-                        defaultValue={e}
+                        key={`list_${e}`} type="text" placeholder={"https://..."} defaultValue={e}
                         onChange={async value => removeIfEmpty(`${value}`, i, true)}
                         onEnter={async value => update(`${value}`, i, true)}/>
                 })}
-                <Input key={`${Math.random()}_unique`} type="text" defaultValue="" placeholder={"https://..."}
-                       onEnter={async value => addNew(`${value}`, true)}/>
+                <Input
+                    key={`${Math.random()}_unique`} type="text" defaultValue="" placeholder={"https://..."}
+                    onEnter={async value => addNew(`${value}`, true)}/>
             </AllowanceListContainer>
         </SettingOption>
     </OptionRow>

@@ -4,6 +4,7 @@ import {LocalSetting} from './LocalSetting';
 import {DependencyProvider} from '../DependencyInjection';
 import {themes} from '../Theme';
 import {SiteAllowance} from "../../currencyConverter/Detection";
+import {borderRadius} from "react-select/src/theme";
 
 const isBool = (e: any) => typeof (e) === 'boolean';
 
@@ -156,7 +157,7 @@ export class usingBlacklistingSetting extends SyncSetting<boolean> {
 
 class UrlSettingsBase extends SyncSetting<string[]> {
     constructor(provider: DependencyProvider, key: string) {
-        super(provider, key, [], array => isStringArray(array) && isDistinctArray(array))
+        super(provider, key, [], array => isStringArray(array))
     }
 
     parseUri(raw: string) {
@@ -172,7 +173,14 @@ class UrlSettingsBase extends SyncSetting<string[]> {
 
     setValue(value: string[] | undefined): boolean {
         if (!value) return false;
-        value = value.map(e => this.parseUri(e)).filter(e => e)
+        value = Object.keys(value
+            .map(e => this.parseUri(e))
+            .filter(e => e)
+            .reduce((a, b) => {
+                a[b] = true;
+                return a
+            }, {} as Record<string, boolean>))
+
         return super.setValue(value);
     }
 }

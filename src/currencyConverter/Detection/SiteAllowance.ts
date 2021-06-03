@@ -27,7 +27,7 @@ export class SiteAllowance implements ISiteAllowance {
     public static parseUri(uri: string | URL): URL {
         if (uri instanceof URL) return uri;
         if (!(uri.startsWith('https://') || uri.startsWith('http://')))
-            uri = 'https://' + uri;
+            uri = `https://${uri}`;
         return new URL(uri);
     }
 
