@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import styled from 'styled-components';
 import {ISetting, ThemeProps} from '../../../infrastructure';
 import {Div, Input} from '../../atoms';
@@ -7,15 +7,14 @@ import {SiteAllowanceCard} from './SiteAllowanceCard';
 import {DisableCurrenciesCard} from './DisableCurrenciesCard';
 import {MiscCard} from './MiscCard';
 import {MouseInteractionCard} from './MouseInteractionCard';
-import {ShortcutsCard} from './ShortcutsCard';
+import {KeyboardShortcutsCard} from './KeyboardShortcutsCard';
 import {StorageManagementCard} from './StorageManagementCard';
 import {OptionCardProps} from '../OptionsApp';
 import {OptionRow, SettingOption} from "../Shared";
-import {borderRadius} from "react-select/src/theme";
 
 export function AccessibilityCard(props: OptionCardProps) {
     return <>
-        <ShortcutsCard {...props}/>
+        <KeyboardShortcutsCard {...props}/>
         <MouseInteractionCard {...props}/>
         <MiscCard {...props}/>
         <DisableCurrenciesCard {...props}/>

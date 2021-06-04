@@ -30,14 +30,14 @@ export type InputProps = {
 
 
 export function Input({
-                                type,
-                                defaultValue,
-                                onChange,
-                                onEnter,
-                                placeholder,
-                                center,
-                                borderHoverColor
-                            }: InputProps) {
+                          type,
+                          defaultValue,
+                          onChange,
+                          onEnter,
+                          placeholder,
+                          center,
+                          borderHoverColor
+                      }: InputProps) {
     const [current, setCurrent] = useState(defaultValue)
     center = typeof center === 'boolean' ? center : true;
     return <InputContainer
@@ -69,12 +69,24 @@ function align(props: InputContainerProps): 'right' | 'center' {
 }
 
 export const InputContainer = styled(BaseInput)<InputContainerProps>((props: InputContainerProps) => ({
-    textAlign: align(props),
-    textAlignLast: align(props),
-    '&:focus': {
-        outline: 0,
+    '&[type="text"]': {
+        textAlign: align(props),
+        textAlignLast: align(props),
+        '&:hover': {
+            borderColor: props.borderHoverColor || props.theme.formBorderFocus,
+        },
+        '&:focus': {
+            outline: 0,
+        }
     },
-    '&:hover': {
-        borderColor: props.borderHoverColor || props.theme.formBorderFocus,
-    }
+    '&[type="number"]': {
+        textAlign: align(props),
+        textAlignLast: align(props),
+        '&:hover': {
+            borderColor: props.borderHoverColor || props.theme.formBorderFocus,
+        },
+        '&:focus': {
+            outline: 0,
+        }
+    },
 }))

@@ -2,7 +2,7 @@ import {ThemeProps} from '../../infrastructure';
 import {asPixel, FieldHeight, HalfBorderFieldHeight, SmallTextSize, TextSize, TitleSize} from './Constants';
 import styled, {StyledComponent} from 'styled-components';
 
-type ElementType = 'div' | 'input' | 'a' | 'span' | 'h2' | 'label';
+type ElementType = 'div' | 'a' | 'span' | 'h2' | 'label';
 
 export const basicStyle = (props: ThemeProps) => ({
     backgroundColor: props.theme.containerBackground,
@@ -29,17 +29,27 @@ function BasicStyle<T>(element: ElementType): StyledComponent<ElementType, any> 
 const BasicDiv = BasicStyle('div');
 const BasicA = BasicStyle('a');
 
+const baseInputStyle = (props: ThemeProps) => ({
+    ...basicStyle(props),
+    height: asPixel(HalfBorderFieldHeight),
+    lineHeight: asPixel(HalfBorderFieldHeight),
+    borderBottomWidth: '1px',
+    appearance: 'none',
+    width: '100%',
+    '&:hover': {
+        borderColor: props.theme.formBorderFocus
+    },
+    '&:focus': {
+        borderColor: props.theme.formBorderFocus
+    }
+})
+
 // @ts-ignore
-const BasicInput = styled(BasicStyle('input'))((props: ThemeProps) => ({
-    '&[type="text"]': basicStyle(props),
-    '&[type="text"]:hover': basicStyle(props),
-    '&[type="text"]:focus': basicStyle(props),
-    '&[type="number"]': basicStyle(props),
-    '&[type="number"]:hover': basicStyle(props),
-    '&[type="number"]:focus': basicStyle(props),
-    '&[type="range"]': basicStyle(props),
-    '&[type="range"]:hover': basicStyle(props),
-    '&[type="range"]:focus': basicStyle(props),
+const BasicInput = styled.input<ThemeProps>((props: ThemeProps) => ({
+    ...baseInputStyle(props),
+    '&[type="text"]': baseInputStyle(props),
+    '&[type="number"]': baseInputStyle(props),
+    '&[type="range"]': baseInputStyle(props),
 }))
 const BasicH2 = BasicStyle('h2');
 const BasicSpan = BasicStyle('span');
@@ -48,14 +58,7 @@ const BasicLabel = BasicStyle('label');
 export const Div = BasicDiv;
 
 export type InputProps = { type?: string, readOnly?: boolean, value?: any }
-export const BaseInput = styled(BasicInput)<InputProps>`
-  height: ${asPixel(HalfBorderFieldHeight)};
-  line -height: ${asPixel(HalfBorderFieldHeight)};
-  border - bottom - width
-  : 1px;
-  appearance: none;
-  width: 100%;
-`;
+export const BaseInput = styled(BasicInput)<InputProps>``;
 
 
 export type ButtonProps = {
