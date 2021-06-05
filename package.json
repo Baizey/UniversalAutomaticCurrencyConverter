@@ -10,7 +10,7 @@
     "build-storybook": "build-storybook"
   },
   "keywords": [],
-  "license": "ISC",
+  "license": "GPLv2",
   "devDependencies": {
     "@babel/core": "^7.14.2",
     "@babel/preset-env": "^7.14.2",
