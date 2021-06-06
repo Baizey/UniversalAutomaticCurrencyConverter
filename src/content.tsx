@@ -17,6 +17,12 @@ const isBlacklistedErrorMessage = `Site is blacklisted`;
         const allowance = siteAllowance.getAllowance(browser.url.href)
         tabInformation.setIsAllowed(allowance.isAllowed);
 
+        const div = document.createElement('div')
+        div.id = 'uacc-root'
+        document.body.appendChild(div)
+        ReactDOM.render(<ContentApp/>, document.getElementById('uacc-root'));
+        logger.info(`Injected alert system onto page`)
+
         logger.debug(`Allowed: ${allowance.isAllowed}, Last reason: ${allowance.reasoning.pop()?.url}`)
 
         if (!tabInformation.isAllowed) {
@@ -44,11 +50,6 @@ const isBlacklistedErrorMessage = `Site is blacklisted`;
         tabInformation.setIsShowingConversions(usingAutoConversionOnPageLoad.value);
 
         // TODO: handle being paused somehow
-
-        const div = document.createElement('div')
-        div.id = 'uacc-root'
-        document.body.appendChild(div)
-        ReactDOM.render(<ContentApp/>, document.getElementById('uacc-root'));
 
         // Add shortcut for convert all
         if (convertAllShortcut.value) window.addEventListener('keyup', e => {

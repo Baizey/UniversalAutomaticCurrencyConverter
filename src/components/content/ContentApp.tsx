@@ -1,10 +1,10 @@
-import styled, {ThemeProvider, useTheme} from 'styled-components';
+import styled, {ThemeProvider} from 'styled-components';
 import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {TitleAlert} from './TitleAlert';
 import {LocalizationAlert} from './LocalizationAlert';
 import {MenuAlert} from './MenuAlert';
-import {mapToTheme, MyTheme, TabMessage, TabMessageType, ThemeProps, useProvider} from '../../infrastructure';
+import {mapToTheme, TabMessage, TabMessageType, ThemeProps, useProvider} from '../../infrastructure';
 import {Div} from '../atoms';
 
 export type ContentAppProps = {
@@ -13,7 +13,7 @@ export type ContentAppProps = {
 }
 
 export function ContentApp({storyShowConflict, storyShowMenu}: ContentAppProps = {}) {
-    const {activeLocalization, browser, colorTheme} = useProvider();
+    const {activeLocalization, browser, colorTheme, tabInformation} = useProvider();
 
     const [showLocalization, setShowLocalization] = useState<boolean>(activeLocalization.hasConflict() || !!storyShowConflict)
     const [showMenu, setShowMenu] = useState<boolean>(!!storyShowMenu);
@@ -32,7 +32,7 @@ export function ContentApp({storyShowConflict, storyShowMenu}: ContentAppProps =
     return <ThemeProvider theme={mapToTheme(colorTheme.value)}>
         <Container>
             <TitleAlert/>
-            {showLocalization ? <LocalizationAlert
+            {showLocalization && tabInformation.isAllowed ? <LocalizationAlert
                 key="uacc-alert-localization"
                 setDismissed={() => setShowLocalization(false)}/> : <></>}
             {showMenu ? <MenuAlert
