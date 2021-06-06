@@ -30,7 +30,7 @@ Individual components can also be viewed in storybook
 
 Deployment code is placed in dist.zip
 
-## This extension provides for all your conversion desires. The primary focuses being:
+## Summary of features
 
 - Intelligent conversion and detection of currencies
 
