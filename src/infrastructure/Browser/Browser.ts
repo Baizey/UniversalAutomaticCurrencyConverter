@@ -24,6 +24,7 @@ export type BrowserDataStorage = {
 }
 
 export interface IBrowser {
+    readonly document: Document;
     readonly type: Browsers
     readonly environment: Environments
 
@@ -92,6 +93,10 @@ export class Browser implements IBrowser {
         // @ts-ignore
         this.access = this.isFirefox ? browser : chrome
 
+    }
+
+    get document() {
+        return document;
     }
 
     get tabs(): typeof chrome.tabs {

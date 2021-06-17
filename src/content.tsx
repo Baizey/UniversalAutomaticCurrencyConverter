@@ -8,101 +8,124 @@ import {ContentApp} from './components/content';
 
 const isBlacklistedErrorMessage = `Site is blacklisted`;
 
-(async () => await useProvider().configuration.load())()
-    .then(() => {
-        const {browser, siteAllowance, tabInformation, logger} = useProvider()
-        logger.info(`Loaded settings`)
+async function loadConfiguration(): Promise<void> {
+    await useProvider().configuration.load();
+}
 
-        // Check if blacklisted, if so abandon tab and dont do anything
-        const allowance = siteAllowance.getAllowance(browser.url.href)
-        tabInformation.setIsAllowed(allowance.isAllowed);
+async function loadActiveLocalization(): Promise<void> {
+    const {activeLocalization, logger} = useProvider()
+    await activeLocalization.load();
+    logger.info(`Localization completed`)
+}
 
-        const div = document.createElement('div')
-        div.id = 'uacc-root'
-        document.body.appendChild(div)
-        ReactDOM.render(<ContentApp/>, document.getElementById('uacc-root'));
-        logger.info(`Injected alert system onto page`)
+function loadTabInformation(): boolean {
+    const {browser, siteAllowance, tabState, logger, usingAutoConversionOnPageLoad} = useProvider()
+    logger.info(`Loaded settings`)
 
-        logger.debug(`Allowed: ${allowance.isAllowed}, Last reason: ${allowance.reasoning.pop()?.url}`)
+    // Check if blacklisted, if so abandon tab and dont do anything
+    const allowance = siteAllowance.getAllowance(browser.url.href)
+    tabState.setIsAllowed(allowance.isAllowed);
+    tabState.setIsShowingConversions(usingAutoConversionOnPageLoad.value);
 
-        if (!tabInformation.isAllowed) {
-            logger.warn(`${browser.url.href} is blacklisted`)
-            throw new Error(isBlacklistedErrorMessage)
-        }
+    logger.debug(`Allowed: ${allowance.isAllowed}, Last reason: ${allowance.reasoning.pop()?.url}`)
 
-        logger.info(`Verified whitelisted website`)
-    })
-    .then(async () => {
-        // Localize currencies for website
-        const {activeLocalization, logger} = useProvider()
-        await activeLocalization.load();
-        logger.info(`Localization completed`)
-    })
-    .then((() => {
-        const {
-            logger,
-            tabInformation,
-            usingAutoConversionOnPageLoad,
-            convertAllShortcut,
-            convertHoverShortcut
-        } = useProvider()
+    if (!tabState.isAllowed) {
+        logger.warn(`${browser.url.href} is blacklisted`)
+        throw new Error(isBlacklistedErrorMessage)
+    }
 
-        tabInformation.setIsShowingConversions(usingAutoConversionOnPageLoad.value);
+    logger.info(`Verified whitelisted website`)
+    return tabState.isAllowed;
+}
 
-        // TODO: handle being paused somehow
+function injectAlertSystem(): void {
+    const {logger} = useProvider();
+    const div = document.createElement('div')
+    div.id = 'uacc-root'
+    document.body.appendChild(div)
+    ReactDOM.render(<ContentApp/>, document.getElementById('uacc-root'));
+    logger.info(`Injected alert system onto page`)
+}
 
-        // Add shortcut for convert all
-        if (convertAllShortcut.value) window.addEventListener('keyup', e => {
-            if (e.key !== convertAllShortcut.value) return;
-            logger.debug(`Convert all shortcut activated`)
-            tabInformation.flipAllConversions()
-        });
+function injectShortcuts(): void {
+    const {
+        logger,
+        tabState,
+        convertAllShortcut,
+        convertHoverShortcut
+    } = useProvider()
 
-        // Add shortcut for convert hover
-        if (convertHoverShortcut.value) window.addEventListener('keyup', e => {
-            if (e.key !== convertHoverShortcut.value) return;
-            logger.debug(`Convert hovered shortcut activated`)
-            tabInformation.flipHovered();
-        });
+    // Add shortcut for convert all
+    if (convertAllShortcut.value) window.addEventListener('keyup', e => {
+        if (e.key !== convertAllShortcut.value) return;
+        logger.debug(`Convert all shortcut activated`)
+        tabState.flipAllConversions()
+    });
 
-        // Listen for new elements added and convert if needed
-        new MutationObserver(async mutations => {
-            try {
-                for (const mutation of mutations) {
-                    const addedNodes = mutation.addedNodes;
-                    for (let i = 0; i < addedNodes.length; i++) {
-                        const node = addedNodes[i];
-                        const element = node.parentElement;
-                        if (!element || childOfUACCWatched(element))
-                            continue;
-                        const detected = await detectAllElements(element);
-                        logger.log({
-                            logLevel: detected.length ? LogLevel.info : LogLevel.debug,
-                            message: `Newly loaded content, found ${detected.length} currencies`
-                        })
-                    }
+    // Add shortcut for convert hover
+    if (convertHoverShortcut.value) window.addEventListener('keyup', e => {
+        if (e.key !== convertHoverShortcut.value) return;
+        logger.debug(`Convert hovered shortcut activated`)
+        tabState.flipHovered();
+    });
+}
+
+async function injectConversions(): Promise<void> {
+    const {logger, tabState} = useProvider()
+
+    new MutationObserver(async mutations => {
+        try {
+            for (const mutation of mutations) {
+                const addedNodes = mutation.addedNodes;
+                for (let i = 0; i < addedNodes.length; i++) {
+                    const node = addedNodes[i];
+                    const element = node.parentElement;
+                    if (!element || childOfUACCWatched(element))
+                        continue;
+                    const detected = await detectAllElements(element);
+                    logger.log({
+                        logLevel: detected.length ? LogLevel.info : LogLevel.debug,
+                        message: `Newly loaded content, found ${detected.length} currencies`
+                    })
                 }
-            } catch (err) {
-                logger.error(err);
             }
-        }).observe(document.body, {childList: true, subtree: true, attributes: true, characterData: true});
-    }))
-    .then(async () => {
-        const {logger, tabInformation} = useProvider()
-        // Detect all currencies on page
-        logger.info(`Starting checking for currencies on page`)
-        await detectAllNewElementsRecurring();
-        logger.info(`Done checking for currencies, found ${tabInformation.conversions.length} currencies`)
-    })
-    .catch(err => {
-        // Ignore error if blacklisted, this is already logged and on throws to dont do anything after
-        if (err.message === isBlacklistedErrorMessage) { return }
-        const {logger} = useProvider()
-        logger.error(err);
-    })
+        } catch (err) {
+            logger.error(err);
+        }
+    }).observe(document.body, {childList: true, subtree: true, attributes: true, characterData: true});
+
+    // Detect all currencies on page
+    logger.info(`Starting checking for currencies on page`)
+    await detectAllNewElementsRecurring();
+    logger.info(`Done checking for currencies, found ${tabState.conversions.length} currencies`)
+}
+
+function handleError(error: Error): void {
+    const {logger} = useProvider()
+    switch (error?.message || error) {
+        case isBlacklistedErrorMessage:
+            break;
+        default:
+            logger.error(error);
+            break;
+    }
+}
+
+((async () => {
+    await loadConfiguration();
+    await loadActiveLocalization();
+
+    loadTabInformation();
+
+    injectAlertSystem();
+
+    injectShortcuts();
+
+    await injectConversions();
+})()).catch(handleError);
 
 async function detectAllElements(parent: HTMLElement): Promise<CurrencyElement[]> {
-    const {convertTo, elementDetector, tabInformation} = useProvider()
+    const {convertTo, elementDetector, tabState} = useProvider()
     const currency = convertTo.value;
 
     const discovered: CurrencyElement[] = elementDetector.find(parent)
@@ -110,19 +133,18 @@ async function detectAllElements(parent: HTMLElement): Promise<CurrencyElement[]
     for (let element of discovered) {
         await element.convertTo(currency);
         element.setupListener();
-        if (tabInformation.isShowingConversions) {
-            await element.showConverted();
+        await element.show();
+        if (tabState.isShowingConversions && !tabState.isPaused)
             element.highlight();
-        }
     }
 
-    discovered.forEach(e => tabInformation.conversions.push(e));
+    discovered.forEach(e => tabState.conversions.push(e));
     return discovered;
 }
 
 async function detectAllNewElementsRecurring(): Promise<void> {
     const {logger} = useProvider()
-    const attempts = 4;
+    const attempts = 3;
     for (let i = 1, time = 0; i <= attempts; i++, time = (time || 1000) * 2) {
         await wait(time)
         const result = await detectAllElements(document.body)

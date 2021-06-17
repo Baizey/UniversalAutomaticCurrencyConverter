@@ -48,12 +48,12 @@ const yenOptions = [
 ]
 
 function ConversionsCount() {
-    const {tabInformation} = useProvider();
-    if (!tabInformation.isAllowed) return <NormalText>Site is blacklisted</NormalText>
+    const {tabState} = useProvider();
+    if (!tabState.isAllowed) return <NormalText>Site is blacklisted</NormalText>
 
-    const [showing, setShowing] = useState(tabInformation.isShowingConversions);
+    const [showing, setShowing] = useState(tabState.isShowingConversions);
     useEffect(() => {
-        tabInformation.setIsShowingConversions(showing)
+        tabState.setIsShowingConversions(showing)
     }, [showing])
 
     const ConvertButton = showing
@@ -68,7 +68,7 @@ function ConversionsCount() {
         <OptionRow>
             <SettingOption title="Conversions">
                 <NormalText>
-                    {tabInformation.conversions.length} conversions
+                    {tabState.conversions.length} conversions
                 </NormalText>
             </SettingOption>
         </OptionRow>
@@ -81,12 +81,12 @@ function ConversionsCount() {
 }
 
 function PageLocalization() {
-    const {activeLocalization, tabInformation} = useProvider();
+    const {activeLocalization, tabState} = useProvider();
 
     async function changePageLocalization(compact: Partial<CompactCurrencyLocalization>) {
         await activeLocalization.overload(compact)
         await activeLocalization.save()
-        await tabInformation.updateDisplay()
+        await tabState.updateDisplay()
     }
 
     return <OptionRow>
@@ -112,7 +112,7 @@ function PageLocalization() {
 }
 
 function ConvertTo() {
-    const {backendApi, convertTo, tabInformation, logger} = useProvider()
+    const {backendApi, convertTo, tabState, logger} = useProvider()
     const [symbols, setSymbols] = useState<{ label: string, value: string }[]>([]);
     useEffect(() => {
         backendApi.symbols()
@@ -135,7 +135,7 @@ function ConvertTo() {
                 onChange={async value => {
                     if (await convertTo.setAndSaveValue(value)) {
                         logger.info(`Now converting to ${value}`)
-                        await tabInformation.updateDisplay(value);
+                        await tabState.updateDisplay(value);
                     }
                 }}/>
         </SettingOption>

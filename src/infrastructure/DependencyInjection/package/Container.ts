@@ -114,8 +114,7 @@ export class Container<E extends IProvider<E>> implements IContainer<E> {
 
         return new Proxy(provider, {
             get: function (obj, key) {
-                if (!obj.hasOwnProperty(key))
-                    return obj.getRequired(key.toString())
+                return obj.getOptional(key.toString());
             }
         });
     }

@@ -50,7 +50,7 @@ export class ElementDetector implements IElementDetector {
     }
 
     detect(element: HTMLElement) {
-        return this.textDetector.detect(element.innerText)
+        return this.textDetector.detect(element.textContent || '')
     }
 
     private isElementUnavailable(element: Element, maxDepth: number): boolean {

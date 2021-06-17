@@ -13,7 +13,7 @@ export type ContentAppProps = {
 }
 
 export function ContentApp({storyShowConflict, storyShowMenu}: ContentAppProps = {}) {
-    const {activeLocalization, browser, colorTheme, tabInformation} = useProvider();
+    const {activeLocalization, browser, colorTheme, tabState} = useProvider();
 
     const [showLocalization, setShowLocalization] = useState<boolean>(activeLocalization.hasConflict() || !!storyShowConflict)
     const [showMenu, setShowMenu] = useState<boolean>(!!storyShowMenu);
@@ -32,7 +32,7 @@ export function ContentApp({storyShowConflict, storyShowMenu}: ContentAppProps =
     return <ThemeProvider theme={mapToTheme(colorTheme.value)}>
         <Container>
             <TitleAlert/>
-            {showLocalization && tabInformation.isAllowed ? <LocalizationAlert
+            {showLocalization && tabState.isAllowed ? <LocalizationAlert
                 key="uacc-alert-localization"
                 setDismissed={() => setShowLocalization(false)}/> : <></>}
             {showMenu ? <MenuAlert

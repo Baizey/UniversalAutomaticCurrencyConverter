@@ -1,6 +1,7 @@
 import {CurrencyLocalization} from '../src/currencyConverter/Localization/CurrencyLocalization';
 import {SyncSetting} from '../src/infrastructure/Configuration/SyncSetting';
 import useMockContainer from './Container.mock';
+import chai, {expect} from 'chai';
 
 describe('CurrencyLocalization', () => {
     [
@@ -22,7 +23,7 @@ describe('CurrencyLocalization', () => {
         localization.override(test.input)
 
         // Assert
-        expect(localization.value).toBe(test.expect)
+        expect(localization.value).to.be.eql(test.expect)
     }));
 
     [
@@ -37,7 +38,7 @@ describe('CurrencyLocalization', () => {
         localization.setDetected(test.input)
 
         // Assert
-        expect(localization.hasConflict()).toBe(test.expect)
+        expect(localization.hasConflict()).to.be.eql(test.expect)
     }));
 
     it(`Save`, async () => {
@@ -45,12 +46,12 @@ describe('CurrencyLocalization', () => {
         const [container, provider] = useMockContainer();
         const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, 'key', setting);
-        spyOn(provider.browser, 'saveLocal').and.callThrough()
+        const spy = chai.spy.on(provider.browser, 'saveLocal');
 
         // Act
         await localization.save();
 
         // Assert
-        expect(provider.browser.saveLocal).toHaveBeenCalledOnceWith('key', '');
+        expect(spy).to.have.called.once.with('key', '')
     })
 });

@@ -3,7 +3,7 @@ import {ITextDetector} from "../Detection";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyAmount} from "./CurrencyAmount";
 import {IActiveLocalization} from "../Localization";
-import {DependencyProvider} from '../../infrastructure/DependencyInjection';
+import {DependencyProvider, useProvider} from '../../infrastructure/DependencyInjection';
 import {ILogger} from "../../infrastructure";
 
 type CurrencyInfo = {
@@ -66,15 +66,19 @@ export class CurrencyElement {
         await this.updateDisplay()
     }
 
-    show(showConverted: boolean): Promise<boolean> {
-        return showConverted
+    show(): Promise<boolean> {
+        const {tabState} = useProvider();
+        if (tabState.isPaused)
+            return this.showOriginal()
+
+        return tabState.isShowingConversions
             ? this.showConverted()
             : this.showOriginal();
     }
 
     async showConverted(): Promise<boolean> {
         this._isShowingConversion = true;
-        if (this.hasUpdatedSnapshots()) {
+        if (this.hasUpToDateSnapshots()) {
             this.converted.display();
             return false;
         }
@@ -84,7 +88,7 @@ export class CurrencyElement {
 
     async showOriginal(): Promise<boolean> {
         this._isShowingConversion = false;
-        if (this.hasUpdatedSnapshots()) {
+        if (this.hasUpToDateSnapshots()) {
             this.original.display();
             return false;
         }
@@ -202,7 +206,7 @@ export class CurrencyElement {
         });
     }
 
-    hasUpdatedSnapshots(): boolean {
+    hasUpToDateSnapshots(): boolean {
         const snapshot = new ElementSnapshot(this.element);
         if (snapshot.isEqual(this.original)) return true;
         return snapshot.isEqual(this.converted);
@@ -210,7 +214,7 @@ export class CurrencyElement {
     }
 
     updateSnapshots(): void {
-        if (this.hasUpdatedSnapshots()) return;
+        if (this.hasUpToDateSnapshots()) return;
         const snapshot = new ElementSnapshot(this.element);
         this.original = snapshot;
         this.converted = snapshot.clone();

@@ -116,7 +116,7 @@ export class usingCustomDisplaySetting extends SyncSetting<boolean> {
 export class highlightColorSetting extends SyncSetting<string> {
     constructor(provider: DependencyProvider) {
         super(provider, 'currencyHighlightColor', 'yellow', e => {
-            const div = document.createElement('div');
+            const div = provider.browser.document.createElement('div');
             div.style.backgroundColor = e + '';
             return !!div.style.backgroundColor
         });

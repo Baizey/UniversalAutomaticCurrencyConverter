@@ -2,6 +2,7 @@ import {CurrencyLocalization} from '../src/currencyConverter/Localization/Curren
 import {SyncSetting} from '../src/infrastructure/Configuration/SyncSetting';
 import useMockContainer from './Container.mock';
 import {ActiveLocalization} from '../src/currencyConverter/Localization';
+import chai, {expect} from 'chai'
 
 describe('ActiveLocalization', () => {
     [
@@ -23,7 +24,7 @@ describe('ActiveLocalization', () => {
         localization.override(test.input)
 
         // Assert
-        expect(localization.value).toBe(test.expect)
+        expect(localization.value).to.be.eql(test.expect)
     }));
 
     [
@@ -37,23 +38,23 @@ describe('ActiveLocalization', () => {
         localization.setDetected(test.input)
 
         // Assert
-        expect(localization.hasConflict()).toBe(test.expect)
+        expect(localization.hasConflict()).to.be.eql(test.expect)
     }));
 
     it(`Save`, async () => {
         // Setup
         const [container, provider] = useMockContainer();
         const localization = provider.activeLocalization;
-        spyOn(localization.krone, 'save')
-        spyOn(localization.yen, 'save')
-        spyOn(localization.dollar, 'save')
+        const kroneSpy = chai.spy.on(localization.krone, 'save')
+        const yenSpy = chai.spy.on(localization.yen, 'save')
+        const dollarSpy = chai.spy.on(localization.dollar, 'save')
 
         // Act
         await localization.save();
 
         // Assert
-        expect(localization.krone.save).toHaveBeenCalled()
-        expect(localization.yen.save).toHaveBeenCalled()
-        expect(localization.dollar.save).toHaveBeenCalled()
+        expect(kroneSpy).to.have.been.called.once
+        expect(yenSpy).to.have.been.called.once
+        expect(dollarSpy).to.have.been.called.once
     })
 });

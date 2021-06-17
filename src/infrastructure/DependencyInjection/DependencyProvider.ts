@@ -49,10 +49,10 @@ import {
 } from '../Configuration/Configuration';
 import {IContainer} from './package';
 import {ISetting} from '../Configuration/ISetting';
-import {TabInformation} from '../../currencyConverter/Live/TabInformation';
+import {TabState} from '../../currencyConverter/Live/TabState';
 
 interface DependencyProvider extends IProvider<DependencyProvider> {
-    tabInformation: TabInformation
+    tabState: TabState
     browser: IBrowser
     logger: ILogger
     backendApi: IBackendApi
@@ -164,7 +164,7 @@ function addSettingDependencies(container: IContainer<DependencyProvider>): ICon
 
 function addDependencies(container: IContainer<DependencyProvider>): IContainer<DependencyProvider> {
     return addSettingDependencies(container)
-        .addSingleton(TabInformation)
+        .addSingleton(TabState)
         .addSingleton(Browser)
 
         .addSingleton(Logger)

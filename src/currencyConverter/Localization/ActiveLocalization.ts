@@ -162,7 +162,7 @@ export class ActiveLocalization implements IActiveLocalization {
     }
 
     determineForSite(siteAsText?: string): void {
-        siteAsText = siteAsText || document.body.innerText;
+        siteAsText = siteAsText || this.browser.document.body.textContent || '';
         // If the user has locked localization for site, do nothing
         if (this.isLocked) return;
         const shared = Localizations.shared;
