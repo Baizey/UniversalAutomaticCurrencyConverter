@@ -1,13 +1,8 @@
 import useMockContainer from './Container.mock';
 import {TextDetector} from '../src/currencyConverter/Detection';
+import {expect} from 'chai';
 
 describe('TextDetector', () => {
-    const create = (html: string): string => {
-        const div = document.createElement('div');
-        div.innerHTML = html;
-        // @ts-ignore
-        return div.children[0].innerText;
-    }
     const tests = [
         {
             text: `$3.99`, expect: [{
@@ -92,11 +87,11 @@ describe('TextDetector', () => {
 
             // Assert
             for (let i = 0; i < test.expect.length; i++) {
-                expect(actual[i]?.text).toEqual(test.expect[i].text)
-                expect(actual[i]?.currencies).toEqual(test.expect[i].currencies)
-                expect(actual[i]?.amounts).toEqual(test.expect[i]?.amounts)
+                expect(actual[i]?.text).to.be.eql(test.expect[i].text)
+                expect(actual[i]?.currencies).to.be.eql(test.expect[i].currencies)
+                expect(actual[i]?.amounts).to.be.eql(test.expect[i]?.amounts)
             }
-            expect(actual.length).toBe(test.expect.length);
+            expect(actual.length).to.be.eql(test.expect.length);
         });
     })
 });

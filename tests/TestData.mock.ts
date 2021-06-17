@@ -1,11 +1,8 @@
-const create = (html: string) => {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return div;
-}
+import {HtmlMock} from "./Html.mock";
+
 const tests = [
     {
-        name: 'amazon_full', expect: 3, element: create(`<div class="sg-col-4-of-12 sg-col-8-of-16 sg-col-16-of-24 sg-col-12-of-20 sg-col-24-of-32 sg-col sg-col-28-of-36 sg-col-20-of-28"><div class="sg-col-inner">
+        name: 'amazon_full', expect: 3, element: HtmlMock.parse(`<div class="sg-col-4-of-12 sg-col-8-of-16 sg-col-16-of-24 sg-col-12-of-20 sg-col-24-of-32 sg-col sg-col-28-of-36 sg-col-20-of-28"><div class="sg-col-inner">
         
         <div class="sg-row">
           <div class="sg-col-4-of-12 sg-col-8-of-16 sg-col-12-of-32 sg-col-12-of-20 sg-col-12-of-36 sg-col sg-col-12-of-24 sg-col-12-of-28"><div class="sg-col-inner">

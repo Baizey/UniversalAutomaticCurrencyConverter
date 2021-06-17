@@ -20,14 +20,14 @@ export function SelfStartingPage({Child}: SelfStartingPageProps) {
 
     useEffect(() => {
         configuration.load()
-            .then(() => {
-                setTheme(colorTheme.value as keyof typeof themes);
-            })
             .then(async () => {
+                setTheme(colorTheme.value as keyof typeof themes)
+
                 const symbols = await backendApi.symbols()
                 setSymbols(Object.entries(symbols).map(([k, v]) => ({label: `${v} (${k})`, value: k})))
+
+                setIsLoading(false)
             })
-            .then(() => setIsLoading(false))
             .catch(err => logger.error(err))
     }, [])
 

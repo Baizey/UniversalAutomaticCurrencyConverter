@@ -13,7 +13,7 @@ type Props = { setDismissed: () => void }
 
 export function LocalizationAlert(props: Props) {
     const [useDetected, setUseDetected] = useState(true);
-    const {activeLocalization, tabInformation} = useProvider();
+    const {activeLocalization, tabState} = useProvider();
 
     useEffect(() => {
         activeLocalization.reset(!useDetected)
@@ -28,7 +28,7 @@ export function LocalizationAlert(props: Props) {
         if(useDetected) await activeLocalization.overloadWithDetected()
         else await activeLocalization.overloadWithDefaults()
         await activeLocalization.save();
-        await tabInformation.updateDisplay()
+        await tabState.updateDisplay()
     }
 
     return <AlertSection onDismiss={props.setDismissed} title="Localization alert">

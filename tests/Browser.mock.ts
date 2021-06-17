@@ -3,6 +3,8 @@ import {ITabMessenger} from "../src/infrastructure/BrowserMessengers/TabMessenge
 import {IPopupMessenger} from "../src/infrastructure/BrowserMessengers/PopupMessenger";
 import {BrowserDataStorage, Browsers, Environments} from "../src/infrastructure/Browser/Browser";
 import {IBackgroundMessenger, RateResponse} from "../src/infrastructure/BrowserMessengers/BackgroundMessenger";
+import {JSDOM} from "jsdom";
+import {HtmlMock} from "./Html.mock";
 
 export class BrowserMock implements IBrowser {
 
@@ -245,14 +247,23 @@ export class BrowserMock implements IBrowser {
         this.id = '';
         this.extensionVersion = '4.0.0'
         this.extensionUrl = ''
-        const useragent = window.navigator.userAgent;
+
+        // TODO: fix
+        //const useragent = window.navigator.userAgent;
+        const useragent = 'HeadlessChrome'
         if (useragent.indexOf('HeadlessChrome') >= 0)
             this.type = Browsers.Chrome
         else
             this.type = Browsers.Firefox
     }
 
-    get url(){
+    get document(): Document {
+        return {
+            body: HtmlMock.empty()
+        } as Document
+    }
+
+    get url() {
         return this._url || new URL('https://google.com');
     }
 

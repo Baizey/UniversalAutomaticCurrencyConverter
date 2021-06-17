@@ -1,14 +1,8 @@
 import useMockContainer from './Container.mock';
-import {BackendApi, IBackendApi} from '../src/currencyConverter/BackendApi';
 import {CurrencyRegex} from '../src/currencyConverter/Detection/CurrencyRegex';
+import {expect} from 'chai';
 
 describe('CurrencyRegex', () => {
-    const create = (html: string): string => {
-        const div = document.createElement('div');
-        div.innerHTML = html;
-        // @ts-ignore
-        return div.children[0].innerText;
-    }
     const tests = [
         {
             text: `$3.99`, expect: [{
@@ -101,13 +95,13 @@ describe('CurrencyRegex', () => {
 
             // Assert
             for (let i = 0; i < test.expect.length; i++) {
-                if(!test.expect[i]) {
-                    expect(actual[i]).toBeNull();
+                if (!test.expect[i]) {
+                    expect(actual[i]).to.be.null;
                     continue
                 }
-                expect(actual[i]?.text).toEqual(test.expect[i]?.text)
-                expect(actual[i]?.currencies).toEqual(test.expect[i]?.currencies)
-                expect(actual[i]?.amounts).toEqual(test.expect[i]?.amounts)
+                expect(actual[i]?.text).to.be.eql(test.expect[i]?.text)
+                expect(actual[i]?.currencies).to.be.eql(test.expect[i]?.currencies)
+                expect(actual[i]?.amounts).to.be.eql(test.expect[i]?.amounts)
             }
         });
     })

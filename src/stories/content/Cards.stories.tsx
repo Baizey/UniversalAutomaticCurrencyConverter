@@ -42,12 +42,12 @@ type MenuAlertArgs = {
 }
 const MenuAlertTemplate: Story = (args) => {
     const {isAllowed, conversions} = args as MenuAlertArgs
-    const {tabInformation, browser} = useProvider()
+    const {tabState, browser} = useProvider()
     if (browser instanceof BrowserMock) browser.setUrl(new URL(`https://www.totally.is.website.youtube.com/path/to/video/watch?v=dQw4w9WgXcQ`))
-    tabInformation.setIsAllowed(isAllowed)
-    tabInformation.conversions = []
+    tabState.setIsAllowed(isAllowed)
+    tabState.conversions = []
     for (let i = 0; i < Math.min(conversions, 100); i++) { // @ts-ignore
-        tabInformation.conversions.push(null);
+        tabState.conversions.push(null);
     }
     return <MenuAlert setDismissed={() => {
     }}/>;

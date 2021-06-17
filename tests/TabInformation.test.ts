@@ -1,62 +1,66 @@
-import {TabInformation} from "../src/currencyConverter/Live/TabInformation";
+import {TabState} from "../src/currencyConverter/Live/TabState";
 import {CurrencyElement} from "../src/currencyConverter/Currency";
 import useMockContainer from "./Container.mock";
+import {expect} from 'chai';
+import {HtmlMock} from "./Html.mock";
 
 describe('TabInformation', () => {
     it(`is allowed`, () => {
         // Setup
-        const tabInfo = new TabInformation()
+        const tabInfo = new TabState()
         tabInfo.setIsAllowed(true);
 
+        expect(tabInfo.isAllowed).to.be.true;
         // Assert
-        expect(tabInfo.isAllowed).toBeTrue()
+        expect(tabInfo.isAllowed).to.be.true
     });
     it(`is not allowed`, () => {
         // Setup
-        const tabInfo = new TabInformation()
+        const tabInfo = new TabState()
         tabInfo.setIsAllowed(false);
 
         // Assert
-        expect(tabInfo.isAllowed).toBeFalse()
+        expect(tabInfo.isAllowed).to.be.false
     });
 
     it(`is showing conversions`, () => {
         // Setup
-        const tabInfo = new TabInformation()
+        const tabInfo = new TabState()
         tabInfo.setIsShowingConversions(true)
 
         // Assert
-        expect(tabInfo.isShowingConversions).toBeTrue()
+        expect(tabInfo.isShowingConversions).to.be.true
     });
 
     it(`is not showing conversions after flip`, () => {
         // Setup
         const [container, provider] = useMockContainer();
-        const tabInfo = new TabInformation()
-        tabInfo.conversions.push(new CurrencyElement(provider, document.createElement('div')))
-        tabInfo.setIsShowingConversions(true)
+        const tabInformation = provider.tabState;
+        tabInformation.conversions.push(new CurrencyElement(provider, HtmlMock.empty()))
+        tabInformation.setIsShowingConversions(true)
 
         // Act
-        tabInfo.flipAllConversions()
+        tabInformation.flipAllConversions()
 
         // Assert
-        expect(tabInfo.conversions.map(e => e.isShowingConversion)[0]).toBeFalse()
-        expect(tabInfo.isShowingConversions).toBeFalse()
+        expect(tabInformation.isShowingConversions).to.be.false
     });
 
     it(`is not showing hovered conversions after flip`, () => {
         // Setup
         const [container, provider] = useMockContainer();
-        const tabInfo = new TabInformation()
-        tabInfo.conversions.push(new CurrencyElement(provider, document.createElement('div')))
-        tabInfo.conversions[0].isHovered = true;
+        provider.convertHoverShortcut.setValue('Shift')
+        const tabInfo = provider.tabState
+        const element = new CurrencyElement(provider, HtmlMock.empty())
+        element.setupListener()
+        tabInfo.conversions.push(element)
+        element.isHovered = true;
         tabInfo.setIsShowingConversions(true)
 
         // Act
         tabInfo.flipHovered()
 
         // Assert
-        expect(tabInfo.conversions.map(e => e.isShowingConversion)[0]).toBeFalse()
-        expect(tabInfo.isShowingConversions).toBeTrue()
+        expect(element.isShowingConversion).to.be.false
     });
 });

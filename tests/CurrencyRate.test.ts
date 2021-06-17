@@ -1,28 +1,29 @@
 import {CurrencyRate} from "../src/currencyConverter/BackendApi/CurrencyRate";
+import {expect} from 'chai';
 
 describe('CurrencyRate', () => {
     it(`very old is expired`, () => {
         // Setup
         const rate = new CurrencyRate('', '', 0, 5, []);
         // Assert
-        expect(rate.isExpired).toEqual(true)
+        expect(rate.isExpired).to.be.eql(true)
     });
     it(`just expired`, () => {
         // Setup
         const rate = new CurrencyRate('', '', 0, Date.now() - 1000 * 60 * 60 * 24, []);
         // Assert
-        expect(rate.isExpired).toEqual(true)
+        expect(rate.isExpired).to.be.eql(true)
     });
     it(`just exactly not expired`, () => {
         // Setup
         const rate = new CurrencyRate('', '', 0, Date.now() - 1000 * 60 * 60 * 24 + 1000, []);
         // Assert
-        expect(rate.isExpired).toEqual(false)
+        expect(rate.isExpired).to.be.eql(false)
     });
     it(`new isn't expired`, () => {
         // Setup
         const rate = new CurrencyRate('', '', 0, Date.now(), []);
         // Assert
-        expect(rate.isExpired).toEqual(false)
+        expect(rate.isExpired).to.be.eql(false)
     });
 });
