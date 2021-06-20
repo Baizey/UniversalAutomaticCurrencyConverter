@@ -5,6 +5,7 @@ import express from 'express'
 import {Time} from "./Time";
 import {Conversion, CurrencyRateGraph} from './CurrencyRateGraph';
 import {SymbolsService} from "./services/SymbolsService";
+import {HttpStatus, Routes} from "./constants";
 
 class Data {
     symbols: Record<string, string> = {}
@@ -34,32 +35,41 @@ const api = express();
 
 const apiKey = process.env.ownApiKey
 api.use((request, response, next) => {
+    // Health check doesnt need apikey, everything else does
+    if (request.path.startsWith(Routes.health))
+        return next()
     if (!('x-apikey' in request.headers))
-        return response.status(401).send('This service requires an API key');
-
+        return response
+            .status(HttpStatus.notAuthorized)
+            .send('This service requires an API key');
     if (apiKey !== request.headers['x-apikey'])
-        return response.status(401).send('This service requires a valid API key');
-
+        return response
+            .status(HttpStatus.notAuthorized)
+            .send('This service requires a valid API key');
     next();
 })
 
 api.param('from', (request, response, next, key) => {
     if (!(/^[A-Z]{3}$/.test(key)))
-        return response.status(400).send(`From '${key}' is invalid currency tag`);
-
+        return response
+            .status(HttpStatus.badInput)
+            .send(`From '${key}' is invalid currency tag`);
     if (!(key in data.rates.nodes))
-        return response.status(404).send(`From '${key}' is not found in currencies`);
-
+        return response
+            .status(HttpStatus.notFound)
+            .send(`From '${key}' is not found in currencies`);
     next();
 });
 
 api.param('to', (request, response, next, key) => {
     if (!(/^[A-Z]{3}$/.test(key)))
-        return response.status(400).send(`To '${key}' is invalid currency tag`);
-
+        return response
+            .status(HttpStatus.badInput)
+            .send(`To '${key}' is invalid currency tag`);
     if (!(key in data.rates.nodes))
-        return response.status(404).send(`To '${key}' is not found in currencies`);
-
+        return response
+            .status(HttpStatus.notFound)
+            .send(`To '${key}' is not found in currencies`);
     next();
 });
 
@@ -90,21 +100,29 @@ class Mapper {
 }
 
 // Currency rates endpoint
-api.get('/api/v4/rate/:from/:to', (request, response) => {
+api.get(Routes.rate, (request, response) => {
     const from = request.params.from;
     const to = request.params.to;
 
     const rate = data.rates.rate(from, to);
-    if (!rate) return response.status(404).send(`Conversion between '${to}' and '${from}' not found`)
+    if (!rate) return response
+        .status(HttpStatus.notFound)
+        .send(`Conversion between '${to}' and '${from}' not found`)
 
-    return response.status(200).send(Mapper.mapRate(rate))
+    return response
+        .status(HttpStatus.ok)
+        .send(Mapper.mapRate(rate))
 });
 
 // Currency symbols endpoint
-api.get('/api/v4/symbols', (request, response) => response.status(200).send(data.symbols));
+api.get(Routes.symbols, (request, response) => response
+    .status(HttpStatus.ok)
+    .send(data.symbols));
 
 // Health check
-api.get('/health', (request, response) => response.status(200).send());
+api.get(Routes.health, (request, response) => response
+    .status(HttpStatus.okNoResult)
+    .send());
 
 const port: number = +(process.env.PORT || 3001);
 api.listen(port, () => {
