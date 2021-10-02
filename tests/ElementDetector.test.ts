@@ -54,6 +54,11 @@ describe('ElementDetector', () => {
             name: 'Amazon visible converted',
             element: HtmlMock.parse(`<span aria-hidden="true"><span class="a-price-symbol">DKK</span><span class="a-price-whole">21<span class="a-price-decimal">.</span></span><span class="a-price-fraction">44</span></span>`),
             expect: ['21 DKK']
+        },
+        {
+            name: 'Spaced numerals',
+            element: HtmlMock.parse(`<div>2 400 000 DKK</div>`),
+            expect: ['2 400 000 DKK']
         }
     ];
     convertedShowTest.forEach((test: { name: string, element: HTMLElement, expect: string[] }) => {
