@@ -14,7 +14,7 @@ An extension for Chrome, Firefox and (the new) Edge
 
 ## Environment
 
-- NodeJs (LTS v14.X.X)
+- NodeJs (LTS v16.X.X)
 - Npm (v7.X.X)
 - Windows 10 (which OS compiles it should hopefully not matter)
 
