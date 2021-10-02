@@ -2,6 +2,7 @@ language: node_js
 node_js:
   - "16.10.0"
 before_script:
-  - npm install -g npm
   - npm install
-script: npm run test
+script: 
+  - npm run test
+  - npm run start:prod

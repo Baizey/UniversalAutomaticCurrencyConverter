@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "test": "jest",
+    "start:prod": "webpack --mode=development",
     "start:dev": "webpack --mode=development",
     "start:dev:watch": "webpack --mode=development --watch",
     "storybook": "start-storybook -p 6006",
