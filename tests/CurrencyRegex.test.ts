@@ -75,10 +75,25 @@ describe('CurrencyRegex', () => {
             }, null]
         },
         {
-            name: 'invis char', text: "‎$34.99", expect: [{
+            name: 'invis char', 
+            text: "‎$34.99", 
+            expect: [{
                 amounts: [{neg: '+', integer: '34', decimal: '99'}],
                 text: '‎$34.99',
                 currencies: ['$', '']
+            }, null]
+        },
+        {
+            name: 'Space separated numerals',
+            text: '2 499 000 USD',
+            expect: [{
+                text: '2 499 000 USD',
+                amounts: [{
+                    integer: '2499000',
+                    decimal: '',
+                    neg: '+'
+                }],
+                currencies: ['', 'USD']
             }, null]
         }
     ];
