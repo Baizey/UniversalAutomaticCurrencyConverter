@@ -54,7 +54,7 @@ export class Localizations {
             // Russia
             'RUB': ['₽'],
             // Turkey
-            'TRY': ['₺'],
+            'TRY': ['₺', 'TL'],
             // Ukraine
             'UAH': ['₴'],
             // Thailand
