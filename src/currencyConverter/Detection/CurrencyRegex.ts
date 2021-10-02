@@ -86,9 +86,9 @@ export class CurrencyRegex {
             symbols: string = empty
                 .concat(Object.values(Localizations.unique)
                     .reduce((a, b) => [...a, ...b])
-                    .map(e => e.replace('$', '\\$')))
+                    .map(e => e.replace(/\$/g, '\\$')))
                 .concat(Object.keys(Localizations.shared)
-                    .map(e => e.replace('$', '\\$')))
+                    .map(e => e.replace(/\$/g, '\\$')))
                 .concat([/[A-Z]{3}/.source])
                 .join('|');
         return `(${symbols})?`;
