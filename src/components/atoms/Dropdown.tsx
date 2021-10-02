@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Select from 'react-select';
-import {MyTheme, useProvider} from '../../infrastructure';
+import {MyTheme} from '../../infrastructure';
 import {asPixel, FieldHeight} from './Constants';
 import {basicStyle} from './Basics';
 import {useTheme} from 'styled-components';
@@ -30,11 +30,9 @@ export function Dropdown({options, value, onChange, maxOptions, menuPlacement}: 
         }}
         value={selected}
         options={options}
-        cacheOptions
-        defaultOptions
         menuPlacement={menuPlacement || 'auto'}
         placeholder={"Search and select..."}
-        components={{DropdownIndicator: () => null, IndicatorSeparator: () => null}}
+        components={{IndicatorSeparator: () => null}}
         styles={{
             option: (provided: any, state: any) => ({
                 ...provided,
@@ -103,15 +101,32 @@ export function Dropdown({options, value, onChange, maxOptions, menuPlacement}: 
                 ...basicStyle({theme: theme}),
             })
         }}
-        theme={theme => ({
-            ...theme,
+        theme={{
             borderRadius: 0,
-            colors: {},
             spacing: {
                 baseUnit: 10,
                 controlHeight: 10,
                 menuGutter: 10
+            },
+            colors: {
+                primary: '',
+                primary75: '',
+                primary50: '',
+                primary25: '',
+                danger: '',
+                dangerLight: '',
+                neutral0: '',
+                neutral5: '',
+                neutral10: '',
+                neutral20: '',
+                neutral30: '',
+                neutral40: '',
+                neutral50: '',
+                neutral60: '',
+                neutral70: '',
+                neutral80: '',
+                neutral90: '',
             }
-        })}
+        }}
     />
 }

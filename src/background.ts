@@ -58,9 +58,9 @@ enum ContextMenuItem {
                     break;
             }
         });
-    } catch (err) {
+    } catch (err: unknown) {
         // Mostly happens if the context menu item already exists
-        logger.error(err)
+        logger.error(err as Error)
     }
 
     browser.runtime.onMessage.addListener(function (request: BackgroundMessage, sender, senderResponse): boolean {

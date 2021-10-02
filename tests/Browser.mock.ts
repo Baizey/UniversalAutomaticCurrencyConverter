@@ -307,6 +307,7 @@ export class BrowserMock implements IBrowser {
     get tabs(): typeof chrome.tabs {
         // @ts-ignore
         return {
+            // @ts-ignore
             create: () => {
             },
             // @ts-ignore

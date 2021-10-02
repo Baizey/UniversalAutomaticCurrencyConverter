@@ -4,7 +4,6 @@ import {LocalSetting} from './LocalSetting';
 import {DependencyProvider} from '../DependencyInjection';
 import {themes} from '../Theme';
 import {SiteAllowance} from "../../currencyConverter/Detection";
-import {borderRadius} from "react-select/src/theme";
 
 const isBool = (e: any) => typeof (e) === 'boolean';
 

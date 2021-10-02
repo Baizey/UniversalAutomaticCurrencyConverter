@@ -89,8 +89,8 @@ async function injectConversions(): Promise<void> {
                     })
                 }
             }
-        } catch (err) {
-            logger.error(err);
+        } catch (err: unknown) {
+            logger.error(err as Error);
         }
     }).observe(document.body, {childList: true, subtree: true, attributes: true, characterData: true});
 
