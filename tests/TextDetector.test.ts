@@ -77,7 +77,7 @@ describe('TextDetector', () => {
     tests.forEach((test: { name?: string, expect: { amounts: any, text: string, currencies: string[] }[], text: string }) => {
         it(`${test.name || test.text}`, async () => {
             // Setup
-            const [container, provider] = useMockContainer();
+            const provider = useMockContainer();
             await provider.activeLocalization.load()
             await provider.activeLocalization.overload({dollar: 'USD'})
             const detector = provider.textDetector;

@@ -1,5 +1,5 @@
 import {IBrowser, ILogger, ISetting} from "../../infrastructure";
-import {DependencyProvider} from '../../infrastructure/DependencyInjection';
+import {Provider} from '../../infrastructure';
 
 export class CurrencyLocalization {
     value: string;
@@ -11,7 +11,7 @@ export class CurrencyLocalization {
     private readonly setting: ISetting<string>;
     private readonly logger: ILogger;
 
-    constructor({browser, logger}: DependencyProvider, key: string, setting: ISetting<string>) {
+    constructor({browser, logger}: Provider, key: string, setting: ISetting<string>) {
         this.logger = logger;
         this.browser = browser;
         this.setting = setting;

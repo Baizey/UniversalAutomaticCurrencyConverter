@@ -4,7 +4,7 @@ import {
     usingWhitelistingSetting,
     whitelistedUrlsSetting
 } from '../../infrastructure/Configuration';
-import {DependencyProvider} from '../../infrastructure/DependencyInjection';
+import {Provider} from '../../infrastructure/DependencyInjection';
 
 type TrieNodeResult = { url: string, allowed: boolean }
 type AllowanceResult = { isAllowed: boolean, reasoning: TrieNodeResult[] }
@@ -31,7 +31,7 @@ export class SiteAllowance implements ISiteAllowance {
         return new URL(uri);
     }
 
-    constructor({usingWhitelisting, usingBlacklisting, blacklistedUrls, whitelistedUrls}: DependencyProvider) {
+    constructor({usingWhitelisting, usingBlacklisting, blacklistedUrls, whitelistedUrls}: Provider) {
         this.usingWhitelisting = usingWhitelisting;
         this.usingBlacklisting = usingBlacklisting;
         this.blacklistedUrls = blacklistedUrls;

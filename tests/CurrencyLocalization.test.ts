@@ -15,7 +15,7 @@ describe('CurrencyLocalization', () => {
         {input: 'aaaa', expect: ''},
     ].forEach(test => it(`Override ${test.input} => ${test.expect}`, () => {
         // Setup
-        const [container, provider] = useMockContainer();
+        const provider = useMockContainer();
         const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
 
@@ -31,7 +31,7 @@ describe('CurrencyLocalization', () => {
         {input: 'CCC', default: 'CCC', expect: false},
     ].forEach(test => it(`Conflict ${test.input} => ${test.expect}`, () => {
         // Setup
-        const [container, provider] = useMockContainer();
+        const provider = useMockContainer();
         const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
         localization.defaultValue = test.default;
@@ -43,7 +43,7 @@ describe('CurrencyLocalization', () => {
 
     it(`Save`, async () => {
         // Setup
-        const [container, provider] = useMockContainer();
+        const provider = useMockContainer();
         const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, 'key', setting);
         const spy = chai.spy.on(provider.browser, 'saveLocal');

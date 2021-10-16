@@ -1,13 +1,13 @@
 import {IBackendApi} from "../BackendApi";
-import {DependencyProvider} from '../../infrastructure/DependencyInjection';
+import {Provider} from '../../infrastructure/DependencyInjection';
 
 export class CurrencyAmount {
     readonly tag: string;
     readonly amount: number[];
     private readonly backendApi: IBackendApi;
-    private readonly provider: DependencyProvider;
+    private readonly provider: Provider;
 
-    constructor({provider, backendApi}: DependencyProvider, tag: string, amount: number | number[]) {
+    constructor({provider, backendApi}: Provider, tag: string, amount: number | number[]) {
         this.provider = provider;
         this.backendApi = backendApi;
         this.tag = tag.toUpperCase();

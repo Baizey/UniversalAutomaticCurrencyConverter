@@ -3,7 +3,6 @@ import {ITabMessenger} from "../src/infrastructure/BrowserMessengers/TabMessenge
 import {IPopupMessenger} from "../src/infrastructure/BrowserMessengers/PopupMessenger";
 import {BrowserDataStorage, Browsers, Environments} from "../src/infrastructure/Browser/Browser";
 import {IBackgroundMessenger, RateResponse} from "../src/infrastructure/BrowserMessengers/BackgroundMessenger";
-import {JSDOM} from "jsdom";
 import {HtmlMock} from "./Html.mock";
 
 export class BrowserMock implements IBrowser {

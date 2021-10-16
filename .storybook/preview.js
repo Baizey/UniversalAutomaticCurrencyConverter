@@ -3,6 +3,7 @@ import {lightTheme} from "../src/infrastructure/Theme/LightTheme";
 import {darkTheme} from "../src/infrastructure/Theme/DarkTheme";
 import useMockContainer from "../tests/Container.mock";
 import {Container, mapToTheme} from "../src/infrastructure";
+import {Provider} from "../src/infrastructure/DependencyInjection";
 
 export const parameters = {
     backgrounds: {
@@ -82,8 +83,8 @@ const InnerWrapperContent = styled.div`
 
 export const decorators = [
     (Story, context) => {
-        const [container, provider] = useMockContainer();
-        Container.setIfNotExistGlobal(container);
+        const container = useMockContainer();
+        const provider = Container.getOrCreate<Provider>(() => container);
         provider.colorTheme.setValue(context.globals.theme);
 
         function create(Inner) {

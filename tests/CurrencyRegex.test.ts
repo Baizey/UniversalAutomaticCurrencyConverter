@@ -100,7 +100,7 @@ describe('CurrencyRegex', () => {
     tests.forEach((test: { name?: string, expect: ({ amounts: any, text: string, currencies: string[] } | null)[], text: string }) => {
         it(`${test.name || test.text}`, async () => {
             // Setup
-            const [container, provider] = useMockContainer();
+            const provider = useMockContainer();
             await provider.activeLocalization.overload({dollar: 'USD'})
             const regex = new CurrencyRegex(test.text);
 

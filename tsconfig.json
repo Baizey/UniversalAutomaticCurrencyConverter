@@ -5,6 +5,7 @@
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "module": "es6",

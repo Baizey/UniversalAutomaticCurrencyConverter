@@ -34,7 +34,7 @@ describe('TabInformation', () => {
 
     it(`is not showing conversions after flip`, () => {
         // Setup
-        const [container, provider] = useMockContainer();
+        const provider = useMockContainer();
         const tabInformation = provider.tabState;
         tabInformation.conversions.push(new CurrencyElement(provider, HtmlMock.empty()))
         tabInformation.setIsShowingConversions(true)
@@ -48,7 +48,7 @@ describe('TabInformation', () => {
 
     it(`is not showing hovered conversions after flip`, () => {
         // Setup
-        const [container, provider] = useMockContainer();
+        const provider = useMockContainer();
         provider.convertHoverShortcut.setValue('Shift')
         const tabInfo = provider.tabState
         const element = new CurrencyElement(provider, HtmlMock.empty())

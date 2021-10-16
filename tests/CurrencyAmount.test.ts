@@ -43,7 +43,7 @@ describe('CurrencyAmount', () => {
         tests.forEach((test: { input: number, expect: string | string[], rounding: number }) => {
             it(`Input: ${test.input}, Expected: ${test.expect}, Rounding: ${test.rounding}`, () => {
                 // Setup
-                const [container, provider] = useMockContainer()
+                const provider = useMockContainer()
                 provider.significantDigits.setValue(test.rounding);
                 const amount = new CurrencyAmount(provider, 'EUR', test.input);
 
@@ -69,7 +69,7 @@ describe('CurrencyAmount', () => {
         tests.forEach((test: { amount: number | number[], expect: number | number[], rate: number }) => {
             it(`Input: ${test.amount}, Expected: ${test.expect}, Rate: ${test.rate}`, async () => {
                 // Setup
-                const [container, provider] = useMockContainer();
+                const provider = useMockContainer();
                 (provider.browser as BrowserMock).addRate('USD', 'EUR', test.rate);
                 const original = new CurrencyAmount(provider, 'USD', test.amount);
 
@@ -90,7 +90,7 @@ describe('CurrencyAmount', () => {
 
         it(`Unknown currency`, async () => {
             // Setup
-            const [container, provider] = useMockContainer()
+            const provider = useMockContainer()
             const original = new CurrencyAmount(provider, 'EUR', 0);
 
             // Act
@@ -131,7 +131,7 @@ describe('CurrencyAmount', () => {
         }) => {
             it(`Rounding: ${test.rounding}, amount: ${test.amount}, currency: ${test.currency}, expect: ${test.expect}`, async () => {
                 // Setup
-                const [container, provider] = useMockContainer()
+                const provider = useMockContainer()
                 provider.significantDigits.setValue(test.rounding)
                 provider.decimalPoint.setValue(test.decimal)
                 provider.thousandsSeparator.setValue(test.thousands)

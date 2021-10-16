@@ -3,7 +3,7 @@ import {ITextDetector} from "../Detection";
 import {IBackendApi} from "../BackendApi";
 import {CurrencyAmount} from "./CurrencyAmount";
 import {IActiveLocalization} from "../Localization";
-import {DependencyProvider, useProvider} from '../../infrastructure/DependencyInjection';
+import {Provider, useProvider} from '../../infrastructure/DependencyInjection';
 import {ILogger} from "../../infrastructure";
 
 type CurrencyInfo = {
@@ -29,7 +29,7 @@ export class CurrencyElement {
     private conversionTo: string;
     private _isShowingConversion: boolean;
     private localization: IActiveLocalization;
-    private readonly provider: DependencyProvider
+    private readonly provider: Provider
     private logger: ILogger;
 
     constructor({
@@ -38,7 +38,7 @@ export class CurrencyElement {
                     textDetector,
                     activeLocalization,
                     logger
-                }: DependencyProvider,
+                }: Provider,
                 element: HTMLElement) {
         this.logger = logger;
         this.id = ++CurrencyElement.nextId;

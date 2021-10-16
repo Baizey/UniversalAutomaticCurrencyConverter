@@ -1,4 +1,4 @@
-import {DependencyProvider} from '../DependencyInjection';
+import {Provider} from '../DependencyInjection';
 import {useDebugLoggingSetting} from '../Configuration';
 import {LoggingSettingType} from "../Configuration/Configuration";
 
@@ -43,7 +43,7 @@ export class Logger implements ILogger {
     private readonly startTime: number;
     private isFirstLog: boolean;
 
-    constructor({useLogging}: DependencyProvider) {
+    constructor({useLogging}: Provider) {
         this.isFirstLog = true;
         this.useLogging = useLogging;
         this.startTime = Date.now();

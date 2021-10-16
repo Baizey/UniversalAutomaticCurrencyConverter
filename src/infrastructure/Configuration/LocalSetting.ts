@@ -1,6 +1,6 @@
 import {IBrowser} from '../Browser';
 import {ISetting} from './ISetting';
-import {DependencyProvider} from '../DependencyInjection';
+import {Provider} from '../DependencyInjection';
 
 export class LocalSetting<T> implements ISetting<T> {
     private _value: T
@@ -9,7 +9,7 @@ export class LocalSetting<T> implements ISetting<T> {
     readonly validation: (v: T) => boolean
     private readonly browser: IBrowser;
 
-    constructor({browser}: DependencyProvider,
+    constructor({browser}: Provider,
                 storageKey: string,
                 defaultValue: T,
                 validation: (v: T) => boolean = () => true) {

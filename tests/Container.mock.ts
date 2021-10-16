@@ -1,10 +1,9 @@
-import {Browser, Container, IBrowser} from '../src/infrastructure';
-import {addDependencies} from '../src/infrastructure/DependencyInjection';
-import {BrowserMock} from './Browser.mock';
-import {IContainer} from '../src/infrastructure/DependencyInjection/package';
-import {DependencyProvider} from '../src/infrastructure/DependencyInjection';
+import {addDependencies, IBrowser, Provider} from '../src/infrastructure';
 import chai from 'chai'
 import spies from 'chai-spies'
+import {BrowserMock} from "./Browser.mock";
+import {Container, WeakProvider} from "../src/infrastructure/DependencyInjection/Provider";
+import {ServiceCollection, ServiceProvider} from "sharp-dependency-injection/lib";
 
 function addSpies() {
     chai.use(spies);
@@ -19,13 +18,14 @@ function addNodeIfNotExisting() {
     }
 }
 
-function mockContainer(): [IContainer<DependencyProvider>, DependencyProvider] {
-    const container = addDependencies(new Container<DependencyProvider>());
-    container.getRequired<IBrowser>(Browser).overrideFactory(() => new BrowserMock())
-    return [container, container.build()];
+function mockContainer(): ServiceProvider<Provider> {
+    const services = addDependencies(new ServiceCollection(WeakProvider));
+    services.replaceSingleton<IBrowser>({dependency: BrowserMock, selector: p => p.browser})
+    Container.getOrCreate(() => services)
+    return services.build(false);
 }
 
-export default function useMockContainer(): [IContainer<DependencyProvider>, DependencyProvider] {
+export default function useMockContainer(): ServiceProvider<Provider> {
     addNodeIfNotExisting();
     addSpies();
     return mockContainer();

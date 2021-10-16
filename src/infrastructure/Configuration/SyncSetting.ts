@@ -1,6 +1,6 @@
 import {IBrowser} from "../";
 import {ISetting} from './ISetting';
-import {DependencyProvider} from '../DependencyInjection';
+import {Provider} from '../DependencyInjection';
 
 export class SyncSetting<T> implements ISetting<T> {
     readonly defaultValue: T
@@ -8,7 +8,7 @@ export class SyncSetting<T> implements ISetting<T> {
     readonly validation: (v: T) => boolean
     private browser: IBrowser;
 
-    constructor({browser}: DependencyProvider, storageKey: string,
+    constructor({browser}: Provider, storageKey: string,
                 defaultValue: T,
                 validation: (v: T) => boolean = () => true,) {
         this.browser = browser;

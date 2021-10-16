@@ -1,6 +1,7 @@
 import useMockContainer from './Container.mock';
 import {expect} from 'chai';
 import {HtmlMock} from "./Html.mock";
+import {IElementDetector} from "../src/currencyConverter/Detection";
 
 describe('ElementDetector', () => {
     const originalShowTest = [
@@ -24,10 +25,10 @@ describe('ElementDetector', () => {
     originalShowTest.forEach((test: { name: string, element: HTMLElement, expect: any }) => {
         it(`${test.name}`, async () => {
             // Setup
-            const [container, provider] = useMockContainer();
+            const provider = useMockContainer();
             await provider.activeLocalization.load()
             await provider.activeLocalization.overload({dollar: 'USD'})
-            const elementDetector = provider.elementDetector;
+            const elementDetector: IElementDetector = provider.elementDetector;
 
             // Act
             const actual = elementDetector.find(test.element);
@@ -35,7 +36,7 @@ describe('ElementDetector', () => {
 
 
             // Assert
-            expect(actual.map(e => e.element.textContent)).to.have.all.members(test.expect);
+            expect(actual.map((e) => e.element.textContent)).to.have.all.members(test.expect);
         });
     })
 
@@ -64,10 +65,10 @@ describe('ElementDetector', () => {
     convertedShowTest.forEach((test: { name: string, element: HTMLElement, expect: string[] }) => {
         it(`${test.name}`, async () => {
             // Setup
-            const [container, provider] = useMockContainer();
+            const provider = useMockContainer();
             await provider.activeLocalization.load()
             await provider.activeLocalization.overload({dollar: 'USD', krone: 'DKK'})
-            const elementDetector = provider.elementDetector;
+            const elementDetector: IElementDetector = provider.elementDetector;
 
             // Act
             const actual = elementDetector.find(test.element);

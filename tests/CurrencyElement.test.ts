@@ -43,7 +43,7 @@ describe('CurrencyElement', () => {
     tests.forEach((test: { name: string, expect: string, element: HTMLElement, showInBrackets?: boolean }) => {
         it(`${test.name}`, async () => {
             // Setup
-            const [container, provider] = useMockContainer()
+            const provider = useMockContainer()
             await provider.activeLocalization.load()
             await provider.activeLocalization.overload({dollar: 'USD'})
             provider.showConversionInBrackets.setValue(test.showInBrackets);

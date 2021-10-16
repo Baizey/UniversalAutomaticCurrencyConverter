@@ -3,7 +3,7 @@ import {CurrencyLocalization} from "./CurrencyLocalization";
 import {Localizations} from "./Localization";
 import {IBackendApi} from "../BackendApi";
 import {disabledCurrenciesSetting} from '../../infrastructure/Configuration';
-import {DependencyProvider} from '../../infrastructure/DependencyInjection';
+import {Provider} from '../../infrastructure';
 
 export interface IActiveLocalization {
     readonly krone: CurrencyLocalization;
@@ -60,7 +60,7 @@ export class ActiveLocalization implements IActiveLocalization {
                     logger,
                     browser,
                     backendApi
-                }: DependencyProvider) {
+                }: Provider) {
         this.disabledCurrencies = disabledCurrencies;
         this.logger = logger;
         this.backendApi = backendApi;

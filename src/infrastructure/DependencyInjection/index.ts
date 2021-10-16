@@ -1,2 +1,1 @@
-export {Container, IProvider} from './package'
-export {useProvider, addDependencies, DependencyProvider} from './DependencyProvider'
+export {Provider, useProvider, addDependencies} from './Provider'

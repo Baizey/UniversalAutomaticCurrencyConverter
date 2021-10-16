@@ -1,6 +1,6 @@
 import {IBrowser} from "../../infrastructure";
 import {CurrencyRate, ICurrencyRate} from "./CurrencyRate";
-import {DependencyProvider} from '../../infrastructure/DependencyInjection';
+import {Provider} from '../../infrastructure/DependencyInjection';
 import {RatePath} from '../../infrastructure/BrowserMessengers/BackgroundMessenger';
 
 export interface IBackendApi {
@@ -21,7 +21,7 @@ export class BackendApi implements IBackendApi {
     private _symbolsExpireDate: number;
     private _browser: IBrowser;
 
-    constructor({browser}: DependencyProvider) {
+    constructor({browser}: Provider) {
         this._symbolsExpireDate = 0;
         this._rates = {}
         this._symbols = undefined;

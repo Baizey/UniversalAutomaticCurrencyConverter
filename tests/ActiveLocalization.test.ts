@@ -16,7 +16,7 @@ describe('ActiveLocalization', () => {
         {input: 'aaaa', expect: ''},
     ].forEach(test => it(`Override ${test.input} => ${test.expect}`, () => {
         // Setup
-        const [container, provider] = useMockContainer();
+        const provider = useMockContainer();
         const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
 
@@ -32,7 +32,7 @@ describe('ActiveLocalization', () => {
         {input: '', expect: false},
     ].forEach(test => it(`Conflict ${test.input} => ${test.expect}`, () => {
         // Setup
-        const [container, provider] = useMockContainer();
+        const provider = useMockContainer();
         const setting = new SyncSetting<string>(provider, '', '', () => true)
         const localization = new CurrencyLocalization(provider, '', setting);
         localization.setDetected(test.input)
@@ -43,7 +43,7 @@ describe('ActiveLocalization', () => {
 
     it(`Save`, async () => {
         // Setup
-        const [container, provider] = useMockContainer();
+        const provider = useMockContainer();
         const localization = provider.activeLocalization;
         const kroneSpy = chai.spy.on(localization.krone, 'save')
         const yenSpy = chai.spy.on(localization.yen, 'save')
