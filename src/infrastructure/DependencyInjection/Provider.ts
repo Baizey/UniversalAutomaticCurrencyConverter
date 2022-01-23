@@ -48,11 +48,9 @@ import {
 } from '../Configuration/Configuration';
 import {ISetting} from '../Configuration/ISetting';
 import {TabState} from '../../currencyConverter/Live/TabState';
-import {IServiceCollection, IServiceProvider, ServiceCollection, ServiceProvider} from "sharp-dependency-injection/lib";
-import {ProviderScope} from "sharp-dependency-injection/lib/types";
+import {IServiceCollection, ServiceCollection, ServiceProvider} from "sharp-dependency-injection/lib";
 
 export class WeakProvider {
-    provider?: Provider
     tabState?: TabState
     browser?: IBrowser
     logger?: ILogger
@@ -217,23 +215,16 @@ function addDependencies(services: IServiceCollection<Provider>): IServiceCollec
     services.addSingleton(TextDetector)
     services.addSingleton(ElementDetector)
     services.addSingleton(ActiveLocalization)
-    services.addTransient<Provider>({
-        factory: provider => {
-            const services = provider as ServiceProvider<WeakProvider>;
-            return services._.create({trail: {}, validate: false}, null as unknown as ProviderScope)
-        },
-        selector: p => p.provider
-    })
     return services;
 }
 
 export class Container {
-    private static provider: IServiceProvider<Provider>
+    private static provider: ServiceProvider<Provider>
 
     public static getOrCreate(factory: () => IServiceCollection<Provider>) {
         if (this.provider) return this.provider;
         const services = factory();
-        return (this.provider = services.build(false))
+        return (this.provider = services.build())
     }
 }
 

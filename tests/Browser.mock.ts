@@ -331,8 +331,7 @@ export class BrowserMock implements IBrowser {
     // @ts-ignore
     get contextMenus(): typeof chrome.contextMenus {
         return {
-            create: () => {
-            },
+            create: () => 0,
             // @ts-ignore
             onClicked: {
                 addListener: () => {
