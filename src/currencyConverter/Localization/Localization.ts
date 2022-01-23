@@ -13,8 +13,8 @@ export class Localizations {
 
     static get shared() {
         return {
-            // Usa, Canada, Australia, Mexico, New Zealand, Singapore, Hong kong
-            '$': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
+            // Usa, Canada, Australia, Mexico, New Zealand, Singapore, Hong kong, Argentine peso
+            '$': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD', 'ARS'],
             'dollar': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
             'dollars': ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
             // Denmark, Sweden,  Norway, Island, Czechia

@@ -32,6 +32,7 @@ const dollarOptions = [
     {value: 'NZD', label: 'New Zealand'},
     {value: 'SGP', label: 'Singapore'},
     {value: 'HKD', label: 'Hong kong'},
+    {value: 'ARS', label: 'Argentine'},
 ];
 
 const kroneOptions = [
