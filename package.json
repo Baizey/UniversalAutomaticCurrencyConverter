@@ -4,15 +4,16 @@
   "description": "",
   "scripts": {
     "test": "jest",
-    "start:prod": "webpack --mode=development",
-    "start:dev": "webpack --mode=development",
-    "start:dev:watch": "webpack --mode=development --watch",
+    "build:prod": "webpack --mode=production",
+    "build:dev": "webpack --mode=development",
+    "build:dev:watch": "webpack --mode=development --watch",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "keywords": [],
   "license": "GPLv2",
   "devDependencies": {
+    "@storybook/manager-webpack5": "^6.4.14",
     "@types/jsdom": "^16.2.14",
     "@types/jest": "^27.4.0",
     "@types/chai": "^4.3.0",
