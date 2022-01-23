@@ -22,7 +22,7 @@
     "scripts": [
       "background.js"
     ],
-    "persistent": false
+    "persistent": true
   },
   "content_scripts": [
     {
@@ -38,7 +38,6 @@
       ]
     }
   ],
-  "options_page": "options.html",
   "options_ui": {
     "page": "options.html"
   },
