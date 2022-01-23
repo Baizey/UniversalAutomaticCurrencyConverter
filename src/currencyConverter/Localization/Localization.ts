@@ -67,6 +67,8 @@ export class Localizations {
             'BGN': ['лв'],
             // Czechia
             'CZK': ['Kč'],
+            // South Africa
+            'ZAR': ['R'],
             // Bitcoin
             'BTC': ['₿'],
             // Monero
