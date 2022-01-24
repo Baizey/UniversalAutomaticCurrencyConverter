@@ -1,46 +1,46 @@
-import {useState} from "react";
-import {ThemeProps} from "../../infrastructure";
-import styled from "styled-components";
-import {BaseInput} from "./Basics";
 import * as React from "react";
-import {asPixel, FieldHeight} from "./Constants";
-import {ReadonlyInput} from "./Input";
+import { useState } from "react";
+import { ThemeProps } from "../../infrastructure";
+import styled from "styled-components";
+import { BaseInput } from "./Basics";
+import { asPixel, FieldHeight } from "./Constants";
+import { ReadonlyInput } from "./Input";
 
 export type RangeProps = {
-    key?: string
-    onChange: (value: string) => void
-    options: string[]
-    defaultValue: string
+  key?: string
+  onChange: (value: string) => void
+  options: string[]
+  defaultValue: string
 }
 
-export function Range({onChange, options, defaultValue}: RangeProps) {
+export function Range({ onChange, options, defaultValue }: RangeProps) {
 
-    const [value, setValue] = useState(options.indexOf(defaultValue))
+  const [value, setValue] = useState(options.indexOf(defaultValue));
 
-    return <>
-        <ReadonlyInput defaultValue={options[value]}/>
-        <RangeContainer
-            value={value}
-            type="range"
-            step={1}
-            min={0}
-            max={options.length - 1}
-            onChange={(event: any) => {
-                setValue(event.target.value);
-            }}
-            onMouseUp={() => {
-                onChange(options[value]);
-            }}
-        />
-    </>
+  return <>
+    <ReadonlyInput defaultValue={options[value]} />
+    <RangeContainer
+      value={value}
+      type="range"
+      step={1}
+      min={0}
+      max={options.length - 1}
+      onChange={(event: any) => {
+        setValue(event.target.value);
+      }}
+      onMouseUp={() => {
+        onChange(options[value]);
+      }}
+    />
+  </>;
 }
 
 
 export type RangeContainerProps = {
-    min: number
-    max: number
-    step: number
-    type: string
+  min: number
+  max: number
+  step: number
+  type: string
 } & ThemeProps
 export const RangeContainer = styled(BaseInput)<RangeContainerProps>`
   -webkit-appearance: none;
@@ -102,4 +102,4 @@ export const RangeContainer = styled(BaseInput)<RangeContainerProps>`
     border-radius: 10px;
     background-color: ${(props: ThemeProps) => props.theme.formBorder};
   }
-`
+`;

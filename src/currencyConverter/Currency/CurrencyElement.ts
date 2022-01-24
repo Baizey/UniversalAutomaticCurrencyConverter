@@ -3,8 +3,7 @@ import { ITextDetector } from "../Detection";
 import { IBackendApi } from "../BackendApi";
 import { CurrencyAmount } from "./CurrencyAmount";
 import { IActiveLocalization } from "../Localization";
-import { Provider, useProvider } from "../../infrastructure";
-import { ILogger } from "../../infrastructure";
+import { ILogger, Provider, useProvider } from "../../infrastructure";
 
 type CurrencyInfo = {
   original: CurrencyAmount,
@@ -27,7 +26,6 @@ export class CurrencyElement {
   private original: ElementSnapshot;
   private converted: ElementSnapshot;
   private conversionTo: string;
-  private _isShowingConversion: boolean;
   private localization: IActiveLocalization;
   private readonly provider: Provider;
   private logger: ILogger;
@@ -56,6 +54,8 @@ export class CurrencyElement {
     this._isShowingConversion = false;
     this.conversionTo = "";
   }
+
+  private _isShowingConversion: boolean;
 
   get isShowingConversion(): boolean {
     return this._isShowingConversion;

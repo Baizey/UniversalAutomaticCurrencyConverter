@@ -216,23 +216,6 @@ export class Browser implements IBrowser {
     return await this.saveSingle(this.storage.sync, key, value);
   }
 
-  private loadSingle<T>(storage: LocalStorageArea | SyncStorageArea, key: string): Promise<T> {
-    const self = this;
-    return new Promise<T>((resolve, reject) =>
-      storage.get([key], resp => self.runtime.lastError ?
-        reject(Error(self.runtime.lastError.message))
-        : resolve(resp[key])));
-  }
-
-  private saveSingle(storage: LocalStorageArea | SyncStorageArea, key: string, value: any): Promise<void> {
-    const self = this;
-    return new Promise<void>((resolve, reject) =>
-      storage.set({ [key]: value }, () => self.runtime.lastError ?
-        reject(Error(self.runtime.lastError.message))
-        : resolve())
-    );
-  }
-
   async allStorage(): Promise<BrowserDataStorage[]> {
     const self = this;
     const [local, sync]: [BrowserDataStorage[], BrowserDataStorage[]] = await Promise.all([
@@ -282,5 +265,22 @@ export class Browser implements IBrowser {
         });
       })
     ]);
+  }
+
+  private loadSingle<T>(storage: LocalStorageArea | SyncStorageArea, key: string): Promise<T> {
+    const self = this;
+    return new Promise<T>((resolve, reject) =>
+      storage.get([key], resp => self.runtime.lastError ?
+        reject(Error(self.runtime.lastError.message))
+        : resolve(resp[key])));
+  }
+
+  private saveSingle(storage: LocalStorageArea | SyncStorageArea, key: string, value: any): Promise<void> {
+    const self = this;
+    return new Promise<void>((resolve, reject) =>
+      storage.set({ [key]: value }, () => self.runtime.lastError ?
+        reject(Error(self.runtime.lastError.message))
+        : resolve())
+    );
   }
 }

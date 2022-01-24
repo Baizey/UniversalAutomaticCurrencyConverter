@@ -38,11 +38,11 @@ export type CompactCurrencyLocalization = { dollar: string, yen: string, krone: 
 export class ActiveLocalization implements IActiveLocalization {
 
   isLocked: boolean;
-  private readonly browser: IBrowser;
-  private readonly backendApi: IBackendApi;
   readonly krone: CurrencyLocalization;
   readonly yen: CurrencyLocalization;
   readonly dollar: CurrencyLocalization;
+  private readonly browser: IBrowser;
+  private readonly backendApi: IBackendApi;
   private readonly lockedKey: string;
   private readonly localizationMapping: Record<string, string>;
   private readonly isDisabled: Record<string, boolean>;
