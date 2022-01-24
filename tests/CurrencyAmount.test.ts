@@ -1,7 +1,6 @@
 import {CurrencyAmount} from "../src/currencyConverter/Currency";
 import useMockContainer from './Container.mock';
 import {BrowserMock} from './Browser.mock';
-import {expect} from 'chai';
 
 describe('CurrencyAmount', () => {
     describe('Rounding', () => {
@@ -52,7 +51,7 @@ describe('CurrencyAmount', () => {
 
                 // Assert
                 if (!Array.isArray(test.expect)) test.expect = [test.expect]
-                expect(actual).to.have.members(test.expect);
+                expect(actual.sort()).toEqual(test.expect.sort())
             });
         });
     });
@@ -79,12 +78,13 @@ describe('CurrencyAmount', () => {
                 // Assert
                 if (!actual) return;
                 if (!Array.isArray(test.amount)) test.amount = [test.amount]
-                expect(original.amount).have.all.members(test.amount);
-                expect(original.tag).to.be.eql('USD');
+                expect(original)
+                expect(original.amount.sort()).toEqual(test.amount.sort())
+                expect(original.tag).toBe('USD');
 
                 if (!Array.isArray(test.expect)) test.expect = [test.expect]
-                expect(actual.amount).to.have.all.members(test.expect);
-                expect(actual.tag).to.be.eql('EUR');
+                expect(actual.amount.sort()).toEqual(test.expect.sort())
+                expect(actual.tag).toBe('EUR');
             });
         });
 
@@ -97,9 +97,9 @@ describe('CurrencyAmount', () => {
             const actual = await original.convertTo('UNK4');
 
             // Assert
-            expect(original.amount).to.be.eql([0]);
-            expect(original.tag).to.be.eql('EUR');
-            expect(actual).to.be.eql(null);
+            expect(original.amount).toStrictEqual([0]);
+            expect(original.tag).toBe('EUR');
+            expect(actual).toBe(null);
         });
     });
     describe('Display', () => {
@@ -146,7 +146,7 @@ describe('CurrencyAmount', () => {
                 const actual = original.toString();
 
                 // Assert
-                expect(actual).to.be.eql(test.expect);
+                expect(actual).toBe(test.expect);
             });
         })
     });

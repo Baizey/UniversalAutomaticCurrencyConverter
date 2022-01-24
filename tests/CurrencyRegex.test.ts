@@ -1,6 +1,6 @@
 import useMockContainer from './Container.mock';
 import {CurrencyRegex} from '../src/currencyConverter/Detection/CurrencyRegex';
-import {expect} from 'chai';
+;
 
 describe('CurrencyRegex', () => {
     const tests = [
@@ -111,12 +111,12 @@ describe('CurrencyRegex', () => {
             // Assert
             for (let i = 0; i < test.expect.length; i++) {
                 if (!test.expect[i]) {
-                    expect(actual[i]).to.be.null;
+                    expect(actual[i]).toBeNull();
                     continue
                 }
-                expect(actual[i]?.text).to.be.eql(test.expect[i]?.text)
-                expect(actual[i]?.currencies).to.be.eql(test.expect[i]?.currencies)
-                expect(actual[i]?.amounts).to.be.eql(test.expect[i]?.amounts)
+                expect(actual[i]?.text).toBe(test.expect[i]?.text)
+                expect(actual[i]?.currencies).toStrictEqual(test.expect[i]?.currencies)
+                expect(actual[i]?.amounts).toStrictEqual(test.expect[i]?.amounts)
             }
         });
     })

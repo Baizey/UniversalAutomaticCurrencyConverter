@@ -1,13 +1,7 @@
 import { addDependencies, IBrowser, Provider } from "../src/infrastructure";
-import chai from "chai";
-import spies from "chai-spies";
 import { BrowserMock } from "./Browser.mock";
 import { Container, WeakProvider } from "../src/infrastructure/DependencyInjection/Provider";
 import { ServiceCollection, ServiceProvider } from "sharp-dependency-injection/lib";
-
-function addSpies() {
-  chai.use(spies);
-}
 
 function addNodeIfNotExisting() {
   if (!global.Node) {
@@ -27,6 +21,5 @@ function mockContainer(): ServiceProvider<Provider> {
 
 export default function useMockContainer(): ServiceProvider<Provider> {
   addNodeIfNotExisting();
-  addSpies();
   return mockContainer();
 }
