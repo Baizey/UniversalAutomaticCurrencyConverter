@@ -1,24 +1,29 @@
-import * as React from "react";
-import styled from "styled-components";
-import { ThemeProps } from "../../../infrastructure";
-import { Div, FooterText, HeaderText } from "../../atoms";
+import * as React from 'react';
+import styled from 'styled-components';
+import { ThemeProps } from '../../../infrastructure';
+import { Div, FooterText, HeaderText } from '../../atoms';
 
 export type SettingOptionProps = {
-  title: string,
-  children?: JSX.Element | JSX.Element[],
-  help?: string
+  title: string;
+  children?: JSX.Element | JSX.Element[];
+  help?: string;
+};
+
+export function SettingOption({
+  title,
+  children,
+  help,
+}: SettingOptionProps): JSX.Element {
+  return (
+    <Container>
+      <Label>{title}</Label>
+      {children ? children : <></>}
+      {help ? <Help>{help}</Help> : <></>}
+    </Container>
+  );
 }
 
-export function SettingOption({ title, children, help }: SettingOptionProps): JSX.Element {
-  return <Container>
-    <Label>{title}</Label>
-    {children ? children : <></>}
-    {help ? <Help>{help}</Help> : <></>}
-  </Container>;
-}
-
-const Container = styled(Div)`
-`;
+const Container = styled(Div)``;
 
 const Label = styled(HeaderText)`
   width: 100%;
@@ -30,5 +35,5 @@ const Help = styled(FooterText)`
   display: block;
   width: 100%;
   text-align: center;
-  color:${(props: ThemeProps) => props.theme.footerText};
+  color: ${(props: ThemeProps) => props.theme.footerText};
 `;

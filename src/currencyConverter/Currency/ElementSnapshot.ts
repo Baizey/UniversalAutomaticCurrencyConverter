@@ -1,5 +1,4 @@
 export class ElementSnapshot {
-
   readonly texts: string[];
   private readonly nodes: Node[];
 
@@ -8,7 +7,7 @@ export class ElementSnapshot {
       // Nodes should always point at the same nodes, so we can safely reuse the exact array
       this.nodes = node.nodes;
       // Texts may change, so we always need to ensure we dont reuse them in different snapshots
-      this.texts = node.texts.map(e => e);
+      this.texts = node.texts.map((e) => e);
       return;
     }
 
@@ -24,7 +23,7 @@ export class ElementSnapshot {
         for (let i = 0; i < curr.childNodes.length; i++)
           queue.push(curr.childNodes[i]);
     }
-    this.texts = this.nodes.map(e => e.textContent || "");
+    this.texts = this.nodes.map((e) => e.textContent || '');
   }
 
   clone(): ElementSnapshot {
@@ -40,8 +39,7 @@ export class ElementSnapshot {
     if (!snapshot) return false;
     if (this.texts.length !== snapshot.texts.length) return false;
     for (let i = 0; i < this.texts.length; i++)
-      if (this.texts[i] !== snapshot.texts[i])
-        return false;
+      if (this.texts[i] !== snapshot.texts[i]) return false;
     return true;
   }
 }

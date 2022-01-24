@@ -1,17 +1,17 @@
-import { ElementSnapshot } from "./ElementSnapshot";
-import { ITextDetector } from "../Detection";
-import { IBackendApi } from "../BackendApi";
-import { CurrencyAmount } from "./CurrencyAmount";
-import { IActiveLocalization } from "../Localization";
-import { ILogger, Provider, useProvider } from "../../infrastructure";
+import { ElementSnapshot } from './ElementSnapshot';
+import { ITextDetector } from '../Detection';
+import { IBackendApi } from '../BackendApi';
+import { CurrencyAmount } from './CurrencyAmount';
+import { IActiveLocalization } from '../Localization';
+import { ILogger, Provider, useProvider } from '../../infrastructure';
 
 type CurrencyInfo = {
-  original: CurrencyAmount,
-  converted: CurrencyAmount | null,
-  left: { start: number, end: number }
-  center: { start: number, end: number }
-  right: { start: number, end: number }
-}
+  original: CurrencyAmount;
+  converted: CurrencyAmount | null;
+  left: { start: number; end: number };
+  center: { start: number; end: number };
+  right: { start: number; end: number };
+};
 
 export class CurrencyElement {
   private static nextId: number = 1;
@@ -30,14 +30,8 @@ export class CurrencyElement {
   private readonly provider: Provider;
   private logger: ILogger;
 
-  constructor(provider: Provider,
-              element: HTMLElement) {
-    const {
-      backendApi,
-      textDetector,
-      activeLocalization,
-      logger
-    } = provider;
+  constructor(provider: Provider, element: HTMLElement) {
+    const { backendApi, textDetector, activeLocalization, logger } = provider;
     this.logger = logger;
     this.id = ++CurrencyElement.nextId;
     this.provider = provider;
@@ -52,7 +46,7 @@ export class CurrencyElement {
     this.converted = this.original.clone();
 
     this._isShowingConversion = false;
-    this.conversionTo = "";
+    this.conversionTo = '';
   }
 
   private _isShowingConversion: boolean;
@@ -68,8 +62,7 @@ export class CurrencyElement {
 
   show(): Promise<boolean> {
     const { tabState } = useProvider();
-    if (tabState.isPaused)
-      return this.showOriginal();
+    if (tabState.isPaused) return this.showOriginal();
 
     return tabState.isShowingConversions
       ? this.showConverted()
@@ -112,23 +105,23 @@ export class CurrencyElement {
 
   setupListener(): void {
     const self = this;
-    this.element.classList.add("uacc-clickable");
+    this.element.classList.add('uacc-clickable');
 
     const convertOnClick = this.provider.usingLeftClickFlipConversion.value;
     const convertOnHover = this.provider.usingHoverFlipConversion.value;
     const shortcutHover = this.provider.convertHoverShortcut.value;
 
     if (convertOnClick)
-      this.element.addEventListener("click", () => self.flipDisplay());
+      this.element.addEventListener('click', () => self.flipDisplay());
 
     if (shortcutHover) {
-      this.element.addEventListener("mouseover", () => this.isHovered = true);
-      this.element.addEventListener("mouseout", () => this.isHovered = false);
+      this.element.addEventListener('mouseover', () => (this.isHovered = true));
+      this.element.addEventListener('mouseout', () => (this.isHovered = false));
     }
 
     if (convertOnHover) {
-      this.element.addEventListener("mouseover", () => self.flipDisplay());
-      this.element.addEventListener("mouseout", () => self.flipDisplay());
+      this.element.addEventListener('mouseover', () => self.flipDisplay());
+      this.element.addEventListener('mouseout', () => self.flipDisplay());
     }
   }
 
@@ -137,34 +130,43 @@ export class CurrencyElement {
     this.converted = this.original.clone();
 
     const texts = this.converted.texts;
-    const indexes = texts.map(e => e.length);
-    for (let i = 0; i < indexes.length; i++) indexes[i] = (indexes[i - 1] || 0) + (texts[i - 1]?.length || 0) + (i && 1);
+    const indexes = texts.map((e) => e.length);
+    for (let i = 0; i < indexes.length; i++)
+      indexes[i] =
+        (indexes[i - 1] || 0) + (texts[i - 1]?.length || 0) + (i && 1);
 
-    const text = texts.join(" ");
+    const text = texts.join(' ');
 
     const result = this.detector.find(text);
 
-    const currencyInfo: CurrencyInfo[] = await Promise.all(result.map(async r => {
-      const currency = this.localization.parseCurrency(r.currencies[0]) || this.localization.parseCurrency(r.currencies[1]) || "";
-      const numbers = r.amounts.map(e => Number(`${e.neg + e.integer}.${e.decimal}`));
-      const amount = new CurrencyAmount(this.provider, currency, numbers);
+    const currencyInfo: CurrencyInfo[] = await Promise.all(
+      result.map(async (r) => {
+        const currency =
+          this.localization.parseCurrency(r.currencies[0]) ||
+          this.localization.parseCurrency(r.currencies[1]) ||
+          '';
+        const numbers = r.amounts.map((e) =>
+          Number(`${e.neg + e.integer}.${e.decimal}`)
+        );
+        const amount = new CurrencyAmount(this.provider, currency, numbers);
 
-      let left, right;
-      if (this.localization.parseCurrency(r.currencies[0])) {
-        left = r.indexes[0];
-        right = r.indexes[4];
-      } else {
-        left = r.indexes[1];
-        right = r.indexes[5];
-      }
-      return {
-        original: amount,
-        converted: await amount.convertTo(this.conversionTo),
-        left: { start: left, end: r.indexes[2] },
-        center: { start: r.indexes[2], end: r.indexes[3] },
-        right: { start: r.indexes[3], end: right }
-      };
-    }));
+        let left, right;
+        if (this.localization.parseCurrency(r.currencies[0])) {
+          left = r.indexes[0];
+          right = r.indexes[4];
+        } else {
+          left = r.indexes[1];
+          right = r.indexes[5];
+        }
+        return {
+          original: amount,
+          converted: await amount.convertTo(this.conversionTo),
+          left: { start: left, end: r.indexes[2] },
+          center: { start: r.indexes[2], end: r.indexes[3] },
+          right: { start: r.indexes[3], end: right },
+        };
+      })
+    );
     let node = texts.length - 1;
 
     function replace(start: number, end: number, replacement?: string): any {
@@ -175,29 +177,31 @@ export class CurrencyElement {
 
       // If replacing, expect to only be within 1 node
       if (replacement) {
-        return texts[node] =
+        return (texts[node] =
           texts[node].substr(0, start - indexes[node]) +
           replacement +
-          texts[node].substr(end - indexes[node]);
+          texts[node].substr(end - indexes[node]));
       }
 
       // If both start end end is within same node
       if (start >= indexes[node])
-        return texts[node] =
+        return (texts[node] =
           texts[node].substr(0, start - indexes[node]) +
-          texts[node].substr(end - indexes[node]);
+          texts[node].substr(end - indexes[node]));
 
       // Handle if we need to remove text in multiple nodes
 
       texts[node] = texts[node].substr(end - indexes[node]);
-      while (start <= indexes[node]) texts[node--] = "";
+      while (start <= indexes[node]) texts[node--] = '';
       texts[node] = texts[node].substr(0, start - indexes[node]);
     }
 
-    currencyInfo.reverse().forEach(info => {
+    currencyInfo.reverse().forEach((info) => {
       if (!info.converted) return;
       const text = this.provider.showConversionInBrackets.value
-        ? `${info.original.amount.join(" - ")} ${info.original.tag} (${info.converted.toString()})`
+        ? `${info.original.amount.join(' - ')} ${
+            info.original.tag
+          } (${info.converted.toString()})`
         : info.converted.toString();
 
       replace(info.right.start, info.right.end);
@@ -210,7 +214,6 @@ export class CurrencyElement {
     const snapshot = new ElementSnapshot(this.element);
     if (snapshot.isEqual(this.original)) return true;
     return snapshot.isEqual(this.converted);
-
   }
 
   updateSnapshots(): void {
@@ -226,7 +229,9 @@ export class CurrencyElement {
     const duration = this.provider.highlightDuration.value;
     const oldColor = this.element.style.textShadow;
     this.element.style.textShadow = `${color}  2px 0px 2px, ${color} -2px 0px 2px, ${color}  4px 0px 4px, ${color} -4px 0px 4px, ${color}  6px 0px 6px, ${color} -6px 0px 6px`;
-    setTimeout(() => this.element.style.textShadow = oldColor, Math.max(1, duration));
+    setTimeout(
+      () => (this.element.style.textShadow = oldColor),
+      Math.max(1, duration)
+    );
   }
 }
-

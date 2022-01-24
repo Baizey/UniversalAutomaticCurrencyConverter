@@ -1,2 +1,2 @@
-export { BackendApi } from "./BackendApi";
-export type { IBackendApi } from "./BackendApi";
+export { BackendApi } from './BackendApi';
+export type { IBackendApi } from './BackendApi';

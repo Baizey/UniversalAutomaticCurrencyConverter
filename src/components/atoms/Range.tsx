@@ -1,47 +1,47 @@
-import * as React from "react";
-import { useState } from "react";
-import { ThemeProps } from "../../infrastructure";
-import styled from "styled-components";
-import { BaseInput } from "./Basics";
-import { asPixel, FieldHeight } from "./Constants";
-import { ReadonlyInput } from "./Input";
+import * as React from 'react';
+import { useState } from 'react';
+import { ThemeProps } from '../../infrastructure';
+import styled from 'styled-components';
+import { BaseInput } from './Basics';
+import { asPixel, FieldHeight } from './Constants';
+import { ReadonlyInput } from './Input';
 
 export type RangeProps = {
-  key?: string
-  onChange: (value: string) => void
-  options: string[]
-  defaultValue: string
-}
+  key?: string;
+  onChange: (value: string) => void;
+  options: string[];
+  defaultValue: string;
+};
 
 export function Range({ onChange, options, defaultValue }: RangeProps) {
-
   const [value, setValue] = useState(options.indexOf(defaultValue));
 
-  return <>
-    <ReadonlyInput defaultValue={options[value]} />
-    <RangeContainer
-      value={value}
-      type="range"
-      step={1}
-      min={0}
-      max={options.length - 1}
-      onChange={(event: any) => {
-        setValue(event.target.value);
-      }}
-      onMouseUp={() => {
-        onChange(options[value]);
-      }}
-    />
-  </>;
+  return (
+    <>
+      <ReadonlyInput defaultValue={options[value]} />
+      <RangeContainer
+        value={value}
+        type="range"
+        step={1}
+        min={0}
+        max={options.length - 1}
+        onChange={(event: any) => {
+          setValue(event.target.value);
+        }}
+        onMouseUp={() => {
+          onChange(options[value]);
+        }}
+      />
+    </>
+  );
 }
 
-
 export type RangeContainerProps = {
-  min: number
-  max: number
-  step: number
-  type: string
-} & ThemeProps
+  min: number;
+  max: number;
+  step: number;
+  type: string;
+} & ThemeProps;
 export const RangeContainer = styled(BaseInput)<RangeContainerProps>`
   -webkit-appearance: none;
   height: ${asPixel(FieldHeight / 2)};
@@ -49,19 +49,19 @@ export const RangeContainer = styled(BaseInput)<RangeContainerProps>`
   appearance: auto;
   border-width: 0;
 
-  &[type="range"] {
+  &[type='range'] {
     -webkit-appearance: none;
     background: transparent; /* Otherwise white in Chrome */
     display: inline-block;
     vertical-align: middle;
   }
 
-  &[type="range"]:focus {
+  &[type='range']:focus {
     -webkit-appearance: none;
     outline: none;
   }
 
-  &[type="range"]::-webkit-slider-thumb {
+  &[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
     border-radius: 10px;
     width: 20px;
@@ -74,7 +74,7 @@ export const RangeContainer = styled(BaseInput)<RangeContainerProps>`
     }
   }
 
-  &[type="range"]::-webkit-slider-runnable-track {
+  &[type='range']::-webkit-slider-runnable-track {
     -webkit-appearance: none;
     width: 100%;
     padding: 0;
@@ -84,7 +84,7 @@ export const RangeContainer = styled(BaseInput)<RangeContainerProps>`
     background-color: ${(props: ThemeProps) => props.theme.formBorder};
   }
 
-  &[type="range"]::-moz-range-thumb {
+  &[type='range']::-moz-range-thumb {
     border-radius: 10px;
     width: 20px;
     height: 20px;
@@ -96,7 +96,7 @@ export const RangeContainer = styled(BaseInput)<RangeContainerProps>`
     }
   }
 
-  &[type="range"]::-moz-range-track {
+  &[type='range']::-moz-range-track {
     width: 100%;
     height: 20px;
     border-radius: 10px;

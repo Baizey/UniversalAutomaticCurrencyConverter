@@ -1,6 +1,6 @@
-import { Provider } from "../DependencyInjection";
-import { useDebugLoggingSetting } from "../Configuration";
-import { LoggingSettingType } from "../Configuration/Configuration";
+import { Provider } from '../DependencyInjection';
+import { useDebugLoggingSetting } from '../Configuration';
+import { LoggingSettingType } from '../Configuration/Configuration';
 
 export interface ILogger {
   debug(message: string): void;
@@ -15,30 +15,31 @@ export interface ILogger {
 }
 
 export enum LogLevel {
-  debug = "debug",
-  info = "info",
-  warn = "warn",
-  error = "error",
+  debug = 'debug',
+  info = 'info',
+  warn = 'warn',
+  error = 'error',
 }
 
-type LogEvent = {
-  logLevel: LogLevel.info | LogLevel.debug | LogLevel.warn
-  message: string
-} | {
-  logLevel: LogLevel.error
-  message?: string,
-  error: Error
-}
+type LogEvent =
+  | {
+      logLevel: LogLevel.info | LogLevel.debug | LogLevel.warn;
+      message: string;
+    }
+  | {
+      logLevel: LogLevel.error;
+      message?: string;
+      error: Error;
+    };
 
 const LogLevelConversion = {
-  ["nothing" as LoggingSettingType]: 0,
-  ["error" as LoggingSettingType]: 1,
-  ["info" as LoggingSettingType]: 2,
-  ["debug" as LoggingSettingType]: 3
+  ['nothing' as LoggingSettingType]: 0,
+  ['error' as LoggingSettingType]: 1,
+  ['info' as LoggingSettingType]: 2,
+  ['debug' as LoggingSettingType]: 3,
 } as Record<LoggingSettingType, number>;
 
 export class Logger implements ILogger {
-
   private readonly useLogging: useDebugLoggingSetting;
   private readonly startTime: number;
   private isFirstLog: boolean;
@@ -62,7 +63,7 @@ export class Logger implements ILogger {
   }
 
   error(error: Error, message?: string) {
-    message = message || "Unexpected error";
+    message = message || 'Unexpected error';
     this._log(`${message}\n${error.stack || error.message}`, LogLevel.error);
   }
 
@@ -82,22 +83,21 @@ export class Logger implements ILogger {
   private timestamp(): string {
     let runtime = Date.now() - this.startTime;
 
-    const milliseconds = String(runtime % 1000).padEnd(3, "0");
+    const milliseconds = String(runtime % 1000).padEnd(3, '0');
 
     runtime = Math.floor(runtime / 1000);
 
-    const seconds = String(runtime % 60).padStart(2, "0");
+    const seconds = String(runtime % 60).padStart(2, '0');
 
     runtime = Math.floor(runtime / 60);
 
-    const minutes = String(runtime % 60).padStart(2, "0");
+    const minutes = String(runtime % 60).padStart(2, '0');
 
     runtime = Math.floor(runtime / 60);
 
     const hours = runtime;
 
-    return `${hours ? `${hours}:` : ""}${minutes}:${seconds}.${milliseconds}`;
-
+    return `${hours ? `${hours}:` : ''}${minutes}:${seconds}.${milliseconds}`;
   }
 
   private _log(message: string, level: LogLevel) {
@@ -109,18 +109,33 @@ export class Logger implements ILogger {
     message = `[UACC ${this.timestamp()}] ${message}`;
     switch (level) {
       case LogLevel.debug:
-        if (LogLevelConversion[this.useLogging.value] < LogLevelConversion["debug" as LoggingSettingType]) return;
+        if (
+          LogLevelConversion[this.useLogging.value] <
+          LogLevelConversion['debug' as LoggingSettingType]
+        )
+          return;
         return console.debug(message);
       case LogLevel.info:
-        if (LogLevelConversion[this.useLogging.value] < LogLevelConversion["info" as LoggingSettingType]) return;
+        if (
+          LogLevelConversion[this.useLogging.value] <
+          LogLevelConversion['info' as LoggingSettingType]
+        )
+          return;
         return console.info(message);
       case LogLevel.warn:
-        if (LogLevelConversion[this.useLogging.value] < LogLevelConversion["error" as LoggingSettingType]) return;
+        if (
+          LogLevelConversion[this.useLogging.value] <
+          LogLevelConversion['error' as LoggingSettingType]
+        )
+          return;
         return console.warn(message);
       case LogLevel.error:
-        if (LogLevelConversion[this.useLogging.value] < LogLevelConversion["error" as LoggingSettingType]) return;
+        if (
+          LogLevelConversion[this.useLogging.value] <
+          LogLevelConversion['error' as LoggingSettingType]
+        )
+          return;
         return console.error(message);
     }
   }
-
 }

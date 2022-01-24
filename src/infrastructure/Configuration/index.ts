@@ -27,5 +27,5 @@ export {
   yenLocalizationSetting,
   blacklistedUrlsSetting,
   colorThemeSetting,
-  conversionDisplaySetting
-} from "./Configuration";
+  conversionDisplaySetting,
+} from './Configuration';

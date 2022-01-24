@@ -1,7 +1,7 @@
-import { IActiveLocalization } from "../Localization";
-import { CurrencyRegex, RegexResult } from "./CurrencyRegex";
-import { IBackendApi } from "../BackendApi";
-import { Provider } from "../../infrastructure/DependencyInjection";
+import { IActiveLocalization } from '../Localization';
+import { CurrencyRegex, RegexResult } from './CurrencyRegex';
+import { IBackendApi } from '../BackendApi';
+import { Provider } from '../../infrastructure/DependencyInjection';
 
 export interface ITextDetector {
   detect(text: string): boolean;
@@ -24,8 +24,7 @@ export class TextDetector implements ITextDetector {
     while (true) {
       const r = regex.next();
       if (!r) return result;
-      if (this.isCurrency(r))
-        result.push(r);
+      if (this.isCurrency(r)) result.push(r);
     }
   }
 
@@ -39,15 +38,15 @@ export class TextDetector implements ITextDetector {
 
       if (!result) return false;
 
-      if (this.isCurrency(result))
-        return true;
+      if (this.isCurrency(result)) return true;
     }
   }
 
   private isCurrency(data: { currencies: string[] }): boolean {
-    const currencies = data.currencies.map(e => this.localization.parseCurrency(e));
-    const currency = currencies.filter(e => e)[0];
+    const currencies = data.currencies.map((e) =>
+      this.localization.parseCurrency(e)
+    );
+    const currency = currencies.filter((e) => e)[0];
     return !!currency;
   }
-
 }

@@ -1,4 +1,4 @@
-import { IBrowser, ILogger, ISetting, Provider } from "../../infrastructure";
+import { IBrowser, ILogger, ISetting, Provider } from '../../infrastructure';
 
 export class CurrencyLocalization {
   value: string;
@@ -10,20 +10,23 @@ export class CurrencyLocalization {
   private readonly setting: ISetting<string>;
   private readonly logger: ILogger;
 
-  constructor({ browser, logger }: Provider, key: string, setting: ISetting<string>) {
+  constructor(
+    { browser, logger }: Provider,
+    key: string,
+    setting: ISetting<string>
+  ) {
     this.logger = logger;
     this.browser = browser;
     this.setting = setting;
     this.key = key;
-    this.value = "";
-    this.defaultValue = "";
-    this.detectedValue = "";
+    this.value = '';
+    this.defaultValue = '';
+    this.detectedValue = '';
   }
 
   override(value: string | undefined): void {
     if (!value) return;
-    if (/^[A-Z]{3}$/.test(value))
-      this.value = value;
+    if (/^[A-Z]{3}$/.test(value)) this.value = value;
   }
 
   async save(): Promise<void> {

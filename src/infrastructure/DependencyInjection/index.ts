@@ -1,1 +1,1 @@
-export { Provider, useProvider, addDependencies } from "./Provider";
+export { Provider, useProvider, addDependencies } from './Provider';

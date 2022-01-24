@@ -1,86 +1,84 @@
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
-const ZipPlugin = require("zip-webpack-plugin");
+const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
+const ZipPlugin = require('zip-webpack-plugin');
 
-const destination = "dist";
+const destination = 'dist';
 
 const config = {
   devtool: 'source-map',
   entry: {
-    popup: path.join(__dirname, "src/popup.tsx"),
-    content: path.join(__dirname, "src/content.tsx"),
-    background: path.join(__dirname, "src/background.ts"),
-    options: path.join(__dirname, "src/options.tsx")
+    popup: path.join(__dirname, 'src/popup.tsx'),
+    content: path.join(__dirname, 'src/content.tsx'),
+    background: path.join(__dirname, 'src/background.ts'),
+    options: path.join(__dirname, 'src/options.tsx'),
   },
-  output: { path: path.join(__dirname, destination), filename: "[name].js" },
+  output: { path: path.join(__dirname, destination), filename: '[name].js' },
   module: {
     rules: [
       {
         test: /\.jsx?$/,
-        use: "babel-loader",
-        exclude: /node_modules/
+        use: 'babel-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-        exclude: /\.module\.css$/
+        use: ['style-loader', 'css-loader'],
+        exclude: /\.module\.css$/,
       },
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        exclude: /node_modules/
+        loader: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
         use: [
-          "style-loader",
+          'style-loader',
           {
-            loader: "css-loader",
+            loader: 'css-loader',
             options: {
               importLoaders: 1,
-              modules: true
-            }
-          }
+              modules: true,
+            },
+          },
         ],
-        include: /\.module\.css$/
+        include: /\.module\.css$/,
       },
       {
         test: /\.svg$/,
-        use: "file-loader"
+        use: 'file-loader',
       },
       {
         test: /\.png$/,
         use: [
           {
-            loader: "url-loader",
+            loader: 'url-loader',
             options: {
-              mimetype: "image/png"
-            }
-          }
-        ]
-      }
-    ]
+              mimetype: 'image/png',
+            },
+          },
+        ],
+      },
+    ],
   },
   resolve: {
-    extensions: [".js", ".jsx", ".tsx", ".ts"],
+    extensions: ['.js', '.jsx', '.tsx', '.ts'],
     alias: {
-      "react-dom": "@hot-loader/react-dom"
-    }
+      'react-dom': '@hot-loader/react-dom',
+    },
   },
   devServer: {
-    contentBase: `./${destination}`
+    contentBase: `./${destination}`,
   },
   plugins: [
     new CopyPlugin({
-      patterns: [
-        { from: "public", to: "." }
-      ]
+      patterns: [{ from: 'public', to: '.' }],
     }),
     new ZipPlugin({
-      path: "../",
-      filename: `${destination}.zip`
-    })
-  ]
+      path: '../',
+      filename: `${destination}.zip`,
+    }),
+  ],
 };
 
 module.exports = config;

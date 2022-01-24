@@ -1,6 +1,6 @@
-import { IBrowser } from "../";
-import { ISetting } from "./ISetting";
-import { Provider } from "../DependencyInjection";
+import { IBrowser } from '../';
+import { ISetting } from './ISetting';
+import { Provider } from '../DependencyInjection';
 
 export class SyncSetting<T> implements ISetting<T> {
   readonly defaultValue: T;
@@ -8,9 +8,12 @@ export class SyncSetting<T> implements ISetting<T> {
   readonly validation: (v: T) => boolean;
   private browser: IBrowser;
 
-  constructor({ browser }: Provider, storageKey: string,
-              defaultValue: T,
-              validation: (v: T) => boolean = () => true) {
+  constructor(
+    { browser }: Provider,
+    storageKey: string,
+    defaultValue: T,
+    validation: (v: T) => boolean = () => true
+  ) {
     this.browser = browser;
     this.storageKey = storageKey;
     this.validation = validation;
@@ -25,12 +28,12 @@ export class SyncSetting<T> implements ISetting<T> {
   }
 
   setValue(value: T | undefined): boolean {
-    if (typeof value === "undefined") return false;
+    if (typeof value === 'undefined') return false;
     if (!this.validation(value)) return false;
-    if (typeof this.defaultValue === "number") { // @ts-ignore
+    if (typeof this.defaultValue === 'number') {
+      // @ts-ignore
       this._value = Number(value);
-    } else
-      this._value = value;
+    } else this._value = value;
     return true;
   }
 

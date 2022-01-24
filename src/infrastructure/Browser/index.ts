@@ -1,1 +1,1 @@
-export { IBrowser, Browser } from "./Browser";
+export { IBrowser, Browser } from './Browser';

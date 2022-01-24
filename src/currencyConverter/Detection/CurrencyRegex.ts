@@ -1,41 +1,65 @@
-import { Localizations } from "../Localization";
+import { Localizations } from '../Localization';
 
 type RegexGroups = {
-  start: string | undefined
-  currencyLeft: string | undefined
-  whitespaceLeft: string | undefined
+  start: string | undefined;
+  currencyLeft: string | undefined;
+  whitespaceLeft: string | undefined;
 
-  full_range: string
+  full_range: string;
 
-  amountLeft: string
+  amountLeft: string;
 
-  full_integerLeft: string
-  negLeft: string | undefined
-  integerLeft: string
+  full_integerLeft: string;
+  negLeft: string | undefined;
+  integerLeft: string;
 
-  full_decimalLeft: string | undefined
-  decimalPointLeft: string | undefined
-  decimalLeft: string | undefined
+  full_decimalLeft: string | undefined;
+  decimalPointLeft: string | undefined;
+  decimalLeft: string | undefined;
 
-  range_inner: string | undefined
+  range_inner: string | undefined;
 
-  amountRight: string | undefined
+  amountRight: string | undefined;
 
-  full_integerRight: string | undefined
-  negRight: string | undefined
-  integerRight: string | undefined
+  full_integerRight: string | undefined;
+  negRight: string | undefined;
+  integerRight: string | undefined;
 
-  full_decimalRight: string | undefined
-  decimalPointRight: string | undefined
-  decimalRight: string | undefined
+  full_decimalRight: string | undefined;
+  decimalPointRight: string | undefined;
+  decimalRight: string | undefined;
 
-  whitespaceRight: string | undefined
-  currencyRight: string | undefined
-  end: string | undefined
-}
+  whitespaceRight: string | undefined;
+  currencyRight: string | undefined;
+  end: string | undefined;
+};
 
 function mapToGroups(result: RegExpExecArray): RegexGroups {
-  const [, start, currencyLeft, whitespaceLeft, full_range, amountLeft, full_integerLeft, negLeft, integerLeft, full_decimalLeft, decimalPointLeft, decimalLeft, range_inner, amountRight, full_integerRight, negRight, integerRight, full_decimalRight, decimalPointRight, decimalRight, whitespaceRight, currencyRight, end] = result;
+  const [
+    ,
+    start,
+    currencyLeft,
+    whitespaceLeft,
+    full_range,
+    amountLeft,
+    full_integerLeft,
+    negLeft,
+    integerLeft,
+    full_decimalLeft,
+    decimalPointLeft,
+    decimalLeft,
+    range_inner,
+    amountRight,
+    full_integerRight,
+    negRight,
+    integerRight,
+    full_decimalRight,
+    decimalPointRight,
+    decimalRight,
+    whitespaceRight,
+    currencyRight,
+    end,
+  ] = result;
   return {
     start,
     currencyLeft,
@@ -58,18 +82,18 @@ function mapToGroups(result: RegExpExecArray): RegexGroups {
     decimalPointRight,
     whitespaceRight,
     currencyRight,
-    end
+    end,
   };
 }
 
 export type RegexResult = {
-  startIndex: number
-  length: number
-  indexes: [number, number, number, number, number, number]
-  text: string
-  currencies: string[]
-  amounts: { neg: string, integer: string, decimal: string }[]
-}
+  startIndex: number;
+  length: number;
+  indexes: [number, number, number, number, number, number];
+  text: string;
+  currencies: string[];
+  amounts: { neg: string; integer: string; decimal: string }[];
+};
 
 export class CurrencyRegex {
   readonly text: string;
@@ -77,20 +101,23 @@ export class CurrencyRegex {
 
   constructor(text: string) {
     this.text = text;
-    this.regex = new RegExp(CurrencyRegex.constructRegex(), "gm");
+    this.regex = new RegExp(CurrencyRegex.constructRegex(), 'gm');
   }
 
   private static currencyRegex() {
     // noinspection JSMismatchedCollectionQueryUpdate
     const empty: string[] = [],
       symbols: string = empty
-        .concat(Object.values(Localizations.unique)
-          .reduce((a, b) => [...a, ...b])
-          .map(e => e.replace(/\$/g, "\\$")))
-        .concat(Object.keys(Localizations.shared)
-          .map(e => e.replace(/\$/g, "\\$")))
+        .concat(
+          Object.values(Localizations.unique)
+            .reduce((a, b) => [...a, ...b])
+            .map((e) => e.replace(/\$/g, '\\$'))
+        )
+        .concat(
+          Object.keys(Localizations.shared).map((e) => e.replace(/\$/g, '\\$'))
+        )
         .concat([/[A-Z]{3}/.source])
-        .join("|");
+        .join('|');
     return `(${symbols})?`;
   }
 
@@ -145,9 +172,8 @@ export class CurrencyRegex {
       CurrencyRegex.rangeAmountRegex(),
       `(${whitespace})`,
       CurrencyRegex.currencyRegex(),
-      end
-    ].join("");
-
+      end,
+    ].join('');
   }
 
   test(): boolean {
@@ -165,52 +191,59 @@ export class CurrencyRegex {
 
     const group = mapToGroups(regexResult);
 
-    const leftOuter = [
-      group.start
-    ].map(e => (e || "").length)
-      .reduce((a, b) => a + b) + regexResult.index;
-    const leftInner = [
-      group.currencyLeft,
-      group.whitespaceLeft
-    ].map(e => (e || "").length)
-      .reduce((a, b) => a + b) + leftOuter;
-    const leftAmount = [
-      group.negLeft
-    ].map(e => (e || "").length)
-      .reduce((a, b) => a + b) + leftInner;
+    const leftOuter =
+      [group.start].map((e) => (e || '').length).reduce((a, b) => a + b) +
+      regexResult.index;
+    const leftInner =
+      [group.currencyLeft, group.whitespaceLeft]
+        .map((e) => (e || '').length)
+        .reduce((a, b) => a + b) + leftOuter;
+    const leftAmount =
+      [group.negLeft].map((e) => (e || '').length).reduce((a, b) => a + b) +
+      leftInner;
     const rightAmount = 1 + leftAmount;
-    const rightInner = [
-      group.integerLeft,
-      group.full_decimalLeft,
-      group.range_inner,
-      group.amountRight
-    ].map(e => (e || "").length)
-      .reduce((a, b) => a + b) + leftAmount;
-    const rightOuter = [
-      group.whitespaceRight,
-      group.currencyRight
-    ].map(e => (e || "").length)
-      .reduce((a, b) => a + b) + rightInner;
+    const rightInner =
+      [
+        group.integerLeft,
+        group.full_decimalLeft,
+        group.range_inner,
+        group.amountRight,
+      ]
+        .map((e) => (e || '').length)
+        .reduce((a, b) => a + b) + leftAmount;
+    const rightOuter =
+      [group.whitespaceRight, group.currencyRight]
+        .map((e) => (e || '').length)
+        .reduce((a, b) => a + b) + rightInner;
 
-    const amounts = [{
-      neg: group.negLeft || "+",
-      integer: (group.integerLeft || "").replace(/[^\d]+/gm, ""),
-      decimal: (group.decimalLeft || "").replace(/[^\d]+/gm, "")
-    }];
+    const amounts = [
+      {
+        neg: group.negLeft || '+',
+        integer: (group.integerLeft || '').replace(/[^\d]+/gm, ''),
+        decimal: (group.decimalLeft || '').replace(/[^\d]+/gm, ''),
+      },
+    ];
     if (group.integerRight)
       amounts.push({
-        neg: group.negRight || "+",
-        integer: (group.integerRight || "").replace(/[^\d]+/gm, ""),
-        decimal: (group.decimalRight || "").replace(/[^\d]+/gm, "")
+        neg: group.negRight || '+',
+        integer: (group.integerRight || '').replace(/[^\d]+/gm, ''),
+        decimal: (group.decimalRight || '').replace(/[^\d]+/gm, ''),
       });
 
     return {
       startIndex: regexResult.index,
       length: regexResult[0].length,
-      indexes: [leftOuter, leftInner, leftAmount, rightAmount, rightInner, rightOuter],
+      indexes: [
+        leftOuter,
+        leftInner,
+        leftAmount,
+        rightAmount,
+        rightInner,
+        rightOuter,
+      ],
       text: regexResult[0],
-      currencies: [group.currencyLeft || "", group.currencyRight || ""],
-      amounts: amounts
+      currencies: [group.currencyLeft || '', group.currencyRight || ''],
+      amounts: amounts,
     } as RegexResult;
   }
 }

@@ -1,4 +1,4 @@
-import { RatePath } from "../../infrastructure/BrowserMessengers/BackgroundMessenger";
+import { RatePath } from '../../infrastructure/BrowserMessengers/BackgroundMessenger';
 
 export interface ICurrencyRate {
   readonly from: string;
@@ -16,7 +16,13 @@ export class CurrencyRate implements ICurrencyRate {
   readonly timestamp: Date;
   readonly path: RatePath;
 
-  constructor(from: string, to: string, rate: number, timestamp: number, path: RatePath) {
+  constructor(
+    from: string,
+    to: string,
+    rate: number,
+    timestamp: number,
+    path: RatePath
+  ) {
     this.from = from;
     this.path = path;
     this.to = to;

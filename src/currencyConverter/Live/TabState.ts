@@ -1,4 +1,4 @@
-import { CurrencyElement } from "../Currency";
+import { CurrencyElement } from '../Currency';
 
 export class TabState {
   conversions: CurrencyElement[];
@@ -38,24 +38,22 @@ export class TabState {
 
   setIsShowingConversions(value: boolean) {
     this._isShowingConversions = value;
-    if (value) this.conversions.forEach(e => e.showConverted());
-    else this.conversions.forEach(e => e.showOriginal());
+    if (value) this.conversions.forEach((e) => e.showConverted());
+    else this.conversions.forEach((e) => e.showOriginal());
   }
 
   async updateDisplay(to?: string): Promise<void> {
-    if (to) await this.conversions.forEach(e => e.convertTo(to));
-    else await this.conversions.filter(e => e.updateDisplay());
+    if (to) await this.conversions.forEach((e) => e.convertTo(to));
+    else await this.conversions.filter((e) => e.updateDisplay());
   }
 
   flipAllConversions() {
     const flipped = !this.isShowingConversions;
     this.setIsShowingConversions(flipped);
-    this.conversions.forEach(e => e.show());
+    this.conversions.forEach((e) => e.show());
   }
 
   flipHovered() {
-    this.conversions
-      .filter(e => e.isHovered)
-      .forEach(e => e.flipDisplay());
+    this.conversions.filter((e) => e.isHovered).forEach((e) => e.flipDisplay());
   }
 }

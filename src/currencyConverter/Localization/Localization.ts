@@ -5,106 +5,108 @@ export class Localizations {
     if (this._uniqueSymbols) return this._uniqueSymbols;
     const result: Record<string, string> = {};
     const unique = Localizations.unique;
-    Object.entries(unique).forEach(([key, value]) => value.forEach(symbol => result[symbol] = key));
+    Object.entries(unique).forEach(([key, value]) =>
+      value.forEach((symbol) => (result[symbol] = key))
+    );
     const shared = Localizations.shared;
-    Object.entries(shared).forEach(([key, value]) => result[key] = value[0]);
+    Object.entries(shared).forEach(([key, value]) => (result[key] = value[0]));
     return (this._uniqueSymbols = result);
   }
 
   static get shared() {
     return {
       // Usa, Canada, Australia, Mexico, New Zealand, Singapore, Hong kong, Argentine peso
-      "$": ["USD", "CAD", "AUD", "MXN", "NZD", "SGP", "HKD", "ARS"],
-      "dollar": ["USD", "CAD", "AUD", "MXN", "NZD", "SGP", "HKD"],
-      "dollars": ["USD", "CAD", "AUD", "MXN", "NZD", "SGP", "HKD"],
+      $: ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD', 'ARS'],
+      dollar: ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
+      dollars: ['USD', 'CAD', 'AUD', 'MXN', 'NZD', 'SGP', 'HKD'],
       // Denmark, Sweden,  Norway, Island, Czechia
-      "kr.": ["SEK", "DKK", "NOK", "ISK", "CZK"],
-      "kr": ["SEK", "DKK", "NOK", "ISK", "CZK"],
-      ",-": ["SEK", "DKK", "NOK", "ISK"],
-      ",--": ["SEK", "DKK", "NOK", "ISK"],
+      'kr.': ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
+      kr: ['SEK', 'DKK', 'NOK', 'ISK', 'CZK'],
+      ',-': ['SEK', 'DKK', 'NOK', 'ISK'],
+      ',--': ['SEK', 'DKK', 'NOK', 'ISK'],
       // China, Japan
-      "¥": ["CNY", "JPY"]
+      '¥': ['CNY', 'JPY'],
     };
   }
 
   static get unique() {
     return {
       // Australia
-      "AUD": ["AUD$"],
+      AUD: ['AUD$'],
       // Brazil
-      "BRL": ["R$"],
+      BRL: ['R$'],
       // New Zealand
-      "NZD": ["NZD$"],
+      NZD: ['NZD$'],
       // USA
-      "USD": ["USD$", "US$", "US $"],
+      USD: ['USD$', 'US$', 'US $'],
       // Canada
-      "CAD": ["CDN$"],
+      CAD: ['CDN$'],
       // Mexico
-      "MXN": ["MXN$"],
+      MXN: ['MXN$'],
       // EU
-      "EUR": ["€"],
+      EUR: ['€'],
       // UK
-      "GBP": ["£"],
+      GBP: ['£'],
       // Japan
-      "JPY": ["JP¥", "円"],
+      JPY: ['JP¥', '円'],
       // China
-      "CNY": ["CN¥", "元"],
+      CNY: ['CN¥', '元'],
       // India
-      "INR": ["₹"],
+      INR: ['₹'],
       // Russia
-      "RUB": ["₽"],
+      RUB: ['₽'],
       // Turkey
-      "TRY": ["₺", "TL"],
+      TRY: ['₺', 'TL'],
       // Ukraine
-      "UAH": ["₴"],
+      UAH: ['₴'],
       // Thailand
-      "THB": ["฿"],
+      THB: ['฿'],
       // Poland
-      "PLN": ["zł"],
+      PLN: ['zł'],
       // South Korea
-      "KRW": ["₩"],
+      KRW: ['₩'],
       // Bulgaria
-      "BGN": ["лв"],
+      BGN: ['лв'],
       // Czechia
-      "CZK": ["Kč"],
+      CZK: ['Kč'],
       // South Africa
-      "ZAR": ["R"],
+      ZAR: ['R'],
       // Bitcoin
-      "BTC": ["₿"],
+      BTC: ['₿'],
       // Monero
-      "XMR": ["ɱ"],
+      XMR: ['ɱ'],
       // Ethereum
-      "ETH": ["Ξ"],
+      ETH: ['Ξ'],
       // Litecoin
-      "LTC": ["Ł"]
+      LTC: ['Ł'],
     };
   }
 
   static get hostCurrency() {
     return {
-      "com": "USD",
-      "cn": "CNY",
-      "jp": "JPY",
-      "in": "INR",
-      "ru": "RUB",
-      "tr": "TRY",
-      "ua": "UAH",
-      "th": "THB",
-      "pl": "PLN",
-      "kr": "KRW",
-      "bg": "BGN",
-      "dk": "DKK",
-      "se": "SEK",
-      "no": "NOK",
-      "is": "ISK",
-      "cz": "CZK",
-      "ca": "CAD",
-      "au": "AUD",
-      "mx": "MXN",
-      "nz": "NZD",
-      "sg": "SGP",
-      "hk": "HKD",
-      "uk": "GBP"
+      com: 'USD',
+      cn: 'CNY',
+      jp: 'JPY',
+      in: 'INR',
+      ru: 'RUB',
+      tr: 'TRY',
+      ua: 'UAH',
+      th: 'THB',
+      pl: 'PLN',
+      kr: 'KRW',
+      bg: 'BGN',
+      dk: 'DKK',
+      se: 'SEK',
+      no: 'NOK',
+      is: 'ISK',
+      cz: 'CZK',
+      ca: 'CAD',
+      au: 'AUD',
+      mx: 'MXN',
+      nz: 'NZD',
+      sg: 'SGP',
+      hk: 'HKD',
+      uk: 'GBP',
     };
   }
 }

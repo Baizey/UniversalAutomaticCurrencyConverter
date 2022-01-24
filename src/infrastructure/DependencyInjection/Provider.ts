@@ -1,6 +1,6 @@
-import { Browser, IBrowser } from "../Browser";
-import { BackendApi, IBackendApi } from "../../currencyConverter/BackendApi";
-import { ILogger, Logger } from "../Logger";
+import { Browser, IBrowser } from '../Browser';
+import { BackendApi, IBackendApi } from '../../currencyConverter/BackendApi';
+import { ILogger, Logger } from '../Logger';
 import {
   blacklistedUrlsSetting,
   colorThemeSetting,
@@ -29,26 +29,33 @@ import {
   usingLocalizationAlertSetting,
   usingWhitelistingSetting,
   whitelistedUrlsSetting,
-  yenLocalizationSetting
-} from "../Configuration";
+  yenLocalizationSetting,
+} from '../Configuration';
 import {
   ElementDetector,
   IElementDetector,
   ISiteAllowance,
   ITextDetector,
   SiteAllowance,
-  TextDetector
-} from "../../currencyConverter/Detection";
-import { ActiveLocalization, IActiveLocalization } from "../../currencyConverter/Localization";
+  TextDetector,
+} from '../../currencyConverter/Detection';
+import {
+  ActiveLocalization,
+  IActiveLocalization,
+} from '../../currencyConverter/Localization';
 import {
   IsPausedSetting,
   LastVersionSetting,
   miniConverterSetting,
-  useDebugLoggingSetting
-} from "../Configuration/Configuration";
-import { ISetting } from "../Configuration/ISetting";
-import { TabState } from "../../currencyConverter/Live/TabState";
-import { IServiceCollection, ServiceCollection, ServiceProvider } from "sharp-dependency-injection/lib";
+  useDebugLoggingSetting,
+} from '../Configuration/Configuration';
+import { ISetting } from '../Configuration/ISetting';
+import { TabState } from '../../currencyConverter/Live/TabState';
+import {
+  IServiceCollection,
+  ServiceCollection,
+  ServiceProvider,
+} from 'sharp-dependency-injection/lib';
 
 export class WeakProvider {
   tabState?: TabState;
@@ -96,79 +103,135 @@ export class WeakProvider {
 
 export type Provider = Required<WeakProvider>;
 
-function addSettingDependencies(services: IServiceCollection<Provider>): IServiceCollection<Provider> {
-  services.addSingleton({ dependency: usingHoverFlipConversionSetting, selector: p => p.usingHoverFlipConversion });
-  services.addSingleton({ dependency: LastVersionSetting, selector: p => p.lastVersion });
-  services.addSingleton({ dependency: IsPausedSetting, selector: p => p.isPaused });
-  services.addSingleton({ dependency: useDebugLoggingSetting, selector: p => p.useLogging });
-  services.addSingleton({ dependency: miniConverterSetting, selector: p => p.miniConverter });
-  services.addSingleton({ dependency: isFirstTimeSetting, selector: p => p.isFirstTime });
-  services.addSingleton({ dependency: colorThemeSetting, selector: p => p.colorTheme });
-  services.addSingleton({ dependency: disabledCurrenciesSetting, selector: p => p.disabledCurrencies });
-  services.addSingleton({ dependency: significantDigitsSetting, selector: p => p.significantDigits });
-  services.addSingleton({ dependency: thousandsSeparatorSetting, selector: p => p.thousandsSeparator });
-  services.addSingleton({ dependency: decimalPointSetting, selector: p => p.decimalPoint });
-  services.addSingleton({ dependency: conversionDisplaySetting, selector: p => p.customDisplay });
-  services.addSingleton({ dependency: customConversionRateSetting, selector: p => p.customConversionRateDisplay });
-  services.addSingleton({ dependency: usingCustomDisplaySetting, selector: p => p.usingCustomDisplay });
-  services.addSingleton({ dependency: highlightColorSetting, selector: p => p.highlightColor });
-  services.addSingleton({ dependency: highlightDurationSetting, selector: p => p.highlightDuration });
+function addSettingDependencies(
+  services: IServiceCollection<Provider>
+): IServiceCollection<Provider> {
+  services.addSingleton({
+    dependency: usingHoverFlipConversionSetting,
+    selector: (p) => p.usingHoverFlipConversion,
+  });
+  services.addSingleton({
+    dependency: LastVersionSetting,
+    selector: (p) => p.lastVersion,
+  });
+  services.addSingleton({
+    dependency: IsPausedSetting,
+    selector: (p) => p.isPaused,
+  });
+  services.addSingleton({
+    dependency: useDebugLoggingSetting,
+    selector: (p) => p.useLogging,
+  });
+  services.addSingleton({
+    dependency: miniConverterSetting,
+    selector: (p) => p.miniConverter,
+  });
+  services.addSingleton({
+    dependency: isFirstTimeSetting,
+    selector: (p) => p.isFirstTime,
+  });
+  services.addSingleton({
+    dependency: colorThemeSetting,
+    selector: (p) => p.colorTheme,
+  });
+  services.addSingleton({
+    dependency: disabledCurrenciesSetting,
+    selector: (p) => p.disabledCurrencies,
+  });
+  services.addSingleton({
+    dependency: significantDigitsSetting,
+    selector: (p) => p.significantDigits,
+  });
+  services.addSingleton({
+    dependency: thousandsSeparatorSetting,
+    selector: (p) => p.thousandsSeparator,
+  });
+  services.addSingleton({
+    dependency: decimalPointSetting,
+    selector: (p) => p.decimalPoint,
+  });
+  services.addSingleton({
+    dependency: conversionDisplaySetting,
+    selector: (p) => p.customDisplay,
+  });
+  services.addSingleton({
+    dependency: customConversionRateSetting,
+    selector: (p) => p.customConversionRateDisplay,
+  });
+  services.addSingleton({
+    dependency: usingCustomDisplaySetting,
+    selector: (p) => p.usingCustomDisplay,
+  });
+  services.addSingleton({
+    dependency: highlightColorSetting,
+    selector: (p) => p.highlightColor,
+  });
+  services.addSingleton({
+    dependency: highlightDurationSetting,
+    selector: (p) => p.highlightDuration,
+  });
   services.addSingleton({
     dependency: usingConversionHighlightingSetting,
-    selector: p => p.usingConversionHighlighting
+    selector: (p) => p.usingConversionHighlighting,
   });
-  services.addSingleton({ dependency: usingBlacklistingSetting, selector: p => p.usingBlacklisting });
-  services.addSingleton({ dependency: blacklistedUrlsSetting, selector: p => p.blacklistedUrls });
-  services.addSingleton({ dependency: usingWhitelistingSetting, selector: p => p.usingWhitelisting });
-  services.addSingleton({ dependency: whitelistedUrlsSetting, selector: p => p.whitelistedUrls });
-  services.addSingleton({ dependency: dollarLocalizationSetting, selector: p => p.dollarLocalization });
-  services.addSingleton({ dependency: yenLocalizationSetting, selector: p => p.yenLocalization });
-  services.addSingleton({ dependency: kroneLocalizationSetting, selector: p => p.kroneLocalization });
-  services.addSingleton({ dependency: usingLocalizationAlertSetting, selector: p => p.usingLocalizationAlert });
-  services.addSingleton({ dependency: convertToSetting, selector: p => p.convertTo });
-  services.addSingleton({ dependency: showConversionInBracketsSetting, selector: p => p.showConversionInBrackets });
-  services.addSingleton({ dependency: convertHoverShortcutSetting, selector: p => p.convertHoverShortcut });
-  services.addSingleton({ dependency: convertAllShortcutSetting, selector: p => p.convertAllShortcut });
+  services.addSingleton({
+    dependency: usingBlacklistingSetting,
+    selector: (p) => p.usingBlacklisting,
+  });
+  services.addSingleton({
+    dependency: blacklistedUrlsSetting,
+    selector: (p) => p.blacklistedUrls,
+  });
+  services.addSingleton({
+    dependency: usingWhitelistingSetting,
+    selector: (p) => p.usingWhitelisting,
+  });
+  services.addSingleton({
+    dependency: whitelistedUrlsSetting,
+    selector: (p) => p.whitelistedUrls,
+  });
+  services.addSingleton({
+    dependency: dollarLocalizationSetting,
+    selector: (p) => p.dollarLocalization,
+  });
+  services.addSingleton({
+    dependency: yenLocalizationSetting,
+    selector: (p) => p.yenLocalization,
+  });
+  services.addSingleton({
+    dependency: kroneLocalizationSetting,
+    selector: (p) => p.kroneLocalization,
+  });
+  services.addSingleton({
+    dependency: usingLocalizationAlertSetting,
+    selector: (p) => p.usingLocalizationAlert,
+  });
+  services.addSingleton({
+    dependency: convertToSetting,
+    selector: (p) => p.convertTo,
+  });
+  services.addSingleton({
+    dependency: showConversionInBracketsSetting,
+    selector: (p) => p.showConversionInBrackets,
+  });
+  services.addSingleton({
+    dependency: convertHoverShortcutSetting,
+    selector: (p) => p.convertHoverShortcut,
+  });
+  services.addSingleton({
+    dependency: convertAllShortcutSetting,
+    selector: (p) => p.convertAllShortcut,
+  });
   services.addSingleton({
     dependency: usingLeftClickFlipConversionSetting,
-    selector: p => p.usingLeftClickFlipConversion
+    selector: (p) => p.usingLeftClickFlipConversion,
   });
   services.addSingleton({
     dependency: usingAutoConversionOnPageLoadSetting,
-    selector: p => p.usingAutoConversionOnPageLoad
+    selector: (p) => p.usingAutoConversionOnPageLoad,
   });
   services.addSingleton<ISetting<any>[]>({
     factory: ({
-                isPaused,
-                useLogging,
-                isFirstTime,
-                colorTheme,
-                disabledCurrencies,
-                significantDigits,
-                thousandsSeparator,
-                decimalPoint,
-                customDisplay,
-                customConversionRateDisplay,
-                usingCustomDisplay,
-                highlightColor,
-                highlightDuration,
-                usingConversionHighlighting,
-                usingBlacklisting,
-                blacklistedUrls,
-                usingWhitelisting,
-                whitelistedUrls,
-                dollarLocalization,
-                yenLocalization,
-                kroneLocalization,
-                usingLocalizationAlert,
-                convertTo,
-                showConversionInBrackets,
-                convertHoverShortcut,
-                convertAllShortcut,
-                usingLeftClickFlipConversion,
-                usingAutoConversionOnPageLoad,
-                usingHoverFlipConversion
-              }: Provider) => [
       isPaused,
       useLogging,
       isFirstTime,
@@ -197,14 +260,46 @@ function addSettingDependencies(services: IServiceCollection<Provider>): IServic
       convertAllShortcut,
       usingLeftClickFlipConversion,
       usingAutoConversionOnPageLoad,
-      usingHoverFlipConversion
+      usingHoverFlipConversion,
+    }: Provider) => [
+      isPaused,
+      useLogging,
+      isFirstTime,
+      colorTheme,
+      disabledCurrencies,
+      significantDigits,
+      thousandsSeparator,
+      decimalPoint,
+      customDisplay,
+      customConversionRateDisplay,
+      usingCustomDisplay,
+      highlightColor,
+      highlightDuration,
+      usingConversionHighlighting,
+      usingBlacklisting,
+      blacklistedUrls,
+      usingWhitelisting,
+      whitelistedUrls,
+      dollarLocalization,
+      yenLocalization,
+      kroneLocalization,
+      usingLocalizationAlert,
+      convertTo,
+      showConversionInBrackets,
+      convertHoverShortcut,
+      convertAllShortcut,
+      usingLeftClickFlipConversion,
+      usingAutoConversionOnPageLoad,
+      usingHoverFlipConversion,
     ],
-    selector: provider => provider.allSettings
+    selector: (provider) => provider.allSettings,
   });
   return services;
 }
 
-function addDependencies(services: IServiceCollection<Provider>): IServiceCollection<Provider> {
+function addDependencies(
+  services: IServiceCollection<Provider>
+): IServiceCollection<Provider> {
   addSettingDependencies(services);
   services.addSingleton(TabState);
   services.addSingleton(Browser);
@@ -229,7 +324,9 @@ export class Container {
 }
 
 const useProvider = (): ServiceProvider<Provider> => {
-  return Container.getOrCreate(() => addDependencies(new ServiceCollection(WeakProvider))) as ServiceProvider<Provider>;
+  return Container.getOrCreate(() =>
+    addDependencies(new ServiceCollection(WeakProvider))
+  ) as ServiceProvider<Provider>;
 };
 
 export { useProvider, addDependencies };

@@ -1,56 +1,54 @@
-import * as React from "react";
-import { Meta, Story } from "@storybook/react";
-import { Button, ButtonProps } from "../../components/atoms";
+import * as React from 'react';
+import { Meta, Story } from '@storybook/react';
+import { Button, ButtonProps } from '../../components/atoms';
 
 export default {
-  title: "atoms/Button",
-  component: Button
+  title: 'atoms/Button',
+  component: Button,
 } as Meta;
 
-const Template: Story<ButtonProps> = (args) => <Button {...args} >Button</Button>;
+const Template: Story<ButtonProps> = (args) => (
+  <Button {...args}>Button</Button>
+);
 
 export const primary = Template.bind({});
 export const secondary = Template.bind({});
 export const success = Template.bind({});
 export const error = Template.bind({});
 primary.args = {
-  primary: () => {
-  },
+  primary: () => {},
   connect: {
     up: false,
     down: false,
     left: false,
-    right: false
-  }
+    right: false,
+  },
 } as ButtonProps;
 
 secondary.args = {
-  secondary: () => {
-  },
+  secondary: () => {},
   connect: {
     up: false,
     down: false,
     left: false,
-    right: false
-  }
+    right: false,
+  },
 };
 success.args = {
-  success: () => {
-  },
+  success: () => {},
   connect: {
     up: false,
     down: false,
     left: false,
-    right: false
-  }
+    right: false,
+  },
 };
 error.args = {
-  error: () => {
-  },
+  error: () => {},
   connect: {
     up: false,
     down: false,
     left: false,
-    right: false
-  }
+    right: false,
+  },
 };
