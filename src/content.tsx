@@ -4,7 +4,6 @@ import * as ReactDOM from 'react-dom';
 import { useProvider } from './infrastructure';
 import { CurrencyElement } from './currencyConverter/Currency';
 import { LogLevel } from './infrastructure/Logger';
-import { ContentApp } from './components/content';
 
 const isBlacklistedErrorMessage = `Site is blacklisted`;
 
@@ -53,7 +52,15 @@ function injectAlertSystem(): void {
   const div = document.createElement('div');
   div.id = 'uacc-root';
   document.body.appendChild(div);
-  ReactDOM.render(<ContentApp />, document.getElementById('uacc-root'));
+  try {
+    const { ContentApp } = require('./components/content');
+    ReactDOM.render(<ContentApp />, document.getElementById('uacc-root'));
+  } catch (e) {
+    logger.error(
+      e as Error,
+      `Failed injecting alert system, if you're on Firefox, just be glad anything works...`
+    );
+  }
   logger.info(`Injected alert system onto page`);
 }
 
