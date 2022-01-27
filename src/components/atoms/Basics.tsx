@@ -7,11 +7,9 @@ import {
   TextSize,
   TitleSize,
 } from './Constants';
-import styled, { StyledComponent } from 'styled-components';
+import styled from 'styled-components';
 
-type ElementType = 'div' | 'a' | 'span' | 'h2' | 'label';
-
-export const basicStyle = (props: ThemeProps) => ({
+export const basicStyle = (props: ThemeProps): any => ({
   backgroundColor: props.theme.containerBackground,
   color: props.theme.normalText,
   borderColor: props.theme.formBorder,
@@ -28,15 +26,13 @@ export const basicStyle = (props: ThemeProps) => ({
   padding: 0,
 });
 
-function BasicStyle<T>(
-  element: ElementType
-): StyledComponent<ElementType, any> {
-  // @ts-ignore
-  return styled[element]((props: T & ThemeProps) => basicStyle(props));
-}
-
-const BasicDiv = BasicStyle('div');
-const BasicA = BasicStyle('a');
+export const Div = styled.div((props: ThemeProps) => ({
+  ...basicStyle(props),
+}));
+const A = styled.a((props: ThemeProps) => ({ ...basicStyle(props) }));
+const H2 = styled.h2((props: ThemeProps) => ({ ...basicStyle(props) }));
+const Span = styled.span((props: ThemeProps) => ({ ...basicStyle(props) }));
+const Label = styled.label((props: ThemeProps) => ({ ...basicStyle(props) }));
 
 const baseInputStyle = (props: ThemeProps) => ({
   ...basicStyle(props),
@@ -60,11 +56,6 @@ const BasicInput = styled.input<ThemeProps>((props: ThemeProps) => ({
   '&[type="number"]': baseInputStyle(props),
   '&[type="range"]': baseInputStyle(props),
 }));
-const BasicH2 = BasicStyle('h2');
-const BasicSpan = BasicStyle('span');
-const BasicLabel = BasicStyle('label');
-
-export const Div = BasicDiv;
 
 export type InputProps = { type?: string; readOnly?: boolean; value?: any };
 export const BaseInput = styled(BasicInput)<InputProps>``;
@@ -106,18 +97,18 @@ export const Button = styled(Div)<ButtonProps>((props: ButtonProps) => ({
   },
 }));
 
-export const NormalText = styled(BasicSpan)({
+export const NormalText = styled(Span)({
   width: '100%',
   display: 'inline-block',
 });
-export const HeaderText = styled(BasicLabel)((props: ThemeProps) => ({
+export const HeaderText = styled(Label)((props: ThemeProps) => ({
   width: '100%',
   display: 'inline-block',
   fontSize: asPixel(TextSize),
   color: props.theme.headerText,
   fontWeight: 600,
 }));
-export const FooterText = styled(BasicSpan)((props: ThemeProps) => ({
+export const FooterText = styled(Span)((props: ThemeProps) => ({
   width: '100%',
   display: 'inline-block',
   fontSize: asPixel(SmallTextSize),
@@ -126,7 +117,7 @@ export const FooterText = styled(BasicSpan)((props: ThemeProps) => ({
 }));
 
 export type LinkProps = { href: string; target: string };
-export const Link = styled(BasicA)<LinkProps>((props) => ({
+export const Link = styled(A)<LinkProps>((props) => ({
   cursor: 'pointer',
   color: props.theme.link,
   textDecoration: 'none',
@@ -136,7 +127,7 @@ export const Link = styled(BasicA)<LinkProps>((props) => ({
   },
 }));
 
-export const Title = styled(BasicH2)((props) => ({
+export const Title = styled(H2)((props) => ({
   color: props.theme.titleText,
   fontWeight: 700,
   fontSize: asPixel(TitleSize),
