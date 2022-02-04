@@ -53,21 +53,17 @@ function injectAlertSystem(): void {
   const div = document.createElement('div');
   div.id = 'uacc-root';
   document.body.appendChild(div);
-  try {
-    const { ContentApp } = require('./components/content');
-    ReactDOM.render(<ContentApp />, document.getElementById('uacc-root'));
-  } catch (e) {
-    logger.error(
-      e as Error,
-      `Failed injecting alert system, if you're on Firefox, just be glad anything works...`
-    );
-  }
+  ReactDOM.render(<ContentApp />, document.getElementById('uacc-root'));
   logger.info(`Injected alert system onto page`);
 }
 
 function injectShortcuts(): void {
-  const { logger, tabState, convertAllShortcut, convertHoverShortcut } =
-    useProvider();
+  const {
+    logger,
+    tabState,
+    convertAllShortcut,
+    convertHoverShortcut,
+  } = useProvider();
 
   // Add shortcut for convert all
   if (convertAllShortcut.value)
