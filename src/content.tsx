@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { useProvider } from './infrastructure';
 import { CurrencyElement } from './currencyConverter/Currency';
 import { LogLevel } from './infrastructure/Logger';
+import { ContentApp } from './components/content';
 
 const isBlacklistedErrorMessage = `Site is blacklisted`;
 
