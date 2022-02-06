@@ -63,8 +63,11 @@ export class Logger implements ILogger {
   }
 
   error(error: Error, message?: string) {
-    message = message || 'Unexpected error';
-    this._log(`${message}\n${error.stack || error.message}`, LogLevel.error);
+    message ??= 'Unexpected error';
+    this._log(
+      `${message}\n${error.name}\n${error.message}\n${error.stack}`,
+      LogLevel.error
+    );
   }
 
   log(logEvent: LogEvent) {
