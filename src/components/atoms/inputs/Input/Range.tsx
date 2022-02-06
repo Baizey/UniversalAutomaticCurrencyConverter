@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { ThemeProps } from '../../infrastructure';
+import { ThemeProps } from '../../../../infrastructure';
 import styled from 'styled-components';
-import { BaseInput } from './Basics';
-import { asPixel, FieldHeight } from './Constants';
-import { ReadonlyInput } from './Input';
+import { BaseInput } from './Input';
+import { HalfFieldHeight } from '../../Constants';
+import { ReadonlyInput } from './ReadonlyInput';
 
 export type RangeProps = {
   key?: string;
@@ -44,7 +44,7 @@ export type RangeContainerProps = {
 } & ThemeProps;
 export const RangeContainer = styled(BaseInput)<RangeContainerProps>`
   -webkit-appearance: none;
-  height: ${asPixel(FieldHeight / 2)};
+  height: ${HalfFieldHeight.pixel};
   width: 80%;
   appearance: auto;
   border-width: 0;

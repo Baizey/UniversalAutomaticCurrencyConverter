@@ -2,27 +2,14 @@ import { AlertSection } from './AlertSection';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-// noinspection ES6UnusedImports We need to import everything for it to work in browser
 import {
-  RadioBox,
-  RadioBoxContainer,
-  RadioBoxContainerProps,
-  RadioBoxProps,
-} from '../atoms/RadioBox';
-// noinspection ES6UnusedImports We need to import everything for it to work in browser
-import {
-  Button,
-  ButtonProps,
   Div,
   Dropdown,
+  ErrorButton,
   HeaderText,
-  Input,
   NormalText,
   Range,
-  ReadonlyInput,
-  Space,
-  SpaceProps,
-  Title,
+  SuccessButton,
 } from '../atoms';
 import { ThemeProps, useProvider } from '../../infrastructure';
 import { OptionRow, SettingOption } from '../options/Shared';
@@ -64,23 +51,21 @@ function ConversionsCount() {
   }, [showing]);
 
   const ConvertButton = showing ? (
-    <Button
+    <ErrorButton
       onClick={() => {
         setShowing(false);
       }}
-      error
     >
       Hide conversions
-    </Button>
+    </ErrorButton>
   ) : (
-    <Button
+    <SuccessButton
       onClick={() => {
         setShowing(true);
       }}
-      success
     >
       Show conversions
-    </Button>
+    </SuccessButton>
   );
 
   return (
@@ -220,23 +205,21 @@ function Allowance() {
   }
 
   const AllowanceButton = isAllowed ? (
-    <Button
+    <ErrorButton
       onClick={() => {
         siteAllowance.addUri(uri, false).finally(() => setIsAllowed(false));
       }}
-      error
     >
       Blacklist
-    </Button>
+    </ErrorButton>
   ) : (
-    <Button
+    <SuccessButton
       onClick={() => {
         siteAllowance.addUri(uri, true).finally(() => setIsAllowed(true));
       }}
-      success
     >
       Whitelist
-    </Button>
+    </SuccessButton>
   );
 
   return (

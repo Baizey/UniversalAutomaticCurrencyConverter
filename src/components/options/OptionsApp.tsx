@@ -1,30 +1,19 @@
 import * as React from 'react';
-import { useState } from 'react';
 import { TitleCard } from './TitleCard';
 import { LoadingCard } from './Shared';
 import { CurrencyCard } from './Currency/CurrencyCard';
 import { VisualsCard } from './Visual/VisualsCard';
 import { AccessibilityCard } from './Accessibility/AccessibilityCard';
-import { ThemeProps, themes } from '../../infrastructure';
+import { ThemeProps } from '../../infrastructure';
 import { Div, Space } from '../atoms';
 import { FilterOptionsCard } from './FilterOptionsCard';
 import styled from 'styled-components';
 import { NewUpdateCard } from './NewUpdateCard';
+import { useConfiguration } from '../molecules';
 
-export type OptionsAppProps = {
-  isLoading: boolean;
-  setTheme: React.Dispatch<React.SetStateAction<keyof typeof themes>>;
-  symbols: { label: string; value: string }[];
-};
-
-export type OptionCardProps = {
-  filter: string;
-  setTheme: React.Dispatch<React.SetStateAction<keyof typeof themes>>;
-  symbols: { label: string; value: string }[];
-};
-
-export default function OptionsApp(props: OptionsAppProps): JSX.Element {
-  const [filter, setFilter] = useState<string>('');
+export default function OptionsApp(): JSX.Element {
+  const { isLoading } = useConfiguration();
+  if (isLoading) return wrap(<LoadingCard key="LoadingCard-card" />);
 
   function wrap(children: JSX.Element[] | JSX.Element) {
     return (
@@ -33,7 +22,7 @@ export default function OptionsApp(props: OptionsAppProps): JSX.Element {
         <Wrapper>
           <TitleCard key="TitleCard-card" />
           <NewUpdateCard />
-          <FilterOptionsCard onChange={(filter) => setFilter(filter)} />
+          <FilterOptionsCard />
           {children}
         </Wrapper>
         <Space height={10} />
@@ -41,16 +30,10 @@ export default function OptionsApp(props: OptionsAppProps): JSX.Element {
     );
   }
 
-  if (props.isLoading) return wrap(<LoadingCard key="LoadingCard-card" />);
-
   return wrap([
-    <CurrencyCard {...props} filter={filter} key="CurrencyCard-card" />,
-    <VisualsCard {...props} filter={filter} key="VisualsCard-card" />,
-    <AccessibilityCard
-      {...props}
-      filter={filter}
-      key="AccessibilityCard-card"
-    />,
+    <CurrencyCard key="CurrencyCard-card" />,
+    <VisualsCard key="VisualsCard-card" />,
+    <AccessibilityCard key="AccessibilityCard-card" />,
   ]);
 }
 

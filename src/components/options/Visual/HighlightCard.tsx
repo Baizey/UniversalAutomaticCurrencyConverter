@@ -1,18 +1,18 @@
 import { useProvider } from '../../../infrastructure';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
-import { Checkbox, Input } from '../../atoms';
+import { Checkbox, NumberInput, TextInput } from '../../atoms';
 import * as React from 'react';
 import { useState } from 'react';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
-export function HighlightCard(props: OptionCardProps) {
+export function HighlightCard() {
+  const { filter } = useFilter();
   const { usingConversionHighlighting, highlightColor, highlightDuration } =
     useProvider();
   const [color, setColor] = useState(highlightColor.value);
 
-  if (isFilteredOut(['highlight', 'color', 'duration'], props.filter))
-    return <></>;
+  if (isFilteredOut(['highlight', 'color', 'duration'], filter)) return <></>;
 
   return (
     <OptionsSection title="Conversion highlight">
@@ -29,8 +29,7 @@ export function HighlightCard(props: OptionCardProps) {
           title="Highlight color"
           help={'Allows oth names and HEX'}
         >
-          <Input
-            type={'text'}
+          <TextInput
             borderHoverColor={color}
             defaultValue={color}
             onChange={async (value) =>
@@ -40,8 +39,7 @@ export function HighlightCard(props: OptionCardProps) {
           />
         </SettingOption>
         <SettingOption title="Highlight duration" help={'1000 = 1 second'}>
-          <Input
-            type="number"
+          <NumberInput
             defaultValue={highlightDuration.value}
             onChange={(value) => highlightDuration.setAndSaveValue(+value)}
           />

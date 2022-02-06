@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import * as React from 'react';
-import { ThemeProps } from '../../infrastructure';
-import { Div } from './Basics';
+import { ThemeProps } from '../../../infrastructure';
+import { Div } from '../Basics';
 
 export type RadioBoxProps = {
   value: boolean;
@@ -16,12 +16,12 @@ export function RadioBox({ value, onClick }: RadioBoxProps) {
   );
 }
 
-export type RadioBoxContainerProps = {
+type RadioBoxContainerProps = {
   checked: boolean;
   onClick: () => void;
 } & ThemeProps;
 
-export const RadioBoxContainer = styled(Div)<RadioBoxContainerProps>(
+const RadioBoxContainer = styled(Div)<RadioBoxContainerProps>(
   (props: RadioBoxContainerProps) => ({
     cursor: 'pointer',
     width: '30px',

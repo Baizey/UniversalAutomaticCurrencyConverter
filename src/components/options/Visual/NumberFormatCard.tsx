@@ -1,9 +1,9 @@
 import { useProvider } from '../../../infrastructure';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
-import { Dropdown, Input } from '../../atoms';
+import { Dropdown, NumberInput } from '../../atoms';
 import * as React from 'react';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
 const thousandsOptions = [
   { value: ' ', label: '100 000 (space)' },
@@ -17,7 +17,8 @@ const commaOptions = [
   { value: '.', label: '0.50 (dot)' },
 ];
 
-export function NumberFormatCard(props: OptionCardProps) {
+export function NumberFormatCard() {
+  const { filter } = useFilter();
   const { decimalPoint, thousandsSeparator, significantDigits } = useProvider();
 
   if (
@@ -31,7 +32,7 @@ export function NumberFormatCard(props: OptionCardProps) {
         'format',
         'number',
       ],
-      props.filter
+      filter
     )
   )
     return <></>;
@@ -54,8 +55,7 @@ export function NumberFormatCard(props: OptionCardProps) {
           />
         </SettingOption>
         <SettingOption title="Important digits on rounding">
-          <Input
-            type="number"
+          <NumberInput
             defaultValue={significantDigits.value}
             onChange={(value) => significantDigits.setAndSaveValue(+value)}
           />

@@ -2,14 +2,15 @@ import { useProvider } from '../../../infrastructure';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
 import { Checkbox } from '../../atoms';
 import * as React from 'react';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
-export function MouseInteractionCard(props: OptionCardProps) {
+export function MouseInteractionCard() {
+  const { filter } = useFilter();
   const { usingHoverFlipConversion, usingLeftClickFlipConversion } =
     useProvider();
 
-  if (isFilteredOut(['mouse', 'leftclick', 'hover', 'convert'], props.filter))
+  if (isFilteredOut(['mouse', 'leftclick', 'hover', 'convert'], filter))
     return <></>;
 
   return (

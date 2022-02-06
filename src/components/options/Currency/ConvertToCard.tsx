@@ -2,13 +2,16 @@ import { useProvider } from '../../../infrastructure';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
 import { Checkbox, Dropdown } from '../../atoms';
 import * as React from 'react';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useConfiguration } from '../../molecules';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
-export function ConvertToCard(props: OptionCardProps) {
+export function ConvertToCard() {
+  const { filter } = useFilter();
+  const { symbols } = useConfiguration();
   const { convertTo, usingAutoConversionOnPageLoad } = useProvider();
 
-  if (isFilteredOut(['currency', 'automatically', 'convert'], props.filter))
+  if (isFilteredOut(['currency', 'automatically', 'convert'], filter))
     return <></>;
 
   return (
@@ -16,7 +19,7 @@ export function ConvertToCard(props: OptionCardProps) {
       <OptionRow key="convert_to_row">
         <SettingOption key="convert_to_option" title="Convert to">
           <Dropdown
-            options={props.symbols}
+            options={symbols}
             value={convertTo.value}
             onChange={(value) => convertTo.setAndSaveValue(value)}
           />

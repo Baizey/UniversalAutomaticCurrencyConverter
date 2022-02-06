@@ -1,9 +1,17 @@
-export const FieldHeight = 40;
-export const BorderFieldHeight = FieldHeight - 2;
-export const HalfBorderFieldHeight = FieldHeight - 1;
+interface StyleSize<V extends number> {
+  value: number;
+  pixel: `${V}px`;
+}
 
-export const TitleSize = 20;
-export const TextSize = 15;
-export const SmallTextSize = 12;
+const create = <V extends number>(value: V): StyleSize<V> => ({
+  value: value,
+  pixel: `${value}px`,
+});
 
-export const asPixel = (n: number) => `${n}px`;
+export const TitleSize = create(20);
+export const TextSize = create(15);
+export const SmallTextSize = create(12);
+
+export const FieldHeight = create(40);
+export const HalfFieldHeight = create(20);
+export const HalfBorderFieldHeight = create(39);

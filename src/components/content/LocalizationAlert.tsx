@@ -2,22 +2,13 @@ import { AlertSection } from './AlertSection';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-// noinspection ES6UnusedImports We need to import everything for it to work in browser
 import {
-  RadioBox,
-  RadioBoxContainer,
-  RadioBoxContainerProps,
-  RadioBoxProps,
-} from '../atoms/RadioBox';
-// noinspection ES6UnusedImports We need to import everything for it to work in browser
-import {
-  Button,
-  ButtonProps,
   Div,
   HeaderText,
   NormalText,
+  PrimaryButton,
+  RadioBox,
   Space,
-  SpaceProps,
 } from '../atoms';
 import { ThemeProps, useProvider } from '../../infrastructure';
 
@@ -93,15 +84,14 @@ export function LocalizationAlert(props: Props) {
           />
         </Option>
       </OptionWrapper>
-      <Button
-        primary
+      <PrimaryButton
         onClick={async () => {
           await activeLocalization.setLocked(true);
           props.setDismissed();
         }}
       >
         Save as site default and dont ask again
-      </Button>
+      </PrimaryButton>
     </AlertSection>
   );
 }

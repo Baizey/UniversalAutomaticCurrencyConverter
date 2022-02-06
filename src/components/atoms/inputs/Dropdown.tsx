@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { MyTheme } from '../../infrastructure';
-import { asPixel, FieldHeight } from './Constants';
-import { basicStyle } from './Basics';
 import { useTheme } from 'styled-components';
+import { MyTheme } from '../../../infrastructure';
+import { basicStyle } from '../Basics';
+import { FieldHeight } from '../Constants';
 
 export type DropdownProps = {
   maxOptions?: number;
@@ -22,7 +22,10 @@ export function Dropdown({
   menuPlacement,
 }: DropdownProps) {
   const [selected, setSelected] =
-    useState<{ label: string; value: string } | null>(null);
+    useState<{
+      label: string;
+      value: string;
+    } | null>(null);
   useEffect(() => setSelected(options.filter((e) => e.value === value)[0]), []);
   const theme = useTheme() as MyTheme;
   const visibleOptions = maxOptions || 4;
@@ -40,14 +43,16 @@ export function Dropdown({
       options={options}
       menuPlacement={menuPlacement || 'auto'}
       placeholder={'Search and select...'}
-      components={{ IndicatorSeparator: () => null }}
       styles={{
+        indicatorsContainer: (provider: any, state: any) => ({
+          display: 'none',
+        }),
         option: (provided: any, state: any) => ({
           ...provided,
           ...basicStyle({ theme: theme }),
           width: '100%',
-          height: asPixel(FieldHeight),
-          lineHeight: asPixel(FieldHeight),
+          height: FieldHeight.pixel,
+          lineHeight: FieldHeight.pixel,
           verticalAlign: 'center',
           backgroundColor: state.isFocused
             ? theme.backgroundBorderFocus
@@ -58,15 +63,15 @@ export function Dropdown({
           ...provided,
           ...basicStyle({ theme: theme }),
           width: '100%',
-          height: asPixel(FieldHeight),
-          lineHeight: asPixel(FieldHeight),
+          height: FieldHeight.pixel,
+          lineHeight: FieldHeight.pixel,
           color: theme.headerText,
         }),
         singleValue: (provided: any, state: any) => ({
           ...provided,
           ...basicStyle({ theme: theme }),
-          height: asPixel(FieldHeight),
-          lineHeight: asPixel(FieldHeight),
+          height: FieldHeight.pixel,
+          lineHeight: FieldHeight.pixel,
           zIndex: 501,
           width: '100%',
           maxWidth: '100%',
@@ -74,8 +79,8 @@ export function Dropdown({
         valueContainer: (provided: any, state: any) => ({
           ...provided,
           ...basicStyle({ theme: theme }),
-          height: asPixel(FieldHeight),
-          lineHeight: asPixel(FieldHeight),
+          height: FieldHeight.pixel,
+          lineHeight: FieldHeight.pixel,
           borderBottomWidth: '1px',
           borderBottomColor: state.isFocused
             ? theme.formBorderFocus
@@ -89,14 +94,14 @@ export function Dropdown({
           ...provided,
           ...basicStyle({ theme: theme }),
           zIndex: 500,
-          height: asPixel(FieldHeight),
-          lineHeight: asPixel(FieldHeight),
+          height: FieldHeight.pixel,
+          lineHeight: FieldHeight.pixel,
         }),
         control: (provided: any, state: any) => ({
           ...provided,
           ...basicStyle({ theme: theme }),
-          height: asPixel(FieldHeight),
-          lineHeight: asPixel(FieldHeight),
+          height: FieldHeight.pixel,
+          lineHeight: FieldHeight.pixel,
           cursor: 'pointer',
         }),
         dropdownIndicator: (provided: any, state: any) => ({

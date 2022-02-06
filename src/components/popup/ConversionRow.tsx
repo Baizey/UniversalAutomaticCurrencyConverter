@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { MyTheme, ThemeProps, useProvider } from '../../infrastructure';
 import { CurrencyAmount } from '../../currencyConverter/Currency';
 import { DeleteIcon, ExchangeIcon } from '../assets';
-import { Div, Dropdown, Input, ReadonlyInput } from '../atoms';
+import { Div, Dropdown, NumberInput, ReadonlyInput } from '../atoms';
 import styled, { useTheme } from 'styled-components';
-import { asPixel, FieldHeight } from '../atoms/Constants';
+import { FieldHeight } from '../atoms/Constants';
 
 export type ConversionRowProps = {
   from: string;
@@ -59,9 +59,8 @@ export function ConversionRow(props: ConversionRowProps) {
       </IconContainer>
 
       <AmountContainer>
-        <Input
+        <NumberInput
           center={false}
-          type={'number'}
           defaultValue={fromAmount}
           onChange={(value) => setFromAmount(+value)}
         />
@@ -114,7 +113,7 @@ const IconContainer = styled(Div)`
   justify-content: center;
   justify-items: center;
   cursor: pointer;
-  height: ${() => asPixel(FieldHeight)}
+  height: ${() => FieldHeight.pixel}
   width: 5%;
 
   &:hover {

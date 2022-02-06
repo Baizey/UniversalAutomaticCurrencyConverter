@@ -2,10 +2,18 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Converter } from './Converter';
 import { ThemeProps, useProvider } from '../../infrastructure';
-import { Button, Div, Link, Space, Title } from '../atoms';
+import {
+  Div,
+  Link,
+  PrimaryButton,
+  SecondaryButton,
+  Space,
+  Title,
+} from '../atoms';
+import { useConfiguration } from '../molecules';
 
-export type PopupAppProps = { isLoading: boolean };
-export default function PopupApp({ isLoading }: PopupAppProps) {
+export default function PopupApp() {
+  const { isLoading } = useConfiguration();
   if (isLoading) return <Title>Loading...</Title>;
   const { browser } = useProvider();
 
@@ -17,20 +25,17 @@ export default function PopupApp({ isLoading }: PopupAppProps) {
 
       <Space height={20} />
 
-      <Button
-        secondary={true}
+      <SecondaryButton
         onClick={() => {
           browser.tab.openContextMenu();
         }}
         connect={{ down: true }}
       >
         Open context menu
-      </Button>
+      </SecondaryButton>
 
       <Link href="./options.html" target="_blank">
-        <Button primary={true} connect={{ up: true }}>
-          Go to settings
-        </Button>
+        <PrimaryButton connect={{ up: true }}>Go to settings</PrimaryButton>
       </Link>
 
       <Footer>Like or hate this extension?</Footer>

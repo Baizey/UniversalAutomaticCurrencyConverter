@@ -2,8 +2,8 @@ import { useProvider } from '../../../infrastructure';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
 import { Checkbox, Dropdown } from '../../atoms';
 import * as React from 'react';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
 const dollarOptions = [
   { value: 'USD', label: 'American' },
@@ -29,7 +29,8 @@ const yenOptions = [
   { value: 'JPY', label: 'Japanese' },
 ];
 
-export function LocalizationCard(props: OptionCardProps) {
+export function LocalizationCard() {
+  const { filter } = useFilter();
   const {
     kroneLocalization,
     yenLocalization,
@@ -37,7 +38,7 @@ export function LocalizationCard(props: OptionCardProps) {
     usingLocalizationAlert,
   } = useProvider();
 
-  if (isFilteredOut(['localization', 'krone', 'dollar', 'yen'], props.filter))
+  if (isFilteredOut(['localization', 'krone', 'dollar', 'yen'], filter))
     return <></>;
 
   return (

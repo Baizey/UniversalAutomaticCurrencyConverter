@@ -1,15 +1,15 @@
 import { useProvider } from '../../../infrastructure';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
-import { Shortcut } from '../../atoms/Shortcut';
 import * as React from 'react';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { Shortcut } from '../../atoms';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
-export function KeyboardShortcutsCard(props: OptionCardProps) {
+export function KeyboardShortcutsCard() {
+  const { filter } = useFilter();
   const { convertHoverShortcut, convertAllShortcut } = useProvider();
 
-  if (isFilteredOut(['keyboard', 'shortcut', 'hover'], props.filter))
-    return <></>;
+  if (isFilteredOut(['keyboard', 'shortcut', 'hover'], filter)) return <></>;
 
   return (
     <OptionsSection title="Keyboard shortcuts">

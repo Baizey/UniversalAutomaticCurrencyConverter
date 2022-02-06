@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ReactNode, useEffect, useState } from 'react';
 import { useProvider } from '../../infrastructure';
+import { SuccessButton } from '../atoms';
 import { ConversionRow } from './ConversionRow';
-import { Button } from '../atoms';
 
 export function Converter() {
   const { miniConverter, convertTo } = useProvider();
@@ -38,8 +38,7 @@ export function Converter() {
   return (
     <>
       {rows}
-      <Button
-        success={true}
+      <SuccessButton
         onClick={async () => {
           if (isLoading) return;
           const newRows = rowsData.concat([
@@ -51,7 +50,7 @@ export function Converter() {
         connect={{ up: true }}
       >
         Add conversion row
-      </Button>
+      </SuccessButton>
     </>
   );
 }

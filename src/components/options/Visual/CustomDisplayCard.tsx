@@ -1,15 +1,16 @@
 import { useProvider } from '../../../infrastructure';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
-import { Checkbox, Input } from '../../atoms';
+import { Checkbox, NumberInput, TextInput } from '../../atoms';
 import * as React from 'react';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
-export function CustomDisplayCard(props: OptionCardProps) {
+export function CustomDisplayCard() {
+  const { filter } = useFilter();
   const { customDisplay, usingCustomDisplay, customConversionRateDisplay } =
     useProvider();
 
-  if (isFilteredOut(['display', 'custom'], props.filter)) return <></>;
+  if (isFilteredOut(['display', 'custom'], filter)) return <></>;
 
   return (
     <OptionsSection title="Custom display">
@@ -21,15 +22,13 @@ export function CustomDisplayCard(props: OptionCardProps) {
           />
         </SettingOption>
         <SettingOption title="Custom display" help={'¤ becomes the number'}>
-          <Input
-            type={'text'}
+          <TextInput
             defaultValue={customDisplay.value}
             onChange={(value) => customDisplay.setAndSaveValue(`${value}`)}
           />
         </SettingOption>
         <SettingOption title="Custom conversion rate">
-          <Input
-            type="number"
+          <NumberInput
             defaultValue={customConversionRateDisplay.value}
             onChange={(value) =>
               customConversionRateDisplay.setAndSaveValue(+value)

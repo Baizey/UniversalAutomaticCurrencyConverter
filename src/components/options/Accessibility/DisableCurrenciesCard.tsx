@@ -4,23 +4,26 @@ import { useState } from 'react';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
 import { Dropdown } from '../../atoms';
 import { DisabledListContainer, DisabledListItem } from './AccessibilityCard';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useConfiguration } from '../../molecules';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
-export function DisableCurrenciesCard(props: OptionCardProps) {
+export function DisableCurrenciesCard() {
+  const { filter } = useFilter();
+  const { symbols } = useConfiguration();
   const { disabledCurrencies } = useProvider();
   const [listOfDisabledCurrencies, setListOfDisabledCurrencies] = useState<
     string[]
   >(disabledCurrencies.value);
 
-  if (isFilteredOut(['disabled', 'currencies'], props.filter)) return <></>;
+  if (isFilteredOut(['disabled', 'currencies'], filter)) return <></>;
 
   return (
     <OptionsSection title="Disable currencies">
       <OptionRow>
         <SettingOption title="Search for currencies to disable">
           <Dropdown
-            options={props.symbols}
+            options={symbols}
             onChange={(value) => {
               const newList = listOfDisabledCurrencies.concat([value]);
               newList.sort();

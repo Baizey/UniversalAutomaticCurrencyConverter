@@ -3,10 +3,11 @@ import { OptionRow, OptionsSection, SettingOption } from '../Shared';
 import { Checkbox } from '../../atoms';
 import * as React from 'react';
 import { ListHandler } from './AccessibilityCard';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
-export function SiteAllowanceCard(props: OptionCardProps) {
+export function SiteAllowanceCard() {
+  const { filter } = useFilter();
   const {
     blacklistedUrls,
     usingBlacklisting,
@@ -17,7 +18,7 @@ export function SiteAllowanceCard(props: OptionCardProps) {
   if (
     isFilteredOut(
       ['whitelist', 'blacklist', 'allowance', 'site', 'url'],
-      props.filter
+      filter
     )
   )
     return <></>;

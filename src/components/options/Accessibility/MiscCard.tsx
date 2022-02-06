@@ -2,9 +2,9 @@ import { useProvider } from '../../../infrastructure';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
 import { Checkbox, Dropdown } from '../../atoms';
 import * as React from 'react';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
 import { LoggingSettingType } from '../../../infrastructure/Configuration/Configuration';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
 const loggingOptions = [
   { value: 'nothing', label: 'Nothing' },
@@ -13,10 +13,11 @@ const loggingOptions = [
   { value: 'debug', label: 'Everything' },
 ];
 
-export function MiscCard(props: OptionCardProps) {
+export function MiscCard() {
+  const { filter } = useFilter();
   const { useLogging, showConversionInBrackets } = useProvider();
 
-  if (isFilteredOut(['debug', 'logging', 'brackets', 'misc'], props.filter))
+  if (isFilteredOut(['debug', 'logging', 'brackets', 'misc'], filter))
     return <></>;
 
   return (

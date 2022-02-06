@@ -1,13 +1,19 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { OptionRow, OptionsSection, SettingOption } from '../Shared';
-import { Button, ReadonlyInput } from '../../atoms';
+import {
+  ErrorButton,
+  PrimaryButton,
+  ReadonlyInput,
+  SecondaryButton,
+} from '../../atoms';
 import { useProvider } from '../../../infrastructure';
 import { BrowserDataStorage } from '../../../infrastructure/Browser/Browser';
-import { OptionCardProps } from '../OptionsApp';
 import { isFilteredOut } from '../FilterOptionsCard';
+import { useFilter } from '../../molecules/contexts/FilterContext';
 
-export function StorageManagementCard(props: OptionCardProps): JSX.Element {
+export function StorageManagementCard(): JSX.Element {
+  const { filter } = useFilter();
   const { browser } = useProvider();
   const [showDone, setShowDone] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -20,7 +26,7 @@ export function StorageManagementCard(props: OptionCardProps): JSX.Element {
     setStorage([]);
   }, [showDone]);
 
-  if (isFilteredOut(['storage', 'management'], props.filter)) return <></>;
+  if (isFilteredOut(['storage', 'management'], filter)) return <></>;
 
   function wrap(child: JSX.Element): JSX.Element {
     return (
@@ -50,7 +56,7 @@ export function StorageManagementCard(props: OptionCardProps): JSX.Element {
         title=""
         help="You have to refresh the page if you want to do this again"
       >
-        <Button secondary={true}>All settings cleared</Button>
+        <SecondaryButton>All settings cleared</SecondaryButton>
       </SettingOption>
     );
 
@@ -60,28 +66,26 @@ export function StorageManagementCard(props: OptionCardProps): JSX.Element {
         title=""
         help="Clicking this time will delete all extension storage"
       >
-        <Button
-          error={true}
+        <ErrorButton
           onClick={async () => {
             browser.clearSettings();
             setShowDone(true);
           }}
         >
           Click to confirm deleting all storage
-        </Button>
+        </ErrorButton>
       </SettingOption>
     );
 
   return wrap(
     <SettingOption title="" help="You have to click again after to confirm">
-      <Button
-        primary={true}
+      <PrimaryButton
         onClick={() => {
           setShowConfirm(true);
         }}
       >
         Clear all storage
-      </Button>
+      </PrimaryButton>
     </SettingOption>
   );
 }

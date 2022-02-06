@@ -2,25 +2,24 @@ import * as React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { ISetting, ThemeProps } from '../../../infrastructure';
-import { Div, Input } from '../../atoms';
+import { Div, TextInput } from '../../atoms';
 import { SiteAllowanceCard } from './SiteAllowanceCard';
 import { DisableCurrenciesCard } from './DisableCurrenciesCard';
 import { MiscCard } from './MiscCard';
 import { MouseInteractionCard } from './MouseInteractionCard';
 import { KeyboardShortcutsCard } from './KeyboardShortcutsCard';
 import { StorageManagementCard } from './StorageManagementCard';
-import { OptionCardProps } from '../OptionsApp';
 import { OptionRow, SettingOption } from '../Shared';
 
-export function AccessibilityCard(props: OptionCardProps) {
+export function AccessibilityCard() {
   return (
     <>
-      <KeyboardShortcutsCard {...props} />
-      <MouseInteractionCard {...props} />
-      <MiscCard {...props} />
-      <DisableCurrenciesCard {...props} />
-      <SiteAllowanceCard {...props} />
-      <StorageManagementCard {...props} />
+      <KeyboardShortcutsCard />
+      <MouseInteractionCard />
+      <MiscCard />
+      <DisableCurrenciesCard />
+      <SiteAllowanceCard />
+      <StorageManagementCard />
     </>
   );
 }
@@ -82,9 +81,8 @@ export function ListHandler({
             .filter((e) => e)
             .map((e, i) => {
               return (
-                <Input
+                <TextInput
                   key={`list_${e}`}
-                  type="text"
                   placeholder={'https://...'}
                   defaultValue={e}
                   onChange={async (value) =>
@@ -94,9 +92,8 @@ export function ListHandler({
                 />
               );
             })}
-          <Input
+          <TextInput
             key={`${Math.random()}_unique`}
-            type="text"
             defaultValue=""
             placeholder={'https://...'}
             onEnter={async (value) => addNew(`${value}`, false)}
@@ -109,9 +106,8 @@ export function ListHandler({
             .filter((e) => e)
             .map((e, i) => {
               return (
-                <Input
+                <TextInput
                   key={`list_${e}`}
-                  type="text"
                   placeholder={'https://...'}
                   defaultValue={e}
                   onChange={async (value) => removeIfEmpty(`${value}`, i, true)}
@@ -119,9 +115,8 @@ export function ListHandler({
                 />
               );
             })}
-          <Input
+          <TextInput
             key={`${Math.random()}_unique`}
-            type="text"
             defaultValue=""
             placeholder={'https://...'}
             onEnter={async (value) => addNew(`${value}`, true)}
