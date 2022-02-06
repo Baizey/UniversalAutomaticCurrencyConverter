@@ -1,12 +1,11 @@
-import { ITextDetector } from "./TextDetector";
-import { Configuration, ILogger } from "../../infrastructure";
-import { IBackendApi } from "../BackendApi";
-import { CurrencyElement } from "../Currency";
-import { IActiveLocalization } from "../Localization";
-import { Provider } from "../../infrastructure/DependencyInjection";
+import { ITextDetector } from './TextDetector';
+import { Configuration, ILogger } from '../../infrastructure';
+import { IBackendApi } from '../BackendApi';
+import { CurrencyElement } from '../Currency';
+import { IActiveLocalization } from '../Localization';
+import { Provider } from '../../infrastructure/DependencyInjection';
 
 export interface IElementDetector {
-
   find(element: HTMLElement): CurrencyElement[];
 
   detect(element: HTMLElement): boolean;
@@ -21,7 +20,13 @@ export class ElementDetector implements IElementDetector {
   private readonly logger: ILogger;
 
   constructor(provider: Provider) {
-    const { configuration, backendApi, textDetector, activeLocalization, logger } = provider;
+    const {
+      configuration,
+      backendApi,
+      textDetector,
+      activeLocalization,
+      logger,
+    } = provider;
     this.provider = provider;
     this.logger = logger;
     this.config = configuration;
@@ -41,24 +46,23 @@ export class ElementDetector implements IElementDetector {
     for (let i = 0; i < element.children.length; i++)
       result = result.concat(this.find(element.children[i] as HTMLElement));
 
-    if (result.length > 0)
-      return result;
+    if (result.length > 0) return result;
 
     if (this.isElementUnavailable(element, 3)) return [];
 
-    element.setAttribute("uacc:watched", "true");
+    element.setAttribute('uacc:watched', 'true');
     return [new CurrencyElement(this.provider, element)];
   }
 
   detect(element: HTMLElement) {
-    return this.textDetector.detect(element.textContent || "");
+    return this.textDetector.detect(element.textContent || '');
   }
 
   private isElementUnavailable(element: Element, maxDepth: number): boolean {
     if (maxDepth < 0) return true;
-    if (element.tagName.toLowerCase() === "script") return true;
-    if (element.tagName.toLowerCase() === "svg") return true;
-    if (element.hasAttribute("uacc:watched")) return true;
+    if (element.tagName.toLowerCase() === 'script') return true;
+    if (element.tagName.toLowerCase() === 'svg') return true;
+    if (element.hasAttribute('uacc:watched')) return true;
 
     for (let i = 0; i < element.children.length; i++) {
       if (this.isElementUnavailable(element.children[i], maxDepth - 1))
@@ -70,8 +74,7 @@ export class ElementDetector implements IElementDetector {
 
   private detectConverterTagUp(element: Element | null): boolean {
     if (!element) return false;
-    if (element.hasAttribute("uacc:watched")) return true;
+    if (element.hasAttribute('uacc:watched')) return true;
     return this.detectConverterTagUp(element.parentElement);
   }
-
 }

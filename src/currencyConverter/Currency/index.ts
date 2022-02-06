@@ -1,2 +1,2 @@
-export {CurrencyAmount} from './CurrencyAmount'
-export {CurrencyElement} from './CurrencyElement'
+export { CurrencyAmount } from './CurrencyAmount';
+export { CurrencyElement } from './CurrencyElement';

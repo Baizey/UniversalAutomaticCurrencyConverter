@@ -1,3 +1,2 @@
-
-export {themes, mapToTheme, ThemeProps} from './Theme'
-export {MyTheme} from './MyTheme';
+export { themes, mapToTheme, ThemeProps } from './Theme';
+export { MyTheme } from './MyTheme';

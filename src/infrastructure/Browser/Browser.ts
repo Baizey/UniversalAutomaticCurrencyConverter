@@ -1,27 +1,33 @@
-import { ITabMessenger, TabMessenger } from "../BrowserMessengers/TabMessenger";
-import { BackgroundMessenger, IBackgroundMessenger } from "../BrowserMessengers/BackgroundMessenger";
-import { IPopupMessenger, PopupMessenger } from "../BrowserMessengers/PopupMessenger";
-import { useProvider } from "../DependencyInjection";
+import { ITabMessenger, TabMessenger } from '../BrowserMessengers/TabMessenger';
+import {
+  BackgroundMessenger,
+  IBackgroundMessenger,
+} from '../BrowserMessengers/BackgroundMessenger';
+import {
+  IPopupMessenger,
+  PopupMessenger,
+} from '../BrowserMessengers/PopupMessenger';
+import { useProvider } from '../DependencyInjection';
 
 type SyncStorageArea = chrome.storage.SyncStorageArea;
 type LocalStorageArea = chrome.storage.LocalStorageArea;
 
 export enum Browsers {
-  Firefox = "Firefox",
-  Chrome = "Chrome",
-  Edge = "Edge",
+  Firefox = 'Firefox',
+  Chrome = 'Chrome',
+  Edge = 'Edge',
 }
 
 export enum Environments {
-  Dev = "development",
-  Prod = "production"
+  Dev = 'development',
+  Prod = 'production',
 }
 
 export type BrowserDataStorage = {
-  type: "local" | "sync"
-  key: string
-  value: any
-}
+  type: 'local' | 'sync';
+  key: string;
+  value: any;
+};
 
 export interface IBrowser {
   readonly document: Document;
@@ -82,17 +88,14 @@ export class Browser implements IBrowser {
     this.background = new BackgroundMessenger(this);
     this.popup = new PopupMessenger(this);
 
-    if (window.navigator.userAgent.indexOf(" Edg/") >= 0)
+    if (window.navigator.userAgent.indexOf(' Edg/') >= 0)
       this.type = Browsers.Edge;
     // @ts-ignore (browser is not recognized, but it exists on Firefox)
-    else if (typeof browser !== "undefined")
-      this.type = Browsers.Firefox;
-    else
-      this.type = Browsers.Chrome;
+    else if (typeof browser !== 'undefined') this.type = Browsers.Firefox;
+    else this.type = Browsers.Chrome;
 
     // @ts-ignore
     this.access = this.isFirefox ? browser : chrome;
-
   }
 
   get document() {
@@ -118,7 +121,7 @@ export class Browser implements IBrowser {
   get reviewLink(): string {
     switch (this.type) {
       case Browsers.Firefox:
-        return "https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/";
+        return 'https://addons.mozilla.org/en-US/firefox/addon/ua-currency-converter/';
       case Browsers.Chrome:
         return `https://chrome.google.com/webstore/detail/universal-automatic-curre/${this.id}`;
       case Browsers.Edge:
@@ -127,7 +130,7 @@ export class Browser implements IBrowser {
   }
 
   get author(): string {
-    return this.runtime.getManifest().author || "";
+    return this.runtime.getManifest().author || '';
   }
 
   get extensionName(): string {
@@ -164,10 +167,11 @@ export class Browser implements IBrowser {
   get url(): URL {
     let href = window.location.href;
     // noinspection HttpUrlsUsage
-    if (href.startsWith("http://")) // noinspection HttpUrlsUsage
-      href = href.substr("http://".length, href.length);
+    if (href.startsWith('http://'))
+      // noinspection HttpUrlsUsage
+      href = href.substr('http://'.length, href.length);
 
-    if (!href.startsWith("https://")) href = "https://" + href;
+    if (!href.startsWith('https://')) href = 'https://' + href;
     return new URL(window.location.href);
   }
 
@@ -180,8 +184,8 @@ export class Browser implements IBrowser {
   }
 
   get host(): string {
-    const index = this.hostname.lastIndexOf(".");
-    return index < 0 ? "" : this.hostname.substr(index + 1);
+    const index = this.hostname.lastIndexOf('.');
+    return index < 0 ? '' : this.hostname.substr(index + 1);
   }
 
   get isFirefox(): boolean {
@@ -216,45 +220,39 @@ export class Browser implements IBrowser {
     return await this.saveSingle(this.storage.sync, key, value);
   }
 
-  private loadSingle<T>(storage: LocalStorageArea | SyncStorageArea, key: string): Promise<T> {
-    const self = this;
-    return new Promise<T>((resolve, reject) =>
-      storage.get([key], resp => self.runtime.lastError ?
-        reject(Error(self.runtime.lastError.message))
-        : resolve(resp[key])));
-  }
-
-  private saveSingle(storage: LocalStorageArea | SyncStorageArea, key: string, value: any): Promise<void> {
-    const self = this;
-    return new Promise<void>((resolve, reject) =>
-      storage.set({ [key]: value }, () => self.runtime.lastError ?
-        reject(Error(self.runtime.lastError.message))
-        : resolve())
-    );
-  }
-
   async allStorage(): Promise<BrowserDataStorage[]> {
     const self = this;
-    const [local, sync]: [BrowserDataStorage[], BrowserDataStorage[]] = await Promise.all([
-      new Promise(resolve => {
-        self.storage.local.get(null, function(items) {
-          resolve(items);
-        });
-      }).then(items => Object.entries(items as object).map(([key, value]) => ({
-        type: "local",
-        key: key,
-        value: value
-      } as BrowserDataStorage))),
-      new Promise(resolve => {
-        self.storage.sync.get(null, function(items) {
-          resolve(items);
-        });
-      }).then(items => Object.entries(items as object).map(([key, value]) => ({
-        type: "sync",
-        key: key,
-        value: value
-      } as BrowserDataStorage)))
-    ]);
+    const [local, sync]: [BrowserDataStorage[], BrowserDataStorage[]] =
+      await Promise.all([
+        new Promise((resolve) => {
+          self.storage.local.get(null, function (items) {
+            resolve(items);
+          });
+        }).then((items) =>
+          Object.entries(items as object).map(
+            ([key, value]) =>
+              ({
+                type: 'local',
+                key: key,
+                value: value,
+              } as BrowserDataStorage)
+          )
+        ),
+        new Promise((resolve) => {
+          self.storage.sync.get(null, function (items) {
+            resolve(items);
+          });
+        }).then((items) =>
+          Object.entries(items as object).map(
+            ([key, value]) =>
+              ({
+                type: 'sync',
+                key: key,
+                value: value,
+              } as BrowserDataStorage)
+          )
+        ),
+      ]);
 
     return local.concat(sync);
   }
@@ -263,24 +261,53 @@ export class Browser implements IBrowser {
     const self = this;
     const { logger } = useProvider();
     await Promise.all([
-      new Promise<void>(resolve => {
-        self.storage.local.get(null, function(items) {
+      new Promise<void>((resolve) => {
+        self.storage.local.get(null, function (items) {
           const keys = Object.keys(items);
           self.storage.local.remove(keys, () => {
-            logger.info(`Deleted locally stored keys:\n${keys.join("\n")}`);
+            logger.info(`Deleted locally stored keys:\n${keys.join('\n')}`);
             resolve();
           });
         });
       }),
-      new Promise<void>(resolve => {
-        self.storage.sync.get(null, function(items) {
+      new Promise<void>((resolve) => {
+        self.storage.sync.get(null, function (items) {
           const keys = Object.keys(items);
           self.storage.sync.remove(keys, () => {
-            logger.info(`Deleted sync stored keys:\n${keys.join("\n")}`);
+            logger.info(`Deleted sync stored keys:\n${keys.join('\n')}`);
             resolve();
           });
         });
-      })
+      }),
     ]);
+  }
+
+  private loadSingle<T>(
+    storage: LocalStorageArea | SyncStorageArea,
+    key: string
+  ): Promise<T> {
+    const self = this;
+    return new Promise<T>((resolve, reject) =>
+      storage.get([key], (resp) =>
+        self.runtime.lastError
+          ? reject(Error(self.runtime.lastError.message))
+          : resolve(resp[key])
+      )
+    );
+  }
+
+  private saveSingle(
+    storage: LocalStorageArea | SyncStorageArea,
+    key: string,
+    value: any
+  ): Promise<void> {
+    const self = this;
+    return new Promise<void>((resolve, reject) =>
+      storage.set({ [key]: value }, () =>
+        self.runtime.lastError
+          ? reject(Error(self.runtime.lastError.message))
+          : resolve()
+      )
+    );
   }
 }

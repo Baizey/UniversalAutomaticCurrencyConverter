@@ -1,24 +1,26 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 import * as React from 'react';
-import {MyTheme, ThemeProps, themes, useProvider} from '../../../infrastructure';
-import {Div, Title} from '../../atoms';
+import { ThemeProps, themes, useProvider } from '../../../infrastructure';
+import { Div, Title } from '../../atoms';
 
 type Props = {
-    title?: string
-    children?: JSX.Element | JSX.Element[]
-}
+  title?: string;
+  children?: JSX.Element | JSX.Element[];
+};
 
-export function OptionsSection({title, children}: Props): JSX.Element {
-    const {colorTheme} = useProvider();
-    return <Container colorTheme={colorTheme.value}>
-        {title ? <Title>{title}</Title> : <></>}
-        {children}
+export function OptionsSection({ title, children }: Props): JSX.Element {
+  const { colorTheme } = useProvider();
+  return (
+    <Container colorTheme={colorTheme.value}>
+      {title ? <Title>{title}</Title> : <></>}
+      {children}
     </Container>
+  );
 }
 
 export type ContainerProps = {
-    colorTheme: keyof typeof themes
-} & ThemeProps
+  colorTheme: keyof typeof themes;
+} & ThemeProps;
 
 const Container = styled(Div)<ContainerProps>`
   padding: 10px;
@@ -44,10 +46,10 @@ const Container = styled(Div)<ContainerProps>`
 
   &:not(:last-child) {
   }
-  
+
   // On small screens force column-mode, breakpoint is ~655px but 700px sounds nicer
   @media (max-width: 820px) {
     margin-left: 10px;
     margin-right: 10px;
   }
-`
+`;

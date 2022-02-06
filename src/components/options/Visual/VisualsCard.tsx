@@ -1,16 +1,16 @@
 import * as React from 'react';
-import {themes} from '../../../infrastructure';
-import {HighlightCard} from './HighlightCard';
-import {CustomDisplayCard} from './CustomDisplayCard';
-import {NumberFormatCard} from './NumberFormatCard';
-import {ThemeCard} from './ThemeCard';
-import {OptionCardProps} from '../OptionsApp';
+import { HighlightCard } from './HighlightCard';
+import { CustomDisplayCard } from './CustomDisplayCard';
+import { NumberFormatCard } from './NumberFormatCard';
+import { ThemeCard } from './ThemeCard';
 
-export function VisualsCard(props: OptionCardProps) {
-    return <>
-        <NumberFormatCard {...props}/>
-        <HighlightCard {...props}/>
-        <CustomDisplayCard {...props}/>
-        <ThemeCard {...props}/>
+export function VisualsCard() {
+  return (
+    <>
+      <NumberFormatCard />
+      <HighlightCard />
+      <CustomDisplayCard />
+      <ThemeCard />
     </>
+  );
 }

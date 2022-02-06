@@ -1,13 +1,12 @@
 import * as React from 'react';
-import {LocalizationCard} from './LocalizationCard';
-import {ConvertToCard} from './ConvertToCard';
-import {OptionCardProps} from '../OptionsApp';
+import { LocalizationCard } from './LocalizationCard';
+import { ConvertToCard } from './ConvertToCard';
 
-export type CurrencyCardProps = { symbols: { label: string, value: string }[] }
-
-export function CurrencyCard(props: OptionCardProps) {
-    return <>
-        <ConvertToCard {...props}/>
-        <LocalizationCard {...props}/>
+export function CurrencyCard() {
+  return (
+    <>
+      <ConvertToCard />
+      <LocalizationCard />
     </>
+  );
 }

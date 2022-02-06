@@ -1,1 +1,1 @@
-export {ILogger, Logger, LogLevel} from './Logger'
+export { ILogger, Logger, LogLevel } from './Logger';
