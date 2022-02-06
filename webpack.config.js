@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
+const RemoveStrictPlugin = require('./WebpackPlugins/RemoveStrictPlugin');
 
 const destination = 'dist';
 
@@ -71,6 +72,7 @@ const config = {
     contentBase: `./${destination}`,
   },
   plugins: [
+    new RemoveStrictPlugin(),
     new CopyPlugin({
       patterns: [{ from: 'public', to: '.' }],
     }),
