@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { useProvider } from './infrastructure';
 import { CurrencyElement } from './currencyConverter/Currency';
 import { LogLevel } from './infrastructure/Logger';
+import { ContentApp } from './components/content';
 
 const isBlacklistedErrorMessage = `Site is blacklisted`;
 
@@ -52,7 +53,6 @@ function injectAlertSystem(): void {
   const div = document.createElement('div');
   div.id = 'uacc-root';
   document.body.appendChild(div);
-  const { ContentApp } = require('./components/content');
   ReactDOM.render(<ContentApp />, document.getElementById('uacc-root'));
   logger.info(`Injected alert system onto page`);
 }

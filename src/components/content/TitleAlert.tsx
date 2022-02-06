@@ -12,15 +12,15 @@ export function TitleAlert() {
   );
 }
 
-const Container = styled(Div)<ThemeProps>`
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border-width: 1px;
-  background-color: ${(props: ThemeProps) => props.theme.containerBorder};
-  color: ${(props: ThemeProps) => props.theme.headerText};
-  text-align: center;
-  height: fit-content;
-`;
+const Container = styled(Div)<ThemeProps>((props: ThemeProps) => ({
+  paddingTop: '10px',
+  paddingBottom: '10px',
+  borderWidth: '1px',
+  backgroundColor: props.theme.containerBorder,
+  color: props.theme.headerText,
+  textAlign: 'center',
+  height: 'fit-content',
+}));
 
 const MenuTitle = styled(FooterText)<ThemeProps>`
   color: ${(props) => props.theme.normalText};
