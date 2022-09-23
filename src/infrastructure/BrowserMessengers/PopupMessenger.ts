@@ -1,31 +1,35 @@
-import { IBrowser } from '../index';
+import { BrowserDi } from '../Browser'
+import { Browser } from '../index'
 
 export enum PopupMessageType {}
 
 export type PopupMessage = {};
 
-export interface IPopupMessenger {}
+export interface IPopupMessenger {
+}
 
 export class PopupMessenger implements IPopupMessenger {
-  private browser: IBrowser;
+	private browser: Browser
 
-  constructor(browser: IBrowser) {
-    this.browser = browser;
-  }
+	constructor( { browser }: BrowserDi ) {
+		this.browser = browser
+	}
 
-  private sendMessage<Response>(data: PopupMessage): Promise<Response> {
-    return new Promise((resolve, reject) => {
-      try {
-        this.browser.runtime.sendMessage(
-          data,
-          (resp: { success: boolean; data: Response }) => {
-            if (!resp) return reject('No response');
-            resp.success ? resolve(resp.data) : reject(resp.data);
-          }
-        );
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
+	private sendMessage<Response>( data: PopupMessage ): Promise<Response> {
+		return new Promise( ( resolve, reject ) => {
+			try {
+				this.browser.runtime.sendMessage(
+					data,
+					( resp: { success: boolean; data: Response } ) => {
+						if ( !resp ) return reject( 'No response' )
+						resp.success
+							? resolve( resp.data )
+							: reject( resp.data )
+					},
+				)
+			} catch ( e ) {
+				reject( e )
+			}
+		} )
+	}
 }

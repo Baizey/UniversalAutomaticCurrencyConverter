@@ -1,34 +1,37 @@
-import { addDependencies, IBrowser, Provider } from '../src/infrastructure';
-import { BrowserMock } from './Browser.mock';
-import {
-  Container,
-  WeakProvider,
-} from '../src/infrastructure/DependencyInjection/Provider';
-import {
-  ServiceCollection,
-  ServiceProvider,
-} from 'sharp-dependency-injection/lib';
+import { MockStrategy, singleton } from 'sharp-dependency-injection'
+import { Mockable, Providable, setMockProvider, useServices } from '../src/di'
+import { BrowserMock } from './Browser.mock'
 
 function addNodeIfNotExisting() {
-  if (!global.Node) {
-    // @ts-ignore
-    global.Node = {
-      TEXT_NODE: 3,
-    };
-  }
+	if ( !global.Node ) {
+		// @ts-ignore
+		global.Node = {
+			TEXT_NODE: 3,
+		}
+	}
 }
 
-function mockContainer(): ServiceProvider<Provider> {
-  const services = addDependencies(new ServiceCollection(WeakProvider));
-  services.replaceSingleton<IBrowser>({
-    dependency: BrowserMock,
-    selector: (p) => p.browser,
-  });
-  Container.getOrCreate(() => services);
-  return services.build();
+function mockContainer( mock?: Mockable, defaultStrategy?: MockStrategy ): Providable {
+	useServices().remove( e => e.browser ).add( { browser: singleton( BrowserMock ) } )
+	if ( typeof mock === 'string' ) {
+		defaultStrategy = mock
+		mock = {}
+	}
+	return setMockProvider( {
+		browser: MockStrategy.realValue,
+		backendApi: MockStrategy.exceptionStub,
+		backgroundMessenger: MockStrategy.exceptionStub,
+		tabMessenger: MockStrategy.exceptionStub,
+		popupMessenger: MockStrategy.exceptionStub,
+		...mock,
+	}, defaultStrategy )
 }
 
-export default function useMockContainer(): ServiceProvider<Provider> {
-  addNodeIfNotExisting();
-  return mockContainer();
+export function as<A>( obj: any ) {
+	return obj as unknown as A
+}
+
+export default function useMockContainer( mock?: Mockable, defaultStrategy?: MockStrategy ): Providable {
+	addNodeIfNotExisting()
+	return mockContainer( mock, defaultStrategy )
 }

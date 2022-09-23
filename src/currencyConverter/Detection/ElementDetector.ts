@@ -1,80 +1,86 @@
-import { ITextDetector } from './TextDetector';
-import { Configuration, ILogger } from '../../infrastructure';
-import { IBackendApi } from '../BackendApi';
-import { CurrencyElement } from '../Currency';
-import { IActiveLocalization } from '../Localization';
-import { Provider } from '../../infrastructure/DependencyInjection';
+import { Stateful } from 'sharp-dependency-injection'
+import { Configuration, ILogger, InfrastructureDi } from '../../infrastructure'
+import { BackendApiDi, IBackendApi } from '../BackendApi'
+import { CurrencyDi, CurrencyElement } from '../Currency'
+import { IActiveLocalization } from '../Localization'
+import { ActiveLocalizationDi } from '../Localization/ActiveLocalization'
+import { ITextDetector, TextDetectorDi } from './TextDetector'
 
 export interface IElementDetector {
-  find(element: HTMLElement): CurrencyElement[];
+	find( element: HTMLElement ): CurrencyElement[];
 
-  detect(element: HTMLElement): boolean;
+	detect( element: HTMLElement ): boolean;
 }
 
+export type ElementDetectorDi = { elementDetector: ElementDetector }
+type ElementDetectorDep = InfrastructureDi & BackendApiDi & ActiveLocalizationDi & TextDetectorDi & CurrencyDi
+
 export class ElementDetector implements IElementDetector {
-  private readonly textDetector: ITextDetector;
-  private readonly backendApi: IBackendApi;
-  private readonly config: Configuration;
-  private readonly localization: IActiveLocalization;
-  private readonly provider: Provider;
-  private readonly logger: ILogger;
+	private readonly textDetector: ITextDetector
+	private readonly backendApi: IBackendApi
+	private readonly config: Configuration
+	private readonly localization: IActiveLocalization
+	private readonly logger: ILogger
+	private readonly currencyElement: Stateful<HTMLElement, CurrencyElement>
 
-  constructor(provider: Provider) {
-    const {
-      configuration,
-      backendApi,
-      textDetector,
-      activeLocalization,
-      logger,
-    } = provider;
-    this.provider = provider;
-    this.logger = logger;
-    this.config = configuration;
-    this.localization = activeLocalization;
-    this.backendApi = backendApi;
-    this.textDetector = textDetector;
-  }
+	constructor( {
+		             config,
+		             backendApi,
+		             textDetector,
+		             activeLocalization,
+		             logger,
+		             currencyElement,
+	             }: ElementDetectorDep ) {
+		this.logger = logger
+		this.currencyElement = currencyElement
+		this.config = config
+		this.localization = activeLocalization
+		this.backendApi = backendApi
+		this.textDetector = textDetector
+	}
 
-  find(element: HTMLElement) {
-    if (!element) return [];
+	find( element: HTMLElement ) {
+		if ( !element ) return []
 
-    if (this.detectConverterTagUp(element)) return [];
+		if ( this.detectConverterTagUp( element ) ) return []
 
-    if (!this.detect(element)) return [];
+		if ( !this.detect( element ) ) return []
 
-    let result: CurrencyElement[] = [];
-    for (let i = 0; i < element.children.length; i++)
-      result = result.concat(this.find(element.children[i] as HTMLElement));
+		let result: CurrencyElement[] = []
+		for ( let i = 0; i < element.children.length; i++ ) {
+			result = result.concat( this.find( element.children[i] as HTMLElement ) )
+		}
 
-    if (result.length > 0) return result;
+		if ( result.length > 0 ) return result
 
-    if (this.isElementUnavailable(element, 3)) return [];
+		if ( this.isElementUnavailable( element, 3 ) ) return []
 
-    element.setAttribute('uacc:watched', 'true');
-    return [new CurrencyElement(this.provider, element)];
-  }
+		element.setAttribute( 'uacc:watched', 'true' )
+		return [ this.currencyElement.create( element ) ]
+	}
 
-  detect(element: HTMLElement) {
-    return this.textDetector.detect(element.textContent || '');
-  }
+	detect( element: HTMLElement ) {
+		return this.textDetector.detect( element.textContent || '' )
+	}
 
-  private isElementUnavailable(element: Element, maxDepth: number): boolean {
-    if (maxDepth < 0) return true;
-    if (element.tagName.toLowerCase() === 'script') return true;
-    if (element.tagName.toLowerCase() === 'svg') return true;
-    if (element.hasAttribute('uacc:watched')) return true;
+	private isElementUnavailable( element: Element, maxDepth: number ): boolean {
+		if ( maxDepth < 0 ) return true
+		if ( element.tagName.toLowerCase() === 'script' ) return true
+		if ( element.tagName.toLowerCase() === 'svg' ) return true
+		if ( element.hasAttribute( 'uacc:watched' ) ) return true
 
-    for (let i = 0; i < element.children.length; i++) {
-      if (this.isElementUnavailable(element.children[i], maxDepth - 1))
-        return true;
-    }
+		for ( let i = 0; i < element.children.length; i++ ) {
+			if ( this.isElementUnavailable( element.children[i], maxDepth - 1 ) ) {
+				return true
+			}
+		}
 
-    return false;
-  }
+		return false
+	}
 
-  private detectConverterTagUp(element: Element | null): boolean {
-    if (!element) return false;
-    if (element.hasAttribute('uacc:watched')) return true;
-    return this.detectConverterTagUp(element.parentElement);
-  }
+	private detectConverterTagUp( element: Element | null ): boolean {
+		if ( !element ) return false
+		if ( element.hasAttribute( 'uacc:watched' ) ) return true
+		return this.detectConverterTagUp( element.parentElement )
+	}
 }
