@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useProvider } from '../../../infrastructure'
-import { LoggingSettingType } from '../../../infrastructure/Configuration/Configuration'
+import { useProvider } from '../../../di'
+import { LoggingSettingType } from '../../../infrastructure/Configuration/setting'
 import { Checkbox, Dropdown } from '../../atoms'
 import { useFilter } from '../../molecules/contexts/FilterContext'
 import { isFilteredOut } from '../FilterOptionsCard'
@@ -28,8 +28,8 @@ const loggingOptions = [
 export function MiscCard() {
 	const { filter } = useFilter()
 	const {
-		useLogging,
-		showConversionInBrackets,
+		metaConfig: { logging },
+		currencyTagConfig: { showConversionInBrackets },
 	} = useProvider()
 
 	if ( isFilteredOut( [ 'debug', 'logging', 'brackets', 'misc' ], filter ) ) {
@@ -44,10 +44,10 @@ export function MiscCard() {
 					help="You can see logs via F12 > Console"
 				>
 					<Dropdown
-						value={ useLogging.value }
+						value={ logging.value }
 						options={ loggingOptions }
 						onChange={ ( value ) =>
-							useLogging.setAndSaveValue( value as LoggingSettingType )
+							logging.setAndSaveValue( value as LoggingSettingType )
 						}
 					/>
 				</SettingOption>

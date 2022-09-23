@@ -1,1 +1,1 @@
-﻿export * from './ConfigurationContext';
+﻿export * from './ConfigurationContext'

@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { LocalizationCard } from './LocalizationCard';
-import { ConvertToCard } from './ConvertToCard';
+import * as React from 'react'
+import { ConvertToCard } from './ConvertToCard'
+import { LocalizationCard } from './LocalizationCard'
 
 export function CurrencyCard() {
-  return (
-    <>
-      <ConvertToCard />
-      <LocalizationCard />
-    </>
-  );
+	return (
+		<>
+			<ConvertToCard/>
+			<LocalizationCard/>
+		</>
+	)
 }

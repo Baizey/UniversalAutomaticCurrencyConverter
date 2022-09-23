@@ -1,8 +1,8 @@
-﻿import styled from 'styled-components';
-import { basicStyle } from '../Basics';
+﻿import styled from 'styled-components'
+import { basicStyle } from '../Basics'
 
-export const NormalText = styled.span((props) => ({
-  ...basicStyle(props),
-  width: '100%',
-  display: 'inline-block',
-}));
+export const NormalText = styled.span( ( props ) => ( {
+	...basicStyle( props ),
+	width: '100%',
+	display: 'inline-block',
+} ) )

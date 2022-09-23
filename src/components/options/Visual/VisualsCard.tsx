@@ -1,16 +1,16 @@
-import * as React from 'react';
-import { HighlightCard } from './HighlightCard';
-import { CustomDisplayCard } from './CustomDisplayCard';
-import { NumberFormatCard } from './NumberFormatCard';
-import { ThemeCard } from './ThemeCard';
+import * as React from 'react'
+import { CustomDisplayCard } from './CustomDisplayCard'
+import { HighlightCard } from './HighlightCard'
+import { NumberFormatCard } from './NumberFormatCard'
+import { ThemeCard } from './ThemeCard'
 
 export function VisualsCard() {
-  return (
-    <>
-      <NumberFormatCard />
-      <HighlightCard />
-      <CustomDisplayCard />
-      <ThemeCard />
-    </>
-  );
+	return (
+		<>
+			<NumberFormatCard/>
+			<HighlightCard/>
+			<CustomDisplayCard/>
+			<ThemeCard/>
+		</>
+	)
 }
