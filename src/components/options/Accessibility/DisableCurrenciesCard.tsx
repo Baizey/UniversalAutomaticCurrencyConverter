@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useState } from 'react'
-import { useProvider } from '../../../infrastructure'
+import { useProvider } from '../../../di'
 import { Dropdown } from '../../atoms'
 import { useConfiguration } from '../../molecules'
 import { useFilter } from '../../molecules/contexts/FilterContext'
@@ -11,8 +11,8 @@ import { DisabledListContainer, DisabledListItem } from './AccessibilityCard'
 export function DisableCurrenciesCard() {
 	const { filter } = useFilter()
 	const { symbols } = useConfiguration()
-	const { disabledCurrencies } = useProvider()
-	const [ listOfDisabledCurrencies, setListOfDisabledCurrencies ] = useState<string[]>( disabledCurrencies.value )
+	const { currencyTagConfig: { disabled } } = useProvider()
+	const [ listOfDisabledCurrencies, setListOfDisabledCurrencies ] = useState<string[]>( disabled.value )
 
 	if ( isFilteredOut( [ 'disabled', 'currencies' ], filter ) ) return <></>
 
@@ -25,9 +25,9 @@ export function DisableCurrenciesCard() {
 						onChange={ ( value ) => {
 							const newList = listOfDisabledCurrencies.concat( [ value ] )
 							newList.sort()
-							if ( disabledCurrencies.setValue( newList ) ) {
+							if ( disabled.setValue( newList ) ) {
 								setListOfDisabledCurrencies( newList )
-								disabledCurrencies.save()
+								disabled.save()
 							}
 						} }
 					/>
@@ -44,7 +44,7 @@ export function DisableCurrenciesCard() {
 										( f ) => f !== e,
 									)
 									setListOfDisabledCurrencies( newList )
-									disabledCurrencies.setAndSaveValue( newList )
+									disabled.setAndSaveValue( newList )
 								} }
 							>
 								{ e }

@@ -1,6 +1,7 @@
 // This file is ran as a background script
 import { useProvider } from './di'
-import { BackgroundMessage, BackgroundMessageType } from './infrastructure'
+import { BackgroundMessageType } from './infrastructure'
+import { BackgroundMessage } from './infrastructure/BrowserMessengers/BackgroundMessenger'
 
 function isCurrencyTag( value: any ): boolean {
 	return typeof value === 'string' && /^[A-Z]{3}$/.test( value )
@@ -25,8 +26,8 @@ enum ContextMenuItem {
 			path +=
 				'?' +
 				Object.entries( init.params )
-					.map( ( [ k, v ] ) => `${ k }=${ encodeURIComponent( v ) }` )
-					.join( '&' )
+				      .map( ( [ k, v ] ) => `${ k }=${ encodeURIComponent( v ) }` )
+				      .join( '&' )
 		}
 		return fetch( `https://uacc-bff-api.azurewebsites.net/api/${ path }`, {
 			method: init?.method || 'GET',

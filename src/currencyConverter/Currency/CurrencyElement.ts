@@ -1,6 +1,6 @@
 import { Stateful } from 'sharp-dependency-injection'
 import { useProvider } from '../../di'
-import { ILogger, InfrastructureDi } from '../../infrastructure'
+import { InfrastructureDi, Logger } from '../../infrastructure'
 import {
 	ConversionHighlightConfig,
 	CurrencyTagConfig,
@@ -44,7 +44,7 @@ export class CurrencyElement {
 	private readonly backendApi: IBackendApi
 	private readonly currencyElement: Stateful<HTMLElement, CurrencyElement>
 	private readonly localization: IActiveLocalization
-	private readonly logger: ILogger
+	private readonly logger: Logger
 	private readonly currencyAmount: Stateful<CurrencyAmountProps, CurrencyAmount>
 	private readonly qualityOfLifeConfig: QualityOfLifeConfig
 	private readonly highlightConfig: ConversionHighlightConfig
@@ -104,8 +104,8 @@ export class CurrencyElement {
 		if ( tabState.isPaused ) return this.showOriginal()
 
 		return tabState.isShowingConversions
-			? this.showConverted()
-			: this.showOriginal()
+		       ? this.showConverted()
+		       : this.showOriginal()
 	}
 
 	async showConverted(): Promise<boolean> {
@@ -258,10 +258,10 @@ export class CurrencyElement {
 		currencyInfo.reverse().forEach( ( info ) => {
 			if ( !info.converted ) return
 			const text = this.currencyTagConfig.showConversionInBrackets.value
-				? `${ info.original.amount.join( ' - ' ) } ${
+			             ? `${ info.original.amount.join( ' - ' ) } ${
 					info.original.tag
 				} (${ info.converted.toString() })`
-				: info.converted.toString()
+			             : info.converted.toString()
 
 			replace( info.right.start, info.right.end )
 			replace( info.center.start, info.center.end, text )

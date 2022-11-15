@@ -43,7 +43,7 @@ describe( 'CurrencyLocalization', () => {
 			const {
 				browser,
 				currencyLocalization,
-			} = useMockContainer()
+			} = useMockContainer( MockStrategy.realValue )
 			const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 			const localization = currencyLocalization.create( {
 				key: '',
@@ -75,7 +75,7 @@ describe( 'CurrencyLocalization', () => {
 			const {
 				browser,
 				currencyLocalization,
-			} = useMockContainer()
+			} = useMockContainer( MockStrategy.realValue )
 			const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 			const localization = currencyLocalization.create( {
 				key: '',

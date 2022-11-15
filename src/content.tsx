@@ -1,15 +1,19 @@
 // This file is injected as a content script
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import { ContentApp } from './components/content'
 import { CurrencyElement } from './currencyConverter/Currency'
 import { useProvider } from './di'
+import { LoggingSettingType } from './infrastructure/Configuration/setting'
 import { LogLevel } from './infrastructure/Logger'
 
 const isBlacklistedErrorMessage = `Site is blacklisted`
 
 async function loadConfiguration(): Promise<void> {
-	await useProvider().config.load()
+	const { config } = useProvider()
+	await config.load()
+	if ( config.meta.logging.value === LoggingSettingType.profile )
+		console.profile( `UACC` )
 }
 
 async function loadActiveLocalization(): Promise<void> {
@@ -56,7 +60,7 @@ function injectAlertSystem(): void {
 	const div = document.createElement( 'div' )
 	div.id = 'uacc-root'
 	document.body.appendChild( div )
-	ReactDOM.render( <ContentApp/>, document.getElementById( 'uacc-root' ) )
+	render( <ContentApp/>, document.getElementById( 'uacc-root' ) )
 	logger.info( `Injected alert system onto page` )
 }
 
@@ -127,6 +131,9 @@ async function injectConversions(): Promise<void> {
 	logger.info(
 		`Done checking for currencies, found ${ tabState.conversions.length } currencies`,
 	)
+	const { metaConfig: { logging } } = useProvider()
+	if ( logging.value === LoggingSettingType.profile )
+		console.profileEnd( `UACC` )
 }
 
 function handleError( error: Error ): void {

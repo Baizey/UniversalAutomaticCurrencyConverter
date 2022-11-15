@@ -160,7 +160,13 @@ export class ThousandsSeparatorSetting extends SyncSetting<string> {
 	}
 }
 
-export enum LoggingSettingType {error = 'error', info = 'info', debug = 'debug', nothing = 'nothing'}
+export enum LoggingSettingType {
+	nothing = 'nothing',
+	error = 'error',
+	info = 'info',
+	debug = 'debug',
+	profile = 'profile'
+}
 
 export class UseDebugLoggingSetting extends SyncSetting<LoggingSettingType> {
 	constructor( provider: SettingDep ) {

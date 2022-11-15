@@ -9,11 +9,7 @@ export type TabMessage = {
 	type: TabMessageType.openContextMenu;
 };
 
-export interface ITabMessenger {
-	openContextMenu(): Promise<void>;
-}
-
-export class TabMessenger implements ITabMessenger {
+export class TabMessenger {
 	private browser: Browser
 
 	constructor( { browser }: BrowserDi ) {
@@ -40,8 +36,8 @@ export class TabMessenger implements ITabMessenger {
 							function ( resp: { success: boolean; data: Response } ) {
 								if ( !resp ) return reject( 'No response' )
 								return resp.success
-									? resolve( resp.data )
-									: reject( resp.data )
+								       ? resolve( resp.data )
+								       : reject( resp.data )
 							},
 						)
 					},

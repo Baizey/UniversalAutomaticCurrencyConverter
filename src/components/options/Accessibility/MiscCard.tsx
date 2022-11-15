@@ -6,22 +6,28 @@ import { useFilter } from '../../molecules/contexts/FilterContext'
 import { isFilteredOut } from '../FilterOptionsCard'
 import { OptionRow, OptionsSection, SettingOption } from '../Shared'
 
+const capitalize = ( str: string ) => str.charAt( 0 ).toUpperCase() + str.substring( 1 )
+
 const loggingOptions = [
 	{
-		value: 'nothing',
-		label: 'Nothing',
+		value: LoggingSettingType.nothing,
+		label: capitalize( LoggingSettingType.nothing ),
 	},
 	{
-		value: 'error',
-		label: 'Errors',
+		value: LoggingSettingType.error,
+		label: capitalize( LoggingSettingType.error ),
 	},
 	{
-		value: 'info',
-		label: 'Information',
+		value: LoggingSettingType.info,
+		label: capitalize( LoggingSettingType.info ),
 	},
 	{
-		value: 'debug',
+		value: LoggingSettingType.debug,
 		label: 'Everything',
+	},
+	{
+		value: LoggingSettingType.profile,
+		label: 'Everything with profiling',
 	},
 ]
 

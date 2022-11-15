@@ -34,7 +34,7 @@ describe( 'TabInformation', () => {
 
 	it( `is not showing conversions after flip`, () => {
 		// Setup
-		const provider = useMockContainer()
+		const provider = useMockContainer( {}, MockStrategy.realValue )
 		const tabInformation = provider.tabState
 		tabInformation.conversions.push(
 			new CurrencyElement( provider, HtmlMock.empty() ),

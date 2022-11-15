@@ -43,7 +43,7 @@ describe( 'ActiveLocalization', () => {
 			const {
 				browser,
 				currencyLocalization,
-			} = useMockContainer()
+			} = useMockContainer( MockStrategy.realValue )
 			const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 			const localization = currencyLocalization.create( {
 				key: '',
@@ -74,7 +74,7 @@ describe( 'ActiveLocalization', () => {
 			const {
 				browser,
 				currencyLocalization,
-			} = useMockContainer()
+			} = useMockContainer( MockStrategy.realValue )
 			const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 			const localization = currencyLocalization.create( {
 				key: '',
@@ -89,9 +89,7 @@ describe( 'ActiveLocalization', () => {
 
 	it( `Save`, async () => {
 		// Setup
-		const { activeLocalization } = useMockContainer( {
-			currencyLocalization: MockStrategy.realValue,
-		} )
+		const { activeLocalization } = useMockContainer( MockStrategy.realValue )
 
 		jest.spyOn( activeLocalization.krone, 'save' )
 		const kroneSpy = jest.spyOn( activeLocalization.krone, 'save' )

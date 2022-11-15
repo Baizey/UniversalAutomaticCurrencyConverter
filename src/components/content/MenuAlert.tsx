@@ -2,7 +2,8 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { CompactCurrencyLocalization } from '../../currencyConverter/Localization/ActiveLocalization'
-import { ThemeProps, useProvider } from '../../infrastructure'
+import { useProvider } from '../../di'
+import { ThemeProps } from '../../infrastructure'
 import { Div, Dropdown, ErrorButton, HeaderText, NormalText, Range, SuccessButton } from '../atoms'
 import { OptionRow, SettingOption } from '../options/Shared'
 import { AlertSection } from './AlertSection'
@@ -96,14 +97,14 @@ function ConversionsCount() {
 			Hide conversions
 		</ErrorButton>
 	) : (
-		<SuccessButton
-			onClick={ () => {
-				setShowing( true )
-			} }
-		>
-			Show conversions
-		</SuccessButton>
-	)
+		                      <SuccessButton
+			                      onClick={ () => {
+				                      setShowing( true )
+			                      } }
+		                      >
+			                      Show conversions
+		                      </SuccessButton>
+	                      )
 
 	return (
 		<>
@@ -172,7 +173,7 @@ function PageLocalization() {
 function ConvertTo() {
 	const {
 		backendApi,
-		convertTo,
+		currencyTagConfig: { convertTo },
 		tabState,
 		logger,
 	} = useProvider()
@@ -224,11 +225,11 @@ function Allowance() {
 		browser,
 		siteAllowance,
 	} = useProvider()
-	const host = browser.url.hostname
-	const path = browser.url.pathname
+	const host: string = browser.url.hostname
+	const path: string = browser.url.pathname
 	const hostParts = host
 		.split( '.' )
-		.filter( ( e ) => e !== 'www' )
+		.filter( ( e: string ) => e !== 'www' )
 		.reverse()
 	const pathParts = path.split( '/' ).filter( ( e ) => e )
 
@@ -242,7 +243,7 @@ function Allowance() {
 		siteAllowance.getAllowance( uri ).isAllowed,
 	)
 
-	const options = []
+	const options: any[] = []
 	while ( hostParts.length + pathParts.length > 1 ) {
 		const uri = `${ hostParts
 			.map( ( e ) => e )
@@ -265,14 +266,14 @@ function Allowance() {
 			Blacklist
 		</ErrorButton>
 	) : (
-		<SuccessButton
-			onClick={ () => {
-				siteAllowance.addUri( uri, true ).finally( () => setIsAllowed( true ) )
-			} }
-		>
-			Whitelist
-		</SuccessButton>
-	)
+		                        <SuccessButton
+			                        onClick={ () => {
+				                        siteAllowance.addUri( uri, true ).finally( () => setIsAllowed( true ) )
+			                        } }
+		                        >
+			                        Whitelist
+		                        </SuccessButton>
+	                        )
 
 	return (
 		<>

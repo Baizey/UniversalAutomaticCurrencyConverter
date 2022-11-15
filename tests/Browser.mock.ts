@@ -1,14 +1,14 @@
 import { BrowserDataStorage, Browsers, Environments } from '../src/infrastructure/Browser/Browser'
-import { IBackgroundMessenger, RateResponse } from '../src/infrastructure/BrowserMessengers/BackgroundMessenger'
-import { IPopupMessenger } from '../src/infrastructure/BrowserMessengers/PopupMessenger'
-import { ITabMessenger } from '../src/infrastructure/BrowserMessengers/TabMessenger'
+import { BackgroundMessenger, RateResponse } from '../src/infrastructure/BrowserMessengers/BackgroundMessenger'
+import { PopupMessenger } from '../src/infrastructure/BrowserMessengers/PopupMessenger'
+import { TabMessenger } from '../src/infrastructure/BrowserMessengers/TabMessenger'
 import { HtmlMock } from './Html.mock'
 
 export class BrowserMock {
 	readonly extensionName: string
 	readonly access: typeof chrome
 	readonly author: string
-	readonly background: IBackgroundMessenger
+	readonly background: BackgroundMessenger
 	readonly environment: Environments
 	readonly extensionUrl: string
 	readonly extensionVersion: string
@@ -18,9 +18,9 @@ export class BrowserMock {
 	readonly isEdge: boolean
 	readonly isFirefox: boolean
 	readonly isProduction: boolean
-	readonly popup: IPopupMessenger
+	readonly popup: PopupMessenger
 	readonly reviewLink: string
-	readonly tab: ITabMessenger
+	readonly tab: TabMessenger
 	readonly type: Browsers
 
 	readonly rates: Record<string, Record<string, number>> = {}
@@ -32,12 +32,9 @@ export class BrowserMock {
 		this.author = 'Baizey'
 		// @ts-ignore
 		this.background = {
-			getRate: async (
-				from: string,
-				to: string,
-			): Promise<RateResponse | null> => {
+			getRate: async ( from: string, to: string ): Promise<RateResponse> => {
 				const symbols = await this.background.getSymbols()
-				if ( !( from in symbols ) || !( to in symbols ) ) return null
+				if ( !( from in symbols ) || !( to in symbols ) ) return null as unknown as RateResponse
 				if ( this.rates[from] && this.rates[from][to] ) {
 					return {
 						from: from,
@@ -241,6 +238,7 @@ export class BrowserMock {
 		}
 		// @ts-ignore
 		this.tab = {}
+		// @ts-ignore
 		this.popup = {}
 		this.isFirefox = true
 		this.isChrome = true

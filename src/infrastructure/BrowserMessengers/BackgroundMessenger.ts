@@ -1,4 +1,4 @@
-import { BrowserDi } from '../Browser'
+import type { BrowserDi } from '../Browser'
 import { Browser } from '../index'
 
 export enum BackgroundMessageType {
@@ -6,21 +6,15 @@ export enum BackgroundMessageType {
 	getSymbols,
 }
 
-export type BackgroundMessage =
-	| {
-	type: BackgroundMessageType.getSymbols;
-}
-	| {
-	type: BackgroundMessageType.getRate;
-	from: string;
-	to: string;
-};
-
-export interface IBackgroundMessenger {
-	getRate( from: string, to: string ): Promise<RateResponse | null>;
-
-	getSymbols(): Promise<{ [key: string]: string }>;
-}
+export type BackgroundMessage = |
+	{
+		type: BackgroundMessageType.getSymbols;
+	} |
+	{
+		type: BackgroundMessageType.getRate;
+		from: string;
+		to: string;
+	};
 
 export type RatePath = {
 	from: string;
@@ -38,7 +32,7 @@ export type RateResponse = {
 	path: RatePath;
 };
 
-export class BackgroundMessenger implements IBackgroundMessenger {
+export class BackgroundMessenger {
 	private browser: Browser
 
 	constructor( { browser }: BrowserDi ) {
@@ -67,8 +61,8 @@ export class BackgroundMessenger implements IBackgroundMessenger {
 					function ( resp: { success: boolean; data: Response } ) {
 						if ( !resp ) return reject( 'No response' )
 						return resp.success
-							? resolve( resp.data )
-							: reject( resp.data )
+						       ? resolve( resp.data )
+						       : reject( resp.data )
 					},
 				)
 			} catch ( e ) {

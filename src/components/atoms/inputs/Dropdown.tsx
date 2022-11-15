@@ -55,8 +55,8 @@ export function Dropdown( {
 					lineHeight: FieldHeight.pixel,
 					verticalAlign: 'center',
 					backgroundColor: state.isFocused
-						? theme.backgroundBorderFocus
-						: theme.containerBackground,
+					                 ? theme.backgroundBorderFocus
+					                 : theme.containerBackground,
 					cursor: 'pointer',
 				} ),
 				placeholder: ( provided: any ) => ( {
@@ -83,8 +83,8 @@ export function Dropdown( {
 					lineHeight: FieldHeight.pixel,
 					borderBottomWidth: '1px',
 					borderBottomColor: state.isFocused
-						? theme.formBorderFocus
-						: theme.formBorder,
+					                   ? theme.formBorderFocus
+					                   : theme.formBorder,
 					transition: 'border-color 0.3s ease-in-out',
 					'&:hover': {
 						borderBottomColor: theme.formBorderFocus,

@@ -5,10 +5,7 @@ export enum PopupMessageType {}
 
 export type PopupMessage = {};
 
-export interface IPopupMessenger {
-}
-
-export class PopupMessenger implements IPopupMessenger {
+export class PopupMessenger {
 	private browser: Browser
 
 	constructor( { browser }: BrowserDi ) {
@@ -23,8 +20,8 @@ export class PopupMessenger implements IPopupMessenger {
 					( resp: { success: boolean; data: Response } ) => {
 						if ( !resp ) return reject( 'No response' )
 						resp.success
-							? resolve( resp.data )
-							: reject( resp.data )
+						? resolve( resp.data )
+						: reject( resp.data )
 					},
 				)
 			} catch ( e ) {

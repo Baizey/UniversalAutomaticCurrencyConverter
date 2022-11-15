@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { ThemeProps, themes, useProvider } from '../../../infrastructure'
+import { useProvider } from '../../../di'
+import { ThemeProps, themes } from '../../../infrastructure'
 import { Div, Title } from '../../atoms'
 
 type Props = {
@@ -12,7 +13,7 @@ export function OptionsSection( {
 	                                title,
 	                                children,
                                 }: Props ): JSX.Element {
-	const { colorTheme } = useProvider()
+	const { metaConfig: { colorTheme } } = useProvider()
 	return (
 		<Container colorTheme={ colorTheme.value }>
 			{ title ? <Title>{ title }</Title> : <></> }

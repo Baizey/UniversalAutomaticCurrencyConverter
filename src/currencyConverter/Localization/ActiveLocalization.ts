@@ -1,4 +1,4 @@
-import { Browser, ILogger, InfrastructureDi } from '../../infrastructure'
+import { Browser, InfrastructureDi, Logger } from '../../infrastructure'
 import { DisabledCurrenciesSetting } from '../../infrastructure/Configuration/setting'
 import { BackendApiDi, IBackendApi } from '../BackendApi'
 import { CurrencyLocalization, CurrencyLocalizationDi } from './CurrencyLocalization'
@@ -54,7 +54,7 @@ export class ActiveLocalization implements IActiveLocalization {
 	private readonly localizationMapping: Record<string, string>
 	private readonly isDisabled: Record<string, boolean>
 	private symbols: Record<string, string>
-	private logger: ILogger
+	private logger: Logger
 	private disabledCurrencies: DisabledCurrenciesSetting
 
 	constructor( {
@@ -223,11 +223,11 @@ export class ActiveLocalization implements IActiveLocalization {
 			isCurrentTag: currentTag === t,
 			tag: t,
 			count: ( hostCurrency === t
-					? 1
-					: 0 ) +
-				( currentTag === t
-					? 1
-					: 0 ),
+			         ? 1
+			         : 0 ) +
+			       ( currentTag === t
+			         ? 1
+			         : 0 ),
 		} ) )
 		counter.forEach( ( tag ) => {
 			const re = new RegExp( '(^|[\\W_])' + tag.tag + '($|[\\W_])', 'gm' )
@@ -235,8 +235,8 @@ export class ActiveLocalization implements IActiveLocalization {
 		} )
 		this.logger.debug( `${ JSON.stringify( counter ) }` )
 		return counter.reduce( ( p, n ) => ( p.count > n.count
-			? p
-			: n ) ).tag
+		                                     ? p
+		                                     : n ) ).tag
 	}
 
 	private updateLocalization( values: string[] ) {

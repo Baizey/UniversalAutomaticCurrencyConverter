@@ -1,14 +1,16 @@
-export interface ISetting<T> {
-  readonly defaultValue: T;
-  readonly value: T;
-  readonly storageKey: string;
-  readonly validation: (v: T) => boolean;
+interface ISetting<T> {
+	readonly defaultValue: T;
+	readonly value: T;
+	readonly storageKey: string;
+	readonly validation: ( v: T ) => boolean;
 
-  setValue(v: T | undefined): boolean;
+	setValue( v: T | undefined ): boolean;
 
-  save(): Promise<void>;
+	save(): Promise<void>;
 
-  loadSetting(): Promise<boolean>;
+	loadSetting(): Promise<boolean>;
 
-  setAndSaveValue(v: T): Promise<boolean>;
+	setAndSaveValue( v: T ): Promise<boolean>;
 }
+
+export type { ISetting }

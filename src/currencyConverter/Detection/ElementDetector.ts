@@ -1,5 +1,5 @@
 import { Stateful } from 'sharp-dependency-injection'
-import { Configuration, ILogger, InfrastructureDi } from '../../infrastructure'
+import { Configuration, InfrastructureDi, Logger } from '../../infrastructure'
 import { BackendApiDi, IBackendApi } from '../BackendApi'
 import { CurrencyDi, CurrencyElement } from '../Currency'
 import { IActiveLocalization } from '../Localization'
@@ -20,7 +20,7 @@ export class ElementDetector implements IElementDetector {
 	private readonly backendApi: IBackendApi
 	private readonly config: Configuration
 	private readonly localization: IActiveLocalization
-	private readonly logger: ILogger
+	private readonly logger: Logger
 	private readonly currencyElement: Stateful<HTMLElement, CurrencyElement>
 
 	constructor( {

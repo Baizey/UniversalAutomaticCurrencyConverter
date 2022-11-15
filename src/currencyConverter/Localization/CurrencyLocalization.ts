@@ -1,5 +1,5 @@
 import { Stateful } from 'sharp-dependency-injection'
-import { Browser, ILogger, InfrastructureDi, ISetting } from '../../infrastructure'
+import { Browser, InfrastructureDi, ISetting, Logger } from '../../infrastructure'
 
 type Props = {
 	key: string,
@@ -15,7 +15,7 @@ export class CurrencyLocalization {
 
 	private readonly key: string
 	private readonly setting: ISetting<string>
-	private readonly logger: ILogger
+	private readonly logger: Logger
 
 	constructor(
 		{
@@ -61,8 +61,8 @@ export class CurrencyLocalization {
 	reset( toDefault: boolean ): void {
 		this.value =
 			toDefault
-				? this.defaultValue
-				: this.detectedValue
+			? this.defaultValue
+			: this.detectedValue
 	}
 
 	hasConflict(): boolean {

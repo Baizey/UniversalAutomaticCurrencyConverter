@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { ThemeProps, useProvider } from '../../infrastructure'
+import { useProvider } from '../../di'
+import { ThemeProps } from '../../infrastructure'
 import { Div, FooterText } from '../atoms'
 
 export function TitleAlert() {
