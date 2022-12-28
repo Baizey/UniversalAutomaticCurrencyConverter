@@ -13,6 +13,4 @@ export default {
 	args: baseProps,
 }
 
-export const shortcut = ( args ) => {
-	return ( <Shortcut { ...args }></Shortcut> )
-}
+export const shortcut = ( args ) => ( <Shortcut { ...args }></Shortcut> )

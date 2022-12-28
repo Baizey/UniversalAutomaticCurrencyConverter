@@ -7,8 +7,9 @@ export * from './Radiobox'
 export * from './Checkbox'
 export * from './input'
 export * from './Shortcut'
-export * from './Dropdown'
+export * from '../molecules/Dropdown'
 export * from './contexts'
+export * from './Icons'
 
 export function useEffectOnce( effect: EffectCallback ) {
 	useEffect( effect, [] )

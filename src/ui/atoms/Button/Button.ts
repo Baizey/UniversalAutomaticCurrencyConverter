@@ -10,6 +10,7 @@ export type ButtonProps = {
 		down?: boolean;
 	};
 };
+
 const cornerRounding = Pixel.of( 5 )
 export const ButtonBase = styled.button<ButtonProps & ThemeHolder>( ( props ) => ( {
 	color: props.theme.buttonText,

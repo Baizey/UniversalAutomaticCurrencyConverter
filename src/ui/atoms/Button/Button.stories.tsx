@@ -1,4 +1,3 @@
-import Button from '@storybook/react/dist/ts3.9/demo/Button'
 import React from 'react'
 import { ButtonBase, ErrorButton, PrimaryButton, SecondaryButton, SuccessButton } from './Button'
 

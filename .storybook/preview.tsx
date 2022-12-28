@@ -1,21 +1,28 @@
 import React from 'react'
 import { MockStrategy } from 'sharp-dependency-injection'
 import styled, { ThemeProvider } from 'styled-components'
-import { mapToTheme } from '../src/infrastructure'
+import { mapToTheme, themes } from '../src/infrastructure'
 import { darkTheme } from '../src/infrastructure/Theme/DarkTheme'
 import { lightTheme } from '../src/infrastructure/Theme/LightTheme'
+import { Percent } from '../src/ui/atoms'
 import useMockContainer from '../tests/Container.mock'
+
+enum ScreenType {
+	content = 'content',
+	options = 'options',
+	popup = 'popup'
+}
 
 export const parameters = {
 	backgrounds: {
-		default: 'lightTheme',
+		default: 'light theme',
 		values: [
 			{
-				name: 'darkTheme',
+				name: 'dark theme',
 				value: darkTheme.wrapperBackground,
 			},
 			{
-				name: 'lightTheme',
+				name: 'light theme',
 				value: lightTheme.wrapperBackground,
 			},
 		],
@@ -29,31 +36,25 @@ export const parameters = {
 	},
 }
 
+// noinspection JSUnusedGlobalSymbols
 export const globalTypes = {
-	theme: {
-		name: 'Theme',
-		description: 'Global theme for components',
-		defaultValue: 'lightTheme',
-		toolbar: {
-			icon: 'circlehollow',
-			items: [ 'darkTheme', 'lightTheme' ],
-		},
-	},
 	width: {
 		name: 'Width',
 		description: 'Global width for components',
 		defaultValue: 'options',
 		toolbar: {
 			icon: 'zoom',
-			items: [ 'content', 'options', 'popup' ],
+			items: Object.values( ScreenType ),
 		},
 	},
 }
 
-const Wrapper = styled.div( ( props ) => ( {
-	width: '100%',
-	height: '100%',
-	backgroundColor: props.theme.wrapperBackground,
+const Wrapper = styled.div<{ color: string }>( ( props ) => ( {
+	minWidth: '100vh',
+	minHeight: '100vh',
+	height: Percent.all,
+	width: Percent.all,
+	backgroundColor: props.color,
 	margin: 0,
 	padding: 0,
 } ) )
@@ -83,29 +84,47 @@ const InnerWrapperContent = styled.div`
 
 export const decorators = [
 	( Story, context ) => {
+		const backgroundColor = context.globals.backgrounds?.value ?? lightTheme.wrapperBackground
+		const theme: keyof typeof themes = ( backgroundColor === darkTheme.wrapperBackground )
+			? 'darkTheme'
+			: 'lightTheme'
+		const screenType = context.globals.width.toLowerCase() as ScreenType
+
 		const { metaConfig: { colorTheme } } = useMockContainer( MockStrategy.realValue )
-		colorTheme.setValue( context.globals.theme )
+		colorTheme.setValue( theme )
 
-		function create( Inner ) {
-			return (
-				<ThemeProvider theme={ mapToTheme( colorTheme.value ) }>
-					<Wrapper>
-						<Inner>
-							<Story/>
-						</Inner>
-					</Wrapper>
-				</ThemeProvider>
-			)
+		function findUsedBackgroundColor() {
+			switch ( screenType ) {
+				case ScreenType.content:
+					return '#AAA'
+				default:
+				case ScreenType.options:
+				case ScreenType.popup:
+					return backgroundColor
+			}
 		}
 
-		switch ( context.globals.width.toLowerCase() ) {
-			case 'content':
-				return create( InnerWrapperContent )
-			default:
-			case 'options':
-				return create( InnerWrapperOptions )
-			case 'popup':
-				return create( InnerWrapperPopup )
+		function findInnerWrap() {
+			switch ( screenType ) {
+				case ScreenType.content:
+					return InnerWrapperContent
+				case ScreenType.popup:
+					return InnerWrapperPopup
+				default:
+				case ScreenType.options:
+					return InnerWrapperOptions
+			}
 		}
+
+		const Inner = findInnerWrap()
+		return (
+			<ThemeProvider theme={ mapToTheme( colorTheme.value ) }>
+				<Wrapper color={ findUsedBackgroundColor() }>
+					<Inner>
+						<Story/>
+					</Inner>
+				</Wrapper>
+			</ThemeProvider>
+		)
 	},
 ]

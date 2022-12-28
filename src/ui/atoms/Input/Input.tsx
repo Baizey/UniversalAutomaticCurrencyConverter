@@ -1,5 +1,5 @@
 ﻿import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { RawNumberInput, RawTextInput } from '../Styled'
 
 type InputStyleProps = {
@@ -9,40 +9,55 @@ type InputStyleProps = {
 }
 
 export type InputProps<T> = InputStyleProps & {
-	value?: T;
-	onChange?: ( value: T ) => void;
-	onEnter?: ( value: T ) => void;
+	value?: T
+	onChange?: ( value: T ) => void
+	onEnter?: ( value: T ) => void
+	onClick?: () => void
+	onMouseOver?: () => void
 };
 
-export const ReadonlyInput = ( { value }: InputProps<string> ) =>
-	<RawTextInput value={ value } readOnly/>
+export const ReadonlyInput = ( { value, onClick, onMouseOver }: InputProps<string> ) =>
+	<RawTextInput value={ value }
+	              onClick={ onClick }
+	              onMouseOver={ onMouseOver }
+	              readOnly/>
 
-export const NumberInput = ( { onEnter, onChange, value, ...rest }: InputProps<number> ) => {
-	value ??= 0
-	const [ current, setCurrent ] = useState( value )
-	onChange ??= () => {}
-	onEnter ??= () => {}
+export const NumberInput = ( {
+	                             onEnter = () => {},
+	                             onChange = () => {},
+	                             value = 0,
+	                             ...rest
+                             }: InputProps<number> ) => {
+	const [ currentValue, setCurrentValue ] = useState( value )
+	useEffect( () => {setCurrentValue( value )}, [ value ] )
+
 	return <RawNumberInput { ...rest }
-	                       defaultValue={ current }
+	                       value={ currentValue }
 	                       onChange={ p => {
-		                       setCurrent( Number( p.target.value ) )
-		                       onChange && onChange( Number( p.target.value ) )
+		                       const v = Number( p.target.value )
+		                       setCurrentValue( v )
+		                       onChange( v )
 	                       } }
-	                       onKeyUp={ p => onEnter && p.key === 'Enter' && onEnter( Number( current ) ) }
+	                       onKeyUp={ p => p.key === 'Enter' && onEnter( Number( currentValue ) ) }
 	/>
 }
 
-export const TextInput = ( { onEnter, onChange, value, ...rest }: InputProps<string> ) => {
-	value ??= ''
-	const [ current, setCurrent ] = useState( value )
-	onChange ??= () => {}
-	onEnter ??= () => {}
+export const TextInput = ( {
+	                           onEnter = () => {},
+	                           onChange = () => {},
+	                           value = '',
+	                           ...rest
+                           }: InputProps<string> ) => {
+	const [ currentValue, setCurrentValue ] = useState( value )
+	useEffect( () => {setCurrentValue( value )}, [ value ] )
+
 	return <RawTextInput { ...rest }
-	                     defaultValue={ current }
+	                     value={ currentValue }
 	                     onChange={ p => {
-		                     setCurrent( p.target.value )
-		                     onChange && onChange( p.target.value )
+		                     const v = p.target.value
+		                     setCurrentValue( v )
+		                     onChange( v )
 	                     } }
-	                     onKeyUp={ p => onEnter && p.key === 'Enter' && onEnter( current ) }
+	                     onKeyUp={ p => p.key === 'Enter' && onEnter( currentValue ) }
 	/>
 }

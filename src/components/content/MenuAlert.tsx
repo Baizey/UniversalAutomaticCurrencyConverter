@@ -4,7 +4,16 @@ import styled from 'styled-components'
 import { CompactCurrencyLocalization } from '../../currencyConverter/Localization/ActiveLocalization'
 import { useProvider } from '../../di'
 import { ThemeProps } from '../../infrastructure'
-import { Div, Dropdown, ErrorButton, HeaderText, NormalText, Range, SuccessButton } from '../atoms'
+import {
+	Div,
+	Dropdown,
+	DropdownListLocation,
+	ErrorButton,
+	HeaderText,
+	NormalText,
+	Range,
+	SuccessButton,
+} from '../atoms'
 import { OptionRow, SettingOption } from '../options/Shared'
 import { AlertSection } from './AlertSection'
 
@@ -88,23 +97,13 @@ function ConversionsCount() {
 		tabState.setIsShowingConversions( showing )
 	}, [ showing ] )
 
-	const ConvertButton = showing ? (
-		<ErrorButton
-			onClick={ () => {
-				setShowing( false )
-			} }
-		>
+	const ConvertButton = showing
+		? <ErrorButton onClick={ () => setShowing( false ) }>
 			Hide conversions
 		</ErrorButton>
-	) : (
-		                      <SuccessButton
-			                      onClick={ () => {
-				                      setShowing( true )
-			                      } }
-		                      >
-			                      Show conversions
-		                      </SuccessButton>
-	                      )
+		: <SuccessButton onClick={ () => setShowing( true ) }>
+			Show conversions
+		</SuccessButton>
 
 	return (
 		<>
@@ -138,9 +137,9 @@ function PageLocalization() {
 		<OptionRow>
 			<SettingOption title="Dollar$">
 				<Dropdown
-					menuPlacement="top"
+					listLocation={ DropdownListLocation.top }
 					options={ dollarOptions }
-					value={ activeLocalization.dollar.value }
+					initialValue={ activeLocalization.dollar.value }
 					onChange={ async ( value ) =>
 						await changePageLocalization( { dollar: value } )
 					}
@@ -148,9 +147,9 @@ function PageLocalization() {
 			</SettingOption>
 			<SettingOption title="Kr.">
 				<Dropdown
-					menuPlacement="top"
+					listLocation={ DropdownListLocation.top }
 					options={ kroneOptions }
-					value={ activeLocalization.krone.value }
+					initialValue={ activeLocalization.krone.value }
 					onChange={ async ( value ) =>
 						await changePageLocalization( { krone: value } )
 					}
@@ -158,9 +157,9 @@ function PageLocalization() {
 			</SettingOption>
 			<SettingOption title="¥en">
 				<Dropdown
-					menuPlacement="top"
+					listLocation={ DropdownListLocation.top }
 					options={ yenOptions }
-					value={ activeLocalization.yen.value }
+					initialValue={ activeLocalization.yen.value }
 					onChange={ async ( value ) =>
 						await changePageLocalization( { yen: value } )
 					}
@@ -205,10 +204,10 @@ function ConvertTo() {
 		<OptionRow>
 			<SettingOption title="Convert to">
 				<Dropdown
-					menuPlacement="top"
+					listLocation={ DropdownListLocation.top }
 					options={ symbols }
-					value={ convertTo.value }
-					onChange={ async ( value ) => {
+					initialValue={ convertTo.value }
+					onSelection={ async ( value ) => {
 						if ( await convertTo.setAndSaveValue( value ) ) {
 							logger.info( `Now converting to ${ value }` )
 							await tabState.updateDisplay( value )
@@ -266,14 +265,14 @@ function Allowance() {
 			Blacklist
 		</ErrorButton>
 	) : (
-		                        <SuccessButton
-			                        onClick={ () => {
-				                        siteAllowance.addUri( uri, true ).finally( () => setIsAllowed( true ) )
-			                        } }
-		                        >
-			                        Whitelist
-		                        </SuccessButton>
-	                        )
+		<SuccessButton
+			onClick={ () => {
+				siteAllowance.addUri( uri, true ).finally( () => setIsAllowed( true ) )
+			} }
+		>
+			Whitelist
+		</SuccessButton>
+	)
 
 	return (
 		<>

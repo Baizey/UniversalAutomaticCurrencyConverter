@@ -11,7 +11,7 @@ const basicStyle = ( theme: MyTheme ): any => ( {
 	borderStyle: 'solid',
 	borderWidth: 0,
 	fontFamily: 'Calibri, monospace',
-	fontSize: Pixel.normal,
+	fontSize: Pixel.medium,
 	fontWeight: 500,
 	textAlign: 'center',
 	textAlignLast: 'center',
@@ -45,10 +45,15 @@ export const RawNumberInput = styled.input.attrs( {
 		...inputStyle( p.theme ),
 		textAlign: p.align,
 		textAlignLast: p.align,
+		lineHeight: Pixel.fieldWithUnderline,
+		height: Pixel.fieldWithUnderline,
+		fontSize: Pixel.medium,
 		'&:hover': {
+			filter: `brightness(110%)`,
 			borderColor: p.borderHoverColor || p.theme.formBorderFocus,
 		},
 		'&:focus': {
+			filter: `brightness(110%)`,
 			borderColor: p.borderHoverColor || p.theme.formBorderFocus,
 			outline: 0,
 		},
@@ -63,10 +68,15 @@ export const RawTextInput = styled.input.attrs( {
 		...inputStyle( p.theme ),
 		textAlign: p.align,
 		textAlignLast: p.align,
+		lineHeight: Pixel.fieldWithUnderline,
+		height: Pixel.fieldWithUnderline,
+		fontSize: Pixel.medium,
 		'&:hover': {
+			filter: `brightness(110%)`,
 			borderColor: p.borderHoverColor || p.theme.formBorderFocus,
 		},
 		'&:focus': {
+			filter: `brightness(110%)`,
 			borderColor: p.borderHoverColor || p.theme.formBorderFocus,
 			outline: 0,
 		},
@@ -75,6 +85,8 @@ export const RawTextInput = styled.input.attrs( {
 
 
 export const Div = styled.div( ( props: ThemeHolder ) => basicStyle( props.theme ) )
+export const Ul = styled.ul( ( props: ThemeHolder ) => basicStyle( props.theme ) )
+export const Li = styled.li( ( props: ThemeHolder ) => basicStyle( props.theme ) )
 export const Span = styled.span( ( props: ThemeHolder ) => basicStyle( props.theme ) )
 export const Label = styled.label( ( props: ThemeHolder ) => basicStyle( props.theme ) )
 export const H2 = styled.h2( ( props: ThemeHolder ) => basicStyle( props.theme ) )

@@ -10,22 +10,27 @@ const entries = [
 	{ entry: path.resolve( __dirname, './src/background.ts' ), name: 'background', fileName: () => `background.js` },
 ]
 // https://vitejs.dev/config/
-/** @type {import('vite').UserConfig} */
+/** @type {import('vite').InlineConfig} */
 const config = {
 	plugins: [ react(), zip() ],
-	sourceMap: true,
-	minify: true,
-	reportCompressedSize: true,
-	outDir: 'dist',
-	assetsDir: 'public',
-	rollupOptions: {
-		external: [ 'react' ],
-		output: {
-			globals: {
-				react: 'React',
+	build: {
+		sourcemap: true,
+		minify: true,
+		reportCompressedSize: true,
+		outDir: 'dist',
+		assetsDir: 'public',
+		rollupOptions: {
+			external: [ 'react' ],
+			output: {
+				globals: {
+					react: 'React',
+				},
 			},
 		},
 	},
 }
 
-entries.forEach( async lib => await build( { build: { ...config, lib } } ) )
+entries.forEach( async lib => await build( {
+	...config,
+	build: { ...config.build, lib },
+} ) )

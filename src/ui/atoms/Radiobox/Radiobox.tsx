@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { useEffect } from 'react'
 import styled from 'styled-components'
 import { ThemeProps } from '../../../infrastructure'
 import { Div } from '../Styled'
@@ -7,15 +6,10 @@ import { InputProp } from '../utils/InputProp'
 
 export type RadioBoxProps = InputProp<boolean>
 
-export function Radiobox( { value, onClick, onChange }: RadioBoxProps ) {
-	useEffect( () => onChange( value ), [ value ] )
-	return (
-		<RadioBoxContainer checked={ value } onClick={ () => {
-			onClick()
-		} }>
-			<div/>
-		</RadioBoxContainer>
-	)
+export function Radiobox( { value, onClick }: RadioBoxProps ) {
+	return <RadioBoxContainer checked={ value }
+	                          onClick={ () => onClick() }
+	                          children={ <div/> }/>
 }
 
 type RadioBoxContainerProps = {

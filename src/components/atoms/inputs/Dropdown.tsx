@@ -1,156 +1,85 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import Select from 'react-select'
-import { useTheme } from 'styled-components'
-import { MyTheme } from '../../../infrastructure'
-import { basicStyle } from '../Basics'
-import { FieldHeight } from '../Constants'
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import { Div } from '../Basics'
+import { ReadonlyInput, TextInput } from './Input'
+
+export enum DropdownListLocation {
+	top = 'top',
+	bottom = 'bottom'
+}
+
+export type DropdownOption = {
+	value: string
+	label: string
+}
 
 export type DropdownProps = {
-	maxOptions?: number;
-	options: { label: string; value: string }[];
-	value?: string;
-	onChange: ( value: string ) => void;
-	menuPlacement?: 'bottom' | 'top' | 'auto';
-};
+	options: DropdownOption[],
+	initialValue?: string,
+	listLocation?: DropdownListLocation
+}
 
 export function Dropdown( {
 	                          options,
-	                          value,
-	                          onChange,
-	                          maxOptions,
-	                          menuPlacement,
+	                          initialValue = '',
+	                          listLocation = DropdownListLocation.bottom,
                           }: DropdownProps ) {
-	const [ selected, setSelected ] =
-		useState<{
-			label: string;
-			value: string;
-		} | null>( null )
-	useEffect( () => setSelected( options.filter( ( e ) => e.value === value )[0] ), [] )
-	const theme = useTheme() as MyTheme
-	const visibleOptions = maxOptions || 4
-	const optionHeight = 40
-	const menuHeight = visibleOptions * optionHeight
+	const [ searchValue, setSearchValue ] = useState( '' )
+	const [ visibleDropdown, setVisibleDropdown ] = useState( false )
+
+	const list = <DropdownList isVisible={ visibleDropdown }>
+		{ options
+			.filter( option => option.value.includes( searchValue ) )
+			.map( option => (
+				<ReadonlyInput key={ option.value }
+				               onClick={ () => {
+
+				               } }
+				               defaultValue={ option.label }
+				/>
+			) ) }
+	</DropdownList>
+
 	return (
-		<Select
-			onChange={ ( option ) => {
-				if ( option && option.value && option.value !== selected?.value ) {
-					onChange( option.value )
-					setSelected( option )
-				}
-			} }
-			value={ selected }
-			options={ options }
-			menuPlacement={ menuPlacement || 'auto' }
-			placeholder={ 'Search and select...' }
-			styles={ {
-				indicatorsContainer: ( provider: any, state: any ) => ( {
-					display: 'none',
-				} ),
-				option: ( provided: any, state: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-					width: '100%',
-					height: FieldHeight.pixel,
-					lineHeight: FieldHeight.pixel,
-					verticalAlign: 'center',
-					backgroundColor: state.isFocused
-					                 ? theme.backgroundBorderFocus
-					                 : theme.containerBackground,
-					cursor: 'pointer',
-				} ),
-				placeholder: ( provided: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-					width: '100%',
-					height: FieldHeight.pixel,
-					lineHeight: FieldHeight.pixel,
-					color: theme.headerText,
-				} ),
-				singleValue: ( provided: any, state: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-					height: FieldHeight.pixel,
-					lineHeight: FieldHeight.pixel,
-					zIndex: 501,
-					width: '100%',
-					maxWidth: '100%',
-				} ),
-				valueContainer: ( provided: any, state: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-					height: FieldHeight.pixel,
-					lineHeight: FieldHeight.pixel,
-					borderBottomWidth: '1px',
-					borderBottomColor: state.isFocused
-					                   ? theme.formBorderFocus
-					                   : theme.formBorder,
-					transition: 'border-color 0.3s ease-in-out',
-					'&:hover': {
-						borderBottomColor: theme.formBorderFocus,
-					},
-				} ),
-				input: ( provided: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-					zIndex: 500,
-					height: FieldHeight.pixel,
-					lineHeight: FieldHeight.pixel,
-				} ),
-				control: ( provided: any, state: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-					height: FieldHeight.pixel,
-					lineHeight: FieldHeight.pixel,
-					cursor: 'pointer',
-				} ),
-				dropdownIndicator: ( provided: any, state: any ) => ( {
-					...provided,
-					padding: '10px',
-				} ),
-				menu: ( provided: any, state: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-					borderWidth: '1px',
-					maxHeight: `${ menuHeight }px`,
-				} ),
-				menuList: ( provided: any, state: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-					maxHeight: `${ menuHeight }px`,
-				} ),
-				container: ( provided: any, state: any ) => ( {
-					...provided,
-					...basicStyle( { theme: theme } ),
-				} ),
-			} }
-			theme={ {
-				borderRadius: 0,
-				spacing: {
-					baseUnit: 10,
-					controlHeight: 10,
-					menuGutter: 10,
-				},
-				colors: {
-					primary: '',
-					primary75: '',
-					primary50: '',
-					primary25: '',
-					danger: '',
-					dangerLight: '',
-					neutral0: '',
-					neutral5: '',
-					neutral10: '',
-					neutral20: '',
-					neutral30: '',
-					neutral40: '',
-					neutral50: '',
-					neutral60: '',
-					neutral70: '',
-					neutral80: '',
-					neutral90: '',
-				},
-			} }
-		/>
+		<Container
+			onMouseEnter={ () => setVisibleDropdown( true ) }
+			onMouseLeave={ () => setVisibleDropdown( false ) }>
+			{ listLocation === DropdownListLocation.top && list }
+			<TextInput
+				defaultValue={ initialValue }
+				onChange={ setSearchValue }
+			/>
+			{ listLocation === DropdownListLocation.bottom && list }
+		</Container>
 	)
 }
+
+const Container = styled( Div )`
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+`
+
+type DropdownListProps = { isVisible: boolean }
+const DropdownList = styled.ul<DropdownListProps>`
+  display: ${ ( { isVisible }: DropdownListProps ) => isVisible ? '' : 'none' };
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background-color: #fff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  z-index: 1;
+`
+
+const DropdownListItem = styled.li`
+  padding: 10px 20px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f8f8f8;
+  }
+`
