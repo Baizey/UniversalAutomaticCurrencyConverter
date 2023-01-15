@@ -377,7 +377,7 @@ describe( 'CurrencyAmount', () => {
 				expect: 'a 0.50 a',
 				using: true,
 				tag: 'a ¤ a',
-				value: 2,
+				key: 2,
 			},
 		]
 		tests.forEach(
@@ -410,7 +410,7 @@ describe( 'CurrencyAmount', () => {
 
 						currencyStylingConfig.enabled.setValue( test.using )
 						currencyStylingConfig.customDisplay.setValue( test.tag )
-						currencyStylingConfig.conversionRate.setValue( test.value )
+						currencyStylingConfig.conversionRate.setValue( test.key )
 
 						const original = currencyAmount.create( {
 							tag: test.currency,

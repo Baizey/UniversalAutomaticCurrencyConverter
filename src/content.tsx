@@ -1,11 +1,11 @@
 // This file is injected as a content script
 import * as React from 'react'
 import { render } from 'react-dom'
-import { ContentApp } from './components/content'
 import { CurrencyElement } from './currencyConverter/Currency'
 import { useProvider } from './di'
 import { LoggingSettingType } from './infrastructure/Configuration/setting'
 import { LogLevel } from './infrastructure/Logger'
+import { ContentApp } from './ui/content'
 
 const isBlacklistedErrorMessage = `Site is blacklisted`
 
@@ -56,12 +56,11 @@ function loadTabInformation(): boolean {
 }
 
 function injectAlertSystem(): void {
-	const { logger } = useProvider()
 	const div = document.createElement( 'div' )
 	div.id = 'uacc-root'
 	document.body.appendChild( div )
 	render( <ContentApp/>, document.getElementById( 'uacc-root' ) )
-	logger.info( `Injected alert system onto page` )
+	useProvider().logger.info( `Injected alert system onto page` )
 }
 
 function injectShortcuts(): void {

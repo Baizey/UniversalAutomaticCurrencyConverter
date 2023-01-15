@@ -7,8 +7,7 @@ import {
 	QualityOfLifeConfig,
 } from '../../infrastructure/Configuration/Configuration'
 import { BackendApiDi, IBackendApi } from '../BackendApi'
-import { ITextDetector } from '../Detection'
-import { TextDetectorDi } from '../Detection/TextDetector'
+import { ITextDetector, TextDetectorDi } from '../Detection'
 import { IActiveLocalization } from '../Localization'
 import { ActiveLocalizationDi } from '../Localization/ActiveLocalization'
 import { CurrencyAmount, CurrencyAmountDi, CurrencyAmountProps } from './CurrencyAmount'
@@ -104,8 +103,8 @@ export class CurrencyElement {
 		if ( tabState.isPaused ) return this.showOriginal()
 
 		return tabState.isShowingConversions
-		       ? this.showConverted()
-		       : this.showOriginal()
+			? this.showConverted()
+			: this.showOriginal()
 	}
 
 	async showConverted(): Promise<boolean> {
@@ -258,10 +257,10 @@ export class CurrencyElement {
 		currencyInfo.reverse().forEach( ( info ) => {
 			if ( !info.converted ) return
 			const text = this.currencyTagConfig.showConversionInBrackets.value
-			             ? `${ info.original.amount.join( ' - ' ) } ${
+				? `${ info.original.amount.join( ' - ' ) } ${
 					info.original.tag
 				} (${ info.converted.toString() })`
-			             : info.converted.toString()
+				: info.converted.toString()
 
 			replace( info.right.start, info.right.end )
 			replace( info.center.start, info.center.end, text )

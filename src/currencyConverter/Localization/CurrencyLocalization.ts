@@ -61,8 +61,8 @@ export class CurrencyLocalization {
 	reset( toDefault: boolean ): void {
 		this.value =
 			toDefault
-			? this.defaultValue
-			: this.detectedValue
+				? this.defaultValue
+				: this.detectedValue
 	}
 
 	hasConflict(): boolean {

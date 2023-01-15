@@ -1,7 +1,6 @@
 // This file is ran as a background script
-import { useProvider } from './di'
-import { BackgroundMessageType } from './infrastructure'
-import { BackgroundMessage } from './infrastructure/BrowserMessengers/BackgroundMessenger'
+import { handleError, useProvider } from './di'
+import { BackgroundMessage, BackgroundMessageType } from './infrastructure'
 
 function isCurrencyTag( value: any ): boolean {
 	return typeof value === 'string' && /^[A-Z]{3}$/.test( value )
@@ -75,7 +74,7 @@ enum ContextMenuItem {
 			],
 		} )
 
-		browser.contextMenus.onClicked.addListener( function ( info, tab ) {
+		browser.contextMenus.onClicked.addListener( function ( info, _tab ) {
 			switch ( info.menuItemId ) {
 				case ContextMenuItem.openContextMenu:
 					tabMessenger.openContextMenu()
@@ -148,7 +147,4 @@ enum ContextMenuItem {
 
 		return true
 	} )
-} )().catch( ( err ) => {
-	const { logger } = useProvider()
-	logger.error( err )
-} )
+} )().catch( handleError )

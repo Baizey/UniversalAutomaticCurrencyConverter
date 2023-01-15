@@ -9,11 +9,6 @@ export enum Browsers {
 	Edge = 'Edge',
 }
 
-export enum Environments {
-	Dev = 'development',
-	Prod = 'production',
-}
-
 export type BrowserDataStorage = {
 	type: 'local' | 'sync';
 	key: string;
@@ -23,12 +18,10 @@ export type BrowserDataStorage = {
 export type BrowserDi = { browser: Browser }
 
 export class Browser {
-	readonly environment: Environments
 	readonly type: Browsers
 	private readonly access: typeof chrome
 
 	constructor() {
-		this.environment = process.env.NODE_ENV as Environments
 		if ( window.navigator.userAgent.indexOf( ' Edg/' ) >= 0 ) {
 			this.type = Browsers.Edge
 		}// @ts-ignore (browser is not recognized, but it exists on Firefox)
@@ -87,14 +80,6 @@ export class Browser {
 		return this.runtime.getManifest().version
 	}
 
-	get isProduction(): boolean {
-		return this.environment === Environments.Prod
-	}
-
-	get isDevelopment(): boolean {
-		return this.environment === Environments.Dev
-	}
-
 	get extensionUrl(): string {
 		switch ( this.type ) {
 			case Browsers.Firefox:
@@ -113,14 +98,12 @@ export class Browser {
 	get url(): URL {
 		let href = window.location.href
 		// noinspection HttpUrlsUsage
-		if ( href.startsWith( 'http://' ) )
+		if ( href.startsWith( 'http://' ) ) {
 			// noinspection HttpUrlsUsage
-		{
 			href = href.substr( 'http://'.length, href.length )
 		}
-
 		if ( !href.startsWith( 'https://' ) ) href = 'https://' + href
-		return new URL( window.location.href )
+		return new URL( href )
 	}
 
 	get hostAndPath(): string {

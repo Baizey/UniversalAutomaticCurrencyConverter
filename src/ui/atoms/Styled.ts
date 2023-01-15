@@ -37,6 +37,20 @@ type InputStyleProps = {
 	align?: Property.TextAlign;
 }
 
+export const RawRangeInput = styled.input.attrs( {
+	type: 'range',
+} )<InputStyleProps>( ( p: InputStyleProps & ThemeHolder ) => ( {
+	...inputStyle( p.theme ),
+	borderBottomWidth: 0,
+	'&[type="range"]': {
+		...inputStyle( p.theme ),
+		lineHeight: Pixel.fieldWithUnderline,
+		height: Pixel.fieldWithUnderline,
+		fontSize: Pixel.medium,
+		borderBottomWidth: 0,
+	},
+} ) )
+
 export const RawNumberInput = styled.input.attrs( {
 	type: 'number',
 } )<InputStyleProps>( ( p: InputStyleProps & ThemeHolder ) => ( {

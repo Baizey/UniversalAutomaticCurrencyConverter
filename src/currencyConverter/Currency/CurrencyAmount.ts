@@ -96,9 +96,9 @@ export class CurrencyAmount {
 			const [ integers, digits ] = roundedAmount.split( '.' )
 			const leftSide = integers.split( /(?=(?:.{3})*$)/ ).join( thousands )
 			return leftSide +
-				( digits
-					? decimal + digits
-					: '' )
+			       ( digits
+				       ? decimal + digits
+				       : '' )
 		} )
 	}
 
@@ -112,7 +112,7 @@ export class CurrencyAmount {
 		tag = tag.toUpperCase()
 		const rate = await this.backendApi.rate( this.tag, tag )
 		if ( !rate ) return null
-		const amount = this.amount.map( ( e ) => e * rate.rate )
+		const amount = this.amount.map( e => e * rate.rate )
 		return this.currencyAmount.create( {
 			tag,
 			amount,

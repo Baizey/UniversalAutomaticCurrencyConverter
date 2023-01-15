@@ -1,7 +1,7 @@
 ﻿import React from 'react'
 
 type ContextProps = {
-	isIncluded: ( keys: string[] ) => boolean;
+	isExcluded: ( keys: string[] ) => boolean;
 	filterBy: ( text: string ) => void;
 };
 
@@ -20,9 +20,10 @@ function isFilteredOut( keys: string[], filter?: string ): boolean {
 
 export function FilterProvider( { children }: React.PropsWithChildren ) {
 	const [ filter, setFilter ] = React.useState<string>()
-	const isIncluded = ( keys: string[] ) => isFilteredOut( keys, filter )
+	const isExcluded = ( keys: string[] ) => isFilteredOut( keys, filter )
 	const filterBy = ( e: string ) => setFilter( e )
-	return <Context.Provider value={ { isIncluded, filterBy } }> { children } </Context.Provider>
+
+	return <Context.Provider value={ { isExcluded, filterBy } }> { children } </Context.Provider>
 }
 
 export function useFilter(): ContextProps {

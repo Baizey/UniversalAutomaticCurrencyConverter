@@ -1,14 +1,6 @@
 import * as React from 'react'
 import { render } from 'react-dom'
-import { ConfigurationContext } from './components/molecules'
-import { FilterContext } from './components/molecules/contexts/FilterContext'
-import PopupApp from './components/popup/PopupApp'
+import { HookProvider } from './ui/atoms'
+import { PopupApp } from './ui/popup'
 
-render(
-	<ConfigurationContext>
-		<FilterContext>
-			<PopupApp/>
-		</FilterContext>
-	</ConfigurationContext>,
-	document.getElementById( 'root' ),
-)
+render( <HookProvider children={ <PopupApp/> }/>, document.getElementById( 'root' ) )

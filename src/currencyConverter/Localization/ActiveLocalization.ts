@@ -223,11 +223,11 @@ export class ActiveLocalization implements IActiveLocalization {
 			isCurrentTag: currentTag === t,
 			tag: t,
 			count: ( hostCurrency === t
-			         ? 1
-			         : 0 ) +
+				       ? 1
+				       : 0 ) +
 			       ( currentTag === t
-			         ? 1
-			         : 0 ),
+				       ? 1
+				       : 0 ),
 		} ) )
 		counter.forEach( ( tag ) => {
 			const re = new RegExp( '(^|[\\W_])' + tag.tag + '($|[\\W_])', 'gm' )
@@ -235,8 +235,8 @@ export class ActiveLocalization implements IActiveLocalization {
 		} )
 		this.logger.debug( `${ JSON.stringify( counter ) }` )
 		return counter.reduce( ( p, n ) => ( p.count > n.count
-		                                     ? p
-		                                     : n ) ).tag
+			? p
+			: n ) ).tag
 	}
 
 	private updateLocalization( values: string[] ) {

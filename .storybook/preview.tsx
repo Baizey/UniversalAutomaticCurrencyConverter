@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { PropsWithChildren, useEffect } from 'react'
 import { MockStrategy } from 'sharp-dependency-injection'
-import styled, { ThemeProvider } from 'styled-components'
-import { mapToTheme, themes } from '../src/infrastructure'
+import styled from 'styled-components'
+import { themes } from '../src/infrastructure'
 import { darkTheme } from '../src/infrastructure/Theme/DarkTheme'
 import { lightTheme } from '../src/infrastructure/Theme/LightTheme'
-import { Percent } from '../src/ui/atoms'
+import { HookProvider, Percent, useThemeChanger } from '../src/ui/atoms'
 import useMockContainer from '../tests/Container.mock'
 
 enum ScreenType {
@@ -19,11 +19,11 @@ export const parameters = {
 		values: [
 			{
 				name: 'dark theme',
-				value: darkTheme.wrapperBackground,
+				key: darkTheme.wrapperBackground,
 			},
 			{
 				name: 'light theme',
-				value: lightTheme.wrapperBackground,
+				key: lightTheme.wrapperBackground,
 			},
 		],
 	},
@@ -82,6 +82,22 @@ const InnerWrapperContent = styled.div`
   position: fixed;
 `
 
+const rates = Object.freeze( { usd: { eur: 2, gbp: 3 }, eur: { gbp: 4 } } )
+const symbols = {
+	'USD': 'USD Dollar',
+	'EUR': 'Euro',
+	'GBP': 'British pound',
+}
+
+function getRate( from: string, to: string ) {
+	from = from.toLowerCase()
+	to = to.toLowerCase()
+	if ( from === to ) return 1
+	if ( rates[from] && rates[from][to] ) return rates[from][to]
+	if ( rates[to] && rates[to][from] ) return 1 / rates[to][from]
+	return 1
+}
+
 export const decorators = [
 	( Story, context ) => {
 		const backgroundColor = context.globals.backgrounds?.value ?? lightTheme.wrapperBackground
@@ -90,7 +106,16 @@ export const decorators = [
 			: 'lightTheme'
 		const screenType = context.globals.width.toLowerCase() as ScreenType
 
-		const { metaConfig: { colorTheme } } = useMockContainer( MockStrategy.realValue )
+		const { metaConfig: { colorTheme } } = useMockContainer( {
+			backendApi: MockStrategy.realValue,
+			backgroundMessenger: {
+				getRate: ( from, to ) => Promise.resolve( {
+					rate: getRate( from, to ),
+					from, to, path: [], timestamp: new Date(),
+				} ),
+				getSymbols: () => Promise.resolve( symbols ),
+			},
+		}, MockStrategy.realValue )
 		colorTheme.setValue( theme )
 
 		function findUsedBackgroundColor() {
@@ -118,13 +143,24 @@ export const decorators = [
 
 		const Inner = findInnerWrap()
 		return (
-			<ThemeProvider theme={ mapToTheme( colorTheme.value ) }>
-				<Wrapper color={ findUsedBackgroundColor() }>
-					<Inner>
-						<Story/>
-					</Inner>
-				</Wrapper>
-			</ThemeProvider>
+			<HookProvider>
+				<ThemeSetter theme={ colorTheme.value }>
+					<Wrapper color={ findUsedBackgroundColor() }>
+						<Inner>
+							<Story/>
+						</Inner>
+					</Wrapper>
+				</ThemeSetter>
+			</HookProvider>
 		)
 	},
 ]
+
+
+type ThemeSetterProps = { theme: keyof typeof themes }
+
+function ThemeSetter( { children, theme }: PropsWithChildren<ThemeSetterProps> ) {
+	const { changeTheme } = useThemeChanger()
+	useEffect( () => { changeTheme( theme )}, [ theme ] )
+	return <>{ children }</>
+}

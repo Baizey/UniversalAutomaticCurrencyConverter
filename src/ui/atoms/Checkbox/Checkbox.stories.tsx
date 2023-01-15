@@ -2,7 +2,7 @@ import React from 'react'
 import { Checkbox, CheckboxProps } from './Checkbox'
 
 const defaultProps: CheckboxProps = {
-	value: false,
+	key: false,
 	onChange: e => console.log( `Change ${ e }` ),
 	onClick: () => console.log( `Click` ),
 }

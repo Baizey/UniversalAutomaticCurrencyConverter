@@ -8,14 +8,7 @@ export { Browser } from './Browser'
 export { Configuration } from './Configuration'
 export { Logger } from './Logger'
 
-export {
-	BackgroundMessageType,
-	PopupMessageType,
-	TabMessageType,
-	BackgroundMessenger,
-	PopupMessenger,
-	TabMessenger,
-} from './BrowserMessengers'
+export * from './BrowserMessengers'
 
 export type { ISetting } from './Configuration/setting/ISetting'
 export { mapToTheme, themes } from './Theme'

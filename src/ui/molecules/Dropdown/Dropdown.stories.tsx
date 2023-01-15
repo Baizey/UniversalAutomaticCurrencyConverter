@@ -1,8 +1,8 @@
 import React from 'react'
 import { DropdownProps } from '../../../components/atoms'
-import { DropdownListLocation, ReadonlyInput } from '../../atoms'
+import { ReadonlyInput } from '../../atoms'
 import { storybookEnum } from '../../storybook/utils'
-import { Dropdown } from './Dropdown'
+import { Dropdown, DropdownListLocation } from './Dropdown'
 
 
 export default {

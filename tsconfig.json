@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "esModuleInterop": true,
+    "outDir": "./build/unpacked",
     "sourceMap": true,
     "strict": true,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": true,
     "noImplicitReturns": true,

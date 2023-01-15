@@ -17,3 +17,5 @@ export const setMockProvider = ( mock?: Mockable, defaultStrategy?: MockStrategy
 	_proxy = useServices().buildMock( mock, defaultStrategy ).proxy
 
 export const useProvider = (): Providable => _proxy ?? ( _proxy = useServices().build().proxy )
+
+export const handleError = ( error: Error, message?: string ): void => useProvider().logger.error( error, message )

@@ -9,8 +9,7 @@
 /coverage
 
 # production
-/dist
-dist.zip
+/build/*
 
 # misc
 .idea

@@ -1,14 +1,6 @@
 import * as React from 'react'
 import { render } from 'react-dom'
-import { ConfigurationContext } from './components/molecules'
-import { FilterContext } from './components/molecules/contexts/FilterContext'
-import OptionsApp from './components/options/OptionsApp'
+import { HookProvider } from './ui/atoms'
+import OptionsApp from './ui/options/OptionsApp'
 
-render(
-	<ConfigurationContext>
-		<FilterContext>
-			<OptionsApp/>
-		</FilterContext>
-	</ConfigurationContext>,
-	document.getElementById( 'root' ),
-)
+render( <HookProvider children={ <OptionsApp/> }/>, document.getElementById( 'root' ) )

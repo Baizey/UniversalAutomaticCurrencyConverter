@@ -33,7 +33,7 @@ export function Dropdown( { options, initialValue, onSelection, listLocation }: 
 
 	const handleSelection = ( option: DropdownOption ) => {
 		onSelection( option.key )
-		setQuery( option.text )
+		setQuery( option.key )
 	}
 
 	useEffect( () => {

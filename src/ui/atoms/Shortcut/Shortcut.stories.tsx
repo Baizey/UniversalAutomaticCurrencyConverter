@@ -2,7 +2,7 @@ import React from 'react'
 import { Shortcut, ShortcutProps } from './Shortcut'
 
 const baseProps: ShortcutProps = {
-	value: '',
+	key: '',
 	onChange: console.log,
 	onClick: () => {},
 }

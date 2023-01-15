@@ -3,10 +3,9 @@ import { BackgroundMessenger } from './BackgroundMessenger'
 import { PopupMessenger } from './PopupMessenger'
 import { TabMessenger } from './TabMessenger'
 
-export { BackgroundMessenger, PopupMessenger, TabMessenger }
-export { BackgroundMessageType } from './BackgroundMessenger'
-export { PopupMessageType } from './PopupMessenger'
-export { TabMessageType } from './TabMessenger'
+export * from './BackgroundMessenger'
+export * from './PopupMessenger'
+export * from './TabMessenger'
 
 export type MessengerDi = {
 	popupMessenger: PopupMessenger

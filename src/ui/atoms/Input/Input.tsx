@@ -16,10 +16,11 @@ export type InputProps<T> = InputStyleProps & {
 	onMouseOver?: () => void
 };
 
-export const ReadonlyInput = ( { value, onClick, onMouseOver }: InputProps<string> ) =>
+export const ReadonlyInput = ( { value, onClick, onMouseOver, align }: InputProps<string> ) =>
 	<RawTextInput value={ value }
 	              onClick={ onClick }
 	              onMouseOver={ onMouseOver }
+	              align={ align }
 	              readOnly/>
 
 export const NumberInput = ( {

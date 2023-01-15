@@ -55,7 +55,7 @@ describe( 'ActiveLocalization', () => {
 			localization.override( test.input )
 
 			// Assert
-			expect( localization.value ).toBe( test.expect )
+			expect( localization.key ).toBe( test.expect )
 		} ),
 	);
 
