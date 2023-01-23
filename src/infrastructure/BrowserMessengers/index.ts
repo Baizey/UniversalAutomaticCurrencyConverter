@@ -1,4 +1,4 @@
-import { propertyOf, ServiceCollection, singleton } from 'sharp-dependency-injection'
+import { propertyOf, singleton } from 'sharp-dependency-injection'
 import { BackgroundMessenger } from './BackgroundMessenger'
 import { PopupMessenger } from './PopupMessenger'
 import { TabMessenger } from './TabMessenger'
@@ -15,8 +15,8 @@ export type MessengerDi = {
 
 const { popupMessenger, backgroundMessenger, tabMessenger } = propertyOf<MessengerDi>()
 
-export const addMessengerDi = <T>( services: ServiceCollection<T> ) => services.add( {
+export const MessengerDi = {
 	[popupMessenger]: singleton( PopupMessenger ),
 	[backgroundMessenger]: singleton( BackgroundMessenger ),
 	[tabMessenger]: singleton( TabMessenger ),
-} )
+}

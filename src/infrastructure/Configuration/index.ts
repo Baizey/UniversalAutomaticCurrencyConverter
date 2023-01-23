@@ -1,4 +1,4 @@
-import { propertyOf, ServiceCollection, singleton } from 'sharp-dependency-injection'
+import { propertyOf, singleton } from 'sharp-dependency-injection'
 import {
 	Configuration,
 	ConversionHighlightConfig,
@@ -30,7 +30,7 @@ const {
 	config,
 } = propertyOf<ConfigDi>()
 
-export const addConfigDi = <T>( services: ServiceCollection<T> ) => services.add( {
+export const ConfigDi = {
 	[numberStylingConfig]: singleton( NumberStylingConfig ),
 	[currencyStylingConfig]: singleton( CurrencyStylingConfig ),
 	[qualityOfLifeConfig]: singleton( QualityOfLifeConfig ),
@@ -40,4 +40,4 @@ export const addConfigDi = <T>( services: ServiceCollection<T> ) => services.add
 	[currencyTagConfig]: singleton( CurrencyTagConfig ),
 	[metaConfig]: singleton( MetaConfig ),
 	[config]: singleton( Configuration ),
-} )
+}

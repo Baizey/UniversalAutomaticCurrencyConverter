@@ -1,10 +1,9 @@
-import { propertyOf, ServiceCollection, singleton } from 'sharp-dependency-injection'
-import { InfrastructureDi } from '../infrastructure'
+import { propertyOf, singleton } from 'sharp-dependency-injection'
 import { BackendApi, BackendApiDi } from './BackendApi'
-import { addCurrencyDi, CurrencyDi } from './Currency'
-import { addDetectionDi, DetectionDi } from './Detection'
+import { CurrencyDi } from './Currency'
+import { DetectionDi } from './Detection'
 import { TabState, TabStateDi } from './Live/TabState'
-import { addLocalizationDi, LocalizationDi } from './Localization'
+import { LocalizationDi } from './Localization'
 
 export type CurrencyConverterDi = BackendApiDi & LocalizationDi & DetectionDi & CurrencyDi & TabStateDi
 
@@ -13,13 +12,10 @@ const {
 	backendApi,
 } = propertyOf<CurrencyConverterDi>()
 
-export function addCurrencyConverterDi( services: ServiceCollection<InfrastructureDi> ) {
-	return services
-		.add( {
-			[tabState]: singleton( TabState ),
-			[backendApi]: singleton( BackendApi ),
-		} )
-		.addMethod( addLocalizationDi )
-		.addMethod( addDetectionDi )
-		.addMethod( addCurrencyDi )
+export const CurrencyConverterDi = {
+	[tabState]: singleton( TabState ),
+	[backendApi]: singleton( BackendApi ),
+	...LocalizationDi,
+	...DetectionDi,
+	...CurrencyDi,
 }

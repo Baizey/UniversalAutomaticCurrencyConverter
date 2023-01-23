@@ -1,7 +1,7 @@
-import { propertyOf, ServiceCollection, singleton } from 'sharp-dependency-injection'
+import { propertyOf, singleton } from 'sharp-dependency-injection'
 import { Browser, BrowserDi } from './Browser'
-import { addMessengerDi, MessengerDi } from './BrowserMessengers'
-import { addConfigDi, ConfigDi } from './Configuration'
+import { MessengerDi } from './BrowserMessengers'
+import { ConfigDi } from './Configuration'
 import { Logger, LoggerDi } from './Logger/Logger'
 
 export { Browser } from './Browser'
@@ -21,12 +21,9 @@ const {
 	logger,
 } = propertyOf<InfrastructureDi>()
 
-export function addInfrastructureDi( services: ServiceCollection ) {
-	return services
-		.add( {
-			[browser]: singleton( Browser ),
-			[logger]: singleton( Logger ),
-		} )
-		.addMethod( addConfigDi )
-		.addMethod( addMessengerDi )
+export const InfrastructureDi = {
+	[browser]: singleton( Browser ),
+	[logger]: singleton( Logger ),
+	...ConfigDi,
+	...MessengerDi,
 }

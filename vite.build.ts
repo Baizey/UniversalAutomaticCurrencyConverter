@@ -13,7 +13,7 @@ const ReplacePlugin = _ReplacePlugin as unknown as T
 	const buildDir = 'build'
 	const buildCodeDir = `${ buildDir }/unpacked`
 	const srcDir = 'src'
-	const entryPoints: LibraryOptions[] = [ 'popup.tsx', 'content.tsx', 'options.tsx', 'background.ts' ]
+	const entryPoints = [ 'popup.tsx', 'content.tsx', 'options.tsx', 'background.ts' ]
 		.map( entry => {
 			const [ filename ] = entry.split( '.' )
 			return {

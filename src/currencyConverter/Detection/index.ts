@@ -1,4 +1,4 @@
-import { propertyOf, ServiceCollection, singleton } from 'sharp-dependency-injection'
+import { propertyOf, singleton } from 'sharp-dependency-injection'
 import type { ElementDetectorDi } from './ElementDetector'
 import { ElementDetector } from './ElementDetector'
 import type { SiteAllowanceDi } from './SiteAllowance'
@@ -19,8 +19,9 @@ const {
 	elementDetector,
 } = propertyOf<DetectionDi>()
 
-export const addDetectionDi = <T>( services: ServiceCollection<T> ) => services.add( {
+
+export const DetectionDi = {
 	[siteAllowance]: singleton( SiteAllowance ),
 	[textDetector]: singleton( TextDetector ),
 	[elementDetector]: singleton( ElementDetector ),
-} )
+}

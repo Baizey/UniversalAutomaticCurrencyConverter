@@ -1,4 +1,4 @@
-import { propertyOf, ServiceCollection, stateful } from 'sharp-dependency-injection'
+import { propertyOf, stateful } from 'sharp-dependency-injection'
 import type { CurrencyAmountDi } from './CurrencyAmount'
 import { CurrencyAmount } from './CurrencyAmount'
 import type { CurrencyElementDi } from './CurrencyElement'
@@ -15,7 +15,7 @@ const {
 	currencyAmount,
 } = propertyOf<CurrencyDi>()
 
-export const addCurrencyDi = <T>( services: ServiceCollection<T> ) => services.add( {
+export const CurrencyDi = {
 	[currencyElement]: stateful( CurrencyElement ),
 	[currencyAmount]: stateful( CurrencyAmount ),
-} )
+}

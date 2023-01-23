@@ -1,4 +1,4 @@
-import { propertyOf, ServiceCollection, singleton, stateful } from 'sharp-dependency-injection'
+import { propertyOf, singleton, stateful } from 'sharp-dependency-injection'
 import { ActiveLocalization, ActiveLocalizationDi } from './ActiveLocalization'
 import { CurrencyLocalization, CurrencyLocalizationDi } from './CurrencyLocalization'
 
@@ -13,7 +13,7 @@ const {
 	currencyLocalization,
 } = propertyOf<LocalizationDi>()
 
-export const addLocalizationDi = <T>( services: ServiceCollection<T> ) => services.add( {
+export const LocalizationDi = {
 	[activeLocalization]: singleton( ActiveLocalization ),
 	[currencyLocalization]: stateful( CurrencyLocalization ),
-} )
+}

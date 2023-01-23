@@ -4,49 +4,53 @@ import { useProvider } from '../../di'
 import { Text } from '../atoms'
 import { OptionRow, OptionsSection } from './Shared'
 
-export function NewUpdateCard(): JSX.Element {
-	const {
-		metaConfig: { lastVersion },
-		currencyTagConfig: { convertTo },
-		browser,
-	} = useProvider()
-	const [ isNew, setIsNew ] = useState( false )
-	const [ show, setShow ] = useState( false )
-	const [ last, setLast ] = useState( 'n/a' )
+type Version = `${ number }.${ number }.${ number }`
+type OldVersion = {
+	isMissingOldVersion: boolean,
+	version: Version
+	hasVersionChange: boolean
+}
+
+function isNewerVersion( oldVersion: Version, newVersion: Version ): boolean {
+	// Only care about minor and major version as that's the only ones which should introduce/change features, and we don't want to popup with this if there's nothing new for users
+	if ( !oldVersion ) return true
+	const [ newMajor, newMinor, _newPatch ] = newVersion.split( '.' ).map( ( e ) => +e )
+	const [ oldMajor, oldMinor, _oldPatch ] = oldVersion.split( '.' ).map( ( e ) => +e )
+	if ( newMajor > oldMajor ) return true
+	return newMinor > oldMinor
+
+}
+
+export function NewUpdateCard() {
+	const { metaConfig: { lastVersion: lastVersionConfig }, browser } = useProvider()
+	const [ lastVersion, setLastVersion ] = useState<OldVersion>()
+	const newVersion = browser.extensionVersion as Version
+
 	useEffect( () => {
-		lastVersion.loadSetting().then( async () => {
-			// Figure out if new by checking if we have lastVersion stored
-			// Since migrating from <4.0.0 we didnt have lastVersion use convertTo as a backup check
-			const hasVersion = !!( await browser.loadSync<string>(
-				lastVersion.storageKey,
-			) )
-			const hasConvertTo = !!( await browser.loadSync<string>(
-				convertTo.storageKey,
-			) )
-			if ( !hasVersion && !hasConvertTo ) setIsNew( true )
-			if ( !hasVersion && hasConvertTo ) {
-				await lastVersion.setAndSaveValue( '3.1.3' )
-			}
-
-			setLast( lastVersion.value )
-
-			// Figure out if we should show this toast (only show on minor or major updates)
-			const current = browser.extensionVersion.split( '.' ).map( ( e ) => +e )
-			const last = lastVersion.value.split( '.' ).map( ( e ) => +e )
-			const shouldShow =
-				last[0] < current[0] || ( last[0] <= current[0] && last[1] < current[1] )
-			await lastVersion.setAndSaveValue( browser.extensionVersion )
-			setShow( shouldShow )
-		} )
+		Promise.all( [ browser.loadSync<string>( lastVersionConfig.storageKey ),
+		               lastVersionConfig.loadSetting() ] )
+		       .then( async ( [ lastVersionCache, _couldSetLoadedResult ] ) => {
+			       const isMissingOldVersion = !lastVersionCache
+			       const version = lastVersionConfig.value as Version
+			       const hasVersionChange = isNewerVersion( version, newVersion )
+			       setLastVersion( { isMissingOldVersion, hasVersionChange, version } satisfies OldVersion )
+			       await lastVersionConfig.setAndSaveValue( browser.extensionVersion )
+		       } )
 	}, [] )
 
-	if ( !show ) return <></>
+	if ( !lastVersion )
+		return <></>
+	else if ( lastVersion.isMissingOldVersion )
+		return <Container title="Introduction"
+		                  message="You see this because you're a new user"/>
+	else if ( lastVersion.hasVersionChange )
+		return <Container title="Update"
+		                  message={ `You see this because there has been an update (${ lastVersion.version } => ${ newVersion })` }/>
+	else
+		return <></>
+}
 
-	const title = isNew ? `Introduction` : `Update`
-	const introMessage = isNew
-		? `You see this because you're a new user`
-		: `You see this because there has been a feature update (${ last } => ${ lastVersion.value })`
-
+function Container( { title, message }: { title: string, message: string } ) {
 	return (
 		<OptionsSection title={ title }>
 			<OptionRow>
@@ -55,7 +59,7 @@ export function NewUpdateCard(): JSX.Element {
 				</Text>
 			</OptionRow>
 			<OptionRow>
-				<Text>{ introMessage }</Text>
+				<Text>{ message }</Text>
 			</OptionRow>
 			<OptionRow>
 				<Text>
