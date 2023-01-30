@@ -1,13 +1,15 @@
-import { Stateful } from 'sharp-dependency-injection'
+import { stateful, Stateful } from 'sharp-dependency-injection'
+import { AsServices } from 'sharp-dependency-injection/lib/utils'
 import { InfrastructureDi } from '../../infrastructure'
 import { CurrencyStylingConfig, NumberStylingConfig } from '../../infrastructure/Configuration/Configuration'
 import { BackendApiDi, IBackendApi } from '../BackendApi'
 
 export type CurrencyAmountProps = { tag: string, amount: number | number[] }
 
-export type CurrencyAmountDi = { currencyAmount: Stateful<CurrencyAmountProps, CurrencyAmount> }
-
-type CurrencyAmountDep = InfrastructureDi & BackendApiDi & CurrencyAmountDi
+type CurrencyAmountDep =
+	AsServices<typeof InfrastructureDi>
+	& AsServices<typeof BackendApiDi>
+	& { currencyAmount: Stateful<CurrencyAmountProps, CurrencyAmount> }
 
 export class CurrencyAmount {
 	readonly tag: string
@@ -129,3 +131,6 @@ export class CurrencyAmount {
 		return customTag.replace( '¤', value )
 	}
 }
+
+export const CurrencyAmountDi = { currencyAmount: stateful( CurrencyAmount ) }
+export type CurrencyAmountDiTypes = AsServices<typeof CurrencyAmountDi>

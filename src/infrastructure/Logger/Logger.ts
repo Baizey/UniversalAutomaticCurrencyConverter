@@ -1,5 +1,6 @@
+import { singleton } from 'sharp-dependency-injection'
 import { TimeSpan } from 'sharp-time-span'
-import { ConfigDi } from '../Configuration'
+import { ConfigDiTypes } from '../Configuration'
 import { LoggingSettingType, UseDebugLoggingSetting } from '../Configuration/setting'
 
 export enum LogLevel {
@@ -29,37 +30,18 @@ const LogLevelConversion = Object.freeze( {
 	[LoggingSettingType.profile]: 4,
 } )
 
-export type LoggerDi = { logger: Logger }
-
 export class Logger {
 	private readonly useLogging: UseDebugLoggingSetting
 	private readonly startTime: number
 
-	constructor( { metaConfig }: ConfigDi ) {
+	constructor( { metaConfig }: ConfigDiTypes ) {
 		this.useLogging = metaConfig.logging
 		this.startTime = Date.now()
 		this.debug( `LogLevel: ${ this.useLogging.value }` )
 	}
 
-	debug( data: string ) {
-		if ( this.logLevel() >= LogLevelConversion.debug )
-			console.debug( data )
-	}
-
-	info( data: string ) {
-		if ( this.logLevel() >= LogLevelConversion.info )
-			console.info( data )
-	}
-
-	warn( data: string ) {
-		if ( this.logLevel() >= LogLevelConversion.error )
-			console.warn( data )
-	}
-
-	error( error: Error, message?: string ) {
-		message ??= 'Unexpected error'
-		if ( this.logLevel() > LogLevelConversion.nothing )
-			console.error( this.wrap( `${ message }\n${ error.name }\n${ error.message }\n${ error.stack }` ) )
+	private get logLevel(): number {
+		return LogLevelConversion[this.useLogging.value]
 	}
 
 	log( logEvent: LogEvent ) {
@@ -75,11 +57,29 @@ export class Logger {
 		}
 	}
 
-	private logLevel(): number {
-		return LogLevelConversion[this.useLogging.value]
+	debug( data: string ) {
+		if ( this.logLevel >= LogLevelConversion.debug )
+			console.debug( this.wrap( data ) )
+	}
+
+	info( data: string ) {
+		if ( this.logLevel >= LogLevelConversion.info )
+			console.info( this.wrap( data ) )
+	}
+
+	warn( data: string ) {
+		if ( this.logLevel >= LogLevelConversion.error )
+			console.warn( this.wrap( data ) )
+	}
+
+	error( error: Error, message?: string ) {
+		message ??= 'Unexpected error'
+		console.error( this.wrap( `${ message }\n${ error.name }\n${ error.message }\n${ error.stack }` ) )
 	}
 
 	private wrap( msg: string ): string {
 		return `[UACC ${ TimeSpan.since( this.startTime ).seconds.toFixed( 2 ) }] ${ msg }`
 	}
 }
+
+export const LoggerDi = { logger: singleton( Logger ) }

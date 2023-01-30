@@ -1,13 +1,10 @@
-import ReactPlugin from '@vitejs/plugin-react'
+import preact from '@preact/preset-vite'
+import alias from '@rollup/plugin-alias'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as _ReplacePlugin from 'rollup-plugin-replace'
 import { TimeSpan } from 'sharp-time-span'
 import { build, InlineConfig, LibraryOptions } from 'vite'
 import ZipPlugin from 'vite-plugin-zip-pack'
-
-type T = ( data: { values: Record<string, string> } ) => any
-const ReplacePlugin = _ReplacePlugin as unknown as T
 
 ( async () => {
 	const buildDir = 'build'
@@ -26,22 +23,29 @@ const ReplacePlugin = _ReplacePlugin as unknown as T
 
 	const config: InlineConfig = {
 		plugins: [
-			ReactPlugin(),
+			preact(),
 			ZipPlugin( { inDir: buildCodeDir, outDir: buildDir, outFileName: 'packed.zip' } ),
 		],
 		define: { 'process.env.NODE_ENV': '"production"' },
 		build: {
 			lib: false,
-			target: [ 'chrome78', 'firefox57' ],
+			target: [],
 			emptyOutDir: false,
 			sourcemap: false,
-			minify: false,
+			minify: true,
 			reportCompressedSize: true,
 			outDir: buildCodeDir,
 			assetsDir: 'public',
 			rollupOptions: {
 				output: { globals: {} },
-				plugins: [ ReplacePlugin( { values: { '"use strict";': '' } } ) ],
+				plugins: [ alias( {
+					entries: [
+						{ find: 'react', replacement: 'preact/compat' },
+						{ find: 'react-dom/test-utils', replacement: 'preact/test-utils' },
+						{ find: 'react-dom', replacement: 'preact/compat' },
+						{ find: 'react/jsx-runtime', replacement: 'preact/jsx-runtime' },
+					],
+				} ) ],
 			},
 		},
 	}

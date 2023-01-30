@@ -1,5 +1,5 @@
 import { Stateful } from 'sharp-dependency-injection'
-import { Browser, InfrastructureDi, ISetting, Logger } from '../../infrastructure'
+import { Browser, InfrastructureDiTypes, ISetting, Logger } from '../../infrastructure'
 
 type Props = {
 	key: string,
@@ -11,9 +11,8 @@ export class CurrencyLocalization {
 	value: string
 	defaultValue: string
 	detectedValue: string
+	readonly key: string
 	private browser: Browser
-
-	private readonly key: string
 	private readonly setting: ISetting<string>
 	private readonly logger: Logger
 
@@ -21,7 +20,7 @@ export class CurrencyLocalization {
 		{
 			browser,
 			logger,
-		}: InfrastructureDi,
+		}: InfrastructureDiTypes,
 		{
 			key,
 			setting,

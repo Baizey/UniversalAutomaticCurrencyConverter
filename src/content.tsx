@@ -1,10 +1,9 @@
 // This file is injected as a content script
 import * as React from 'react'
 import { render } from 'react-dom'
+import { oneSecond, TimeSpan } from 'sharp-time-span'
 import { CurrencyElement } from './currencyConverter/Currency'
 import { useProvider } from './di'
-import { LoggingSettingType } from './infrastructure/Configuration/setting'
-import { LogLevel } from './infrastructure/Logger'
 import { ContentApp } from './ui/content'
 
 const isBlacklistedErrorMessage = `Site is blacklisted`
@@ -12,8 +11,6 @@ const isBlacklistedErrorMessage = `Site is blacklisted`
 async function loadConfiguration(): Promise<void> {
 	const { config } = useProvider()
 	await config.load()
-	if ( config.meta.logging.value === LoggingSettingType.profile )
-		console.profile( `UACC` )
 }
 
 async function loadActiveLocalization(): Promise<void> {
@@ -101,19 +98,18 @@ async function injectConversions(): Promise<void> {
 
 	new MutationObserver( async ( mutations ) => {
 		try {
+			logger.debug( `Dynamic content added, looking for currencies` )
+			let discovered = 0
 			for ( const mutation of mutations ) {
 				const addedNodes = mutation.addedNodes
 				for ( let i = 0; i < addedNodes.length; i++ ) {
 					const node = addedNodes[i]
 					const element = node.parentElement
 					if ( !element || childOfUACCWatched( element ) ) continue
-					const detected = await detectAllElements( element )
-					logger.log( {
-						logLevel: detected.length ? LogLevel.info : LogLevel.debug,
-						message: `Newly loaded content, found ${ detected.length } currencies`,
-					} )
+					discovered += ( await detectAllElements( element ) ).length
 				}
 			}
+			logger.debug( `Newly loaded content, found ${ discovered } currencies` )
 		} catch ( err: unknown ) {
 			logger.error( err as Error )
 		}
@@ -125,14 +121,9 @@ async function injectConversions(): Promise<void> {
 	} )
 
 	// Detect all currencies on page
-	logger.info( `Starting checking for currencies on page` )
+	logger.info( `Starting full-page checking` )
 	await detectAllNewElementsRecurring()
-	logger.info(
-		`Done checking for currencies, found ${ tabState.conversions.length } currencies`,
-	)
-	const { metaConfig: { logging } } = useProvider()
-	if ( logging.value === LoggingSettingType.profile )
-		console.profileEnd( `UACC` )
+	logger.info( `Done full-page check, found ${ tabState.conversions.length } currencies` )
 }
 
 function handleError( error: Error ): void {
@@ -147,6 +138,7 @@ function handleError( error: Error ): void {
 }
 
 ( async () => {
+	useProvider().logger.info( 'UACC started' )
 	await loadConfiguration()
 	await loadActiveLocalization()
 
@@ -187,17 +179,16 @@ async function detectAllElements(
 async function detectAllNewElementsRecurring(): Promise<void> {
 	const { logger } = useProvider()
 	const attempts = 3
-	for ( let i = 1, time = 0; i <= attempts; i++, time = ( time || 1000 ) * 2 ) {
-		await wait( time )
+	for ( let i = 1, delay = oneSecond; i <= attempts; i++, delay = delay.multiplyBy( 2 ) ) {
+		logger.info( `Auto check ${ i }/${ attempts } starting` )
 		const result = await detectAllElements( document.body )
-		logger.info(
-			`Auto check ${ i }/${ attempts }, found ${ result.length } currencies`,
-		)
+		logger.info( `Auto check ${ i }/${ attempts }, found ${ result.length } currencies` )
+		await wait( delay )
 	}
 }
 
-function wait( milliseconds: number ): Promise<void> {
-	return new Promise( ( resolve ) => setTimeout( () => resolve(), milliseconds ) )
+function wait( span: TimeSpan ): Promise<void> {
+	return new Promise( ( resolve ) => setTimeout( () => resolve(), span.millis ) )
 }
 
 function childOfUACCWatched( element: HTMLElement ): boolean {

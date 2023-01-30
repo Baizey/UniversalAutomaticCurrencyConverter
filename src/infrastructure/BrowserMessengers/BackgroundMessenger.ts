@@ -1,4 +1,4 @@
-import type { BrowserDi } from '../Browser'
+import { BrowserDiTypes } from '../Browser/Browser'
 import { Browser } from '../index'
 
 export enum BackgroundMessageType {
@@ -35,7 +35,7 @@ export type RateResponse = {
 export class BackgroundMessenger {
 	private browser: Browser
 
-	constructor( { browser }: BrowserDi ) {
+	constructor( { browser }: BrowserDiTypes ) {
 		this.browser = browser
 	}
 
@@ -61,8 +61,8 @@ export class BackgroundMessenger {
 					function ( resp: { success: boolean; data: Response } ) {
 						if ( !resp ) return reject( 'No response' )
 						return resp.success
-						       ? resolve( resp.data )
-						       : reject( resp.data )
+							? resolve( resp.data )
+							: reject( resp.data )
 					},
 				)
 			} catch ( e ) {

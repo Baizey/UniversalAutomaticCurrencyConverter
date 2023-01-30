@@ -1,3 +1,5 @@
+import { singleton } from 'sharp-dependency-injection'
+import { AsServices } from 'sharp-dependency-injection/lib/utils'
 import { IConfig } from './IConfig'
 import {
 	BlacklistedUrlsSetting,
@@ -33,21 +35,6 @@ import {
 	YenLocalizationSetting,
 } from './setting'
 import { SettingDep } from './setting/SyncSetting'
-
-export type SubConfigDi = {
-	numberStylingConfig: NumberStylingConfig
-	currencyStylingConfig: CurrencyStylingConfig
-	qualityOfLifeConfig: QualityOfLifeConfig
-	siteAllowanceConfig: SiteAllowanceConfig
-	localizationConfig: LocalizationConfig
-	highlightConfig: ConversionHighlightConfig
-	currencyTagConfig: CurrencyTagConfig
-	metaConfig: MetaConfig
-}
-
-export type ConfigDi = SubConfigDi & {
-	config: Configuration
-}
 
 export class NumberStylingConfig extends IConfig {
 	readonly decimal: DecimalPointSetting
@@ -167,6 +154,19 @@ export class MetaConfig extends IConfig {
 	}
 }
 
+export const SubConfigDi = {
+	numberStylingConfig: singleton( NumberStylingConfig ),
+	currencyStylingConfig: singleton( CurrencyStylingConfig ),
+	qualityOfLifeConfig: singleton( QualityOfLifeConfig ),
+	siteAllowanceConfig: singleton( SiteAllowanceConfig ),
+	localizationConfig: singleton( LocalizationConfig ),
+	highlightConfig: singleton( ConversionHighlightConfig ),
+	currencyTagConfig: singleton( CurrencyTagConfig ),
+	metaConfig: singleton( MetaConfig ),
+}
+
+type SubConfigDiTypes = AsServices<typeof SubConfigDi>
+
 export class Configuration {
 	readonly numberStyling: NumberStylingConfig
 	readonly currencyStyling: CurrencyStylingConfig
@@ -187,7 +187,7 @@ export class Configuration {
 		             highlightConfig,
 		             currencyTagConfig,
 		             metaConfig,
-	             }: SubConfigDi ) {
+	             }: SubConfigDiTypes ) {
 		this.numberStyling = numberStylingConfig
 		this.currencyStyling = currencyStylingConfig
 		this.qualityOfLife = qualityOfLifeConfig

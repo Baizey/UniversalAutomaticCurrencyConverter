@@ -1,4 +1,4 @@
-import { InfrastructureDi } from '../../infrastructure'
+import { InfrastructureDiTypes } from '../../infrastructure'
 import {
 	BlacklistedUrlsSetting,
 	UsingBlacklistingSetting,
@@ -26,7 +26,7 @@ export class SiteAllowance implements ISiteAllowance {
 	private readonly blacklistedUrls: BlacklistedUrlsSetting
 	private readonly whitelistedUrls: WhitelistedUrlsSetting
 
-	constructor( { siteAllowanceConfig }: InfrastructureDi ) {
+	constructor( { siteAllowanceConfig }: InfrastructureDiTypes ) {
 		this.usingWhitelisting = siteAllowanceConfig.useWhitelisting
 		this.usingBlacklisting = siteAllowanceConfig.useBlacklisting
 		this.blacklistedUrls = siteAllowanceConfig.blacklistedUrls

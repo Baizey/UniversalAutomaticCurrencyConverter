@@ -1,5 +1,4 @@
 import { MockStrategy } from 'sharp-dependency-injection'
-import { CurrencyElement } from '../src/currencyConverter/Currency'
 import { TabState } from '../src/currencyConverter/Live/TabState'
 import useMockContainer from './Container.mock'
 import { HtmlMock } from './Html.mock'
@@ -34,11 +33,10 @@ describe( 'TabInformation', () => {
 
 	it( `is not showing conversions after flip`, () => {
 		// Setup
-		const provider = useMockContainer( {}, MockStrategy.realValue )
+		const provider = useMockContainer( MockStrategy.realValue )
 		const tabInformation = provider.tabState
-		tabInformation.conversions.push(
-			new CurrencyElement( provider, HtmlMock.empty() ),
-		)
+		const element = provider.currencyElement.create( HtmlMock.empty() )
+		tabInformation.conversions.push( element )
 		tabInformation.setIsShowingConversions( true )
 
 		// Act

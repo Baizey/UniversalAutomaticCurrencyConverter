@@ -1,4 +1,4 @@
-import { BrowserDi } from '../Browser'
+import { BrowserDiTypes } from '../Browser'
 import { Browser } from '../index'
 
 export enum PopupMessageType {}
@@ -8,7 +8,7 @@ export type PopupMessage = {};
 export class PopupMessenger {
 	private browser: Browser
 
-	constructor( { browser }: BrowserDi ) {
+	constructor( { browser }: BrowserDiTypes ) {
 		this.browser = browser
 	}
 
@@ -20,8 +20,8 @@ export class PopupMessenger {
 					( resp: { success: boolean; data: Response } ) => {
 						if ( !resp ) return reject( 'No response' )
 						resp.success
-						? resolve( resp.data )
-						: reject( resp.data )
+							? resolve( resp.data )
+							: reject( resp.data )
 					},
 				)
 			} catch ( e ) {

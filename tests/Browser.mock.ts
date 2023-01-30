@@ -1,7 +1,5 @@
-import { BrowserDataStorage, Browsers, Environments } from '../src/infrastructure/Browser/Browser'
-import { BackgroundMessenger, RateResponse } from '../src/infrastructure/BrowserMessengers/BackgroundMessenger'
-import { PopupMessenger } from '../src/infrastructure/BrowserMessengers/PopupMessenger'
-import { TabMessenger } from '../src/infrastructure/BrowserMessengers/TabMessenger'
+import { BackgroundMessenger, PopupMessenger, RateResponse, TabMessenger } from '../src/infrastructure'
+import { BrowserDataStorage, Browsers } from '../src/infrastructure/Browser/Browser'
 import { HtmlMock } from './Html.mock'
 
 export class BrowserMock {
@@ -9,7 +7,6 @@ export class BrowserMock {
 	readonly access: typeof chrome
 	readonly author: string
 	readonly background: BackgroundMessenger
-	readonly environment: Environments
 	readonly extensionUrl: string
 	readonly extensionVersion: string
 	readonly id: string
@@ -245,7 +242,6 @@ export class BrowserMock {
 		this.isEdge = true
 		this.isProduction = true
 		this.isDevelopment = false
-		this.environment = Environments.Prod
 		this.reviewLink = ''
 		this.id = ''
 		this.extensionVersion = '4.0.0'

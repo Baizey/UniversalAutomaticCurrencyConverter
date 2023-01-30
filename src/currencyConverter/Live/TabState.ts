@@ -1,6 +1,5 @@
+import { singleton } from 'sharp-dependency-injection'
 import { CurrencyElement } from '../Currency'
-
-export type TabStateDi = { tabState: TabState }
 
 export class TabState {
 	conversions: CurrencyElement[]
@@ -65,3 +64,5 @@ export class TabState {
 		this.conversions.filter( ( e ) => e.isHovered ).forEach( ( e ) => e.flipDisplay() )
 	}
 }
+
+export const TabStateDi = { tabState: singleton( TabState ) }

@@ -1,3 +1,5 @@
+import { singleton } from 'sharp-dependency-injection'
+import { AsServices } from 'sharp-dependency-injection/lib/utils'
 import { useProvider } from '../../di'
 
 type SyncStorageArea = chrome.storage.SyncStorageArea;
@@ -15,26 +17,14 @@ export type BrowserDataStorage = {
 	value: any;
 };
 
-export type BrowserDi = { browser: Browser }
-
 export class Browser {
 	readonly type: Browsers
 	private readonly access: typeof chrome
 
 	constructor() {
-		if ( window.navigator.userAgent.indexOf( ' Edg/' ) >= 0 ) {
-			this.type = Browsers.Edge
-		}// @ts-ignore (browser is not recognized, but it exists on Firefox)
-		else if ( typeof browser !== 'undefined' ) {
-			this.type = Browsers.Firefox
-		} else {
-			this.type = Browsers.Chrome
-		}
-		this.access =
-			this.isFirefox
-				// @ts-ignore
-				? browser
-				: chrome
+		this.type = this.detectBrowser()
+		// @ts-ignore
+		this.access = this.isFirefox ? browser : chrome
 	}
 
 	get document() {
@@ -215,6 +205,17 @@ export class Browser {
 		] )
 	}
 
+	private detectBrowser(): Browsers {
+		if ( window.navigator.userAgent.indexOf( ' Edg/' ) >= 0 ) {
+			return Browsers.Edge
+		}// @ts-ignore (browser is not recognized, but it exists on Firefox)
+		else if ( typeof browser !== 'undefined' ) {
+			return Browsers.Firefox
+		} else {
+			return Browsers.Chrome
+		}
+	}
+
 	private loadSingle<T>(
 		storage: LocalStorageArea | SyncStorageArea,
 		key: string,
@@ -244,3 +245,6 @@ export class Browser {
 		)
 	}
 }
+
+export const BrowserDi = { browser: singleton( Browser ) }
+export type BrowserDiTypes = AsServices<typeof BrowserDi>

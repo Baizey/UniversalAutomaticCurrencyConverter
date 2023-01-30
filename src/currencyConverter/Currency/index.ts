@@ -1,21 +1,10 @@
-import { propertyOf, stateful } from 'sharp-dependency-injection'
-import type { CurrencyAmountDi } from './CurrencyAmount'
-import { CurrencyAmount } from './CurrencyAmount'
-import type { CurrencyElementDi } from './CurrencyElement'
-import { CurrencyElement } from './CurrencyElement'
+import { AsServices } from 'sharp-dependency-injection/lib/utils'
+import { CurrencyAmount, CurrencyAmountDi } from './CurrencyAmount'
+import { CurrencyElement, CurrencyElementDi } from './CurrencyElement'
 
 export type { CurrencyAmountProps } from './CurrencyAmount'
 export { CurrencyAmount } from './CurrencyAmount'
 export { CurrencyElement } from './CurrencyElement'
 
-export type CurrencyDi = CurrencyAmountDi & CurrencyElementDi
-
-const {
-	currencyElement,
-	currencyAmount,
-} = propertyOf<CurrencyDi>()
-
-export const CurrencyDi = {
-	[currencyElement]: stateful( CurrencyElement ),
-	[currencyAmount]: stateful( CurrencyAmount ),
-}
+export const CurrencyDi = { ...CurrencyAmountDi, ...CurrencyElementDi }
+export type CurrencyDiTypes = AsServices<typeof CurrencyDi>

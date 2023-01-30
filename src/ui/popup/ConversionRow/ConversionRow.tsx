@@ -25,14 +25,8 @@ export function ConversionRow( props: ConversionRowProps ) {
 	const [ toAmount, setToAmount ] = useState( currencyAmount.create( { tag: props.from, amount: props.amount } ) )
 
 	useEffect( () => {
-		console.log( fromAmount )
 		const current = currencyAmount.create( { tag: fromAmount.from, amount: [ fromAmount.amount ] } )
-		console.log( current )
 		current.convertTo( fromAmount.to )
-		       .then( e => {
-			       console.log( e )
-			       return e
-		       } )
 		       .then( e => e || toAmount )
 		       .then( e => setToAmount( e ) )
 		props.onChange( {

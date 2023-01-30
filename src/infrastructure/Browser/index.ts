@@ -1,2 +1,2 @@
-export { Browser } from './Browser'
-export type { BrowserDi } from './Browser'
+export { Browser, BrowserDi } from './Browser'
+export type { BrowserDiTypes } from './Browser'

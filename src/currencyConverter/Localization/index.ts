@@ -6,12 +6,12 @@ export { ActiveLocalization } from './ActiveLocalization'
 export type { IActiveLocalization } from './ActiveLocalization'
 export { Localizations } from './Localization'
 
-export type LocalizationDi = ActiveLocalizationDi & CurrencyLocalizationDi
+export type LocalizationDiTypes = ActiveLocalizationDi & CurrencyLocalizationDi
 
 const {
 	activeLocalization,
 	currencyLocalization,
-} = propertyOf<LocalizationDi>()
+} = propertyOf<LocalizationDiTypes>()
 
 export const LocalizationDi = {
 	[activeLocalization]: singleton( ActiveLocalization ),

@@ -1,5 +1,6 @@
-import { Browser, InfrastructureDi } from '../../infrastructure'
-import { BackgroundMessenger, RatePath } from '../../infrastructure/BrowserMessengers/BackgroundMessenger'
+import { singleton } from 'sharp-dependency-injection'
+import { AsServices } from 'sharp-dependency-injection/lib/utils'
+import { BackgroundMessenger, Browser, InfrastructureDiTypes, RatePath } from '../../infrastructure'
 import { CurrencyRate, ICurrencyRate } from './CurrencyRate'
 
 export interface IBackendApi {
@@ -14,8 +15,6 @@ type RateStorage = {
 	path: RatePath;
 };
 
-export type BackendApiDi = { backendApi: BackendApi }
-
 export class BackendApi implements IBackendApi {
 	private readonly backgroundMessenger: BackgroundMessenger
 	private readonly browser: Browser
@@ -27,7 +26,7 @@ export class BackendApi implements IBackendApi {
 	constructor( {
 		             browser,
 		             backgroundMessenger,
-	             }: InfrastructureDi ) {
+	             }: InfrastructureDiTypes ) {
 		this._symbolsExpireDate = 0
 		this._rates = {}
 		this._symbols = undefined
@@ -107,3 +106,6 @@ export class BackendApi implements IBackendApi {
 		) )
 	}
 }
+
+export const BackendApiDi = { backendApi: singleton( BackendApi ) }
+export type BackendApiDiTypes = AsServices<typeof BackendApiDi>

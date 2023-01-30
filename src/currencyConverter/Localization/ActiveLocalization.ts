@@ -1,6 +1,7 @@
-import { Browser, InfrastructureDi, Logger } from '../../infrastructure'
+import { Browser, InfrastructureDiTypes, Logger } from '../../infrastructure'
 import { DisabledCurrenciesSetting } from '../../infrastructure/Configuration/setting'
-import { BackendApiDi, IBackendApi } from '../BackendApi'
+import { IBackendApi } from '../BackendApi'
+import { BackendApiDiTypes } from '../BackendApi/BackendApi'
 import { CurrencyLocalization, CurrencyLocalizationDi } from './CurrencyLocalization'
 import { Localizations } from './Localization'
 
@@ -39,7 +40,7 @@ export type CompactCurrencyLocalization = {
 	krone: string;
 };
 
-export type ActiveLocalizationDep = InfrastructureDi & BackendApiDi
+export type ActiveLocalizationDep = InfrastructureDiTypes & BackendApiDiTypes
 
 export type ActiveLocalizationDi = { activeLocalization: ActiveLocalization }
 

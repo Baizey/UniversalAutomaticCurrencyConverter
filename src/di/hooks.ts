@@ -1,9 +1,10 @@
 import { MockStrategy, ProviderMock, ServiceCollection, Services } from 'sharp-dependency-injection'
+import { AsServices } from 'sharp-dependency-injection/lib/utils'
 import { CurrencyConverterDi } from '../currencyConverter'
 import { InfrastructureDi } from '../infrastructure'
 
 const _Providable = { ...InfrastructureDi, ...CurrencyConverterDi }
-export type Providable = InfrastructureDi & CurrencyConverterDi
+export type Providable = AsServices<typeof _Providable>
 
 export type Mockable = MockStrategy | ProviderMock<Providable>
 

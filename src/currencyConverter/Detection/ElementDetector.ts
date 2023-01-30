@@ -1,7 +1,8 @@
 import { Stateful } from 'sharp-dependency-injection'
-import { Configuration, InfrastructureDi, Logger } from '../../infrastructure'
-import { BackendApiDi, IBackendApi } from '../BackendApi'
-import { CurrencyDi, CurrencyElement } from '../Currency'
+import { Configuration, InfrastructureDiTypes, Logger } from '../../infrastructure'
+import { IBackendApi } from '../BackendApi'
+import { BackendApiDiTypes } from '../BackendApi/BackendApi'
+import { CurrencyDiTypes, CurrencyElement } from '../Currency'
 import { IActiveLocalization } from '../Localization'
 import { ActiveLocalizationDi } from '../Localization/ActiveLocalization'
 import { ITextDetector, TextDetectorDi } from './TextDetector'
@@ -13,7 +14,12 @@ export interface IElementDetector {
 }
 
 export type ElementDetectorDi = { elementDetector: ElementDetector }
-type ElementDetectorDep = InfrastructureDi & BackendApiDi & ActiveLocalizationDi & TextDetectorDi & CurrencyDi
+type ElementDetectorDep =
+	InfrastructureDiTypes
+	& BackendApiDiTypes
+	& ActiveLocalizationDi
+	& TextDetectorDi
+	& CurrencyDiTypes
 
 export class ElementDetector implements IElementDetector {
 	private readonly textDetector: ITextDetector

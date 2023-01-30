@@ -1,43 +1,12 @@
-import { propertyOf, singleton } from 'sharp-dependency-injection'
-import {
-	Configuration,
-	ConversionHighlightConfig,
-	CurrencyStylingConfig,
-	CurrencyTagConfig,
-	LocalizationConfig,
-	MetaConfig,
-	NumberStylingConfig,
-	QualityOfLifeConfig,
-	SiteAllowanceConfig,
-	SubConfigDi,
-} from './Configuration'
+import { singleton } from 'sharp-dependency-injection'
+import { AsServices } from 'sharp-dependency-injection/lib/utils'
+import { Configuration, SubConfigDi } from './Configuration'
 
 export { Configuration } from './Configuration'
 
-export type ConfigDi = SubConfigDi & {
-	config: Configuration
-}
-
-const {
-	numberStylingConfig,
-	currencyStylingConfig,
-	qualityOfLifeConfig,
-	siteAllowanceConfig,
-	localizationConfig,
-	highlightConfig,
-	currencyTagConfig,
-	metaConfig,
-	config,
-} = propertyOf<ConfigDi>()
-
 export const ConfigDi = {
-	[numberStylingConfig]: singleton( NumberStylingConfig ),
-	[currencyStylingConfig]: singleton( CurrencyStylingConfig ),
-	[qualityOfLifeConfig]: singleton( QualityOfLifeConfig ),
-	[siteAllowanceConfig]: singleton( SiteAllowanceConfig ),
-	[localizationConfig]: singleton( LocalizationConfig ),
-	[highlightConfig]: singleton( ConversionHighlightConfig ),
-	[currencyTagConfig]: singleton( CurrencyTagConfig ),
-	[metaConfig]: singleton( MetaConfig ),
-	[config]: singleton( Configuration ),
+	...SubConfigDi,
+	config: singleton( Configuration ),
 }
+
+export type ConfigDiTypes = AsServices<typeof ConfigDi>

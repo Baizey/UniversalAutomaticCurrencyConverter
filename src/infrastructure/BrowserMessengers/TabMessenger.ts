@@ -1,4 +1,4 @@
-import { BrowserDi } from '../Browser'
+import { BrowserDiTypes } from '../Browser'
 import { Browser } from '../index'
 
 export enum TabMessageType {
@@ -12,7 +12,7 @@ export type TabMessage = {
 export class TabMessenger {
 	private browser: Browser
 
-	constructor( { browser }: BrowserDi ) {
+	constructor( { browser }: BrowserDiTypes ) {
 		this.browser = browser
 	}
 
@@ -36,8 +36,8 @@ export class TabMessenger {
 							function ( resp: { success: boolean; data: Response } ) {
 								if ( !resp ) return reject( 'No response' )
 								return resp.success
-								       ? resolve( resp.data )
-								       : reject( resp.data )
+									? resolve( resp.data )
+									: reject( resp.data )
 							},
 						)
 					},

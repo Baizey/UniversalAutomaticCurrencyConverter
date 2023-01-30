@@ -390,6 +390,7 @@ describe( 'CurrencyAmount', () => {
 				decimal?: string;
 				thousands?: string;
 				tag?: string;
+				key?: number;
 				value?: number;
 			} ) => {
 				it( `Rounding: ${ test.rounding }, amount: ${ test.amount }, currency: ${ test.currency }, expect: ${ test.expect }`,

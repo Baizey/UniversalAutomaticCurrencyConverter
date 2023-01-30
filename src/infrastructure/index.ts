@@ -1,4 +1,4 @@
-import { propertyOf, singleton } from 'sharp-dependency-injection'
+import { AsServices } from 'sharp-dependency-injection/lib/utils'
 import { Browser, BrowserDi } from './Browser'
 import { MessengerDi } from './BrowserMessengers'
 import { ConfigDi } from './Configuration'
@@ -14,16 +14,11 @@ export type { ISetting } from './Configuration/setting/ISetting'
 export { mapToTheme, themes } from './Theme'
 export type { ThemeProps, MyTheme } from './Theme'
 
-export type InfrastructureDi = BrowserDi & ConfigDi & LoggerDi & MessengerDi
-
-const {
-	browser,
-	logger,
-} = propertyOf<InfrastructureDi>()
-
 export const InfrastructureDi = {
-	[browser]: singleton( Browser ),
-	[logger]: singleton( Logger ),
+	...BrowserDi,
+	...LoggerDi,
 	...ConfigDi,
 	...MessengerDi,
 }
+
+export type InfrastructureDiTypes = AsServices<typeof InfrastructureDi>

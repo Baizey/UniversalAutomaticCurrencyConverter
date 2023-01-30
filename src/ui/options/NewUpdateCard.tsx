@@ -18,7 +18,6 @@ function isNewerVersion( oldVersion: Version, newVersion: Version ): boolean {
 	const [ oldMajor, oldMinor, _oldPatch ] = oldVersion.split( '.' ).map( ( e ) => +e )
 	if ( newMajor > oldMajor ) return true
 	return newMinor > oldMinor
-
 }
 
 export function NewUpdateCard() {
@@ -27,7 +26,7 @@ export function NewUpdateCard() {
 	const newVersion = browser.extensionVersion as Version
 
 	useEffect( () => {
-		Promise.all( [ browser.loadSync<string>( lastVersionConfig.storageKey ),
+		Promise.all( [ browser.loadSync<string | undefined>( lastVersionConfig.storageKey ),
 		               lastVersionConfig.loadSetting() ] )
 		       .then( async ( [ lastVersionCache, _couldSetLoadedResult ] ) => {
 			       const isMissingOldVersion = !lastVersionCache

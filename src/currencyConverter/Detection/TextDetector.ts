@@ -1,4 +1,5 @@
-import { BackendApiDi, IBackendApi } from '../BackendApi'
+import { IBackendApi } from '../BackendApi'
+import { BackendApiDiTypes } from '../BackendApi/BackendApi'
 import { IActiveLocalization } from '../Localization'
 import { ActiveLocalizationDi } from '../Localization/ActiveLocalization'
 import { CurrencyRegex, RegexResult } from './CurrencyRegex'
@@ -11,7 +12,7 @@ export interface ITextDetector {
 
 export type TextDetectorDi = { textDetector: TextDetector }
 
-type TextDetectorDep = BackendApiDi & ActiveLocalizationDi
+type TextDetectorDep = BackendApiDiTypes & ActiveLocalizationDi
 
 export class TextDetector implements ITextDetector {
 	private readonly backendApi: IBackendApi

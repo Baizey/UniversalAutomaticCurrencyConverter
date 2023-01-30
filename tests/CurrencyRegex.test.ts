@@ -1,5 +1,5 @@
 import { MockStrategy } from 'sharp-dependency-injection'
-import { CurrencyRegex } from '../src/currencyConverter/Detection/CurrencyRegex'
+import { CurrencyRegex, RegexResult } from '../src/currencyConverter/Detection/CurrencyRegex'
 import useMockContainer from './Container.mock'
 
 describe( 'CurrencyRegex', () => {
@@ -83,18 +83,18 @@ describe( 'CurrencyRegex', () => {
 			],
 		},
 		/* TODO: make this detect properly
-			{
-				text: `$3.99$3.99`, expect: [{
-					amounts: [{neg: '+', integer: '3', decimal: '99'}],
-					text: '$3.',
-					currencies: ['$', '$']
-				}, {
-					amounts: [{neg: '+', integer: '3', decimal: '99'}],
-					text: '.99',
-					currencies: ['$', '']
-				}, null]
-			},
-			 */
+		 {
+		 text: `$3.99$3.99`, expect: [{
+		 amounts: [{neg: '+', integer: '3', decimal: '99'}],
+		 text: '$3.',
+		 currencies: ['$', '$']
+		 }, {
+		 amounts: [{neg: '+', integer: '3', decimal: '99'}],
+		 text: '.99',
+		 currencies: ['$', '']
+		 }, null]
+		 },
+		 */
 		{
 			text: `$3.99 - 3.99`,
 			expect: [
@@ -209,7 +209,7 @@ describe( 'CurrencyRegex', () => {
 				const regex = new CurrencyRegex( test.text )
 
 				// Act
-				const actual = []
+				const actual: ( RegexResult | null )[] = []
 				while ( actual.length < test.expect.length ) actual.push( regex.next() )
 
 				// Assert

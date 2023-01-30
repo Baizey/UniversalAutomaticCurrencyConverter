@@ -1,16 +1,17 @@
-import { Stateful } from 'sharp-dependency-injection'
+import { stateful, Stateful } from 'sharp-dependency-injection'
 import { useProvider } from '../../di'
-import { InfrastructureDi, Logger } from '../../infrastructure'
+import { InfrastructureDiTypes, Logger } from '../../infrastructure'
 import {
 	ConversionHighlightConfig,
 	CurrencyTagConfig,
 	QualityOfLifeConfig,
 } from '../../infrastructure/Configuration/Configuration'
-import { BackendApiDi, IBackendApi } from '../BackendApi'
+import { IBackendApi } from '../BackendApi'
+import { BackendApiDiTypes } from '../BackendApi/BackendApi'
 import { ITextDetector, TextDetectorDi } from '../Detection'
 import { IActiveLocalization } from '../Localization'
 import { ActiveLocalizationDi } from '../Localization/ActiveLocalization'
-import { CurrencyAmount, CurrencyAmountDi, CurrencyAmountProps } from './CurrencyAmount'
+import { CurrencyAmount, CurrencyAmountDiTypes, CurrencyAmountProps } from './CurrencyAmount'
 import { ElementSnapshot } from './ElementSnapshot'
 
 type CurrencyInfo = {
@@ -21,15 +22,13 @@ type CurrencyInfo = {
 	right: { start: number; end: number };
 };
 
-export type CurrencyElementDi = { currencyElement: Stateful<HTMLElement, CurrencyElement> }
-
 export type CurrencyElementDep =
-	InfrastructureDi
-	& BackendApiDi
+	InfrastructureDiTypes
+	& BackendApiDiTypes
 	& ActiveLocalizationDi
 	& TextDetectorDi
-	& CurrencyElementDi
-	& CurrencyAmountDi
+	& { currencyElement: Stateful<HTMLElement, CurrencyElement> }
+	& CurrencyAmountDiTypes
 
 export class CurrencyElement {
 	private static nextId: number = 1
@@ -294,3 +293,5 @@ export class CurrencyElement {
 		)
 	}
 }
+
+export const CurrencyElementDi = { currencyElement: stateful( CurrencyElement ) }

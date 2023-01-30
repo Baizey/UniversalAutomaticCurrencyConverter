@@ -12,7 +12,9 @@ function addNodeIfNotExisting() {
 }
 
 function mockContainer( mock?: Mockable, defaultStrategy?: MockStrategy ): Providable {
-	useServices().remove( e => e.browser ).add( { browser: singleton( BrowserMock ) } )
+	useServices()
+		.remove( e => e.browser )
+		.add( { browser: singleton( BrowserMock ) } )
 	if ( typeof mock === 'string' ) {
 		defaultStrategy = mock
 		mock = {}

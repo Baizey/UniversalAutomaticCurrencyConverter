@@ -11,13 +11,13 @@ export type{ ITextDetector, TextDetectorDi } from './TextDetector'
 export type{ IElementDetector, ElementDetectorDi } from './ElementDetector'
 export type { ISiteAllowance, SiteAllowanceDi } from './SiteAllowance'
 
-export type DetectionDi = SiteAllowanceDi & TextDetectorDi & ElementDetectorDi
+export type DetectionDiTypes = SiteAllowanceDi & TextDetectorDi & ElementDetectorDi
 
 const {
 	siteAllowance,
 	textDetector,
 	elementDetector,
-} = propertyOf<DetectionDi>()
+} = propertyOf<DetectionDiTypes>()
 
 
 export const DetectionDi = {
