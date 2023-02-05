@@ -1,6 +1,7 @@
-import * as React from 'react'
-import { render } from 'react-dom'
-import { HookProvider } from './ui/atoms'
-import { PopupApp } from './ui/popup'
+import { render } from 'preact'
+import { useProvider } from './di'
+import { HookProvider } from './ui2/atoms'
+import { PopupApp } from './ui2/popup'
 
-render( <HookProvider children={ <PopupApp/> }/>, document.getElementById( 'root' ) )
+useProvider().metaConfig.colorTheme.loadSetting().finally( () =>
+	render( <HookProvider children={ <PopupApp/> }/>, document.getElementById( 'root' )! ) )

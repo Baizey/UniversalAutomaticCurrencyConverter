@@ -1,10 +1,8 @@
-import { MyTheme } from './MyTheme';
-import { lightTheme } from './LightTheme';
-import { darkTheme } from './DarkTheme';
+import { darkTheme } from './DarkTheme'
+import { lightTheme } from './LightTheme'
+import { MyTheme } from './MyTheme'
 
-export const themes = { lightTheme, darkTheme };
+export const themes = Object.freeze( { lightTheme, darkTheme } )
 
-export type ThemeProps = { theme: MyTheme };
-
-export const mapToTheme = (theme: keyof typeof themes): MyTheme =>
-  themes[theme] || lightTheme;
+export const mapToTheme = ( theme: keyof typeof themes ): MyTheme =>
+	themes[theme] || lightTheme

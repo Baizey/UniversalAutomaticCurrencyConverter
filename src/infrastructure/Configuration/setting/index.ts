@@ -92,7 +92,7 @@ export class ConversionDisplaySetting extends SyncSetting<string> {
 
 export class ColorThemeSetting extends SyncSetting<keyof typeof themes> {
 	constructor( dep: SettingDep ) {
-		super( dep, 'uacc:theme:selection', 'darkTheme', isString )
+		super( dep, 'uacc:theme:selection', 'lightTheme', isString )
 	}
 }
 

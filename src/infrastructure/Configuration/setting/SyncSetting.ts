@@ -1,9 +1,7 @@
-import { AsServices } from 'sharp-dependency-injection/lib/utils'
-import { BrowserDi } from '../../Browser'
-import { Browser } from '../../index'
+import { Browser, BrowserDiTypes } from '../../index'
 import { ISetting } from './ISetting'
 
-export type SettingDep = AsServices<typeof BrowserDi>
+export type SettingDep = BrowserDiTypes
 
 export class SyncSetting<T> implements ISetting<T> {
 	readonly defaultValue: T

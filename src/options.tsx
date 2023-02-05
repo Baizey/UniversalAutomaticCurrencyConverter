@@ -1,6 +1,7 @@
-import * as React from 'react'
-import { render } from 'react-dom'
-import { HookProvider } from './ui/atoms'
-import OptionsApp from './ui/options/OptionsApp'
+import { render } from 'preact'
+import { useProvider } from './di'
+import { HookProvider } from './ui2/atoms'
+import { OptionsApp } from './ui2/options'
 
-render( <HookProvider children={ <OptionsApp/> }/>, document.getElementById( 'root' ) )
+useProvider().metaConfig.colorTheme.loadSetting().finally( () =>
+	render( <HookProvider children={ <OptionsApp/> }/>, document.getElementById( 'root' )! ) )

@@ -1,7 +1,3 @@
-import { singleton } from 'sharp-dependency-injection'
-import { AsServices } from 'sharp-dependency-injection/lib/utils'
-import { useProvider } from '../../di'
-
 type SyncStorageArea = chrome.storage.SyncStorageArea;
 type LocalStorageArea = chrome.storage.LocalStorageArea;
 
@@ -17,6 +13,17 @@ export type BrowserDataStorage = {
 	value: any;
 };
 
+function polyfill( access: typeof chrome ) {
+	if ( !access.runtime ) access.runtime = {
+		getManifest: () => ( {
+			version: 'TEST',
+			name: 'UACC',
+			author: 'Baizey',
+		} ),
+		id: 'TEST',
+	} as typeof chrome.runtime
+}
+
 export class Browser {
 	readonly type: Browsers
 	private readonly access: typeof chrome
@@ -25,6 +32,8 @@ export class Browser {
 		this.type = this.detectBrowser()
 		// @ts-ignore
 		this.access = this.isFirefox ? browser : chrome
+
+		polyfill( this.access )
 	}
 
 	get document() {
@@ -182,13 +191,12 @@ export class Browser {
 
 	async clearSettings(): Promise<void> {
 		const self = this
-		const { logger } = useProvider()
 		await Promise.all( [
 			new Promise<void>( ( resolve ) => {
 				self.storage.local.get( null, function ( items ) {
 					const keys = Object.keys( items )
 					self.storage.local.remove( keys, () => {
-						logger.info( `Deleted locally stored keys:\n${ keys.join( '\n' ) }` )
+						//logger.info( `Deleted locally stored keys:\n${ keys.join( '\n' ) }` )
 						resolve()
 					} )
 				} )
@@ -197,7 +205,7 @@ export class Browser {
 				self.storage.sync.get( null, function ( items ) {
 					const keys = Object.keys( items )
 					self.storage.sync.remove( keys, () => {
-						logger.info( `Deleted sync stored keys:\n${ keys.join( '\n' ) }` )
+						//logger.info( `Deleted sync stored keys:\n${ keys.join( '\n' ) }` )
 						resolve()
 					} )
 				} )
@@ -245,6 +253,3 @@ export class Browser {
 		)
 	}
 }
-
-export const BrowserDi = { browser: singleton( Browser ) }
-export type BrowserDiTypes = AsServices<typeof BrowserDi>

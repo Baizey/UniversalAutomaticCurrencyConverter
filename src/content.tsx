@@ -1,10 +1,9 @@
 // This file is injected as a content script
-import * as React from 'react'
-import { render } from 'react-dom'
+import { render } from 'preact/compat'
 import { oneSecond, TimeSpan } from 'sharp-time-span'
 import { CurrencyElement } from './currencyConverter/Currency'
 import { useProvider } from './di'
-import { ContentApp } from './ui/content'
+import { ContentApp } from './ui2/content/app'
 
 const isBlacklistedErrorMessage = `Site is blacklisted`
 
@@ -56,7 +55,7 @@ function injectAlertSystem(): void {
 	const div = document.createElement( 'div' )
 	div.id = 'uacc-root'
 	document.body.appendChild( div )
-	render( <ContentApp/>, document.getElementById( 'uacc-root' ) )
+	render( <ContentApp/>, document.getElementById( 'uacc-root' )!! )
 	useProvider().logger.info( `Injected alert system onto page` )
 }
 

@@ -1,10 +1,8 @@
-import React, { PropsWithChildren, useEffect } from 'react'
 import { MockStrategy } from 'sharp-dependency-injection'
-import styled from 'styled-components'
 import { themes } from '../src/infrastructure'
 import { darkTheme } from '../src/infrastructure/Theme/DarkTheme'
 import { lightTheme } from '../src/infrastructure/Theme/LightTheme'
-import { HookProvider, Percent, useThemeChanger } from '../src/ui/atoms'
+import { Percent } from '../src/ui2/atoms'
 import useMockContainer from '../tests/Container.mock'
 
 enum ScreenType {
@@ -49,38 +47,49 @@ export const globalTypes = {
 	},
 }
 
-const Wrapper = styled.div<{ color: string }>( ( props ) => ( {
-	minWidth: '100vh',
-	minHeight: '100vh',
-	height: Percent.all,
-	width: Percent.all,
-	backgroundColor: props.color,
-	margin: 0,
-	padding: 0,
-} ) )
+const Wrapper = ( { color, children }: { color: string, children: any } ) =>
+	<div style={ {
+		minWidth: '100vh',
+		minHeight: '100vh',
+		height: Percent.all,
+		width: Percent.all,
+		backgroundColor: color,
+		margin: 0,
+		padding: 0,
+	} }>
+		{ children }
+	</div>
 
-const InnerWrapperPopup = styled.div`
-  width: 600px;
-  height: fit-content;
-  padding: 20px;
-  border-width: 1px;
-  margin: auto;
-`
+const InnerWrapperPopup = ( { children }: { children: any } ) =>
+	<div style={ {
+		width: '600px',
+		height: 'fit-content',
+		padding: '20px',
+		borderWidth: '1px',
+		margin: 'auto',
+	} }>
+		{ children }
+	</div>
 
-const InnerWrapperOptions = styled.div`
-  max-width: 800px;
-  margin: auto;
-  border: 0;
-`
-
-const InnerWrapperContent = styled.div`
-  width: 450px;
-  height: fit-content;
-  z-index: 99999;
-  right: 10px;
-  top: 10px;
-  position: fixed;
-`
+const InnerWrapperOptions = ( { children }: { children: any } ) =>
+	<div style={ {
+		maxWidth: '800px',
+		margin: 'auto',
+		border: 0,
+	} }>
+		{ children }
+	</div>
+const InnerWrapperContent = ( { children }: { children: any } ) =>
+	<div style={ {
+		width: '450px',
+		height: 'fit-content',
+		zIndex: 99999,
+		right: '10px',
+		top: '10px',
+		position: 'fixed',
+	} }>
+		{ children }
+	</div>
 
 const rates = Object.freeze( { usd: { eur: 2, gbp: 3 }, eur: { gbp: 4 } } )
 const symbols = {
@@ -143,24 +152,11 @@ export const decorators = [
 
 		const Inner = findInnerWrap()
 		return (
-			<HookProvider>
-				<ThemeSetter theme={ colorTheme.value }>
-					<Wrapper color={ findUsedBackgroundColor() }>
-						<Inner>
-							<Story/>
-						</Inner>
-					</Wrapper>
-				</ThemeSetter>
-			</HookProvider>
+			<Wrapper color={ findUsedBackgroundColor() }>
+				<Inner>
+					<Story/>
+				</Inner>
+			</Wrapper>
 		)
 	},
 ]
-
-
-type ThemeSetterProps = { theme: keyof typeof themes }
-
-function ThemeSetter( { children, theme }: PropsWithChildren<ThemeSetterProps> ) {
-	const { changeTheme } = useThemeChanger()
-	useEffect( () => { changeTheme( theme )}, [ theme ] )
-	return <>{ children }</>
-}

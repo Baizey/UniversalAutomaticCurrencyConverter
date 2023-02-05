@@ -34,6 +34,7 @@
         "content.js"
       ],
       "css": [
+        "shared.css",
         "content.css"
       ]
     }

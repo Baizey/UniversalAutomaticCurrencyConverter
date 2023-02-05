@@ -1,5 +1,4 @@
-import { BrowserDiTypes } from '../Browser'
-import { Browser } from '../index'
+import { Browser, BrowserDiTypes } from '../index'
 
 export enum PopupMessageType {}
 

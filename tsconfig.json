@@ -9,10 +9,10 @@
     "noImplicitReturns": true,
     "noImplicitAny": false,
     "module": "commonjs",
-    "moduleResolution": "node",
     "target": "ES2017",
     "allowJs": true,
-    "jsx": "react"
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
   },
   "include": [
     "./src/components/**/*",

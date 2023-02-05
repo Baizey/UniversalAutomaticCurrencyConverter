@@ -1,5 +1,4 @@
-import { BrowserDiTypes } from '../Browser/Browser'
-import { Browser } from '../index'
+import { Browser, BrowserDiTypes } from '../index'
 
 export enum BackgroundMessageType {
 	getRate,
