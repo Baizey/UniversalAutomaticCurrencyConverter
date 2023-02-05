@@ -214,7 +214,7 @@ export class Browser {
 	}
 
 	private detectBrowser(): Browsers {
-		if ( window.navigator.userAgent.indexOf( ' Edg/' ) >= 0 ) {
+		if ( navigator.userAgent.indexOf( ' Edg/' ) >= 0 ) {
 			return Browsers.Edge
 		}// @ts-ignore (browser is not recognized, but it exists on Firefox)
 		else if ( typeof browser !== 'undefined' ) {

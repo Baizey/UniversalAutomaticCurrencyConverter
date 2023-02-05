@@ -15,7 +15,7 @@
     "@types/firefox": "0.0.31",
     "@types/jest": "^29.4.0",
     "@types/jsdom": "^20.0.1",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.11.19",
     "storybook": "^6.5.16",
     "@storybook/builder-vite": "^0.4.0",
     "@storybook/cli": "^6.5.16",
