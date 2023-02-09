@@ -5,6 +5,7 @@ type ContainerProps = { isRow?: boolean } & WithChildren
 
 const radius = Pixel.of( 5 )
 export const ButtonGrid = ( { isRow, children }: ContainerProps ) => {
+	if ( !Array.isArray( children ) ) return children
 	const classname = createClassName()
 	return <div
 		className={ classname }

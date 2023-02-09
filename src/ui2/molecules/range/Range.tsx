@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'preact/compat'
+import { useSignal } from '@preact/signals'
+import { useEffect } from 'preact/compat'
 import { Pixel, RawRangeInput, ReadonlyInput, useTheme, WithActions } from '../../atoms'
 
 export type RangeProps = {
@@ -9,18 +10,19 @@ export type RangeProps = {
 };
 
 export function Range( { onChange, options, initialValue }: RangeProps ) {
-	const [ index, setIndex ] = useState( options.indexOf( initialValue ) )
-	const value = options[index]
-	useEffect( () => { onChange( value ) }, [ index ] )
+	const index = useSignal( options.indexOf( initialValue ) )
+	useEffect( () => {
+		onChange( options[index.value] )
+	}, [ index.value ] )
 
 	return <>
-		<ReadonlyInput value={ value }/>
+		<ReadonlyInput value={ options[index.value] }/>
 		<RangeContainer
-			value={ index }
+			value={ index.value }
 			step={ 1 }
 			min={ 0 }
 			max={ options.length - 1 }
-			onInput={ e => setIndex( Number( e.target.value ) ) }
+			onInput={ e => index.value = e ?? 0 }
 		/>
 	</>
 }
@@ -30,12 +32,12 @@ export type RangeContainerProps = {
 	min: number;
 	max: number;
 	step: number;
-} & WithActions;
+} & WithActions<number>;
 
 function RangeContainer( props: RangeContainerProps ) {
 	const theme = useTheme()
 	return <RawRangeInput { ...props } css={ classname => <style jsx>{ `
-      .${ classname }[type='range'] {
+      .${ classname } {
         -webkit-appearance: none;
         height: ${ Pixel.halfField };
         width: 80%;
@@ -46,12 +48,12 @@ function RangeContainer( props: RangeContainerProps ) {
         vertical-align: middle;
       }
 
-      .${ classname }[type='range']:focus {
+      .${ classname }:focus {
         -webkit-appearance: none;
         outline: none;
       }
 
-      .${ classname }[type='range']::-webkit-slider-thumb {
+      .${ classname }::-webkit-slider-thumb {
         -webkit-appearance: none;
         border-radius: 10px;
         width: 20px;
@@ -60,11 +62,11 @@ function RangeContainer( props: RangeContainerProps ) {
         background-color: ${ theme.headerText };
       }
 
-      .${ classname }[type='range']::-webkit-slider-thumb:hover {
+      .${ classname }::-webkit-slider-thumb:hover {
         background-color: ${ theme.formBorderFocus };
       }
 
-      .${ classname }[type='range']::-webkit-slider-runnable-track {
+      .${ classname }::-webkit-slider-runnable-track {
         -webkit-appearance: none;
         width: 100%;
         padding: 0;
@@ -74,7 +76,7 @@ function RangeContainer( props: RangeContainerProps ) {
         background-color: ${ theme.formBorder };
       }
 
-      .${ classname }[type='range']::-moz-range-thumb {
+      .${ classname }::-moz-range-thumb {
         border-radius: 10px;
         width: 20px;
         height: 20px;
@@ -82,11 +84,11 @@ function RangeContainer( props: RangeContainerProps ) {
         background-color: ${ theme.headerText };
       }
 
-      .${ classname }[type='range']::-moz-range-thumb:hover {
+      .${ classname }::-moz-range-thumb:hover {
         background-color: ${ theme.formBorderFocus };
       }
 
-      .${ classname }[type='range']::-moz-range-track {
+      .${ classname }::-moz-range-track {
         width: 100%;
         height: 20px;
         border-radius: 10px;

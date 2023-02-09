@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/compat'
 import { useProvider } from '../../../di'
 import { TabMessage, TabMessageType } from '../../../infrastructure'
-import { Div, HookProvider, ThemeHolder, WithChildren } from '../../atoms'
+import { Div, HookProvider, useTheme, WithChildren } from '../../atoms'
 import { LocalizationAlert } from '../LocalizationAlert'
 import { MenuAlert } from '../MenuAlert'
 import { TitleAlert } from '../TitleAlert'
@@ -40,6 +40,8 @@ export function ContentApp( {
 			return true
 		} )
 	}, [] )
+	
+	if ( !showMenu ) return <></>
 
 	return (
 		<HookProvider>
@@ -67,6 +69,7 @@ export function ContentApp( {
 }
 
 function Container( props: WithChildren ) {
+	const theme = useTheme()
 	return <Div{ ...props } css={ classname => <style jsx>{ `
       .${ classname } {
         border-radius: 5px;
@@ -75,7 +78,7 @@ function Container( props: WithChildren ) {
 
       .${ classname } > div {
         border-width: 1px;
-        border-color: ${ ( props: ThemeHolder ) => props.theme.containerBorder };
+        border-color: ${ theme.containerBorder };
         border-style: solid;
         width: calc(100% - 2px);
       }

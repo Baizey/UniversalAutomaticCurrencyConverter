@@ -1,5 +1,5 @@
 import { useTheme } from '../contexts'
-import { basicStyle, WithActions, WithStyle } from '../core'
+import { basicStyle, joinStyles, WithActions, WithStyle } from '../core'
 import { createClassName, Percent, Pixel } from '../utils'
 
 type ButtonProps = { text?: string } & WithActions
@@ -20,13 +20,15 @@ export const ButtonBase = ( { css, text, children, style, ...props }: ButtonProp
 			borderWidth: Pixel.one,
 			...style,
 		} }>
-		{ basicStyle( classname ) }
-		<style jsx>{ `
-          .${ classname }:hover {
-            filter: brightness(${ Percent.of( 90 ) })
-          }
-		` }</style>
-		{ css && css( classname ) }
+		{ joinStyles(
+			basicStyle( classname ),
+			<style jsx>{ `
+              .${ classname }:hover {
+                filter: brightness(${ Percent.of( 90 ) })
+              }
+			` }</style>,
+			css && css( classname ),
+		) }
 		{ text ?? children }
 	</button>
 }

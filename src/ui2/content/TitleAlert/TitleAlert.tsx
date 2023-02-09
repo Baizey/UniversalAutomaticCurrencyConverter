@@ -1,5 +1,5 @@
 import { useProvider } from '../../../di'
-import { Div, useTheme, WithChildren } from '../../atoms'
+import { Div, Pixel, useTheme, WithChildren } from '../../atoms'
 
 export function TitleAlert() {
 	const { browser } = useProvider()
@@ -11,6 +11,8 @@ export function TitleAlert() {
 }
 
 const Container = ( props: WithChildren ) => <Div { ...props } style={ {
+	borderTopLeftRadius: Pixel.of( 5 ),
+	borderTopRightRadius: Pixel.of( 5 ),
 	paddingTop: '10px',
 	paddingBottom: '10px',
 	borderWidth: '1px',

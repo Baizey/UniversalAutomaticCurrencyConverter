@@ -25,8 +25,8 @@ const DropdownList = ( { children, isVisible, totalOptions, location }: Dropdown
         position: absolute;
         width: auto;
         top: ${ location === DropdownListLocation.top
-                ? Pixel.of( -Math.min( maxDisplayedItems, totalOptions ) * Size.field )
-                : Pixel.field };
+                ? Pixel.of( -Math.min( maxDisplayedItems, totalOptions ) * ( Size.field - 1 ) )
+                : Pixel.fieldWithUnderline };
         filter: brightness(110%);
         left: 0;
         right: 0;
@@ -98,15 +98,15 @@ export function Dropdown( {
 		return () => document.removeEventListener( 'keyup', handler )
 	}, [ isFocused.value, visibleOptions ] )
 
-	const list = <DropdownInput selectedValue={ selected } isFocused={ isFocused } query={ query }/>
+	const inputField = <DropdownInput selectedValue={ selected } isFocused={ isFocused } query={ query }/>
 	return (
 		<Container onMouseLeave={ () => isFocused.value = false }>
-			{ listLocation === DropdownListLocation.top && list }
+			{ listLocation === DropdownListLocation.top && inputField }
 			<DropdownOptions isFocused={ isFocused }
 			                 visibleOptions={ visibleOptions }
 			                 listLocation={ listLocation }
 			                 handleSelection={ handleSelection }/>
-			{ listLocation === DropdownListLocation.bottom && list }
+			{ listLocation === DropdownListLocation.bottom && inputField }
 		</Container>
 	)
 }

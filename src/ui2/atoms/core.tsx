@@ -34,6 +34,14 @@ type InputStyleProps<T = any> = WithEverything<T> & {
 	placeholderColor?: string
 }
 
+export const joinStyles = ( ...styles: ( JSX.Element | undefined )[] ) => {
+	return <style jsx>{ `${
+		styles.filter( e => e )
+		      .flatMap( e => e?.props.children )
+		      .join( '\n' )
+	}` }</style>
+}
+
 export const basicStyle = ( classname: string ) => {
 	const theme = useTheme()
 	return <style jsx>{ `
@@ -42,8 +50,7 @@ export const basicStyle = ( classname: string ) => {
         color: ${ theme.normalText };
         border-color: ${ theme.formBorder };
         transition: border-color 0.2s ease-in-out;
-        border-style: solid;
-        border-width: 0;
+        border: 0 solid ${ theme.formBorder };
         font-family: Calibri, monospace;
         font-size: ${ Pixel.medium };
         font-weight: 500;
@@ -52,40 +59,50 @@ export const basicStyle = ( classname: string ) => {
         appearance: none;
         margin: 0 auto;
         padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+        outline: none;
+        vertical-align: auto;
+      }
+
+      .${ classname }:focus {
+        outline: none;
+        box-shadow: none;
       }
 	` }</style>
 }
 
-const inputStyle = ( classname: string, extra: string = '' ) => {
+const inputStyle = ( classname: string ) => {
 	const theme = useTheme()
-	return <>
-		{ basicStyle( classname ) }
-		<style jsx>{ `
-          .${ classname }${ extra } {
-            height: ${ Pixel.halfField };
-            line-height: ${ Pixel.halfField };
-            border-bottom-width: ${ Pixel.one };
-            appearance: none;
-            width: ${ Percent.all };
-          }
+	return <style jsx>{ `
+      .${ classname } {
+        height: ${ Pixel.halfField };
+        line-height: ${ Pixel.halfField };
+        border-bottom-width: ${ Pixel.one };
+        appearance: none;
+        width: ${ Percent.all };
+      }
 
-          .${ classname }${ extra }:hover {
-            border-color: ${ theme.formBorderFocus }
-          }
+      .${ classname }:placeholder {
+        color: ${ theme.normalText };
+      }
 
-          .${ classname }${ extra }:focus {
-            outline: none;
-            border-color: ${ theme.formBorderFocus }
-          }
-		` }</style>
-	</>
+      .${ classname }:hover {
+        border-color: ${ theme.formBorderFocus };
+      }
+
+      .${ classname }:focus {
+        outline: none;
+        background-color: ${ theme.containerBackground };
+        border-color: ${ theme.formBorderFocus };
+      }
+	` }</style>
 }
 
 export const Div: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <div { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
 	</div>
 }
@@ -93,8 +110,7 @@ export const Div: Fun = ( { css, children, ...props }: WithEverything ) => {
 export const Ul: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <ul { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
 	</ul>
 }
@@ -102,8 +118,7 @@ export const Ul: Fun = ( { css, children, ...props }: WithEverything ) => {
 export const Li: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <li { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
 	</li>
 }
@@ -111,17 +126,15 @@ export const Li: Fun = ( { css, children, ...props }: WithEverything ) => {
 export const Span: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <span { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
-	</span>
+		</span>
 }
 
 export const Label: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <label { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
 	</label>
 }
@@ -129,8 +142,7 @@ export const Label: Fun = ( { css, children, ...props }: WithEverything ) => {
 export const H2: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <h2 { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
 	</h2>
 }
@@ -138,8 +150,7 @@ export const H2: Fun = ( { css, children, ...props }: WithEverything ) => {
 export const A: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <a { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
 	</a>
 }
@@ -147,8 +158,7 @@ export const A: Fun = ( { css, children, ...props }: WithEverything ) => {
 export const Option: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <option { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
 	</option>
 }
@@ -156,8 +166,7 @@ export const Option: Fun = ( { css, children, ...props }: WithEverything ) => {
 export const Select: Fun = ( { css, children, ...props }: WithEverything ) => {
 	const classname = createClassName()
 	return <select { ...props } className={ classname }>
-		{ basicStyle( classname ) }
-		{ css && css( classname ) }
+		{ joinStyles( basicStyle( classname ), css && css( classname ) ) }
 		{ children }
 	</select>
 }
@@ -171,40 +180,43 @@ export const RawTextInput: Fun = ( {
 	                                   ...props
                                    }: InputStyleProps<string> ) => {
 	const classname = createClassName()
+	const type = `${ classname }[type="text"]`
 	const theme = useTheme()
 	return <input
 		{ ...props }
 		type="text"
 		className={ classname }
 		onInput={ e => onInput && onInput( String( ( e.target as any )?.value ) ) }>
-		{ inputStyle( classname, `[type="text"]` ) }
-		<style jsx>{ `
-          .${ classname }[type="text"] {
-            text-align: ${ align };
-            text-align-last: ${ align };
-            line-height: ${ Pixel.fieldWithUnderline };
-            height: ${ Pixel.fieldWithUnderline };
-            font-size: ${ Pixel.medium };
+		{ joinStyles(
+			basicStyle( type ),
+			inputStyle( type ),
+			<style jsx>{ `
+              .${ type } {
+                text-align: ${ align };
+                text-align-last: ${ align };
+                line-height: ${ Pixel.fieldWithUnderline };
+                height: ${ Pixel.fieldWithUnderline };
+                font-size: ${ Pixel.medium };
 
-          }
+              }
 
-          .${ classname }[type="text"]::placeholder {
-            color: ${ placeholderColor || theme.footerText }
-          }
+              .${ type }::placeholder {
+                color: ${ placeholderColor || theme.footerText }
+              }
 
-          .${ classname }[type="text"]:hover {
-            filter: brightness(110%);
-            border-color: ${ borderHoverColor || theme.formBorderFocus };
-          }
+              .${ type }:hover {
+                filter: brightness(110%);
+                border-color: ${ borderHoverColor || theme.formBorderFocus };
+              }
 
-          .${ classname }[type="text"]:focus {
-            filter: brightness(110%);
-            border-color: ${ borderHoverColor || theme.formBorderFocus };
-            outline: 0;
-          }
-		` }
-		</style>
-		{ css && css( classname ) }
+              .${ type }:focus {
+                filter: brightness(110%);
+                border-color: ${ borderHoverColor || theme.formBorderFocus };
+                outline: 0;
+              }
+			` }
+			</style>,
+			css && css( type ) ) }
 	</input>
 }
 export const RawNumberInput: Fun = ( {
@@ -214,8 +226,10 @@ export const RawNumberInput: Fun = ( {
 	                                     onInput,
 	                                     borderHoverColor,
 	                                     ...props
-                                     }: InputStyleProps<number> ) => {
+                                     }: InputStyleProps<number>,
+) => {
 	const classname = createClassName()
+	const type = `${ classname }[type="number"]`
 	const theme = useTheme()
 	return <input
 		{ ...props }
@@ -224,55 +238,63 @@ export const RawNumberInput: Fun = ( {
 		onInput={ e => {
 			onInput && onInput( Number( ( ( e.target as any )?.value ) ) )
 		} }>
-		{ inputStyle( classname, `[type="number"]` ) }
-		<style jsx>{ `
-          .${ classname }[type="number"] {
-            text-align: ${ align };
-            text-align-last: ${ align };
-            line-height: ${ Pixel.fieldWithUnderline };
-            height: ${ Pixel.fieldWithUnderline };
-            font-size: ${ Pixel.medium };
-          }
+		{ joinStyles(
+			basicStyle( type ),
+			inputStyle( type ),
+			<style jsx>{ `
+              .${ type } {
+                text-align: ${ align };
+                text-align-last: ${ align };
+                line-height: ${ Pixel.fieldWithUnderline };
+                height: ${ Pixel.fieldWithUnderline };
+                font-size: ${ Pixel.medium };
+              }
 
-          .${ classname }[type="number"]::placeholder {
-            color: ${ placeholderColor || theme.footerText }
-          }
+              .${ type }::placeholder {
+                color: ${ placeholderColor || theme.footerText }
+              }
 
-          .${ classname }[type="number"]:hover {
-            filter: brightness(110%);
-            border-color: ${ borderHoverColor || theme.formBorderFocus };
-          }
+              .${ type }:hover {
+                filter: brightness(110%);
+                border-color: ${ borderHoverColor || theme.formBorderFocus };
+              }
 
-          .${ classname }[type="number"]:focus {
-            filter: brightness(110%);
-            border-color: ${ borderHoverColor || theme.formBorderFocus };
-            outline: 0;
-          }
-		` }</style>
-		{ css && css( classname ) }
+              .${ type }:focus {
+                filter: brightness(110%);
+                border-color: ${ borderHoverColor || theme.formBorderFocus };
+                outline: 0;
+              }
+			` }</style>,
+			css && css( type ),
+		) }
 	</input>
 }
 
-export const RawRangeInput: Fun = ( { css, onInput, ...props }: InputStyleProps<number> ) => {
+export const RawRangeInput: Fun = ( { css, onInput, ...props }: InputStyleProps<number>,
+) => {
 	const classname = createClassName()
+	const type = `${ classname }[type="range"]`
 	return <input
 		{ ...props }
 		type="range"
 		className={ classname }
 		onInput={ e => onInput && onInput( Number( ( e.target as any )?.value ) ) }>
-		{ inputStyle( classname, `[type="range"]` ) }
-		<style jsx>{ `
-          .${ classname } {
-            border-bottom-width: 0;
-          }
+		{ joinStyles(
+			basicStyle( type ),
+			inputStyle( type ),
+			<style jsx>{ `
+              .${ type } {
+                border-bottom-width: 0;
+              }
 
-          .${ classname }[type="range"] {
-            line-height: ${ Pixel.fieldWithUnderline };
-            height: ${ Pixel.fieldWithUnderline };
-            font-size: ${ Pixel.medium };
-            border-bottom-width: 0;
-          }` }
-		</style>
-		{ css && css( classname ) }
+              .${ type } {
+                line-height: ${ Pixel.fieldWithUnderline };
+                height: ${ Pixel.fieldWithUnderline };
+                font-size: ${ Pixel.medium };
+                border-bottom-width: 0;
+              }` }
+			</style>,
+			css && css( type ),
+		) }
 	</input>
 }

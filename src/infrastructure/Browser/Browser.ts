@@ -133,7 +133,7 @@ export class Browser {
 	}
 
 	openReviewLink(): void {
-		this.tabs.create( { url: this.reviewLink } )
+		this.tabs.create( { url: this.reviewLink } ).finally()
 	}
 
 	async loadLocal<T>( key: string ): Promise<T> {

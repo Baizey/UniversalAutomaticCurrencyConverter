@@ -32,7 +32,7 @@ const Container = ( { checked, ...props }: ContainerProps ) => {
         opacity: ${ checked ? 1 : 0 };
       }
 
-      .${ classname } div:nth-child(3) {
+      .${ classname } div:nth-child(2) {
         margin-top: 15px;
         margin-left: 0;
         width: 16px;
