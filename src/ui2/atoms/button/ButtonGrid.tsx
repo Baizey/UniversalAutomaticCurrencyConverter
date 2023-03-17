@@ -5,7 +5,7 @@ type ContainerProps = { isRow?: boolean } & WithChildren
 
 const radius = Pixel.of( 5 )
 export const ButtonGrid = ( { isRow, children }: ContainerProps ) => {
-	if ( !Array.isArray( children ) ) return children
+	if ( !Array.isArray( children ) ) return <>{ children }</>
 	const classname = createClassName()
 	return <div
 		className={ classname }
@@ -36,10 +36,6 @@ export const ButtonGrid = ( { isRow, children }: ContainerProps ) => {
             border-bottom-left-radius: ${ isRow ? 0 : radius };
             border-top-left-radius: 0;
             border-right-width: ${ Pixel.one };
-          }
-
-          .${ classname } > button:only-child {
-            border-radius: ${ radius };
           }
 		` }</style>
 		{ children }

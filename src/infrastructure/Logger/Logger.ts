@@ -72,9 +72,12 @@ export class Logger {
 			console.warn( this.wrap( data ) )
 	}
 
-	error( error: Error, message?: string ) {
+	error( error: unknown | Error, message?: string ) {
 		message ??= 'Unexpected error'
-		console.error( this.wrap( `${ message }\n${ error.name }\n${ error.message }\n${ error.stack }` ) )
+		const name = error instanceof Error ? error.name : error
+		const errorMessage = error instanceof Error ? error.message : error
+		const stack = error instanceof Error ? error.stack : error
+		console.error( this.wrap( `${ message }\n${ name }\n${ errorMessage }\n${ stack }` ) )
 	}
 
 	private wrap( msg: string ): string {

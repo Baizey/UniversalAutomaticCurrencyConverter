@@ -18,8 +18,8 @@ export const FooterText = ( { text, children, style, ...props }: Props ) =>
 		...style,
 	} }>{ text ?? children }</Span>
 
-export const Text = ( { text, children, style }: Props ) =>
-	<Span style={ {
+export const Text = ( { text, children, style, ...props }: Props ) =>
+	<Span { ...props } style={ {
 		style: {
 			width: Percent.all,
 			fontSize: Pixel.medium,
@@ -28,8 +28,8 @@ export const Text = ( { text, children, style }: Props ) =>
 		},
 	} }>{ text ?? children }</Span>
 
-export const Title = ( { text, children, style }: Props ) =>
-	<H2 style={ {
+export const Title = ( { text, children, style, ...props }: Props ) =>
+	<H2 { ...props } style={ {
 		color: useTheme().titleText,
 		fontWeight: 700,
 		fontSize: Pixel.large,
@@ -41,14 +41,15 @@ export const Title = ( { text, children, style }: Props ) =>
 
 
 export const Link = ( { text, children, style, ...props }: LinkProps ) => {
+	const theme = useTheme()
 	return <A  { ...props }
 	           css={ ( classname ) => <style jsx>{ `
                  .${ classname }:hover {
-                   color: ${ useTheme().linkTextHover }
+                   color: ${ theme.linkTextHover }
                  }
 	           ` }</style> }
 	           style={ {
-		           color: useTheme().linkText,
+		           color: theme.linkText,
 		           cursor: 'pointer',
 		           textDecoration: 'none',
 		           width: Percent.all,

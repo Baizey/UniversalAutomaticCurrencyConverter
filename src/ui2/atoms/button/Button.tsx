@@ -6,9 +6,11 @@ type ButtonProps = { text?: string } & WithActions
 
 export const ButtonBase = ( { css, text, children, style, ...props }: ButtonProps & WithStyle ) => {
 	const classname = createClassName()
+	const type = `${ classname }[type="button"]`
 	return <button
 		{ ...props }
 		className={ classname }
+		type="button"
 		style={ {
 			color: useTheme().buttonText,
 			width: Percent.all,
@@ -17,17 +19,21 @@ export const ButtonBase = ( { css, text, children, style, ...props }: ButtonProp
 			userSelect: 'none',
 			height: Pixel.field,
 			lineHeight: Pixel.field,
-			borderWidth: Pixel.one,
 			...style,
 		} }>
 		{ joinStyles(
-			basicStyle( classname ),
+			basicStyle( type ),
 			<style jsx>{ `
-              .${ classname }:hover {
+              .${ type } {
+                border-width: 1px;
+                border-radius: 5px;
+              }
+
+              .${ type }:hover {
                 filter: brightness(${ Percent.of( 90 ) })
               }
 			` }</style>,
-			css && css( classname ),
+			css && css( type ),
 		) }
 		{ text ?? children }
 	</button>

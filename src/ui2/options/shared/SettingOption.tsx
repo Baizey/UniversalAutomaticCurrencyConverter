@@ -1,11 +1,12 @@
-import { Div, FooterText, HeaderText, Percent, useTheme, WithChildren } from '../../atoms'
+import { Div, FooterText, HeaderText, Percent, useTheme, WithChildren, WithStyle } from '../../atoms'
 
 export type SettingOptionProps = WithChildren & {
 	title: string;
 	help?: string;
 };
 
-const Container = Div
+const Container = ( { style, ...props }: WithStyle ) =>
+	<Div { ...props } style={ { ...style, width: Percent.all } }/>
 
 const Label = ( props: WithChildren ) =>
 	<HeaderText{ ...props }
