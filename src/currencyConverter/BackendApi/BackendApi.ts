@@ -1,5 +1,5 @@
 import { singleton } from '@baizey/dependency-injection'
-import { AsServices } from 'sharp-dependency-injection/lib/utils'
+import { AsServices } from '@baizey/dependency-injection/lib/utils'
 import { BackgroundMessenger, Browser, InfrastructureDiTypes, RatePath } from '../../infrastructure'
 import { CurrencyRate, ICurrencyRate } from './CurrencyRate'
 

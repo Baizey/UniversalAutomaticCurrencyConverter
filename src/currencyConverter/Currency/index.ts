@@ -1,6 +1,6 @@
-import { AsServices } from 'sharp-dependency-injection/lib/utils'
 import { CurrencyAmount, CurrencyAmountDi } from './CurrencyAmount'
 import { CurrencyElement, CurrencyElementDi } from './CurrencyElement'
+import {AsServices} from "@baizey/dependency-injection/lib/utils";
 
 export type { CurrencyAmountProps } from './CurrencyAmount'
 export { CurrencyAmount } from './CurrencyAmount'
