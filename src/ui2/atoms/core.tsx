@@ -1,12 +1,12 @@
 import {JSX} from 'preact'
 import {useTheme} from './contexts'
 import {Pixel} from './utils'
-import {css, ElementProps, Input, mergeStyling,} from "@baizey/styled-preact";
+import {css, Input, InputProps as InputP, mergeStyling,} from "@baizey/styled-preact";
 import * as React from 'preact/compat'
 
 export type Fun<P = any> = (props: P) => JSX.Element
 
-type InputStyleProps<T = any> = React.HTMLAttributes<HTMLInputElement> & ElementProps & {
+type InputStyleProps<T = any> = InputP & {
     borderHoverColor?: string;
     align?: 'center' | 'left' | 'right';
     placeholder?: string

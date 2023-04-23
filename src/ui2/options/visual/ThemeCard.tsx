@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { useProvider } from '../../../di'
 import { themes } from '../../../infrastructure'
 import { useFilter } from '../../atoms'
@@ -20,7 +19,7 @@ export function ThemeCard() {
 
 	return (
 		<OptionsSection title="Theme">
-			<OptionRow key="visual_theme">
+			<OptionRow>
 				<SettingOption title="Color theme" help="Note this change requires a page refresh">
 					<Dropdown
 						initialValue={ colorTheme.value as string }

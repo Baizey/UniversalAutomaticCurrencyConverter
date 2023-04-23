@@ -116,7 +116,7 @@ export function ListHandler({
                                     key={`list_${e}`}
                                     placeholder={'https://...'}
                                     value={e}
-                                    onInput={async (value) =>
+                                    onValueChange={async (value) =>
                                         removeIfEmpty(`${value}`, i, false)
                                     }
                                     onEnter={async (value) => update(`${value}`, i, false)}
@@ -141,7 +141,7 @@ export function ListHandler({
                                     key={`list_${e}`}
                                     placeholder={'https://...'}
                                     value={e}
-                                    onInput={async (value) => removeIfEmpty(`${value}`, i, true)}
+                                    onValueChange={async (value) => removeIfEmpty(`${value}`, i, true)}
                                     onEnter={async (value) => update(`${value}`, i, true)}
                                 />
                             )

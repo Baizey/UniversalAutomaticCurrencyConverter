@@ -6,6 +6,7 @@ import {Dropdown, DropdownListLocation, DropdownOption, Range} from '../../molec
 import {OptionRow, SettingOption} from '../../options/shared'
 import {AlertSection} from '../AlertSection'
 import {Div} from "@baizey/styled-preact";
+import {useSignal} from "@preact/signals";
 
 type Props = { setDismissed: () => void };
 
@@ -222,14 +223,10 @@ function Allowance() {
         .reverse()
     const pathParts = path.split('/').filter((e) => e)
 
-    const [uri, setUri] = useState(
-        `${hostParts
-            .map((e) => e)
-            .reverse()
-            .join('.')}${pathParts.length > 0 ? '/' : ''}${pathParts.join('/')}`,
-    )
+    const uri = useSignal(`${hostParts.map((e) => e).reverse().join('.')}${pathParts.length > 0 ? '/' : ''}${pathParts.join('/')}`)
+
     const [isAllowed, setIsAllowed] = useState(
-        siteAllowance.getAllowance(uri).isAllowed,
+        siteAllowance.getAllowance(uri.value).isAllowed,
     )
 
     const options: any[] = []
@@ -249,7 +246,7 @@ function Allowance() {
     const AllowanceButton = isAllowed ? (
         <ErrorButton
             onClick={() => {
-                siteAllowance.addUri(uri, false).finally(() => setIsAllowed(false))
+                siteAllowance.addUri(uri.value, false).finally(() => setIsAllowed(false))
             }}
         >
             Blacklist
@@ -257,7 +254,7 @@ function Allowance() {
     ) : (
         <SuccessButton
             onClick={() => {
-                siteAllowance.addUri(uri, true).finally(() => setIsAllowed(true))
+                siteAllowance.addUri(uri.value, true).finally(() => setIsAllowed(true))
             }}
         >
             Whitelist
@@ -274,9 +271,9 @@ function Allowance() {
                     <Range
                         key="menu-alert-allowance-range"
                         options={options}
-                        initialValue={uri}
+                        initialValue={uri.value}
                         onChange={(e) => {
-                            setUri(e)
+                            uri.value = e
                             setIsAllowed(siteAllowance.getAllowance(e).isAllowed)
                         }}
                     />

@@ -79,7 +79,7 @@ export function NumberFormatCard() {
 				<SettingOption title="Important digits on rounding">
 					<NumberInput
 						value={ significantDigits.value }
-						onInput={ ( value ) => significantDigits.setAndSaveValue( +value ) }
+						onValueChange={ ( value ) => significantDigits.setAndSaveValue( value ) }
 					/>
 				</SettingOption>
 			</OptionRow>

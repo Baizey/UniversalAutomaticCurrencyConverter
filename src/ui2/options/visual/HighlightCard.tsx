@@ -34,7 +34,7 @@ export function HighlightCard() {
 					<TextInput
 						borderHoverColor={ stateColor }
 						value={ stateColor }
-						onInput={ async ( value ) =>
+						onValueChange={ async ( value ) =>
 							( await color.setAndSaveValue( `${ value }` ) ) &&
 							setColor( color.value )
 						}
@@ -43,7 +43,7 @@ export function HighlightCard() {
 				<SettingOption title="Highlight duration" help={ '1000 = 1 second' }>
 					<NumberInput
 						value={ duration.value }
-						onInput={ ( value ) => duration.setAndSaveValue( +value ) }
+						onValueChange={ ( value ) => duration.setAndSaveValue( +value ) }
 					/>
 				</SettingOption>
 			</OptionRow>

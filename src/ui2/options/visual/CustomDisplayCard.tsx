@@ -27,13 +27,13 @@ export function CustomDisplayCard() {
 				<SettingOption title="Custom display" help={ '¤ becomes the number' }>
 					<TextInput
 						value={ customDisplay.value }
-						onInput={ value => customDisplay.setAndSaveValue( `${ value }` ) }
+						onValueChange={ value => customDisplay.setAndSaveValue( `${ value }` ) }
 					/>
 				</SettingOption>
 				<SettingOption title="Custom conversion rate">
 					<NumberInput
 						value={ conversionRate.value }
-						onInput={ value => conversionRate.setAndSaveValue( +value ) }
+						onValueChange={ value => conversionRate.setAndSaveValue( +value ) }
 					/>
 				</SettingOption>
 			</OptionRow>

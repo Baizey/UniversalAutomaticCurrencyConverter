@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { CustomDisplayCard } from './CustomDisplayCard'
 import { HighlightCard } from './HighlightCard'
 import { NumberFormatCard } from './NumberFormatCard'
