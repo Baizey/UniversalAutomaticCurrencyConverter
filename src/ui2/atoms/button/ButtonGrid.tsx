@@ -20,7 +20,7 @@ export const ButtonGrid = ({isRow, children}: ContainerProps) => {
             border-right-width: ${isRow ? 0 : Pixel.one};
           }
 
-          & > button:nth-child(2) {
+          & > button:first-child {
             border-top-left-radius: ${radius};
             border-bottom-left-radius: ${isRow ? radius : 0};
             border-top-right-radius: ${isRow ? 0 : radius};
@@ -28,7 +28,7 @@ export const ButtonGrid = ({isRow, children}: ContainerProps) => {
             border-top-width: ${Pixel.one};
           }
 
-          & > button:last-child {
+          & > button:nth-last-child(2) {
             border-bottom-right-radius: ${radius};
             border-top-right-radius: ${isRow ? radius : 0};
             border-bottom-left-radius: ${isRow ? 0 : radius};
