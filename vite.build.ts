@@ -2,8 +2,15 @@ import preactPlugin from '@preact/preset-vite'
 import * as fs from 'fs'
 import * as path from 'path'
 import {TimeSpan} from 'sharp-time-span'
-import {build, defineConfig, InlineConfig, LibraryOptions, mergeConfig} from 'vite'
+import {build, InlineConfig, LibraryOptions, mergeConfig} from 'vite'
 import zipPlugin from 'vite-plugin-zip-pack'
+
+const buildStart = Date.now()
+
+const isProd = process.argv.includes('--mode=production');
+const isDev = !isProd
+const mode = isProd ? "production" : "development"
+console.log(`Mode: ${mode}`)
 
 function remove(dir: string) {
     if (fs.existsSync(path.resolve(__dirname, dir)))
@@ -42,9 +49,9 @@ const buildDir = 'build'
     })
 
     const config = {
-        plugins: [preactPlugin(), zipPlugin( { inDir: buildCodeDir, outDir: buildDir, outFileName: 'packed.zip' } )],
+        plugins: [preactPlugin(), zipPlugin({inDir: buildCodeDir, outDir: buildDir, outFileName: 'packed.zip'})],
         define: {
-            'process.env.NODE_ENV': '"production"',
+            'process.env.NODE_ENV': `"${mode}"`,
             'process.version': '"v18.5.0"',
         }
         ,
@@ -53,8 +60,8 @@ const buildDir = 'build'
             lib: false,
             target: [],
             emptyOutDir: false,
-            sourcemap: true,
-            minify: false,
+            sourcemap: isDev,
+            minify: isProd,
             reportCompressedSize: true,
             outDir: buildCodeDir,
             assetsDir: 'public',
@@ -64,8 +71,6 @@ const buildDir = 'build'
     // Manual clean build-dir, as we build multiple entry-points in parallel we cannot do it on a build-basis
     create(buildCodeDir)
 
-    const buildStart = Date.now()
-
     await Promise.all(entryPoints.map(entrypoint =>
         build(mergeConfig(config,
             {
@@ -73,12 +78,5 @@ const buildDir = 'build'
                     lib: entrypoint,
                 },
             } satisfies InlineConfig))))
-    console.log(`Build took ${TimeSpan.since(buildStart).seconds} seconds`)
-
+    console.log(`Build ${mode} took ${TimeSpan.since(buildStart).seconds} seconds`)
 })()
-
-export default defineConfig({
-    build: {
-        outDir: `${buildDir}/watcher`,
-    },
-})

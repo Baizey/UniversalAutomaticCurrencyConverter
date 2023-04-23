@@ -15,6 +15,9 @@ export type InputProps<T> = InputP & InputStyleProps & {
     onEnter?: (value: T) => void
     onValueChange?: (value: T) => void
     value?: T
+} & {
+    onInput: never
+    onChange: never
 };
 
 export const ReadonlyInput = ({value, onClick, onMouseOver, align, onChange, onEnter, ...props}: InputProps<string>) =>

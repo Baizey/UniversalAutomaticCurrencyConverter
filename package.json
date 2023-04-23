@@ -5,8 +5,8 @@
   "scripts": {
     "test": "jest",
     "storybook": "start-storybook -p 6006",
-    "build": "vite optimize --config vite.build.ts",
-    "dev": "vite build --watch --config vite.build.ts"
+    "build-prod": "vite optimize --config vite.build.ts --mode=production",
+    "build-dev": "vite optimize --config vite.build.ts --mode=development"
   },
   "keywords": [],
   "license": "GPLv2",
