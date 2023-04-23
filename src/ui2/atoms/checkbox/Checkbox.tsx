@@ -32,14 +32,14 @@ const Container = ({checked, ...props}: ContainerProps) => {
         opacity: ${checked ? 1 : 0};
       }
 
-      & div:nth-child(2) {
+      & div:nth-child(1) {
         margin-top: 15px;
         margin-left: 0;
         width: 16px;
         transform: rotate(45deg);
       }
 
-      & div:last-child {
+      & div:nth-child(2) {
         margin-top: 14px;
         margin-left: 9px;
         width: 20px;

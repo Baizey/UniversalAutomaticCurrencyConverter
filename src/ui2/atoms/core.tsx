@@ -1,7 +1,7 @@
 import {JSX} from 'preact'
 import {useTheme} from './contexts'
-import {Percent, Pixel} from './utils'
-import {css, ElementProps, Input, mergeStyling, StyledTheme,} from "@baizey/styled-preact";
+import {Pixel} from './utils'
+import {css, ElementProps, Input, mergeStyling,} from "@baizey/styled-preact";
 import * as React from 'preact/compat'
 
 export type Fun<P = any> = (props: P) => JSX.Element
@@ -12,58 +12,6 @@ type InputStyleProps<T = any> = React.HTMLAttributes<HTMLInputElement> & Element
     placeholder?: string
     placeholderColor?: string
 }
-
-export const updateGlobalStyle = () => {
-    const theme = useTheme()
-    StyledTheme.style = {
-        input: css`
-          height: ${Pixel.halfField};
-          line-height: ${Pixel.halfField};
-          border-bottom-width: ${Pixel.one};
-          appearance: none;
-          width: ${Percent.all};
-
-          &::placeholder {
-            color: ${theme.normalText};
-          }
-
-          &:hover {
-            border-color: ${theme.formBorderFocus};
-          }
-
-          &:focus {
-            outline: none;
-            background-color: ${theme.containerBackground};
-            border-color: ${theme.formBorderFocus};
-          }
-        `,
-        shared: css`
-          background-color: ${theme.containerBackground};
-          color: ${theme.normalText};
-          border-color: ${theme.formBorder};
-          transition: border-color 0.2s ease-in-out;
-          border: 0 solid ${theme.formBorder};
-          font-family: Calibri, monospace;
-          font-size: ${Pixel.medium};
-          font-weight: 500;
-          text-align: center;
-          text-align-last: center;
-          appearance: none;
-          margin: 0 auto;
-          padding: 0;
-          border-radius: 0;
-          box-shadow: none;
-          outline: none;
-          vertical-align: auto;
-
-          &:focus {
-            outline: none;
-            box-shadow: none;
-          }
-        `
-    }
-}
-updateGlobalStyle()
 
 export const RawTextInput: Fun = ({
                                       styling,
@@ -77,14 +25,11 @@ export const RawTextInput: Fun = ({
         {...props}
         type="text"
         styling={mergeStyling(styling, css`
-          & {
-            text-align: ${align};
-            text-align-last: ${align};
-            line-height: ${Pixel.fieldWithUnderline};
-            height: ${Pixel.fieldWithUnderline};
-            font-size: ${Pixel.medium};
-
-          }
+          text-align: ${align};
+          text-align-last: ${align};
+          line-height: ${Pixel.fieldWithUnderline};
+          height: ${Pixel.fieldWithUnderline};
+          font-size: ${Pixel.medium};
 
           &::placeholder {
             color: ${placeholderColor || theme.footerText}

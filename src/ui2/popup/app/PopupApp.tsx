@@ -1,6 +1,5 @@
 import {useProvider} from '../../../di'
 import {ButtonGrid, FooterText, Link, Percent, Pixel, PrimaryButton, SecondaryButton, Space, Title,} from '../../atoms'
-import {useIsLoading} from '../../atoms/contexts/ConfigurationProvider'
 import {Converter} from '../converter'
 import {PropsWithChildren} from "preact/compat";
 import {css, Div} from "@baizey/styled-preact";
@@ -17,7 +16,7 @@ const Container = ({children}: PropsWithChildren) =>
     `}>{children}</Div>
 
 export function PopupApp() {
-    if (useIsLoading()) return <Title text="Loading..."/>
+    console.log('PopupApp')
     const {browser, tabMessenger} = useProvider()
 
     return <Container>

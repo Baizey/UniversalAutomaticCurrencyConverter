@@ -13,7 +13,7 @@ type InputStyleProps = {
 
 export type InputProps<T> = InputP & InputStyleProps & {
     onEnter?: (value: T) => void
-    onChange?: (value: T) => void
+    onValueChange?: (value: T) => void
     value?: T
 };
 
@@ -28,7 +28,7 @@ export const ReadonlyInput = ({value, onClick, onMouseOver, align, onChange, onE
 export const NumberInput = ({
                                 onEnter = () => {
                                 },
-                                onChange = () => {
+                                onValueChange = () => {
                                 },
                                 value = 0,
                                 ...props
@@ -41,8 +41,9 @@ export const NumberInput = ({
     return <RawNumberInput {...props}
                            value={currentValue.value}
                            onInput={e => {
-                               currentValue.value = Number(e.target.value)
-                               onChange(currentValue.value)
+                               const value = Number(e.target.value)
+                               currentValue.value = value
+                               onValueChange(value)
                            }}
                            onKeyUp={p => p.key === 'Enter' && onEnter(currentValue.value)}
     />
@@ -51,7 +52,7 @@ export const NumberInput = ({
 export const TextInput = ({
                               onEnter = () => {
                               },
-                              onChange = () => {
+                              onValueChange = () => {
                               },
                               value = '',
                               ...props
@@ -64,8 +65,9 @@ export const TextInput = ({
     return <RawTextInput {...props}
                          value={currentValue.value}
                          onInput={e => {
-                             currentValue.value = String(e.target.value)
-                             onChange(e)
+                             const value = String(e.target.value)
+                             currentValue.value = value
+                             onValueChange(value)
                          }}
                          onKeyUp={p => p.key === 'Enter' && onEnter(currentValue.value)}
     />

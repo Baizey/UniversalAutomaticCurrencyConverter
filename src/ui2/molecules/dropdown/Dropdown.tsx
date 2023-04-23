@@ -1,7 +1,7 @@
 import {Signal, useSignal} from '@preact/signals'
 import {useEffect} from 'preact/compat'
 import {Pixel, Size} from '../../atoms/utils/Size'
-import {css, Div, DivProps, ElementProps, List, mergeStyling} from "@baizey/styled-preact";
+import {css, Div, DivProps, List, ListProps, mergeStyling} from "@baizey/styled-preact";
 import {ReadonlyInput, TextInput, useTheme} from "../../atoms";
 
 
@@ -14,37 +14,38 @@ const Container = ({children, ...props}: DivProps) => <Div
 
 const maxDisplayedItems = 3
 
-type DropdownListProps = ElementProps & {
+type DropdownListProps = ListProps & {
     isVisible: boolean,
     location?: DropdownListLocation,
     totalOptions: number
 }
-const DropdownList = ({children, isVisible, totalOptions, location, styling}: DropdownListProps) => {
-    return <List styling={mergeStyling(styling, css`
-      & {
-        display: ${isVisible ? '' : 'none'};
-        position: absolute;
-        width: auto;
-        top: ${location === DropdownListLocation.top
-                ? Pixel.of(-Math.min(maxDisplayedItems, totalOptions) * (Size.field - 1))
-                : Pixel.fieldWithUnderline};
-        filter: brightness(110%);
-        left: 0;
-        right: 0;
-        padding: 0;
-        margin: 0;
-        list-style: none;
-        background-color: #fff;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-        z-index: 1;
-        max-height: ${Pixel.of(maxDisplayedItems * Size.field)};
-        overflow: auto;
-        border-bottom-width: ${location === DropdownListLocation.top ? Pixel.zero : Pixel.one};
-        border-top-width: ${location === DropdownListLocation.top ? Pixel.one : Pixel.zero};
-        border-left-width: ${Pixel.one};
-        border-right-width: ${Pixel.one};
-      }`)}>{children}</List>
-}
+const DropdownList = ({children, isVisible, totalOptions, location, styling}: DropdownListProps) =>
+    <List
+        children={children}
+        styling={mergeStyling(styling, css`
+          & {
+            display: ${isVisible ? '' : 'none'};
+            position: absolute;
+            width: auto;
+            top: ${location === DropdownListLocation.top
+                    ? Pixel.of(-Math.min(maxDisplayedItems, totalOptions) * (Size.field - 1))
+                    : Pixel.fieldWithUnderline};
+            filter: brightness(110%);
+            left: 0;
+            right: 0;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            background-color: #fff;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            max-height: ${Pixel.of(maxDisplayedItems * Size.field)};
+            overflow: auto;
+            border-bottom-width: ${location === DropdownListLocation.top ? Pixel.zero : Pixel.one};
+            border-top-width: ${location === DropdownListLocation.top ? Pixel.one : Pixel.zero};
+            border-left-width: ${Pixel.one};
+            border-right-width: ${Pixel.one};
+          }`)}/>
 
 export enum DropdownListLocation {
     top = 'top',
@@ -120,13 +121,12 @@ function DropdownOptions({isFocused, visibleOptions, listLocation, handleSelecti
     listLocation?: DropdownListLocation,
     handleSelection: (option: DropdownOption) => void
 }) {
+    const options = visibleOptions.map(option =>
+        <ReadonlyInput value={option.text} onClick={() => handleSelection(option)}/>)
     return <DropdownList isVisible={isFocused.value}
                          location={listLocation}
                          totalOptions={visibleOptions.length}
-    >
-        {visibleOptions.map(option =>
-            <ReadonlyInput value={option.text} onClick={() => handleSelection(option)}/>)}
-    </DropdownList>
+                         children={options}/>
 }
 
 function DropdownInput({isFocused, query, selectedValue}: {
@@ -139,8 +139,6 @@ function DropdownInput({isFocused, query, selectedValue}: {
         placeholder={selectedValue.value}
         placeholderColor={useTheme().normalText}
         value={query.value}
-        onInput={e => {
-            query.value = (e.target as any).value
-        }}
+        onValueChange={(value: string) => query.value = value}
     />
 }

@@ -53,7 +53,7 @@ const buildDir = 'build'
             lib: false,
             target: [],
             emptyOutDir: false,
-            sourcemap: false,
+            sourcemap: true,
             minify: false,
             reportCompressedSize: true,
             outDir: buildCodeDir,

@@ -1,6 +1,6 @@
 import { useSignal } from '@preact/signals'
 import { useEffect } from 'preact/compat'
-import { Pixel, RawRangeInput, ReadonlyInput, useTheme, WithActions } from '../../atoms'
+import {InputProps, Pixel, RawRangeInput, ReadonlyInput, useTheme} from '../../atoms'
 
 export type RangeProps = {
 	key?: string;
@@ -22,7 +22,7 @@ export function Range( { onChange, options, initialValue }: RangeProps ) {
 			step={ 1 }
 			min={ 0 }
 			max={ options.length - 1 }
-			onInput={ e => index.value = e ?? 0 }
+			onChange={ e => index.value = e ?? 0 }
 		/>
 	</>
 }
@@ -32,7 +32,7 @@ export type RangeContainerProps = {
 	min: number;
 	max: number;
 	step: number;
-} & WithActions<number>;
+} & InputProps<number>;
 
 function RangeContainer( props: RangeContainerProps ) {
 	const theme = useTheme()

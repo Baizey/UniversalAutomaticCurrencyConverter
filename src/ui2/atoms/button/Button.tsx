@@ -8,6 +8,16 @@ export const ButtonBase = ({styling, text, children, ...props}: { text?: string 
     return <Button
         {...props}
         type="button"
+        styling={mergeStyling(styling,
+            css`
+              border-width: 1px;
+              border-radius: 5px;
+
+              &:hover {
+                filter: brightness(${Percent.of(90)});
+              };
+            `,
+        )}
         style={{
             color: useTheme().buttonText,
             width: Percent.all,
@@ -17,16 +27,6 @@ export const ButtonBase = ({styling, text, children, ...props}: { text?: string 
             height: Pixel.field,
             lineHeight: Pixel.field,
         }}>
-        {mergeStyling(styling,
-            css`
-              border-width: 1px;
-              border-radius: 5px;
-
-              &:hover {
-                filter: brightness(${Percent.of(90)})
-              }
-            `,
-        )}
         {text ?? children}
     </Button>
 }

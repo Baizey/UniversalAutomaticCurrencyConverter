@@ -12,7 +12,6 @@ import {
     useSymbols,
     useTheme,
 } from '../atoms'
-import {useIsLoading} from '../atoms/contexts/ConfigurationProvider'
 import {Dropdown} from '../molecules'
 import {css, Div, DivProps, mergeStyling} from "@baizey/styled-preact";
 
@@ -77,8 +76,6 @@ export const ConversionRow: Fun = (props: Props) => {
             .then(e => e || toAmount.value)
             .then(e => toAmount.value = e)
     }, [fromAmount.value.from, fromAmount.value.to, fromAmount.value.amount])
-
-    if (useIsLoading()) return <></>
 
     return (
         <Container>

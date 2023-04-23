@@ -1,6 +1,6 @@
 import {useTheme} from '../contexts'
 import {Percent, Pixel} from '../utils'
-import {css, Header2, Label, mergeStyling, Span, WithStyle} from "@baizey/styled-preact";
+import {css, Header2, Label, mergeStyling, Span, Link as Link2, WithStyle} from "@baizey/styled-preact";
 
 type Props = { text?: string } & WithStyle
 export type LinkProps = Props & { href: string; target: string }
@@ -37,7 +37,7 @@ export const Title = ({text, children, ...props}: Props) =>
 
 export const Link = ({text, children, styling, ...props}: LinkProps) => {
     const theme = useTheme()
-    return <Link  {...props}
+    return <Link2  {...props}
                   styling={mergeStyling(styling, css`
                     color: ${theme.linkText};
                     cursor: pointer;
@@ -47,5 +47,5 @@ export const Link = ({text, children, styling, ...props}: LinkProps) => {
                     &:hover {
                       color: ${theme.linkTextHover};
                     }
-                  `)}>{text ?? children}</Link>
+                  `)}>{text ?? children}</Link2>
 }

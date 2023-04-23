@@ -1,13 +1,11 @@
 import { JSX } from 'preact'
 import { Percent, Pixel, Space, useTheme } from '../../atoms'
-import { useIsLoading } from '../../atoms/contexts/ConfigurationProvider'
 import { AccessibilityCard } from '../accessibility/AccessibilityCard'
 import { CurrencyCard } from '../currency/CurrencyCard'
 import { FilterOptionsCard, NewUpdateCard, TitleCard } from '../misc'
 import { VisualsCard } from '../visual/VisualsCard'
 import {PropsWithChildren} from "preact/compat";
 import {Div} from "@baizey/styled-preact";
-import {LoadingCard} from "../shared";
 
 const Background = ( { children }: PropsWithChildren ) =>
 	<Div style={ {
@@ -24,8 +22,6 @@ const Wrapper = ( { children }: PropsWithChildren ) =>
 	} }>{ children }</Div>
 
 export function OptionsApp() {
-	if ( useIsLoading() ) return wrap( <LoadingCard key="LoadingCard-card"/> )
-
 	function wrap( children: JSX.Element[] | JSX.Element ) {
 		return (
 			<Background>
