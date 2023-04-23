@@ -1,18 +1,18 @@
 import {useTheme} from '../contexts'
-import {InputProp} from '../utils/InputProp'
 import {css, Div, DivProps, mergeStyling} from "@baizey/styled-preact";
 
-export type RadioBoxProps = InputProp<boolean>
+export type RadioBoxProps = DivProps & {
+    value: boolean
+}
 
-export function Radiobox({value, onClick}: RadioBoxProps) {
-    return <RadioBoxContainer checked={value}
-                              onClick={() => onClick()}
+export function Radiobox({value, ...props}: RadioBoxProps) {
+    return <RadioBoxContainer {...props}
+                              checked={value}
                               children={<div/>}/>
 }
 
 type RadioBoxContainerProps = DivProps & {
     checked: boolean;
-    onClick: () => void;
 };
 
 function RadioBoxContainer({checked, styling, ...props}: RadioBoxContainerProps) {

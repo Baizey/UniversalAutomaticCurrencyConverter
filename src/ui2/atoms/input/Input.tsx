@@ -16,17 +16,12 @@ export type InputProps<T> = InputP & InputStyleProps & {
     onValueChange?: (value: T) => void
     value?: T
 } & {
-    onInput: never
-    onChange: never
+    onInput?: never
+    onChange?: never
 };
 
-export const ReadonlyInput = ({value, onClick, onMouseOver, align, onChange, onEnter, ...props}: InputProps<string>) =>
-    <RawTextInput  {...props}
-                   value={value}
-                   onClick={onClick}
-                   onMouseOver={onMouseOver}
-                   align={align}
-                   readOnly/>
+export const ReadonlyInput = (props: InputProps<string>) =>
+    <RawTextInput  {...props} readOnly/>
 
 export const NumberInput = ({
                                 onEnter = () => {

@@ -10,6 +10,8 @@
 
 # production
 /build
+/build_chrome
+/build_firefox
 
 # misc
 .idea
