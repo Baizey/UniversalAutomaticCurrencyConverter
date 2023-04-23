@@ -2,7 +2,7 @@ import { useSignal } from '@preact/signals'
 import { useProvider } from '../../../di'
 import { useFilter, useSymbols } from '../../atoms'
 import { Dropdown } from '../../molecules'
-import { OptionRow, OptionsSection, SettingOption } from '../Shared'
+import { OptionRow, OptionsSection, SettingOption } from '../shared'
 import { DisabledListContainer, DisabledListItem } from './AccessibilityCard'
 
 export function DisableCurrenciesCard() {

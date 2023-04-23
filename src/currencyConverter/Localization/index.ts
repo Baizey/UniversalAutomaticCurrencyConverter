@@ -1,4 +1,4 @@
-import { propertyOf, singleton, stateful } from 'sharp-dependency-injection'
+import { propertyOf, singleton, stateful } from '@baizey/dependency-injection'
 import { ActiveLocalization, ActiveLocalizationDi } from './ActiveLocalization'
 import { CurrencyLocalization, CurrencyLocalizationDi } from './CurrencyLocalization'
 

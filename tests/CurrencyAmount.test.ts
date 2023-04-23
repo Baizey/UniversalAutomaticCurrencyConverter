@@ -1,4 +1,4 @@
-import { MockStrategy } from 'sharp-dependency-injection'
+import { MockStrategy } from '@baizey/dependency-injection'
 import { CurrencyRate } from '../src/currencyConverter/BackendApi/CurrencyRate'
 import { CurrencyAmount } from '../src/currencyConverter/Currency'
 import { BrowserMock } from './Browser.mock'

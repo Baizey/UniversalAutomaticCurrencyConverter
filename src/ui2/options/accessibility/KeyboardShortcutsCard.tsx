@@ -1,6 +1,6 @@
 import { useProvider } from '../../../di'
 import { Shortcut, useFilter } from '../../atoms'
-import { OptionRow, OptionsSection, SettingOption } from '../Shared'
+import { OptionRow, OptionsSection, SettingOption } from '../shared'
 
 export function KeyboardShortcutsCard() {
 	const { isExcluded } = useFilter()

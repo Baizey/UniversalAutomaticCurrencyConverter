@@ -3,7 +3,7 @@ import { useProvider } from '../../../di'
 import { themes } from '../../../infrastructure'
 import { useFilter } from '../../atoms'
 import { Dropdown } from '../../molecules'
-import { OptionRow, OptionsSection, SettingOption } from '../Shared'
+import { OptionRow, OptionsSection, SettingOption } from '../shared'
 
 const themeOptions = Object.entries( themes ).map( ( [ key ] ) => ( {
 	key: key,

@@ -1,4 +1,4 @@
-import { MockStrategy, singleton } from 'sharp-dependency-injection'
+import { MockStrategy, singleton } from '@baizey/dependency-injection'
 import { Mockable, Providable, setMockProvider, useServices } from '../src/di'
 import { BrowserMock } from './Browser.mock'
 

@@ -1,5 +1,4 @@
-import { singleton } from 'sharp-dependency-injection'
-import { AsServices } from 'sharp-dependency-injection/lib/utils'
+import { singleton } from '@baizey/dependency-injection'
 import { IConfig } from './IConfig'
 import {
 	BlacklistedUrlsSetting,
@@ -35,12 +34,13 @@ import {
 	YenLocalizationSetting,
 } from './setting'
 import { SettingDep } from './setting/SyncSetting'
+import {AsServices} from "@baizey/dependency-injection/lib/utils";
 
 export class NumberStylingConfig extends IConfig {
 	readonly decimal: DecimalPointSetting
 	readonly group: ThousandsSeparatorSetting
 	readonly significantDigits: SignificantDigitsSetting
-
+	
 	constructor( dep: SettingDep ) {
 		super()
 		this.settings.push( this.decimal = new DecimalPointSetting( dep ) )

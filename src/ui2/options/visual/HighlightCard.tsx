@@ -1,7 +1,7 @@
 import { useState } from 'preact/compat'
 import { useProvider } from '../../../di'
 import { Checkbox, NumberInput, TextInput, useFilter } from '../../atoms'
-import { OptionRow, OptionsSection, SettingOption } from '../Shared'
+import { OptionRow, OptionsSection, SettingOption } from '../shared'
 
 export function HighlightCard() {
 	const { isExcluded } = useFilter()

@@ -1,13 +1,15 @@
 import { JSX } from 'preact'
-import { Div, Percent, Pixel, Space, useTheme, WithChildren } from '../../atoms'
+import { Percent, Pixel, Space, useTheme } from '../../atoms'
 import { useIsLoading } from '../../atoms/contexts/ConfigurationProvider'
 import { AccessibilityCard } from '../accessibility/AccessibilityCard'
 import { CurrencyCard } from '../currency/CurrencyCard'
 import { FilterOptionsCard, NewUpdateCard, TitleCard } from '../misc'
-import { LoadingCard } from '../shared'
 import { VisualsCard } from '../visual/VisualsCard'
+import {PropsWithChildren} from "preact/compat";
+import {Div} from "@baizey/styled-preact";
+import {LoadingCard} from "../shared";
 
-const Background = ( { children }: WithChildren ) =>
+const Background = ( { children }: PropsWithChildren ) =>
 	<Div style={ {
 		minHeight: Percent.all,
 		height: 'fit-content',
@@ -15,7 +17,7 @@ const Background = ( { children }: WithChildren ) =>
 		backgroundColor: useTheme().wrapperBackground,
 	} }>{ children }</Div>
 
-const Wrapper = ( { children }: WithChildren ) =>
+const Wrapper = ( { children }: PropsWithChildren ) =>
 	<Div style={ {
 		maxWidth: Pixel.of( 800 ),
 		backgroundColor: useTheme().wrapperBackground,

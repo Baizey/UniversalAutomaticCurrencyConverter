@@ -1,7 +1,7 @@
 import { useProvider } from '../../../di'
 import { Checkbox, useFilter, useSymbols } from '../../atoms'
 import { Dropdown } from '../../molecules'
-import { OptionRow, OptionsSection, SettingOption } from '../Shared'
+import { OptionRow, OptionsSection, SettingOption } from '../shared'
 
 export function ConvertToCard() {
 	const { isExcluded } = useFilter()

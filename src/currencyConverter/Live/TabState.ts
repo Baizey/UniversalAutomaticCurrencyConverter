@@ -1,4 +1,4 @@
-import { singleton } from 'sharp-dependency-injection'
+import { singleton } from '@baizey/dependency-injection'
 import { CurrencyElement } from '../Currency'
 
 export class TabState {

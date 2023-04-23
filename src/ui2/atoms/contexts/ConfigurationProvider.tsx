@@ -1,15 +1,14 @@
 import { useSignal } from '@preact/signals'
 import { createContext } from 'preact'
-import { useContext, useEffect } from 'preact/compat'
+import {PropsWithChildren, useContext, useEffect} from 'preact/compat'
 import { handleError, useProvider } from '../../../di'
 import { DropdownOption } from '../../molecules'
-import { WithChildren } from '../core'
 
 type Props = { isLoading: boolean, symbols: DropdownOption[] }
 
 const Context = createContext<Props>( null as any )
 
-export function ConfigurationProvider( { children }: WithChildren ) {
+export function ConfigurationProvider( { children }: PropsWithChildren ) {
 	const symbols = useSignal<DropdownOption[] | undefined>( undefined )
 
 	useEffect( () => {

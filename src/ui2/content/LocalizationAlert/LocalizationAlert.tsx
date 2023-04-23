@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'preact/compat'
+import {PropsWithChildren, useEffect, useState} from 'preact/compat'
 import { useProvider } from '../../../di'
-import { ButtonGrid, Div, HeaderText, Pixel, PrimaryButton, Radiobox, Space, Text, WithChildren } from '../../atoms'
+import { ButtonGrid, HeaderText, Pixel, PrimaryButton, Radiobox, Space, Text } from '../../atoms'
 import { Size } from '../../atoms/utils/Size'
 import { AlertSection } from '../AlertSection'
+import {Div} from "@baizey/styled-preact";
 
 type Props = { setDismissed: () => void };
 
@@ -10,7 +11,7 @@ const Header = HeaderText
 
 const Currency = Text
 
-type OptionWrapperType = { height: number } & WithChildren;
+type OptionWrapperType = { height: number } & PropsWithChildren;
 const OptionWrapper = ( { height, ...props }: OptionWrapperType ) =>
 	<Div { ...props } style={ {
 		width: '100%',
@@ -19,7 +20,7 @@ const OptionWrapper = ( { height, ...props }: OptionWrapperType ) =>
 		flexDirection: 'row',
 	} }/>
 
-const Option = ( props: WithChildren ) =>
+const Option = ( props: PropsWithChildren ) =>
 	<Div { ...props } style={ {
 		width: '50%',
 	} }/>

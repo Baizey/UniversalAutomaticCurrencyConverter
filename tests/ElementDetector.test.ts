@@ -1,4 +1,4 @@
-import { MockStrategy } from 'sharp-dependency-injection'
+import { MockStrategy } from '@baizey/dependency-injection'
 import { IElementDetector } from '../src/currencyConverter/Detection'
 import useMockContainer from './Container.mock'
 import { HtmlMock } from './Html.mock'

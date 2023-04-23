@@ -1,19 +1,14 @@
-import { DeleteIcon, Div, Title, useTheme, WithActions, WithChildren } from '../../atoms'
+import {DeleteIcon, Title, useTheme} from '../../atoms'
+import {PropsWithChildren} from "preact/compat";
+import {css, Div, DivProps} from "@baizey/styled-preact";
 
-export type AlertSectionProps = WithChildren & {
-	title?: string;
-	onDismiss: () => void;
+export type AlertSectionProps = PropsWithChildren & {
+    title?: string;
+    onDismiss: () => void;
 };
 
-const a = ( props: WithChildren ) => <Div { ...props } css={ classname => <style jsx>{ `
-  .${ classname } {
-
-  }
-` }</style> }/>
-
-
-const DismissWrapper = ( props: WithActions ) => <Div { ...props } css={ classname => <style jsx>{ `
-  .${ classname } {
+const DismissWrapper = (props: DivProps) => <Div {...props} styling={css`
+  & {
     width: 30px;
     height: 30px;
     position: absolute;
@@ -22,13 +17,13 @@ const DismissWrapper = ( props: WithActions ) => <Div { ...props } css={ classna
     cursor: pointer;
   }
 
-  .${ classname }:hover * {
+  &:hover * {
     filter: brightness(85%);
   }
-` }</style> }/>
+`}/>
 
-const InnerWrapper = ( props: WithChildren ) => <Div { ...props } css={ classname => <style jsx>{ `
-  .${ classname } {
+const InnerWrapper = (props: PropsWithChildren) => <Div {...props} styling={css`
+  & {
     width: calc(100% - 10px);
     padding: 5px;
     height: fit-content;
@@ -36,32 +31,32 @@ const InnerWrapper = ( props: WithChildren ) => <Div { ...props } css={ classnam
     flex-direction: column;
     border-radius: 5px;
   }
-` }</style> }/>
+`}/>
 
-const Container = ( props: WithChildren ) => <Div { ...props } css={ classname => <style jsx>{ `
-  .${ classname } {
+const Container = (props: PropsWithChildren) => <Div {...props} styling={css`
+  & {
     width: 100%;
     height: fit-content;
     margin: 0;
-    background-color: ${ useTheme().containerBackground };
+    background-color: ${useTheme().containerBackground};
   }
-` }</style> }/>
+`}/>
 
-export function AlertSection( { title, children, onDismiss }: AlertSectionProps ) {
-	const theme = useTheme()
-	return (
-		<Container>
-			<DismissWrapper onClick={ onDismiss }>
-				<DeleteIcon
-					width={ '30px' }
-					height={ '30px' }
-					color={ theme.errorBackground }
-				/>
-			</DismissWrapper>
-			<InnerWrapper>
-				{ title ? <Title text={ title }/> : <></> }
-				{ children }
-			</InnerWrapper>
-		</Container>
-	)
+export function AlertSection({title, children, onDismiss}: AlertSectionProps) {
+    const theme = useTheme()
+    return (
+        <Container>
+            <DismissWrapper onClick={onDismiss}>
+                <DeleteIcon
+                    width={'30px'}
+                    height={'30px'}
+                    color={theme.errorBackground}
+                />
+            </DismissWrapper>
+            <InnerWrapper>
+                {title ? <Title text={title}/> : <></>}
+                {children}
+            </InnerWrapper>
+        </Container>
+    )
 }

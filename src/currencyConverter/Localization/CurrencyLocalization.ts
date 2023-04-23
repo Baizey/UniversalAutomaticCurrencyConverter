@@ -1,4 +1,4 @@
-import { Stateful } from 'sharp-dependency-injection'
+import { Stateful } from '@baizey/dependency-injection'
 import { Browser, InfrastructureDiTypes, ISetting, Logger } from '../../infrastructure'
 
 type Props = {

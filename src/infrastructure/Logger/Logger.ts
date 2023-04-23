@@ -1,4 +1,4 @@
-import { singleton } from 'sharp-dependency-injection'
+import { singleton } from '@baizey/dependency-injection'
 import { TimeSpan } from 'sharp-time-span'
 import { ConfigDiTypes } from '../Configuration'
 import { LoggingSettingType, UseDebugLoggingSetting } from '../Configuration/setting'

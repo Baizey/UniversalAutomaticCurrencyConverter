@@ -1,4 +1,4 @@
-import { MockStrategy } from 'sharp-dependency-injection'
+import { MockStrategy } from '@baizey/dependency-injection'
 import { themes } from '../src/infrastructure'
 import { darkTheme } from '../src/infrastructure/Theme/DarkTheme'
 import { lightTheme } from '../src/infrastructure/Theme/LightTheme'

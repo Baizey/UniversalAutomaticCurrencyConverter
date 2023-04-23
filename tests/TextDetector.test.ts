@@ -1,4 +1,4 @@
-import { MockStrategy } from 'sharp-dependency-injection'
+import { MockStrategy } from '@baizey/dependency-injection'
 import { TextDetector } from '../src/currencyConverter/Detection'
 import useMockContainer from './Container.mock'
 

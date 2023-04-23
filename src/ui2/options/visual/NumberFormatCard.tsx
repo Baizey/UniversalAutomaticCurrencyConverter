@@ -1,7 +1,7 @@
 import { useProvider } from '../../../di'
 import { NumberInput, useFilter } from '../../atoms'
 import { Dropdown } from '../../molecules'
-import { OptionRow, OptionsSection, SettingOption } from '../Shared'
+import { OptionRow, OptionsSection, SettingOption } from '../shared'
 
 const thousandsOptions = [
 	{

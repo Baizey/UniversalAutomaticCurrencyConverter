@@ -1,16 +1,16 @@
-import { effect, useSignal } from '@preact/signals'
-import { useEffect } from 'preact/compat'
-import { useTheme } from '../contexts'
-import { Div, WithActions } from '../core'
-import { InputProp } from '../utils/InputProp'
+import {effect, useSignal} from '@preact/signals'
+import {useEffect} from 'preact/compat'
+import {useTheme} from '../contexts'
+import {InputProp} from '../utils/InputProp'
+import {css, Div, DivProps} from "@baizey/styled-preact";
 
 export type CheckboxProps = InputProp<boolean>
 
-type ContainerProps = WithActions & { checked: boolean; onClick: () => void };
-const Container = ( { checked, ...props }: ContainerProps ) => {
-	const theme = useTheme()
-	return <Div { ...props } css={ classname => <style jsx>{ `
-      .${ classname } {
+type ContainerProps = DivProps & { checked: boolean };
+const Container = ({checked, ...props}: ContainerProps) => {
+    const theme = useTheme()
+    return <Div {...props} styling={css`
+      & {
         cursor: pointer;
         width: 30px;
         height: 30px;
@@ -19,44 +19,46 @@ const Container = ( { checked, ...props }: ContainerProps ) => {
         display: block;
       }
 
-      .${ classname }:hover {
+      &:hover {
         transition: border-color 0.3s ease-in-out;
-        border-color: ${ theme.formBorderFocus };
+        border-color: ${theme.formBorderFocus};
       }
 
-      .${ classname } div {
+      & div {
         position: absolute;
         height: 5px;
-        background-color: ${ theme.successBackground };
+        background-color: ${theme.successBackground};
         transition: opacity 0.3s ease-in-out;
-        opacity: ${ checked ? 1 : 0 };
+        opacity: ${checked ? 1 : 0};
       }
 
-      .${ classname } div:nth-child(2) {
+      & div:nth-child(2) {
         margin-top: 15px;
         margin-left: 0;
         width: 16px;
         transform: rotate(45deg);
       }
 
-      .${ classname } div:last-child {
+      & div:last-child {
         margin-top: 14px;
         margin-left: 9px;
         width: 20px;
         transform: rotate(135deg);
       }
-	` }</style> }/>
+    `}/>
 }
 
-export function Checkbox( { value, onInput }: CheckboxProps ) {
-	const isChecked = useSignal( value )
-	useEffect( () => {isChecked.value = value}, [ value ] )
-	effect( () => onInput( isChecked.value ) )
+export function Checkbox({value, onInput}: CheckboxProps) {
+    const isChecked = useSignal(value)
+    useEffect(() => {
+        isChecked.value = value
+    }, [value])
+    effect(() => onInput(isChecked.value))
 
-	return (
-		<Container checked={ isChecked.value } onClick={ () => isChecked.value = !isChecked.value }>
-			<div/>
-			<div/>
-		</Container>
-	)
+    return (
+        <Container checked={isChecked.value} onClick={() => isChecked.value = !isChecked.value}>
+            <div/>
+            <div/>
+        </Container>
+    )
 }

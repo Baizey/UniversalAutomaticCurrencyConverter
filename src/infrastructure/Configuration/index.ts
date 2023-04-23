@@ -1,6 +1,6 @@
-import { singleton } from 'sharp-dependency-injection'
-import { AsServices } from 'sharp-dependency-injection/lib/utils'
+import { singleton } from '@baizey/dependency-injection'
 import { Configuration, SubConfigDi } from './Configuration'
+import {AsServices} from "@baizey/dependency-injection/lib/utils";
 
 export { Configuration } from './Configuration'
 

@@ -1,4 +1,4 @@
-import { MockStrategy } from 'sharp-dependency-injection'
+import { MockStrategy } from '@baizey/dependency-injection'
 import { CurrencyLocalization } from '../src/currencyConverter/Localization/CurrencyLocalization'
 import { SyncSetting } from '../src/infrastructure/Configuration/setting/SyncSetting'
 import useMockContainer from './Container.mock'

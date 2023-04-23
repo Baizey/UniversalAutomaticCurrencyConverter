@@ -1,4 +1,4 @@
-import { stateful, Stateful } from 'sharp-dependency-injection'
+import { stateful, Stateful } from '@baizey/dependency-injection'
 import { AsServices } from 'sharp-dependency-injection/lib/utils'
 import { InfrastructureDi } from '../../infrastructure'
 import { CurrencyStylingConfig, NumberStylingConfig } from '../../infrastructure/Configuration/Configuration'

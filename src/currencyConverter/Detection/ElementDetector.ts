@@ -1,4 +1,4 @@
-import { Stateful } from 'sharp-dependency-injection'
+import { Stateful } from '@baizey/dependency-injection'
 import { Configuration, InfrastructureDiTypes, Logger } from '../../infrastructure'
 import { IBackendApi } from '../BackendApi'
 import { BackendApiDiTypes } from '../BackendApi/BackendApi'

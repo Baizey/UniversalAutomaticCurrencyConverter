@@ -1,9 +1,9 @@
-import { singleton } from 'sharp-dependency-injection'
-import { AsServices } from 'sharp-dependency-injection/lib/utils'
 import { Browser } from './Browser'
 import { MessengerDi } from './BrowserMessengers'
 import { ConfigDi } from './Configuration'
 import { Logger, LoggerDi } from './Logger/Logger'
+import {singleton} from "@baizey/dependency-injection";
+import {AsServices} from "@baizey/dependency-injection/lib/utils";
 
 export { Browser } from './Browser'
 export { Configuration } from './Configuration'

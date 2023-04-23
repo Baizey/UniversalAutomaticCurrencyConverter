@@ -1,4 +1,4 @@
-import { stateful, Stateful } from 'sharp-dependency-injection'
+import { stateful, Stateful } from '@baizey/dependency-injection'
 import { useProvider } from '../../di'
 import { InfrastructureDiTypes, Logger } from '../../infrastructure'
 import {

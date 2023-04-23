@@ -1,7 +1,6 @@
 ﻿import { useSignal } from '@preact/signals'
 import { createContext } from 'preact'
-import { useContext } from 'preact/compat'
-import { WithChildren } from '../core'
+import {PropsWithChildren, useContext} from 'preact/compat'
 
 type ContextProps = {
 	isExcluded: ( keys: string[] ) => boolean;
@@ -21,7 +20,7 @@ function isFilteredOut( keys: string[], filter?: string ): boolean {
 	)
 }
 
-export function FilterProvider( { children }: WithChildren ) {
+export function FilterProvider( { children }: PropsWithChildren ) {
 	const filter = useSignal<string>( '' )
 	const isExcluded = ( keys: string[] ) => isFilteredOut( keys, filter.value )
 	const filterBy = ( e: string ) => filter.value = e

@@ -1,4 +1,4 @@
-import { MockStrategy, ProviderMock, ServiceCollection, Services } from 'sharp-dependency-injection'
+import { MockStrategy, ProviderMock, ServiceCollection, Services } from '@baizey/dependency-injection'
 import { _Providable, Providable } from '../provideable'
 
 

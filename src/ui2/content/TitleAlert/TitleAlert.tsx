@@ -1,5 +1,7 @@
 import { useProvider } from '../../../di'
-import { Div, Pixel, useTheme, WithChildren } from '../../atoms'
+import {  Pixel, useTheme } from '../../atoms'
+import {PropsWithChildren} from "preact/compat";
+import {Div} from "@baizey/styled-preact";
 
 export function TitleAlert() {
 	const { browser } = useProvider()
@@ -10,7 +12,7 @@ export function TitleAlert() {
 	)
 }
 
-const Container = ( props: WithChildren ) => <Div { ...props } style={ {
+const Container = ( props: PropsWithChildren ) => <Div { ...props } style={ {
 	borderTopLeftRadius: Pixel.of( 5 ),
 	borderTopRightRadius: Pixel.of( 5 ),
 	paddingTop: '10px',
@@ -22,7 +24,7 @@ const Container = ( props: WithChildren ) => <Div { ...props } style={ {
 	height: 'fit-content',
 } }/>
 
-const MenuTitle = ( props: WithChildren ) => <Div { ...props } style={ {
+const MenuTitle = ( props: PropsWithChildren ) => <Div { ...props } style={ {
 	color: useTheme().normalText,
 	backgroundColor: useTheme().containerBorder,
 } }/>

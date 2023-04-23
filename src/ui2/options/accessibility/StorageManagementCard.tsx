@@ -3,7 +3,7 @@ import { useEffect, useState } from 'preact/compat'
 import { useProvider } from '../../../di'
 import { BrowserDataStorage } from '../../../infrastructure/Browser/Browser'
 import { ErrorButton, PrimaryButton, ReadonlyInput, SecondaryButton, useFilter } from '../../atoms'
-import { OptionRow, OptionsSection, SettingOption } from '../Shared'
+import { OptionRow, OptionsSection, SettingOption } from '../shared'
 
 export function StorageManagementCard() {
 	const { isExcluded } = useFilter()

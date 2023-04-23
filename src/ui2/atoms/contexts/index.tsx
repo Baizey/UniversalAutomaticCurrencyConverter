@@ -1,11 +1,11 @@
-import { WithChildren } from '../core'
 import { ConfigurationProvider, useSymbols } from './ConfigurationProvider'
 import { FilterProvider, useFilter } from './FilterProvider'
 import { UACCThemeProvider, useTheme } from './ThemeProvider'
+import {PropsWithChildren} from "preact/compat";
 
 export { useTheme, useFilter, useSymbols }
 
-export function HookProvider( { children }: WithChildren ) {
+export function HookProvider( { children }: PropsWithChildren ) {
 	return (
 		<ConfigurationProvider>
 			<UACCThemeProvider>

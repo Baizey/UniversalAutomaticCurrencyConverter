@@ -1,4 +1,4 @@
-import { propertyOf, singleton } from 'sharp-dependency-injection'
+import { propertyOf, singleton } from '@baizey/dependency-injection'
 import type { ElementDetectorDi } from './ElementDetector'
 import { ElementDetector } from './ElementDetector'
 import type { SiteAllowanceDi } from './SiteAllowance'

@@ -1,4 +1,4 @@
-import { propertyOf, singleton } from 'sharp-dependency-injection'
+import { propertyOf, singleton } from '@baizey/dependency-injection'
 import { BackgroundMessenger } from './BackgroundMessenger'
 import { PopupMessenger } from './PopupMessenger'
 import { TabMessenger } from './TabMessenger'

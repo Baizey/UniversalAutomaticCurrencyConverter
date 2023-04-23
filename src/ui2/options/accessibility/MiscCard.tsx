@@ -2,7 +2,7 @@ import { useProvider } from '../../../di'
 import { LoggingSettingType } from '../../../infrastructure/Configuration/setting'
 import { Checkbox, useFilter } from '../../atoms'
 import { Dropdown } from '../../molecules'
-import { OptionRow, OptionsSection, SettingOption } from '../Shared'
+import { OptionRow, OptionsSection, SettingOption } from '../shared'
 
 const capitalize = ( str: string ) => str.charAt( 0 ).toUpperCase() + str.substring( 1 )
 
