@@ -11,10 +11,10 @@
   "keywords": [],
   "license": "GPLv2",
   "dependencies": {
-    "preact": "^10.13.2",
-    "@preact/compat": "^17.1.2"
   },
   "devDependencies": {
+    "preact": "^10.13.2",
+    "@preact/compat": "^17.1.2",
     "@baizey/dependency-injection": "^1.0.2",
     "@baizey/styled-preact": "^1.2.14",
     "@preact/preset-vite": "^2.5.0",
