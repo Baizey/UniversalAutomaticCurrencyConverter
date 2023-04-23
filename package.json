@@ -5,8 +5,11 @@
   "scripts": {
     "test": "jest",
     "storybook": "start-storybook -p 6006",
-    "build-prod": "vite optimize --config vite.build.ts --mode=production",
-    "build-dev": "vite optimize --config vite.build.ts --mode=development"
+    "build-prod": "npm run build-chrome && npm run build-firefox",
+    "build-chrome": "set BROWSER=chrome && vite optimize --force --config vite.build.ts --mode=production",
+    "build-dev-chrome": "set BROWSER=chrome && vite optimize --config vite.build.ts --mode=development",
+    "build-firefox": "set BROWSER=firefox && vite optimize --force --config vite.build.ts --mode=production",
+    "build-dev-firefox": "set BROWSER=firefox && vite optimize --config vite.build.ts --mode=development"
   },
   "keywords": [],
   "license": "GPLv2",

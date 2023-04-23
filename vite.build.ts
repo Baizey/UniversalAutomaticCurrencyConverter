@@ -7,10 +7,14 @@ import zipPlugin from 'vite-plugin-zip-pack'
 
 const buildStart = Date.now()
 
+const browser = process.env.BROWSER.trim()
 const isProd = process.argv.includes('--mode=production');
 const isDev = !isProd
 const mode = isProd ? "production" : "development"
-console.log(`Mode: ${mode}`)
+console.log(`Mode: ${mode} (${browser})`)
+
+const buildDir = `build_${browser}`
+const assetsDir = `public_${browser}`
 
 function remove(dir: string) {
     if (fs.existsSync(path.resolve(__dirname, dir)))
@@ -29,7 +33,6 @@ function create(dir: string) {
     })
 }
 
-const buildDir = 'build'
 ;(async () => {
     const buildCodeDir = `${buildDir}/unpacked`
     const srcDir = 'src'
@@ -49,13 +52,11 @@ const buildDir = 'build'
     })
 
     const config = {
-        plugins: [preactPlugin(), zipPlugin({inDir: buildCodeDir, outDir: buildDir, outFileName: 'packed.zip'})],
+        plugins: [preactPlugin(), zipPlugin({inDir: buildCodeDir, outDir: buildDir, outFileName: `${browser}.zip`})],
         define: {
-            'process.env.NODE_ENV': `"${mode}"`,
-            'process.version': '"v18.5.0"',
-        }
-        ,
-
+            //'process.env.NODE_ENV': `"${mode}"`,
+            //'process.version': `"${process.version}"`,
+        },
         build: {
             lib: false,
             target: [],
@@ -64,7 +65,7 @@ const buildDir = 'build'
             minify: isProd,
             reportCompressedSize: true,
             outDir: buildCodeDir,
-            assetsDir: 'public',
+            assetsDir: assetsDir,
         },
     } satisfies InlineConfig
 
