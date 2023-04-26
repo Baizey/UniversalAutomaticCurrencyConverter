@@ -1,0 +1,48 @@
+.uacc-button-column > button {
+    border-radius: 0;
+    border-top-width: 0;
+    border-right-width: 1px;
+}
+
+.uacc-button-column > button:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 0;
+    border-top-width: 1px;
+}
+
+.uacc-button-column > button:last-child {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 0;
+    border-right-width: 1px;
+}
+
+.uacc-button-row > button {
+    border-radius: 0;
+    border-top-width: 1px;
+    border-right-width: 0;
+}
+
+.uacc-button-row > button:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-width: 1px;
+}
+
+.uacc-button-row > button:last-child {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    border-right-width: 1px;
+}
+
+.uacc-button-row > button:only-child,
+.uacc-button-column > button:only-child {
+    border-radius: 5px;
+}

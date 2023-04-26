@@ -14,7 +14,11 @@ const mode = isProd ? "production" : "development"
 console.log(`Mode: ${mode} (${browser})`)
 
 const buildDir = `build_${browser}`
-const assetsDir = `public_${browser}`
+const publicDir = `public_${browser}`
+const unpackedDir = `${buildDir}/unpacked`
+
+console.log(`Build dir: ${buildDir}`)
+console.log(`Asset dir: ${publicDir}`)
 
 function remove(dir: string) {
     if (fs.existsSync(path.resolve(__dirname, dir)))
@@ -34,7 +38,6 @@ function create(dir: string) {
 }
 
 ;(async () => {
-    const buildCodeDir = `${buildDir}/unpacked`
     const srcDir = 'src'
     const entryPoints = [
         'popup.tsx',
@@ -52,7 +55,7 @@ function create(dir: string) {
     })
 
     const config = {
-        plugins: [preactPlugin(), zipPlugin({inDir: buildCodeDir, outDir: buildDir, outFileName: `${browser}.zip`})],
+        plugins: [preactPlugin(), zipPlugin({inDir: unpackedDir, outDir: buildDir, outFileName: `${browser}.zip`})],
         define: {
             //'process.env.NODE_ENV': `"${mode}"`,
             //'process.version': `"${process.version}"`,
@@ -64,13 +67,13 @@ function create(dir: string) {
             sourcemap: isDev,
             minify: isProd,
             reportCompressedSize: true,
-            outDir: buildCodeDir,
-            assetsDir: assetsDir,
+            outDir: unpackedDir,
         },
+        publicDir: publicDir
     } satisfies InlineConfig
 
     // Manual clean build-dir, as we build multiple entry-points in parallel we cannot do it on a build-basis
-    create(buildCodeDir)
+    create(unpackedDir)
 
     await Promise.all(entryPoints.map(entrypoint =>
         build(mergeConfig(config,

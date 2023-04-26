@@ -1,0 +1,9 @@
+#uacc-root {
+    max-width: calc(100% - 20px);
+    width: 450px;
+    height: fit-content;
+    z-index: 1000;
+    right: 10px;
+    bottom: 10px;
+    position: fixed;
+}
