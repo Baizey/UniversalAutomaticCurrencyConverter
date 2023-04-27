@@ -37,7 +37,7 @@ export const DisabledListItem = (props: DivProps) => {
     const theme = useTheme()
     return <Div {...props}
                 styling={css`
-                  & {
+                  
                     width: 99%;
                     margin: auto;
                     text-align: center;
@@ -45,7 +45,6 @@ export const DisabledListItem = (props: DivProps) => {
                     padding-top: 10px;
                     padding-bottom: 10px;
                     background-color: ${theme.containerBackground};
-                  }
 
                   &:hover {
                     background-color: ${theme.backgroundBorderFocus};

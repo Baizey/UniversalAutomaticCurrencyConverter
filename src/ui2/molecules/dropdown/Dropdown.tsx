@@ -23,29 +23,28 @@ const DropdownList = ({children, isVisible, totalOptions, location, styling}: Dr
     <List
         children={children}
         styling={mergeStyling(styling, css`
-          & {
-            display: ${isVisible ? '' : 'none'};
-            position: absolute;
-            width: auto;
-            top: ${location === DropdownListLocation.top
-                    ? Pixel.of(-Math.min(maxDisplayedItems, totalOptions) * (Size.field - 1))
-                    : Pixel.fieldWithUnderline};
-            filter: brightness(110%);
-            left: 0;
-            right: 0;
-            padding: 0;
-            margin: 0;
-            list-style: none;
-            background-color: #fff;
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            max-height: ${Pixel.of(maxDisplayedItems * Size.field)};
-            overflow: auto;
-            border-bottom-width: ${location === DropdownListLocation.top ? Pixel.zero : Pixel.one};
-            border-top-width: ${location === DropdownListLocation.top ? Pixel.one : Pixel.zero};
-            border-left-width: ${Pixel.one};
-            border-right-width: ${Pixel.one};
-          }`)}/>
+          display: ${isVisible ? '' : 'none'};
+          position: absolute;
+          width: auto;
+          top: ${location === DropdownListLocation.top
+                  ? Pixel.of(-Math.min(maxDisplayedItems, totalOptions) * (Size.field - 1))
+                  : Pixel.fieldWithUnderline};
+          filter: brightness(110%);
+          left: 0;
+          right: 0;
+          padding: 0;
+          margin: 0;
+          list-style: none;
+          background-color: #fff;
+          box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+          z-index: 1;
+          max-height: ${Pixel.of(maxDisplayedItems * Size.field)};
+          overflow: auto;
+          border-bottom-width: ${location === DropdownListLocation.top ? Pixel.zero : Pixel.one};
+          border-top-width: ${location === DropdownListLocation.top ? Pixel.one : Pixel.zero};
+          border-left-width: ${Pixel.one};
+          border-right-width: ${Pixel.one};
+        }`)}/>
 
 export enum DropdownListLocation {
     top = 'top',
@@ -121,8 +120,7 @@ function DropdownOptions({isFocused, visibleOptions, listLocation, handleSelecti
     listLocation?: DropdownListLocation,
     handleSelection: (option: DropdownOption) => void
 }) {
-    const options = visibleOptions.map(option =>
-        <ReadonlyInput value={option.text} onClick={() => handleSelection(option)}/>)
+    const options = visibleOptions.map(option => <ReadonlyInput value={option.text} onClick={() => handleSelection(option)}/>)
     return <DropdownList isVisible={isFocused.value}
                          location={listLocation}
                          totalOptions={visibleOptions.length}

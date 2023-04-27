@@ -10,7 +10,7 @@ const Container = ({children}: PropsWithChildren) => {
     const theme = useTheme()
     return <Div
         styling={css`
-          & {
+          
             padding: 10px;
             background-color: ${theme.containerBackground};
             display: flex;
@@ -23,7 +23,7 @@ const Container = ({children}: PropsWithChildren) => {
               margin-left: 10px;
               margin-right: 10px;
             }
-          }
+          
 
 
           &:first-child {

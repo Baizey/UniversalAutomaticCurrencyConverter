@@ -72,10 +72,10 @@ export function ContentApp({
 function Container(props: PropsWithChildren) {
     const theme = useTheme()
     return <Div{...props} styling={css`
-      & {
+      
         border-radius: 5px;
         height: fit-content;
-      }
+      
 
       & > div {
         border-width: 1px;

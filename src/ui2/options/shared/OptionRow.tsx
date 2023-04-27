@@ -7,7 +7,7 @@ type ContainerProps = { childrenCount: number } & PropsWithChildren;
 const Container = ({children, childrenCount}: ContainerProps) =>
     <Div
         styling={css`
-          & {
+          
             width: 100%;
             padding-bottom: 10px;
             display: flex;
@@ -29,7 +29,6 @@ const Container = ({children, childrenCount}: ContainerProps) =>
                 margin-top: 10px;
               }
             }
-          }
         `}>{children}</Div>
 
 

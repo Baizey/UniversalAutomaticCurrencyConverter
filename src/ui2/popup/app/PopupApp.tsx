@@ -6,13 +6,12 @@ import {css, Div} from "@baizey/styled-preact";
 
 const Container = ({children}: PropsWithChildren) =>
     <Div styling={css`
-      & {
+      
         max-width: calc(${Percent.all} - ${Pixel.of(20)});
         width: ${Pixel.of(600)};
         height: fit-content;
         padding: ${Pixel.of(20)};
         border-width: ${Pixel.one};
-      }
     `}>{children}</Div>
 
 export function PopupApp() {

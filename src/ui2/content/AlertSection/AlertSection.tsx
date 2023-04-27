@@ -8,14 +8,13 @@ export type AlertSectionProps = PropsWithChildren & {
 };
 
 const DismissWrapper = (props: DivProps) => <Div {...props} styling={css`
-  & {
+  
     width: 30px;
     height: 30px;
     position: absolute;
     margin-top: 5px;
     right: 5px;
     cursor: pointer;
-  }
 
   &:hover * {
     filter: brightness(85%);
@@ -23,23 +22,23 @@ const DismissWrapper = (props: DivProps) => <Div {...props} styling={css`
 `}/>
 
 const InnerWrapper = (props: PropsWithChildren) => <Div {...props} styling={css`
-  & {
+  
     width: calc(100% - 10px);
     padding: 5px;
     height: fit-content;
     display: flex;
     flex-direction: column;
     border-radius: 5px;
-  }
+  
 `}/>
 
 const Container = (props: PropsWithChildren) => <Div {...props} styling={css`
-  & {
+  
     width: 100%;
     height: fit-content;
     margin: 0;
     background-color: ${useTheme().containerBackground};
-  }
+  
 `}/>
 
 export function AlertSection({title, children, onDismiss}: AlertSectionProps) {

@@ -43,7 +43,7 @@ function RangeContainer({styling, onValueChange, ...props}: RangeContainerProps)
                               onValueChange(value)
                           }}
                           styling={mergeStyling(styling, css`
-                            & {
+                            
                               -webkit-appearance: none;
                               height: ${Pixel.halfField};
                               width: 80%;
@@ -52,7 +52,6 @@ function RangeContainer({styling, onValueChange, ...props}: RangeContainerProps)
                               background: transparent; /* Otherwise white in Chrome */
                               display: inline-block;
                               vertical-align: middle;
-                            }
 
                             &:focus {
                               -webkit-appearance: none;

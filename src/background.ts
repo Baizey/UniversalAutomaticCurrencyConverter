@@ -61,17 +61,7 @@ enum ContextMenuItem {
 		browser.contextMenus.create( {
 			id: ContextMenuItem.openContextMenu,
 			title: `Open context menu...`,
-			contexts: [
-				'page',
-				'link',
-				'image',
-				'browser_action',
-				'video',
-				'audio',
-				'editable',
-				'page_action',
-				'selection',
-			],
+			contexts: ['all',],
 		} )
 
 		browser.contextMenus.onClicked.addListener( function ( info, _tab ) {

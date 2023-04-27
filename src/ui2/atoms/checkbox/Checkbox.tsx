@@ -1,23 +1,20 @@
 import {effect, useSignal} from '@preact/signals'
 import {useEffect} from 'preact/compat'
 import {useTheme} from '../contexts'
-import {InputProp} from '../utils/InputProp'
 import {css, Div, DivProps} from "@baizey/styled-preact";
 
-export type CheckboxProps = InputProp<boolean>
+export type CheckboxProps = {value: boolean, onInput: (value: boolean) => void }
 
 type ContainerProps = DivProps & { checked: boolean };
 const Container = ({checked, ...props}: ContainerProps) => {
     const theme = useTheme()
     return <Div {...props} styling={css`
-      & {
-        cursor: pointer;
-        width: 30px;
-        height: 30px;
-        border-width: 1px;
-        position: relative;
-        display: block;
-      }
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      border-width: 1px;
+      position: relative;
+      display: block;
 
       &:hover {
         transition: border-color 0.3s ease-in-out;
