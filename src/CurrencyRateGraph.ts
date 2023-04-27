@@ -1,5 +1,5 @@
 import {CurrencyRateLookup} from './services/SymbolsService';
-import {TimeSpan} from "sharp-time-span";
+import {Time} from "./Time";
 
 export class CurrencyRateNode {
     readonly tag: string
@@ -20,7 +20,7 @@ export interface CurrencyRateEdge {
     from: CurrencyRateNode
     to: CurrencyRateNode
     rate: number
-    timestamp: TimeSpan;
+    timestamp: Time;
 }
 
 export interface Conversion {

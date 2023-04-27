@@ -1,7 +1,7 @@
 import {SymbolsResponse} from "../integration/IProxyAgent";
 import {FixerProxyAgent} from "../integration/FixerProxyAgent";
 import {OpenExchangeProxyAgent} from "../integration/OpenExchangeProxyAgent";
-import {TimeSpan} from "sharp-time-span";
+import {Time} from "../Time";
 
 global.fetch = require("node-fetch");
 
@@ -11,7 +11,7 @@ export type CurrencyRate = {
     from: string
     to: string
     rate: number
-    timestamp: TimeSpan,
+    timestamp: Time,
     source: string
 }
 

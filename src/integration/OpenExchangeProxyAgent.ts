@@ -1,5 +1,5 @@
 import {IProxyAgent} from "./IProxyAgent";
-import {TimeSpan} from "sharp-time-span";
+import {Time} from "../Time";
 
 const openExchangeApiKey: string = process.env.openExchangeApiKey || ''
 const openExchangeRatesUrl: string = `https://openexchangerates.org/api/latest.json?app_id=${encodeURIComponent(openExchangeApiKey)}`
@@ -20,7 +20,7 @@ export class OpenExchangeProxyAgent implements IProxyAgent {
     async getRates() {
         const response: RatesResponse = await fetch(openExchangeRatesUrl).then(async e => await e.json())
         return {
-            timestamp: TimeSpan.of({seconds: response.timestamp}),
+            timestamp: new Time({seconds: response.timestamp}),
             base: response.base,
             rates: response.rates,
             source: 'openexchangerates.org',
