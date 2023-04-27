@@ -6,23 +6,25 @@
     "start": "nodemon -r dotenv/config dist/Api.js",
     "build:dev": "tsc --watch --preserveWatchOutput",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest --config jest.config.ts"
   },
   "dependencies": {
-    "concurrently": "^6.2.0",
-    "nodemon": "^2.0.7",
-    "typescript": "^4.2.4",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "node-fetch": "^2.6.1",
-    "ts-node": "^10.0.0"
+    "sharp-time-span": "1.0.5",
+    "concurrently": "^8.0.1",
+    "nodemon": "^2.0.22",
+    "typescript": "^5.0.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.1",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.11",
-    "@types/node": "^15.6.0",
-    "@types/jest": "^26.0.23",
-    "jest": "^27.0.4",
-    "ts-jest": "^27.0.3",
-    "babel-jest": "^27.0.2"
+    "@tsconfig/recommended": "1.0.2",
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.16.1",
+    "@types/jest": "^29.5.1",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "babel-jest": "^29.5.0"
   }
 }

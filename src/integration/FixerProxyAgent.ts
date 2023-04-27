@@ -1,5 +1,5 @@
 import {IProxyAgent} from "./IProxyAgent";
-import {Time} from "../Time";
+import {TimeSpan} from "sharp-time-span";
 
 const fixerApiKey: string = process.env.fixerApiKey || ''
 const fixerRatesUrl: string = `http://data.fixer.io/api/latest?access_key=${encodeURIComponent(fixerApiKey)}`
@@ -24,7 +24,7 @@ export class FixerProxyAgent implements IProxyAgent {
         const response: RatesResponse = await fetch(fixerRatesUrl)
             .then(async e => await e.json())
         return {
-            timestamp: new Time({seconds: response.timestamp}),
+            timestamp: TimeSpan.of({seconds: response.timestamp}),
             base: response.base,
             rates: response.rates,
             source: 'fixer.io',

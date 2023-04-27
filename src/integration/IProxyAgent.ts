@@ -1,9 +1,9 @@
-import {Time} from "../Time";
+import {TimeSpan} from "sharp-time-span";
 
 export type RateResponse = {
     base: string
     rates: Record<string, number>
-    timestamp: Time
+    timestamp: TimeSpan
     source: string
 }
 

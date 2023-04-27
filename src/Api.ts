@@ -1,11 +1,11 @@
 import {RatesService} from "./services/RatesService";
-
-require('dotenv').config();
 import express from 'express'
-import {Time} from "./Time";
 import {Conversion, CurrencyRateGraph} from './CurrencyRateGraph';
 import {SymbolsService} from "./services/SymbolsService";
 import {HttpStatus, Routes} from "./constants";
+import {TimeSpan} from "sharp-time-span";
+
+require('dotenv').config();
 
 class Data {
     symbols: Record<string, string> = {}
@@ -28,14 +28,14 @@ async function update() {
 }
 
 update().catch(console.error);
-setInterval(() => update().catch(console.error), new Time({hours: 6}).milliseconds);
+setInterval(() => update().catch(console.error), TimeSpan.of({hours: 6}).millis);
 
 
 const api = express();
 
 const apiKey = process.env.ownApiKey
 api.use((request, response, next) => {
-    // Health check doesnt need apikey, everything else does
+    // Health check doesn't need apikey, everything else does
     if (request.path.startsWith(Routes.health))
         return next()
     if (!('x-apikey' in request.headers))
@@ -87,13 +87,13 @@ class Mapper {
             from: rate.from,
             to: rate.to,
             rate: rate.rate,
-            timestamp: rate.path.map(e => e.timestamp.milliseconds).reduce((a, b) => a < b ? a : b, Date.now()),
+            timestamp: rate.path.map(e => e.timestamp.millis).reduce((a, b) => a < b ? a : b, Date.now()),
             path: rate.path.map(e => ({
                 source: e.source,
                 from: e.from.tag,
                 to: e.to.tag,
                 rate: e.rate,
-                timestamp: e.timestamp.milliseconds
+                timestamp: e.timestamp.millis
             }))
         }
     }
