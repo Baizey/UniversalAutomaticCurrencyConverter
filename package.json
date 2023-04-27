@@ -5,8 +5,7 @@
     "start:dev": "nodemon -r dotenv/config dist/Api.js localhost 3000",
     "start": "nodemon -r dotenv/config dist/Api.js",
     "build:dev": "tsc --watch --preserveWatchOutput",
-    "build": "tsc",
-    "test": "jest"
+    "build": "tsc"
   },
   "dependencies": {
     "concurrently": "^6.2.0",
