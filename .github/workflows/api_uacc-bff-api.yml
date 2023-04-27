@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://go.microsoft.com/fwlink/?linkid=2134798
 # More GitHub Actions for Azure: https://go.microsoft.com/fwlink/?linkid=2135048
 
-name: Azure App Service - uacc-bff-api(Production), Build and deploy NodeJS app
+name: Azure backend service deployment
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
     - name: Set up Node.js version
       uses: actions/setup-node@v3
       with:
-        node-version: '20.x'
+        node-version: '18.x'
 
     - name: npm install
       run: npm install
@@ -31,7 +31,7 @@ jobs:
     #- name: npm test
     #  run: npm run test --if-present
 
-    - name: Run Azure webapp deploy action using publish profile credentials
+    - name: Deploy to azure
       uses: azure/webapps-deploy@v2
       with:
         app-name: uacc-bff-api
