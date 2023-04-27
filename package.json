@@ -1,6 +1,7 @@
 {
   "name": "uacc",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "start:dev": "nodemon -r dotenv/config dist/Api.js localhost 3000",
     "start": "nodemon -r dotenv/config dist/Api.js",
