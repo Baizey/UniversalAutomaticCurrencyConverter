@@ -20,7 +20,7 @@ export function CustomDisplayCard() {
 				<SettingOption title="Use custom display">
 					<Checkbox
 						value={ enabled.value }
-						onInput={ value => enabled.setAndSaveValue( value ) }
+						onValueChange={value => enabled.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>

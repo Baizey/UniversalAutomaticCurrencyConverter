@@ -30,7 +30,7 @@ export function ConvertToCard() {
 				<SettingOption title="Convert pages automatically on load">
 					<Checkbox
 						value={ useAutoConvertOnPageLoad.value }
-						onInput={ value => useAutoConvertOnPageLoad.setAndSaveValue( value ) }
+						onValueChange={value => useAutoConvertOnPageLoad.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>

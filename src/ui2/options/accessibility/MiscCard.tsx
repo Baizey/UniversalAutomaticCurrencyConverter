@@ -61,7 +61,7 @@ export function MiscCard() {
 				>
 					<Checkbox
 						value={ showConversionInBrackets.value }
-						onInput={ ( value ) => showConversionInBrackets.setAndSaveValue( value ) }
+						onValueChange={ (value ) => showConversionInBrackets.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>

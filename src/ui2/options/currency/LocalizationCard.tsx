@@ -117,7 +117,7 @@ export function LocalizationCard() {
 				<SettingOption title="Show localization alerts">
 					<Checkbox
 						value={ usingAlert.value }
-						onInput={ ( value ) => usingAlert.setAndSaveValue( value ) }
+						onValueChange={ (value ) => usingAlert.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>

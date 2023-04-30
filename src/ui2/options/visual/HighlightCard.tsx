@@ -23,7 +23,7 @@ export function HighlightCard() {
 				<SettingOption title="Highlight conversions">
 					<Checkbox
 						value={ enabled.value }
-						onInput={ ( value ) => enabled.setAndSaveValue( value ) }
+						onValueChange={ (value ) => enabled.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>

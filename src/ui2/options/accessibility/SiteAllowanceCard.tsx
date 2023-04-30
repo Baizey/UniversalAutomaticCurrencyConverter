@@ -24,14 +24,14 @@ export function SiteAllowanceCard() {
 				<SettingOption title="Use blacklist">
 					<Checkbox
 						value={ useBlacklisting.value }
-						onInput={ ( value ) => useBlacklisting.setAndSaveValue( value ) }
+						onValueChange={ (value ) => useBlacklisting.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>
 				<SettingOption title="Use whitelist">
 					<Checkbox
 						value={ useWhitelisting.value }
-						onInput={ ( value ) => useWhitelisting.setAndSaveValue( value ) }
+						onValueChange={ (value ) => useWhitelisting.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>

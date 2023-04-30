@@ -20,13 +20,12 @@ const unpackedDir = `${buildDir}/unpacked`
 console.log(`Build dir: ${buildDir}`)
 console.log(`Asset dir: ${publicDir}`)
 
-function remove(dir: string) {
+function deleteDir(dir: string) {
     if (fs.existsSync(path.resolve(__dirname, dir)))
         fs.rmSync(path.resolve(__dirname, dir), {recursive: true, force: true})
 }
 
-function create(dir: string) {
-    remove(dir)
+function createDir(dir: string) {
     const parts = dir.split('/').filter(e => e)
     let partialPath = ''
     parts.forEach(e => {
@@ -73,7 +72,8 @@ function create(dir: string) {
     } satisfies InlineConfig
 
     // Manual clean build-dir, as we build multiple entry-points in parallel we cannot do it on a build-basis
-    create(unpackedDir)
+    deleteDir(unpackedDir)
+    createDir(unpackedDir)
 
     await Promise.all(entryPoints.map(entrypoint =>
         build(mergeConfig(config,

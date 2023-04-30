@@ -21,14 +21,14 @@ export function MouseInteractionCard() {
 				<SettingOption title="Convert prices by left clicking">
 					<Checkbox
 						value={ leftClickOnHoverFlipConversion.value }
-						onInput={ ( value ) => leftClickOnHoverFlipConversion.setAndSaveValue( value ) }
+						onValueChange={ (value ) => leftClickOnHoverFlipConversion.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>
 				<SettingOption title="Convert prices on hover over">
 					<Checkbox
 						value={ onHoverFlipConversion.value }
-						onInput={ ( value ) => onHoverFlipConversion.setAndSaveValue( value ) }
+						onValueChange={ (value ) => onHoverFlipConversion.setAndSaveValue( value ) }
 						onClick={ () => {} }
 					/>
 				</SettingOption>

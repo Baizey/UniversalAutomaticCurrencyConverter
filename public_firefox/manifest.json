@@ -51,7 +51,6 @@
     "https://uacc-bff-api.azurewebsites.net/*"
   ],
   "permissions": [
-    "https://uacc-bff-api.azurewebsites.net/*",
     "contextMenus",
     "activeTab",
     "storage"
