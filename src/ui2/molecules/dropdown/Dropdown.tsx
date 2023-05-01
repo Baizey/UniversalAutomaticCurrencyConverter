@@ -5,12 +5,12 @@ import {css, Div, DivProps, List, ListProps, mergeStyling} from "@baizey/styled-
 import {ReadonlyInput, TextInput, useTheme} from "../../atoms";
 
 
-const Container = ({children, ...props}: DivProps) => <Div
+const Container = (props: DivProps) => <Div
     {...props}
     style={{
         margin: '0 auto',
         position: 'relative',
-    }}>{children}</Div>
+    }}/>
 
 const maxDisplayedItems = 3
 
@@ -149,6 +149,9 @@ function DropdownInput({isFocused, query, selectedValue}: {
         placeholder={selectedValue.value}
         placeholderColor={useTheme().normalText}
         value={query.value}
-        onValueChange={value => query.value = value}
+        onValueChange={value => {
+            query.value = value
+            if (value) isFocused.value = 1 + Math.random()
+        }}
     />
 }
