@@ -75,7 +75,7 @@ export function Dropdown({
                              listLocation = DropdownListLocation.bottom,
                          }: Props) {
     const selectedOption = options.filter(e => e.key === initialValue)[0]
-    const isFocused = useSignal(false)
+    const isFocused = useSignal(0)
     const query = useSignal('')
     const selected = useSignal(selectedOption?.text)
 
@@ -84,11 +84,14 @@ export function Dropdown({
         onSelection(option.key)
         selected.value = option.text
         query.value = ''
+        isFocused.value = 0
     }
 
     useEffect(() => {
+        const selectedOption = options.filter(e => e.key === initialValue)[0]
         selected.value = selectedOption?.text
     }, [initialValue])
+
     useEffect(() => {
         if (!isFocused.value) return
         const handler = (e: { key: string }) => {
@@ -103,7 +106,8 @@ export function Dropdown({
 
     const inputField = <DropdownInput selectedValue={selected} isFocused={isFocused} query={query}/>
     return (
-        <Container onMouseLeave={() => isFocused.value = false}>
+        <Container
+            onfocusin={() => isFocused.value += Math.random()}>
             {listLocation === DropdownListLocation.top && inputField}
             <DropdownOptions isFocused={isFocused}
                              visibleOptions={visibleOptions}
@@ -115,28 +119,36 @@ export function Dropdown({
 }
 
 function DropdownOptions({isFocused, visibleOptions, listLocation, handleSelection}: {
-    isFocused: Signal<boolean>,
+    isFocused: Signal<number>,
     visibleOptions: DropdownOption[],
     listLocation?: DropdownListLocation,
     handleSelection: (option: DropdownOption) => void
 }) {
-    const options = visibleOptions.map(option => <ReadonlyInput value={option.text} onClick={() => handleSelection(option)}/>)
-    return <DropdownList isVisible={isFocused.value}
+    const options = visibleOptions.map(option => <ReadonlyInput
+        value={option.text}
+        onClick={() => handleSelection(option)}
+    />)
+    return <DropdownList isVisible={!!isFocused.value}
                          location={listLocation}
                          totalOptions={visibleOptions.length}
                          children={options}/>
 }
 
 function DropdownInput({isFocused, query, selectedValue}: {
-    isFocused: Signal<boolean>,
+    isFocused: Signal<number>,
     selectedValue: Signal<string>
     query: Signal<string>
 }) {
+    const currentValue = isFocused.value
     return <TextInput
-        onMouseOver={() => isFocused.value = true}
+        onfocusout={() => {
+            setTimeout(() => {
+                if (isFocused.value === currentValue) isFocused.value = 0
+            }, 150)
+        }}
         placeholder={selectedValue.value}
         placeholderColor={useTheme().normalText}
         value={query.value}
-        onValueChange={(value: string) => query.value = value}
+        onValueChange={value => query.value = value}
     />
 }
