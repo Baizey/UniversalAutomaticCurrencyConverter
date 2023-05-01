@@ -94,7 +94,7 @@ export function Dropdown({
 
     useEffect(() => {
         if (!isFocused.value) return
-        const handler = (e: { key: string }) => {
+        const handler = (e: KeyboardEvent) => {
             if (e.key !== 'Enter') return
             const choice = visibleOptions[0]
             if (!choice) return
