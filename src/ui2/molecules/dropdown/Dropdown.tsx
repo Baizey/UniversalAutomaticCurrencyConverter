@@ -107,7 +107,7 @@ export function Dropdown({
     const inputField = <DropdownInput selectedValue={selected} isFocused={isFocused} query={query}/>
     return (
         <Container
-            onfocusin={() => isFocused.value += Math.random()}>
+            onfocusin={() => isFocused.value = 1 + Math.random()}>
             {listLocation === DropdownListLocation.top && inputField}
             <DropdownOptions isFocused={isFocused}
                              visibleOptions={visibleOptions}
