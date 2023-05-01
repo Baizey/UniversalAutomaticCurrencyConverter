@@ -2,7 +2,7 @@
 import { render } from 'preact/compat'
 import { oneSecond, TimeSpan } from 'sharp-time-span'
 import { CurrencyElement } from './currencyConverter/Currency'
-import { useProvider } from './di'
+import {useProvider} from './di'
 import { ContentApp } from './ui2/content'
 
 const isBlacklistedErrorMessage = `Site is blacklisted`
