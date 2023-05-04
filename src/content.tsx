@@ -31,7 +31,7 @@ function loadTabInformation(): boolean {
 	} = useProvider()
 	logger.info( `Loaded settings` )
 
-	// Check if blacklisted, if so abandon tab and dont do anything
+	// Check if blacklisted, if so abandon tab and don't do anything
 	const allowance = siteAllowance.getAllowance( browser.url.href )
 	tabState.setIsAllowed( allowance.isAllowed )
 	tabState.setIsShowingConversions( useAutoConvertOnPageLoad.value )
