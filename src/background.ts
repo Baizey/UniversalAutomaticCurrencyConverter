@@ -1,5 +1,5 @@
 // This file is run as a background script
 import {handleError} from './di'
-import {run} from "./serviceWorker";
+import {startServiceWorker} from "./serviceWorker";
 
-run().catch(handleError)
+startServiceWorker().catch(handleError)
