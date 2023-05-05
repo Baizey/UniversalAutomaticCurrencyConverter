@@ -1,9 +1,15 @@
 import {Query} from "../messengerHandlerManager";
 import {RateApi} from "../../../serviceWorker/RateApi";
 import {log} from "../../../di";
-import {BackgroundMessageType, SymbolBackgroundMessage} from "./BackgroundMessenger";
 
-export class SymbolQuery implements Query<SymbolBackgroundMessage, Record<string, string>> {
+import {BackgroundMessageType} from "./BackgroundMessageType";
+
+export type SymbolBackgroundMessage = {
+    type: BackgroundMessageType.getSymbols
+}
+export type SymbolResponse = Record<string, string>
+
+export class SymbolQuery implements Query<SymbolBackgroundMessage, SymbolResponse> {
     readonly key = BackgroundMessageType.getSymbols
 
     async handle(request: SymbolBackgroundMessage) {

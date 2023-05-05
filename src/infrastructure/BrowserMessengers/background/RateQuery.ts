@@ -2,7 +2,30 @@ import {Query} from "../messengerHandlerManager";
 import {isCurrencyTag} from "../../../serviceWorker/utils";
 import {RateApi} from "../../../serviceWorker/RateApi";
 import {log} from "../../../di";
-import {BackgroundMessageType, RateBackgroundMessage, RateResponse} from "./BackgroundMessenger";
+
+import {BackgroundMessageType} from "./BackgroundMessageType";
+
+export type RatePath = {
+    from: string;
+    to: string;
+    source: string;
+    rate: number;
+    timestamp: number;
+}[];
+
+export type RateResponse = {
+    from: string;
+    to: string;
+    rate: number;
+    timestamp: number;
+    path: RatePath;
+};
+
+export type RateBackgroundMessage = {
+    type: BackgroundMessageType.getRate
+    from: string
+    to: string
+}
 
 export class RateQuery implements Query<RateBackgroundMessage, RateResponse> {
     readonly key = BackgroundMessageType.getRate

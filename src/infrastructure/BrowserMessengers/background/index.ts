@@ -22,3 +22,6 @@ export const BackgroundMessengerDi = {
     }),
     [backgroundMessenger]: singleton(BackgroundMessenger),
 }
+
+export type {BackgroundMessenger}
+export type {RatePath, RateResponse} from './RateQuery'

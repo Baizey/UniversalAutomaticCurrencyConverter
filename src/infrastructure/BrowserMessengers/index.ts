@@ -19,3 +19,5 @@ export const MessengerDi = {
     [popupMessenger]: singleton(PopupMessenger),
     [tabMessenger]: singleton(TabMessenger),
 }
+
+export * from './background'

@@ -2,41 +2,13 @@ import {Browser, BrowserDiTypes} from '../../index'
 import {log} from "../../../di";
 import {MessageResponse, MessengerHandlerManager} from "../messengerHandlerManager";
 import {BackgroundMessengerDi} from "./index";
-
-export enum BackgroundMessageType {
-    getRate = 'getRate',
-    getSymbols = 'getSymbols',
-}
-
-export type RateBackgroundMessage = {
-    type: BackgroundMessageType.getRate
-    from: string
-    to: string
-}
-
-export type SymbolBackgroundMessage = {
-    type: BackgroundMessageType.getSymbols
-}
+import {RateBackgroundMessage, RateResponse} from "./RateQuery";
+import {SymbolBackgroundMessage, SymbolResponse} from "./SymbolQuery";
+import {BackgroundMessageType} from "./BackgroundMessageType";
 
 export type BackgroundMessage =
     | RateBackgroundMessage
     | SymbolBackgroundMessage
-
-export type RatePath = {
-    from: string;
-    to: string;
-    source: string;
-    rate: number;
-    timestamp: number;
-}[];
-
-export type RateResponse = {
-    from: string;
-    to: string;
-    rate: number;
-    timestamp: number;
-    path: RatePath;
-};
 
 export class BackgroundMessenger {
     private readonly browser: Browser
@@ -59,7 +31,7 @@ export class BackgroundMessenger {
         return await this.sendMessage({type: BackgroundMessageType.getRate, to, from})
     }
 
-    async getSymbols(): Promise<Record<string, string>> {
+    async getSymbols(): Promise<SymbolResponse> {
         return await this.sendMessage({type: BackgroundMessageType.getSymbols})
     }
 
