@@ -5,8 +5,8 @@ import {log} from "../../di";
 import {MessageResponse, MessengerHandlerManager, Query} from "./messengerHandlerManager";
 
 export enum BackgroundMessageType {
-    getRate,
-    getSymbols,
+    getRate = 'getRate',
+    getSymbols = 'getSymbols',
 }
 
 type RateBackgroundMessage = {
@@ -50,10 +50,10 @@ export class BackgroundMessenger {
         this.handlers.add(new SymbolQuery())
     }
 
-    register() {
+    listen() {
         const handlers = this.handlers
         this.browser.runtime.onMessage.addListener((request: BackgroundMessage, sender, senderResponse,): boolean => {
-            handlers.handle(senderResponse, request.type.toString(), request).catch(log.error)
+            handlers.handle(senderResponse, request.type, request).catch(log.error)
             return true
         })
     }
@@ -80,15 +80,13 @@ class RateQuery implements Query<RateBackgroundMessage, RateResponse> {
     async handle(request: RateBackgroundMessage): Promise<RateResponse> {
         if (!isCurrencyTag(request.to) || !isCurrencyTag(request.from))
             throw new Error(`Invalid currency tags given (${request.from}, ${request.to})`)
-        if (request.from === request.to) return {rate: 1, ...request, timestamp: Date.now(), path: []}
-        return await RateApi.fetch(`v4/rate/${request.from}/${request.to}`)
-            .then(async (resp) => {
-                const text: string = await resp.text()
-                log.info(
-                    `Fetching rate ${request.from} => ${request.to} = ${resp.statusText}\n${text}`,
-                )
-                return JSON.parse(text)
-            })
+        if (request.from === request.to)
+            return {rate: 1, ...request, timestamp: Date.now(), path: []}
+
+        const resp = await RateApi.fetch(`v4/rate/${request.from}/${request.to}`)
+        const text: string = await resp.text()
+        log.info(`Fetching rate ${request.from} => ${request.to} = ${resp.statusText}\n${text}`)
+        return JSON.parse(text)
     }
 }
 
@@ -96,11 +94,9 @@ class SymbolQuery implements Query<SymbolBackgroundMessage, Record<string, strin
     readonly key = BackgroundMessageType.getSymbols
 
     async handle(request: SymbolBackgroundMessage) {
-        return await RateApi.fetch(`v4/symbols`)
-            .then(async (resp) => {
-                const text: string = await resp.text()
-                log.info(`Fetching symbols ${resp.statusText}\n${text}`)
-                return JSON.parse(text)
-            })
+        const resp = await RateApi.fetch(`v4/symbols`)
+        const text: string = await resp.text()
+        log.info(`Fetching symbols ${resp.statusText}\n${text}`)
+        return JSON.parse(text)
     }
 }

@@ -33,7 +33,8 @@ async function handleContextMenuCreation() {
 }
 
 async function handleMessengerRegistration() {
-    useProvider().backgroundMessenger.register()
+    const {backgroundMessenger} = useProvider()
+    backgroundMessenger.listen()
 }
 
 export const startServiceWorker = async () => {
