@@ -71,8 +71,8 @@ function createDir(dir: string) {
         publicDir: publicDir
     } satisfies InlineConfig
 
-    // Manual clean build-dir, as we build multiple entry-points in parallel we cannot do it on a build-basis
-    deleteDir(unpackedDir)
+    // Manual clean build-dir, as we build multiple entry-points in parallel, we cannot do it on a build-basis
+    deleteDir(buildDir)
     createDir(unpackedDir)
 
     await Promise.all(entryPoints.map(entrypoint =>

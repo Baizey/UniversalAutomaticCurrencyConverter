@@ -1,22 +1,21 @@
-import { propertyOf, singleton } from '@baizey/dependency-injection'
-import { BackgroundMessenger } from './BackgroundMessenger'
-import { PopupMessenger } from './PopupMessenger'
-import { TabMessenger } from './TabMessenger'
+import {propertyOf, singleton} from '@baizey/dependency-injection'
+import {PopupMessenger} from './PopupMessenger'
+import {TabMessenger} from './TabMessenger'
+import {BackgroundMessengerDi} from "./background";
 
-export * from './BackgroundMessenger'
+export * from './background/BackgroundMessenger'
 export * from './PopupMessenger'
 export * from './TabMessenger'
 
 export type MessengerDi = {
-	popupMessenger: PopupMessenger
-	backgroundMessenger: BackgroundMessenger
-	tabMessenger: TabMessenger
-}
+    popupMessenger: PopupMessenger
+    tabMessenger: TabMessenger
+} & BackgroundMessengerDi
 
-const { popupMessenger, backgroundMessenger, tabMessenger } = propertyOf<MessengerDi>()
+const {popupMessenger, tabMessenger} = propertyOf<MessengerDi>()
 
 export const MessengerDi = {
-	[popupMessenger]: singleton( PopupMessenger ),
-	[backgroundMessenger]: singleton( BackgroundMessenger ),
-	[tabMessenger]: singleton( TabMessenger ),
+    ...BackgroundMessengerDi,
+    [popupMessenger]: singleton(PopupMessenger),
+    [tabMessenger]: singleton(TabMessenger),
 }
