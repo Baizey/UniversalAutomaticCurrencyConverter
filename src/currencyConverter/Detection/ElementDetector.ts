@@ -59,7 +59,7 @@ export class ElementDetector implements IElementDetector {
             const error = e as Error
             log.warn(`Service worker unavailable: ${error.message}`)
             log.debug(`Falling back to using UI thread`)
-            const ids = this.pseudoDetector.find(dom.root)
+            const ids = this.pseudoDetector.find(dom.root, {})
             return ids.map(id => dom.element(id)).map(e => e) as HTMLElement[]
         }
     }
