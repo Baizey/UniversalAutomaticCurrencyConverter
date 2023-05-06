@@ -52,7 +52,7 @@ export class ElementDetector {
             return await this.backgroundMessenger.findCurrencyHolders(dom)
         } catch (e) {
             const error = e as Error
-            log.warn(`Service worker unavailable: ${error.message}`)
+            log.debug(`Service worker unavailable: ${error.message}`)
             log.debug(`Falling back to using UI thread`)
             const ids = this.pseudoDetector.find(dom.root, {})
             return ids.map(id => dom.element(id)).map(e => e) as HTMLElement[]
