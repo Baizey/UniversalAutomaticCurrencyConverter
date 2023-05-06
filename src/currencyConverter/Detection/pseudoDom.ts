@@ -29,10 +29,10 @@ export class PseudoDom {
             case Node.TEXT_NODE:
                 return [node.textContent || '']
             case Node.ELEMENT_NODE:
-                if (!(node instanceof HTMLElement)) return []
-                const tagName = node.tagName.toLowerCase()
+                const element = node as HTMLElement
+                const tagName = element.tagName.toLowerCase()
                 if (this.ignoredTag(tagName)) return []
-                isWatched ||= node.hasAttribute('uacc:watched')
+                isWatched ||= element.hasAttribute('uacc:watched')
                 const children = node.hasChildNodes()
                     ? [...node.childNodes]
                         .map(e => this.createPseudoNode(e, isWatched))

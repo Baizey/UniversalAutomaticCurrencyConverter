@@ -13,7 +13,7 @@ export * from './BrowserMessengers'
 
 export type { ISetting } from './Configuration/setting/ISetting'
 export { mapToTheme, themes } from './Theme'
-export type { ThemeProps, MyTheme } from './Theme'
+export type { MyTheme } from './Theme'
 
 const BrowserDi = { browser: singleton( Browser ) }
 export type BrowserDiTypes = AsServices<typeof BrowserDi>

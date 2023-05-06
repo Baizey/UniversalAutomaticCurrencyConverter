@@ -1,12 +1,14 @@
 import { MockStrategy, singleton } from '@baizey/dependency-injection'
-import { Mockable, Providable, setMockProvider, useServices } from '../src/di'
+import { Mockable, setMockProvider, useServices } from '../src/di'
 import { BrowserMock } from './Browser.mock'
+import {Providable} from "../src/provideable";
 
 function addNodeIfNotExisting() {
 	if ( !global.Node ) {
 		// @ts-ignore
 		global.Node = {
 			TEXT_NODE: 3,
+			ELEMENT_NODE: 1
 		}
 	}
 }

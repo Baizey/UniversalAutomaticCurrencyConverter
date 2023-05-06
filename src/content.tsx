@@ -160,25 +160,19 @@ async function detectAllElements(
     } = useProvider()
     const currency = convertTo.value
 
-    try {
-        const discovered = await elementDetector.find(parent)
+    const discovered = await elementDetector.find(parent)
 
-        for (let element of discovered) {
-            await element.convertTo(currency)
-            element.setupListener()
-            await element.show()
-            if (tabState.isShowingConversions && !tabState.isPaused) {
-                element.highlight()
-            }
+    for (let element of discovered) {
+        await element.convertTo(currency)
+        element.setupListener()
+        await element.show()
+        if (tabState.isShowingConversions && !tabState.isPaused) {
+            element.highlight()
         }
-
-        discovered.forEach((e) => tabState.conversions.push(e))
-        return discovered
-    } catch (e) {
-        console.error("UACC: " + Object.keys(e))
-        console.error("UACC: " + JSON.stringify(e))
-        throw e
     }
+
+    discovered.forEach((e) => tabState.conversions.push(e))
+    return discovered
 }
 
 async function detectAllNewElementsRecurring(): Promise<void> {

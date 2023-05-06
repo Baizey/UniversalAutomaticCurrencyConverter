@@ -8,12 +8,6 @@ import {PseudoDom, PseudoDomDi} from "./pseudoDom";
 import {PseudoDetector, PseudoDetectorDi} from "./PseudoDetector";
 import {log} from "../../di";
 
-export interface IElementDetector {
-    find(element: HTMLElement): Promise<CurrencyElement[]>;
-
-    detect(element: HTMLElement): boolean;
-}
-
 export type ElementDetectorDi = { elementDetector: ElementDetector }
 type ElementDetectorDep =
     InfrastructureDiTypes
@@ -24,7 +18,7 @@ type ElementDetectorDep =
     & PseudoDomDi
     & PseudoDetectorDi
 
-export class ElementDetector implements IElementDetector {
+export class ElementDetector {
     private readonly textDetector: ITextDetector
     private readonly currencyElement: Stateful<HTMLElement, CurrencyElement>
     private readonly backgroundMessenger: BackgroundMessenger;
@@ -46,6 +40,7 @@ export class ElementDetector implements IElementDetector {
     }
 
     async find(element: HTMLElement): Promise<CurrencyElement[]> {
+        if (!this.detect(element)) return []
         const pseudoDom = this.pseudoDomFactory.create(element)
         const elements = await this.tryFind(pseudoDom)
         elements.forEach(e => e.setAttribute('uacc:watched', 'true'))
@@ -64,7 +59,7 @@ export class ElementDetector implements IElementDetector {
         }
     }
 
-    detect(element: HTMLElement) {
+    private detect(element: HTMLElement) {
         return this.textDetector.detect(element.textContent || '')
     }
 }
