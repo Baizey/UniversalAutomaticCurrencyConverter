@@ -21,14 +21,20 @@ async function handleVersionCheck() {
 }
 
 async function handleContextMenuCreation() {
-    useProvider().browser.contextMenus.create({
-        id: ContextMenuItem.openContextMenu,
-        title: `Open context menu...`,
-        contexts: ['all',]
-    })
-    useProvider().browser.contextMenus.onClicked.addListener(
-        (info, tab) => useProvider().tabMessenger.openContextMenu(tab.id)
-    )
+    try {
+        useProvider().browser.contextMenus.create({
+            id: ContextMenuItem.openContextMenu,
+            title: `Open context menu...`,
+            contexts: ['all',]
+        })
+    } catch (e) {
+    }
+    try {
+        useProvider().browser.contextMenus.onClicked.addListener(
+            (info, tab) => useProvider().tabMessenger.openContextMenu(tab.id)
+        )
+    } catch (e) {
+    }
 }
 
 async function handleMessengerRegistration() {
