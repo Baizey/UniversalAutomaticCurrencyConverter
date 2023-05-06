@@ -3,13 +3,10 @@ import {log, useProvider} from '../di'
 import {ContextMenuItem} from "./contextMenuItem";
 
 async function loadSettings() {
-    const {
-        metaConfig: {lastVersion, logging},
-    } = useProvider()
-    await Promise.all([
-        lastVersion.loadSetting(),
-        logging.loadSetting()
-    ])
+    const {config} = useProvider()
+    await config.load()
+    const {activeLocalization} = useProvider()
+    await activeLocalization.load('<html lang="us-EN"></html>')
 }
 
 async function handleVersionCheck() {
@@ -27,14 +24,16 @@ async function handleContextMenuCreation() {
     useProvider().browser.contextMenus.create({
         id: ContextMenuItem.openContextMenu,
         title: `Open context menu...`,
-        contexts: ['all',],
-        onclick: (info, tab) => useProvider().tabMessenger.openContextMenu(tab.id)
+        contexts: ['all',]
     })
+    useProvider().browser.contextMenus.onClicked.addListener(
+        (info, tab) => useProvider().tabMessenger.openContextMenu(tab.id)
+    )
 }
 
 async function handleMessengerRegistration() {
-    const {backgroundMessenger} = useProvider()
-    backgroundMessenger.listen()
+    const {backgroundHandlers} = useProvider()
+    backgroundHandlers.listen()
 }
 
 export const startServiceWorker = async () => {

@@ -239,7 +239,7 @@ export class CurrencyElement {
 					texts[node].substr( end - indexes[node] ) )
 			}
 
-			// If both start end end is within same node
+			// If both start end ends are within the same node
 			if ( start >= indexes[node] ) {
 				return ( texts[node] =
 					texts[node].substr( 0, start - indexes[node] ) +

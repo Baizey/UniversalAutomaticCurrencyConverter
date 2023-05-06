@@ -1,11 +1,29 @@
+import {log} from "../../di";
+import {BackgroundMessage} from "./background/BackgroundMessenger";
+import {Browser, BrowserDiTypes} from "../index";
+
 export class MessengerHandlerManager {
-    private queries: { [key: string]: Query<any, any> } = {}
+    private readonly queries: { [key: string]: Query<any, any> | undefined } = {}
+    private readonly browser: Browser
+
+    constructor({browser}: BrowserDiTypes) {
+        this.browser = browser
+    }
+
+    listen() {
+        const self = this
+        this.browser.runtime.onMessage.addListener((request: BackgroundMessage, sender, senderResponse,): boolean => {
+            self.handle(senderResponse, request.type, request).catch(log.error)
+            return true
+        })
+    }
 
     add(query: Query<any, any>) {
         this.queries[query.key] = query
     }
 
     async handle(respond: (resp: MessageResponse) => void, key: string, request: any) {
+        log.info(`Handling message ${key}`)
         const queryHandler = this.queries[key]
         if (!queryHandler) return respond({
             success: false,

@@ -116,10 +116,10 @@ export class ActiveLocalization implements IActiveLocalization {
 		return localized
 	}
 
-	async load(): Promise<void> {
+	async load(siteContent?: string): Promise<void> {
 		this.isLocked = await this.browser.loadLocal<boolean>( this.lockedKey )
 		await Promise.all( [ this.krone.load(), this.yen.load(), this.dollar.load() ] )
-		await this.determineForSite()
+		await this.determineForSite(siteContent)
 		this.symbols = await this.backendApi.symbols()
 		this.disabledCurrencies.value.forEach( ( v ) => ( this.isDisabled[v] = true ) )
 		this.updateLocalization( this.compact )

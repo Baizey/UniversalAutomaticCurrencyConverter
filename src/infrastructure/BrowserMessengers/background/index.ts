@@ -1,25 +1,34 @@
 import {BackgroundMessenger} from "./BackgroundMessenger";
 import {propertyOf, singleton} from "@baizey/dependency-injection";
-import {MessengerHandlerManager} from "../messengerHandlerManager";
-import {RateQuery} from "./RateQuery";
+import {BackgroundMessageHandler} from "./BackgroundMessageHandler";
+import {DetectionQuery} from "./DetectionQuery";
 import {SymbolQuery} from "./SymbolQuery";
+import {RateQuery} from "./RateQuery";
 
-export type BackgroundMessengerDi = {
-    backgroundHandlers: MessengerHandlerManager
+export type BackgroundMessengerQueryDi = {
+    backgroundDetectQuery: DetectionQuery
+    backgroundGetSymbolQuery: SymbolQuery
+    backgroundGetRateQuery: RateQuery
+}
+
+export type BackgroundMessengerDi = BackgroundMessengerQueryDi & {
+    backgroundHandlers: BackgroundMessageHandler
     backgroundMessenger: BackgroundMessenger
 }
 
-const {backgroundMessenger, backgroundHandlers} = propertyOf<BackgroundMessengerDi>()
+const {
+    backgroundMessenger,
+    backgroundHandlers,
+    backgroundDetectQuery,
+    backgroundGetSymbolQuery,
+    backgroundGetRateQuery
+} = propertyOf<BackgroundMessengerDi>()
 
 export const BackgroundMessengerDi = {
-    [backgroundHandlers]: singleton({
-        factory: () => {
-            const handler = new MessengerHandlerManager()
-            handler.add(new RateQuery())
-            handler.add(new SymbolQuery())
-            return handler
-        }
-    }),
+    [backgroundDetectQuery]: singleton(DetectionQuery),
+    [backgroundGetSymbolQuery]: singleton(SymbolQuery),
+    [backgroundGetRateQuery]: singleton(RateQuery),
+    [backgroundHandlers]: singleton(BackgroundMessageHandler),
     [backgroundMessenger]: singleton(BackgroundMessenger),
 }
 

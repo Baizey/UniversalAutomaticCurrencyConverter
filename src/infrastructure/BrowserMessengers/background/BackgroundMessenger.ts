@@ -1,30 +1,26 @@
 import {Browser, BrowserDiTypes} from '../../index'
-import {log} from "../../../di";
-import {MessageResponse, MessengerHandlerManager} from "../messengerHandlerManager";
-import {BackgroundMessengerDi} from "./index";
+import {MessageResponse} from "../messengerHandlerManager";
 import {RateBackgroundMessage, RateResponse} from "./RateQuery";
 import {SymbolBackgroundMessage, SymbolResponse} from "./SymbolQuery";
 import {BackgroundMessageType} from "./BackgroundMessageType";
+import {DetectionBackgroundMessage, DetectionResponse} from "./DetectionQuery";
+import {PseudoDom} from "../../../currencyConverter/Detection/pseudoDom";
 
 export type BackgroundMessage =
     | RateBackgroundMessage
     | SymbolBackgroundMessage
+    | DetectionBackgroundMessage
 
 export class BackgroundMessenger {
     private readonly browser: Browser
-    private readonly handlers: MessengerHandlerManager
 
-    constructor({browser, backgroundHandlers}: BrowserDiTypes & BackgroundMessengerDi) {
+    constructor({browser}: BrowserDiTypes) {
         this.browser = browser
-        this.handlers = backgroundHandlers
     }
 
-    listen() {
-        const handlers = this.handlers
-        this.browser.runtime.onMessage.addListener((request: BackgroundMessage, sender, senderResponse,): boolean => {
-            handlers.handle(senderResponse, request.type, request).catch(log.error)
-            return true
-        })
+    async findCurrencyHolders(dom: PseudoDom): Promise<HTMLElement[]> {
+        const result = await this.sendMessage<DetectionResponse>({type: BackgroundMessageType.detect, root: dom.root})
+        return result.map(id => dom.element(id)).filter(e => e) as HTMLElement[]
     }
 
     async getRate(from: string, to: string): Promise<RateResponse> {

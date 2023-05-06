@@ -9,5 +9,5 @@ export const CurrencyConverterDi = {
 	...BackendApiDi,
 	...LocalizationDi,
 	...DetectionDi,
-	...CurrencyDi,
+	...CurrencyDi
 }
