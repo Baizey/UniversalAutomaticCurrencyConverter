@@ -3,7 +3,8 @@ import {log, useProvider} from '../di'
 import {ContextMenuItem} from "./contextMenuItem";
 
 async function loadSettings() {
-    const {config} = useProvider()
+    const {browser, config} = useProvider()
+    browser.setAsServiceWorker()
     await config.load()
     const {activeLocalization} = useProvider()
     await activeLocalization.load('<html lang="us-EN"></html>')

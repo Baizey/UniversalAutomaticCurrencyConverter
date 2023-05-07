@@ -27,6 +27,7 @@ function polyfill(access: typeof chrome) {
 export class Browser {
     readonly type: Browsers
     private readonly access: typeof chrome
+    private _isServiceWorker: boolean = false;
 
     constructor() {
         this.type = this.detectBrowser()
@@ -34,6 +35,14 @@ export class Browser {
         this.access = this.isFirefox ? browser : chrome
 
         polyfill(this.access)
+    }
+
+    setAsServiceWorker() {
+        this._isServiceWorker = true
+    }
+
+    get isServiceWorker(): boolean {
+        return this._isServiceWorker
     }
 
     get document() {
