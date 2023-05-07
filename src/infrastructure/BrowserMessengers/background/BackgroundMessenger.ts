@@ -14,11 +14,9 @@ export type BackgroundMessage =
 
 export class BackgroundMessenger {
     private readonly browser: Browser
-    private readonly provider: any;
 
-    constructor(provider: BrowserDiTypes) {
-        this.browser = provider.browser
-        this.provider = provider as any
+    constructor({browser}: BrowserDiTypes) {
+        this.browser = browser
     }
 
     async findCurrencyHolders(dom: PseudoDom): Promise<HTMLElement[]> {
