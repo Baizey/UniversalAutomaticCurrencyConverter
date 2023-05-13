@@ -32,18 +32,13 @@ export class PseudoDom {
                 const element = node as HTMLElement
                 const tagName = element.tagName.toLowerCase()
                 if (this.ignoredTag(tagName)) return []
-                isWatched ||= element.hasAttribute('uacc:watched')
+                const watched = isWatched || element.hasAttribute('uacc:watched')
                 const children = node.hasChildNodes()
                     ? [...node.childNodes]
-                        .map(e => this.createPseudoNode(e, isWatched))
+                        .map(e => this.createPseudoNode(e, watched))
                         .flatMap(e => e)
                     : []
-                const result = {
-                    id: ++this.nextId,
-                    watched: isWatched,
-                    children,
-                    tagName,
-                } satisfies PseudoNode
+                const result = {id: ++this.nextId, watched, children, tagName} satisfies PseudoNode
                 this.lookup[result.id] = {pseudo: result, real: node}
                 return [result]
             default:

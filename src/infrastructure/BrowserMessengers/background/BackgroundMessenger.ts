@@ -21,43 +21,30 @@ export class BackgroundMessenger {
 
     async findCurrencyHolders(dom: PseudoDom): Promise<HTMLElement[]> {
         const request: BackgroundMessage = {type: BackgroundMessageType.detect, root: dom.root}
-        let result: number[]
-        if (this.browser.isServiceWorker)
-            result = await this.handleLocally(request)
-        else
-            result = await this.sendMessage(request)
+        const result = await this.sendMessage<number[]>(request)
         return result.map(id => dom.element(id)).filter(e => e) as HTMLElement[]
     }
 
     async getRate(from: string, to: string): Promise<RateResponse> {
         const request: BackgroundMessage = {type: BackgroundMessageType.getRate, to, from}
-        if (this.browser.isServiceWorker)
-            return await this.handleLocally(request)
-        else
-            return await this.sendMessage(request)
+        return await this.sendMessage(request)
     }
 
     async getSymbols(): Promise<SymbolResponse> {
         const request: BackgroundMessage = {type: BackgroundMessageType.getSymbols}
-        if (this.browser.isServiceWorker)
-            return await this.handleLocally(request)
-        else
-            return await this.sendMessage(request)
-    }
-
-    private handleLocally<Response>(request: BackgroundMessage): Promise<Response> {
-        const {backgroundHandlers} = useProvider()
-        return new Promise(((resolve, reject) => {
-            backgroundHandlers.handle(resp => {
-                if (resp.success) resolve(resp.data)
-                else reject(resp.data)
-            }, request.type, request)
-        }))
+        return await this.sendMessage(request)
     }
 
     private async sendMessage<Response>(data: BackgroundMessage): Promise<Response> {
-        const response = await this.browser.runtime.sendMessage(data) as MessageResponse<Response>
+        const response = this.browser.isServiceWorker
+            ? await this.handleLocally<Response>(data)
+            : await this.browser.runtime.sendMessage(data) as MessageResponse<Response>
         if (!response.success) throw response.data
         return response.data
+    }
+
+    private handleLocally<Response>(request: BackgroundMessage): Promise<MessageResponse<Response>> {
+        const {backgroundHandlers} = useProvider()
+        return new Promise(((resolve) => backgroundHandlers.handle(resp => resolve(resp), request.type, request)))
     }
 }

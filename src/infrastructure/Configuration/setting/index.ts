@@ -25,13 +25,11 @@ export class HighlightDurationSetting extends SyncSetting<number> {
 export class HighlightColorSetting extends SyncSetting<string> {
     constructor(provider: SettingDep) {
         super(provider, 'currencyHighlightColor', 'yellow', (e) => {
-            try {
-                const div = provider.browser.document.createElement('div')
-                div.style.backgroundColor = e + ''
-                return !!div.style.backgroundColor
-            } catch (e) {
-                return true
-            }
+            const browser = provider.browser
+            if (browser.browserEnvironment) return true
+            const div = provider.browser.document.createElement('div')
+            div.style.backgroundColor = e + ''
+            return !!div.style.backgroundColor
         })
     }
 }

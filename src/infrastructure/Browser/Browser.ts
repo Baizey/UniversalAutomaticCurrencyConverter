@@ -1,6 +1,12 @@
 type SyncStorageArea = chrome.storage.SyncStorageArea;
 type LocalStorageArea = chrome.storage.LocalStorageArea;
 
+export enum BrowserEnvironment {
+    serviceWorker = 'serviceWorker',
+    tab = 'tab',
+    popup = 'popup'
+}
+
 export enum Browsers {
     Firefox = 'Firefox',
     Chrome = 'Chrome',
@@ -27,7 +33,7 @@ function polyfill(access: typeof chrome) {
 export class Browser {
     readonly type: Browsers
     private readonly access: typeof chrome
-    private _isServiceWorker: boolean = false;
+    private _browserEnvironment: BrowserEnvironment = BrowserEnvironment.tab;
 
     constructor() {
         this.type = this.detectBrowser()
@@ -38,11 +44,11 @@ export class Browser {
     }
 
     setAsServiceWorker() {
-        this._isServiceWorker = true
+        this._browserEnvironment = BrowserEnvironment.serviceWorker
     }
 
-    get isServiceWorker(): boolean {
-        return this._isServiceWorker
+    get isServiceWorker() {
+        return this._browserEnvironment == BrowserEnvironment.serviceWorker
     }
 
     get document() {

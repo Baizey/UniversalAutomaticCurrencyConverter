@@ -23,8 +23,10 @@ export class PseudoDetector {
             .flatMap(e => e)
         if (result.length > 0) return result
 
-        if (this.isElementUnavailable(element, 3)) return []
-        return [element.id]
+
+        return this.isConvertable(element, 3)
+            ? [element.id]
+            : []
     }
 
     private detect(element: PseudoNode, cache: Record<number, string>): boolean {
@@ -44,15 +46,11 @@ export class PseudoDetector {
         return value
     }
 
-    private isElementUnavailable(element: PseudoNode, maxDepth: number): boolean {
-        if (maxDepth < 0) return true
-        for (let i = 0; i < element.children.length; i++) {
-            const child = element.children[i]
-            if (typeof child === 'string') continue
-            if (this.isElementUnavailable(child, maxDepth - 1)) {
-                return true
-            }
-        }
-        return false
+    private isConvertable(element: PseudoNode, maxDepth: number): boolean {
+        return maxDepth < 0 || element.watched
+            ? false
+            : element.children.every(child => typeof child === 'string'
+                ? true
+                : this.isConvertable(child, maxDepth - 1))
     }
 }
