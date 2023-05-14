@@ -3,7 +3,7 @@
   "name": "Universal Automatic Currency Converter",
   "description": "Universal automatic currency converter for all web browsing needs",
   "manifest_version": 3,
-  "version": "5.0.3",
+  "version": "5.0.4",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
@@ -38,12 +38,6 @@
   ],
   "options_ui": {
     "page": "options.html"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{c1ae7a88-3721-459c-9f55-c527123c1859}",
-      "strict_min_version": "78.0"
-    }
   },
   "host_permissions": [
     "https://uacc-bff-api.azurewebsites.net/*"

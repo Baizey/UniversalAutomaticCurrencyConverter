@@ -48,7 +48,7 @@ export class Browser {
     }
 
     get isServiceWorker() {
-        return this._browserEnvironment == BrowserEnvironment.serviceWorker
+        return this._browserEnvironment === BrowserEnvironment.serviceWorker
     }
 
     get document() {
