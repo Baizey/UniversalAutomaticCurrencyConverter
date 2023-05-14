@@ -33,7 +33,7 @@ function polyfill(access: typeof chrome) {
 export class Browser {
     readonly type: Browsers
     private readonly access: typeof chrome
-    private _browserEnvironment: BrowserEnvironment = BrowserEnvironment.tab;
+    private _isServiceWorker = false
 
     constructor() {
         this.type = this.detectBrowser()
@@ -44,11 +44,11 @@ export class Browser {
     }
 
     setAsServiceWorker() {
-        this._browserEnvironment = BrowserEnvironment.serviceWorker
+        this._isServiceWorker = true
     }
 
     get isServiceWorker() {
-        return this._browserEnvironment === BrowserEnvironment.serviceWorker
+        return this._isServiceWorker
     }
 
     get document() {

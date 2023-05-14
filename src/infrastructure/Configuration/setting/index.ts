@@ -26,7 +26,7 @@ export class HighlightColorSetting extends SyncSetting<string> {
     constructor(provider: SettingDep) {
         super(provider, 'currencyHighlightColor', 'yellow', (e) => {
             const browser = provider.browser
-            if (browser.browserEnvironment) return true
+            if (browser.isServiceWorker) return true
             const div = provider.browser.document.createElement('div')
             div.style.backgroundColor = e + ''
             return !!div.style.backgroundColor
