@@ -94,7 +94,7 @@ export class ConversionDisplaySetting extends SyncSetting<string> {
 
 export class ColorThemeSetting extends SyncSetting<keyof typeof themes> {
     constructor(dep: SettingDep) {
-        super(dep, 'uacc:theme:selection', 'lightTheme', isString)
+        super(dep, 'uacc:theme:selection', 'darkTheme', isString)
     }
 }
 
@@ -172,7 +172,7 @@ export enum LoggingSettingType {
 
 export class UseDebugLoggingSetting extends SyncSetting<LoggingSettingType> {
     constructor(provider: SettingDep) {
-        super(provider, 'uacc:debug:logging', LoggingSettingType.profile, (e) => isOfEnum(e, LoggingSettingType))
+        super(provider, 'uacc:debug:logging', LoggingSettingType.error, (e) => isOfEnum(e, LoggingSettingType))
     }
 }
 

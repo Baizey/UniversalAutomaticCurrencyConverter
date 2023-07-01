@@ -49,13 +49,14 @@ export class ElementDetector {
 
     private async tryFind(dom: PseudoDom): Promise<HTMLElement[]> {
         try {
-            return await this.backgroundMessenger.findCurrencyHolders(dom)
+            return (await this.backgroundMessenger.findCurrencyHolders(dom)).filter(e => dom.isNotWatched(e))
         } catch (e) {
             const error = e as Error
             log.debug(`Service worker unavailable: ${error.message}`)
             log.debug(`Falling back to using UI thread`)
             const ids = this.pseudoDetector.find(dom.root, {})
-            return ids.map(id => dom.element(id)).map(e => e) as HTMLElement[]
+            const elements = ids.map(id => dom.element(id)).map(e => e) as HTMLElement[]
+            return elements.filter(e => dom.isNotWatched(e))
         }
     }
 

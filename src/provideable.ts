@@ -1,6 +1,6 @@
 import {CurrencyConverterDi} from './currencyConverter'
 import {InfrastructureDi} from './infrastructure'
-import {AsServices} from "@baizey/dependency-injection/lib/utils";
+import {DependenciesOf} from "@baizey/dependency-injection/lib/utils";
 
-export const _Providable = {...InfrastructureDi, ...CurrencyConverterDi}
-export type Providable = AsServices<typeof _Providable>
+export const providable = {...InfrastructureDi, ...CurrencyConverterDi}
+export type Providable = DependenciesOf<typeof providable>

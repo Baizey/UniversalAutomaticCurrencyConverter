@@ -64,9 +64,17 @@ export class PseudoDom {
         }
     }
 
+    isNotWatched(element: Element) {
+        return !this.isWatched(element)
+    }
+
+    isWatched(element: Element): boolean {
+        return element.hasAttribute('uacc:watched')
+    }
+
     private detectConverterTagUp(element: Element | null): boolean {
         if (!element) return false
-        if (element.hasAttribute('uacc:watched')) return true
+        if (this.isWatched(element)) return true
         return this.detectConverterTagUp(element.parentElement)
     }
 }
