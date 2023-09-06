@@ -1,5 +1,4 @@
 import { MockStrategy } from '@baizey/dependency-injection'
-import { ActiveLocalization } from '../src/currencyConverter/Localization'
 import { SyncSetting } from '../src/infrastructure/Configuration/setting/SyncSetting'
 import useMockContainer from './Container.mock'
 
