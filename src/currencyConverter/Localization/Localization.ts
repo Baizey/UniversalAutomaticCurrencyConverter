@@ -55,6 +55,8 @@ export class Localizations {
       INR: ['₹'],
       // Russia
       RUB: ['₽'],
+      // Kazakhstan
+      KZT: ['₸'],
       // Turkey
       TRY: ['₺', 'TL'],
       // Ukraine
