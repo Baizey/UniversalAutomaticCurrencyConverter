@@ -15,12 +15,12 @@ jobs:
     steps:
     # checkout the repo
     - name: 'Checkout Github Action'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Node.js version
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: '21.x'
 
     - name: npm install
       run: npm install
@@ -29,7 +29,7 @@ jobs:
       run: npm run build
 
     - name: Run Azure webapp deploy action using publish profile credentials
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v3
       with:
         app-name: uacc-bff-api
         slot-name: Production
