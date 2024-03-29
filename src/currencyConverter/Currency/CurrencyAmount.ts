@@ -1,5 +1,5 @@
 import { stateful, Stateful } from '@baizey/dependency-injection'
-import { AsServices } from '@baizey/dependency-injection/lib/utils'
+import { DependenciesOf } from '@baizey/dependency-injection/lib/utils'
 import { InfrastructureDi } from '../../infrastructure'
 import { CurrencyStylingConfig, NumberStylingConfig } from '../../infrastructure/Configuration/Configuration'
 import { BackendApiDi, IBackendApi } from '../BackendApi'
@@ -7,8 +7,8 @@ import { BackendApiDi, IBackendApi } from '../BackendApi'
 export type CurrencyAmountProps = { tag: string, amount: number | number[] }
 
 type CurrencyAmountDep =
-	AsServices<typeof InfrastructureDi>
-	& AsServices<typeof BackendApiDi>
+	DependenciesOf<typeof InfrastructureDi>
+	& DependenciesOf<typeof BackendApiDi>
 	& { currencyAmount: Stateful<CurrencyAmountProps, CurrencyAmount> }
 
 export class CurrencyAmount {
@@ -133,4 +133,4 @@ export class CurrencyAmount {
 }
 
 export const CurrencyAmountDi = { currencyAmount: stateful( CurrencyAmount ) }
-export type CurrencyAmountDiTypes = AsServices<typeof CurrencyAmountDi>
+export type CurrencyAmountDiTypes = DependenciesOf<typeof CurrencyAmountDi>

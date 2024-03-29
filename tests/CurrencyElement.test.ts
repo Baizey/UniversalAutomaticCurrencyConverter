@@ -1,8 +1,9 @@
-import { MockStrategy } from '@baizey/dependency-injection'
-import { CurrencyRate } from '../src/currencyConverter/BackendApi/CurrencyRate'
-import { CurrencyElement } from '../src/currencyConverter/Currency'
+import {MockStrategy} from '@baizey/dependency-injection'
+import {CurrencyElement} from '../src/currencyConverter/Currency'
 import useMockContainer from './Container.mock'
-import { HtmlMock } from './Html.mock'
+import {HtmlMock} from './Html.mock'
+import {RateResponse} from "../src/infrastructure";
+import {SymbolResponse} from "../src/infrastructure/BrowserMessengers/background/SymbolQuery";
 
 describe( 'CurrencyElement', () => {
 	const tests = [
@@ -61,14 +62,23 @@ describe( 'CurrencyElement', () => {
 					currencyTagConfig,
 					currencyElement,
 				} = useMockContainer( {
-					backendApi: {
-						symbols: async (): Promise<Record<string, string>> =>
-							Promise.resolve( {
+					backendApi: MockStrategy.realValue,
+					backgroundMessenger: {
+						async getRate(from: string, to: string): Promise<RateResponse> {
+							return {
+								from,
+								to,
+								timestamp: Date.now(),
+								rate: 1,
+								path: []
+							} as RateResponse
+						},
+						async getSymbols(): Promise<SymbolResponse> {
+							return {
 								USD: 'USD',
 								EUR: 'EUR',
-							} ),
-						rate: async ( from: string, to: string ) =>
-							Promise.resolve( new CurrencyRate( from, to, 1, Date.now(), [] ) ),
+							} as SymbolResponse
+						}
 					},
 				}, MockStrategy.realValue )
 				await activeLocalization.load()

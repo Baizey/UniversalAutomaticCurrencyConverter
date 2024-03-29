@@ -1,5 +1,5 @@
 import { singleton } from '@baizey/dependency-injection'
-import { AsServices } from '@baizey/dependency-injection/lib/utils'
+import { DependenciesOf } from '@baizey/dependency-injection'
 import { BackgroundMessenger, Browser, InfrastructureDiTypes, RatePath } from '../../infrastructure'
 import { CurrencyRate, ICurrencyRate } from './CurrencyRate'
 
@@ -108,4 +108,4 @@ export class BackendApi implements IBackendApi {
 }
 
 export const BackendApiDi = { backendApi: singleton( BackendApi ) }
-export type BackendApiDiTypes = AsServices<typeof BackendApiDi>
+export type BackendApiDiTypes = DependenciesOf<typeof BackendApiDi>

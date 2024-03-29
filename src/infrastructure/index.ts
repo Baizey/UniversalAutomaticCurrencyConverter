@@ -3,7 +3,7 @@ import { MessengerDi } from './BrowserMessengers'
 import { ConfigDi } from './Configuration'
 import { Logger, LoggerDi } from './Logger/Logger'
 import {singleton} from "@baizey/dependency-injection";
-import {AsServices} from "@baizey/dependency-injection/lib/utils";
+import {DependenciesOf} from "@baizey/dependency-injection/lib/utils";
 
 export { Browser } from './Browser'
 export { Configuration } from './Configuration'
@@ -16,7 +16,7 @@ export { mapToTheme, themes } from './Theme'
 export type { MyTheme } from './Theme'
 
 const BrowserDi = { browser: singleton( Browser ) }
-export type BrowserDiTypes = AsServices<typeof BrowserDi>
+export type BrowserDiTypes = DependenciesOf<typeof BrowserDi>
 
 export const InfrastructureDi = {
 	...BrowserDi,
@@ -25,4 +25,4 @@ export const InfrastructureDi = {
 	...MessengerDi,
 }
 
-export type InfrastructureDiTypes = AsServices<typeof InfrastructureDi>
+export type InfrastructureDiTypes = DependenciesOf<typeof InfrastructureDi>
