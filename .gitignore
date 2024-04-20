@@ -10,3 +10,4 @@ package-lock.json
 dist
 coverage
 .env
+nodemon-dev.json
