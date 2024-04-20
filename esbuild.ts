@@ -5,15 +5,19 @@ const esbuild = require("esbuild");
 type Options = Parameters<typeof esbuild.build>[0]
 
 (async () => {
-    const isWatching = process.argv.includes('--watch');
-    console.log(`Watching: ${isWatching}`);
+    const isWatching = process.argv.includes('--watch')
+    const isProd = !isWatching
+    const isDev = isWatching
+    console.log(`Watching: ${isWatching}`)
     const options = {
+        target: ['node21'],
         entryPoints: [path.resolve(__dirname, 'src/Api.ts')],
         outfile: path.resolve(__dirname, 'dist', 'Api.js'),
         platform: 'node',
         bundle: true,
-        sourcemap: true,
-        logLevel: 'info'
+        logLevel: 'info',
+        sourcemap: isDev,
+        minify: isProd,
     } satisfies Options
 
     const start = performance.now()
