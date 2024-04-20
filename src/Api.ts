@@ -5,10 +5,6 @@ import {Conversion, CurrencyRateGraph} from './CurrencyRateGraph';
 import {SymbolsService} from "./services/SymbolsService";
 import {HttpStatus, Routes} from "./constants";
 
-import * as dotenv from "dotenv";
-
-dotenv.config();
-
 class Data {
     symbols: Record<string, string> = {}
     rates: CurrencyRateGraph = new CurrencyRateGraph({})
@@ -36,6 +32,7 @@ setInterval(() => update().catch(console.error), new Time({hours: 6}).millisecon
 const api = express();
 
 const apiKey = process.env.ownApiKey
+if(!apiKey) throw new Error('Missing own api key')
 api.use((request, response, next) => {
     // Health check doesnt need apikey, everything else does
     if (request.path.startsWith(Routes.health))

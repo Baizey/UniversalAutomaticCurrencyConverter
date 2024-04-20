@@ -20,6 +20,9 @@ interface SymbolsResponse {
 }
 
 export class FixerProxyAgent implements IProxyAgent {
+    constructor() {
+        if(!fixerApiKey) throw new Error('Missing FixerApiKey')
+    }
     async getRates() {
         const response: RatesResponse = await fetch(fixerRatesUrl)
             .then(async e => await e.json())

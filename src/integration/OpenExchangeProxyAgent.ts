@@ -17,6 +17,11 @@ interface SymbolsResponse extends Record<string, string> {
 }
 
 export class OpenExchangeProxyAgent implements IProxyAgent {
+
+    constructor() {
+        if(!openExchangeApiKey) throw new Error('Missing OpenExchangeApiKey')
+    }
+
     async getRates() {
         const response: RatesResponse = await fetch(openExchangeRatesUrl).then(async e => await e.json())
         return {
