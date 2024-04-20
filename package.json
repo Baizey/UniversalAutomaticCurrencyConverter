@@ -2,8 +2,8 @@
   "name": "uacc",
   "version": "1.0.0",
   "scripts": {
-    "start": "nodemon --config nodemon.json dist/Api.js",
-    "start:dev": "nodemon --config nodemon-dev.json ./dist/Api.js",
+    "start": "nodemon --config nodemon.json",
+    "start:dev": "nodemon --config nodemon-dev.json",
     "build": "ts-node esbuild.ts",
     "build:watch": "ts-node esbuild.ts --watch"
   },

@@ -1,5 +1,5 @@
 {
-  "verbose": true,
+  "verbose": false,
   "ext": "js",
-  "exec": "node"
+  "exec": "node dist/Api.js"
 }
