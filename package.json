@@ -2,26 +2,21 @@
   "name": "uacc",
   "version": "1.0.0",
   "scripts": {
-    "start:dev": "nodemon -r dotenv/config dist/Api.js localhost 3000",
-    "start": "nodemon -r dotenv/config dist/Api.js",
-    "build:dev": "tsc --watch --preserveWatchOutput",
-    "build": "tsc"
+    "start": "nodemon --config nodemon.json dist/Api.js",
+    "start:dev": "nodemon --config nodemon-dev.json ./dist/Api.js",
+    "build": "ts-node esbuild.ts",
+    "build:watch": "ts-node esbuild.ts --watch"
   },
   "dependencies": {
-    "concurrently": "^6.2.0",
-    "nodemon": "^2.0.7",
-    "typescript": "^4.2.4",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "node-fetch": "3.2.10",
-    "ts-node": "^10.0.0"
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.11",
-    "@types/node": "^15.6.0",
-    "@types/jest": "^26.0.23",
-    "jest": "^27.0.4",
-    "ts-jest": "^27.0.3",
-    "babel-jest": "^27.0.2"
+    "esbuild": "^0.20.2",
+    "nodemon": "^3.1.0",
+    "typescript": "^5.4.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.7"
   }
 }

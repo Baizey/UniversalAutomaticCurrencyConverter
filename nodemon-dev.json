@@ -1,0 +1,10 @@
+{
+  "verbose": false,
+  "ext": "js",
+  "watch": ["dist"],
+  "exec": "node",
+  "env": {
+    "PORT": 3000,
+    "HOST": "localhost"
+  }
+}

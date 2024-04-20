@@ -1,11 +1,13 @@
 import {RatesService} from "./services/RatesService";
-
-require('dotenv').config();
 import express from 'express'
 import {Time} from "./Time";
 import {Conversion, CurrencyRateGraph} from './CurrencyRateGraph';
 import {SymbolsService} from "./services/SymbolsService";
 import {HttpStatus, Routes} from "./constants";
+
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 class Data {
     symbols: Record<string, string> = {}

@@ -1,9 +1,7 @@
 import {SymbolsResponse} from "../integration/IProxyAgent";
-import {FixerProxyAgent} from "../integration/FixerProxyAgent";
 import {OpenExchangeProxyAgent} from "../integration/OpenExchangeProxyAgent";
 import {Time} from "../Time";
 
-global.fetch = require("node-fetch");
 
 export type CurrencyRateLookup = Record<string, Record<string, CurrencyRate>>
 
