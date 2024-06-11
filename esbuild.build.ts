@@ -8,12 +8,12 @@ const files = ['content.tsx', 'popup.tsx', 'options.tsx', 'background.ts']
 const mode = process.argv[2];
 console.log(`mode: ${mode}`);
 
-const distDir = `dist`
-const srcDir = `src`
-const assetsDir = `public`
+const rootDistDir = `dist`
+const rootSrcDir = `src`
+const rootAssetsDir = `public`
 
 ;(async () => {
-    cleanDir(distDir)
+    cleanDir(rootDistDir)
     await time('build', () => Promise.all(browsers.map(bundle)));
 })()
 
@@ -21,18 +21,18 @@ async function bundle(browser: string) {
     const isDev = mode !== 'production';
     const isProd = !isDev
 
-    const assetDir = `${assetsDir}/${browser}`
+    const assetDir = `${rootAssetsDir}/${browser}`
     let version = 'dev'
     if (isProd) {
         const manifest = JSON.parse(fs.readFileSync(`${assetDir}/manifest.json`).toString()) as { version: string }
         version = manifest.version
     }
 
-    const unpackedDir = `${distDir}/${browser}_${version}`
+    const unpackedDir = `${rootDistDir}/${browser}_${version}`
     copyAssets(assetDir, unpackedDir)
     await Promise.all(
         files.map(file => build({
-            entryPoints: [`${srcDir}/${file}`],
+            entryPoints: [`${rootSrcDir}/${file}`],
             bundle: true,
             outfile: `${unpackedDir}/${file.replace(/\.tsx?/, '.js')}`,
             platform: 'browser',
