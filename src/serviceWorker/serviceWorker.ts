@@ -33,7 +33,7 @@ async function handleContextMenuCreation() {
     }
     try {
         useProvider().browser.contextMenus.onClicked.addListener(
-            (info, tab) => useProvider().tabMessenger.openContextMenu(tab.id)
+            (info, tab) => useProvider().tabMessenger.openContextMenu(tab!.id)
         )
     } catch (e) {
     }

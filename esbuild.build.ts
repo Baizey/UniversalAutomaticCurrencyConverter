@@ -53,7 +53,6 @@ function copyAssets(src: string, dist: string) {
         const srcPath = path.join(src, entry.name);
         const destPath = path.join(dist, entry.name);
         if (entry.isDirectory()) {
-            fs.mkdirSync(destPath, {recursive: true});
             copyAssets(srcPath, destPath);
         } else {
             fs.copyFileSync(srcPath, destPath);

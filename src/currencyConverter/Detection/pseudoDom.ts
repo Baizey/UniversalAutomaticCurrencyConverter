@@ -11,7 +11,7 @@ export class PseudoDom {
     private nextId = 0
     private readonly lookup: Record<number, undefined | { pseudo: PseudoNode, real: Node }> = {}
 
-    constructor(provider: {}, element: HTMLElement) {
+    constructor(_: {}, element: HTMLElement) {
         const isWatched = this.detectConverterTagUp(element)
         this.root = this.createPseudoNode(element, isWatched)[0] as PseudoNode
     }

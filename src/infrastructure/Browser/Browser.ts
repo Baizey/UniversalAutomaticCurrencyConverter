@@ -1,3 +1,5 @@
+import ManifestV3 = chrome.runtime.ManifestV3;
+
 type SyncStorageArea = chrome.storage.SyncStorageArea;
 type LocalStorageArea = chrome.storage.LocalStorageArea;
 
@@ -21,13 +23,34 @@ export type BrowserDataStorage = {
 
 function polyfill(access: typeof chrome) {
     if (!access.runtime) access.runtime = {
-        getManifest: () => ({
-            version: 'TEST',
-            name: 'UACC',
-            author: 'Baizey',
-        }),
+        getManifest: () => {
+            return {
+                manifest_version: 3,
+                version: 'TEST',
+                name: 'UACC',
+                author: {email: 'Baizey'},
+            } satisfies ManifestV3
+        },
+        connect: () => null as any as chrome.runtime.Port,
+        connectNative: () => null as any as chrome.runtime.Port,
+        getBackgroundPage: () => Promise.resolve(null as any as Window),
+        getContexts: () => Promise.resolve(null as any as chrome.runtime.ExtensionContext[]),
+        getPackageDirectoryEntry: () => null,
+        getPlatformInfo: () => Promise.resolve(null as any as chrome.runtime.PlatformInfo),
+        getURL: () => "",
+        reload: () => null,
+        requestUpdateCheck: () => Promise.resolve(null as any as chrome.runtime.RequestUpdateCheckResult),
+        restart: () => null,
+        restartAfterDelay: () => null,
+        sendMessage: () => Promise.resolve(null),
+        sendNativeMessage: () => Promise.resolve(null),
+        setUninstallURL: () => Promise.resolve(null as any as Window),
+        openOptionsPage: () => Promise.resolve(),
+        onConnect: null as any as chrome.runtime.ExtensionConnectEvent,
+        onConnectExternal: null as any as chrome.runtime.ExtensionConnectEvent,
+        lastError: undefined,
         id: 'TEST',
-    } as typeof chrome.runtime
+    } as any as typeof chrome.runtime
 }
 
 export class Browser {
@@ -83,7 +106,7 @@ export class Browser {
     }
 
     get author(): string {
-        return this.runtime.getManifest().author || ''
+        return this.runtime.getManifest().author?.email || ''
     }
 
     get extensionName(): string {
