@@ -37,6 +37,8 @@ class Lazy<T> {
 time('build', async () => {
     const packageJson = new Lazy<VersionFile>(() => fs.readFile(`package.json`).then(e => e.toString()).then(JSON.parse))
     await cleanDir(rootDistDir)
+    const version = isProd ? (await packageJson.get()).version : 'dev'
+    console.log(`version: ${version}`);
     await Promise.all(browsers.map(bundle));
 
     async function cleanDir(dir: string) {
@@ -45,7 +47,6 @@ time('build', async () => {
     }
 
     async function bundle(browser: string) {
-        const version = isProd ? (await packageJson.get()).version : 'dev'
         const unpackedDir = `${rootDistDir}/${browser}_${version}`
         const assetDir = `${rootAssetsDir}/${browser}`
         await Promise.all(
