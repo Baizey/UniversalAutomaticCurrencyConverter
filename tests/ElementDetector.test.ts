@@ -1,7 +1,5 @@
-import {MockStrategy} from '@baizey/dependency-injection'
 import useMockContainer from './Container.mock'
 import {HtmlMock} from './Html.mock'
-import {ElementDetector} from "../src/currencyConverter/Detection";
 
 describe('ElementDetector', () => {
     const originalShowTest = [
@@ -39,7 +37,7 @@ describe('ElementDetector', () => {
                             USD: 'USD',
                         }),
                     },
-                }, MockStrategy.realValue)
+                })
                 await provider.activeLocalization.load()
                 await provider.activeLocalization.overload({dollar: 'USD'})
                 const elementDetector = provider.elementDetector
@@ -88,20 +86,26 @@ describe('ElementDetector', () => {
         (test: { name: string; element: HTMLElement; expect: string[] }) => {
             it(`${test.name}`, async () => {
                 // Setup
-                const provider = useMockContainer({
+                const {activeLocalization, elementDetector} = useMockContainer({
                     backendApi: {
-                        symbols: async () => Promise.resolve({
+                        rate: (from: string, to: string) => Promise.resolve({
+                            from, to,
+                            rate: 1,
+                            path: [],
+                            timestamp: Date.now(),
+                            isExpired: false,
+                        }),
+                        symbols: () => Promise.resolve({
                             DKK: 'DKK',
                             USD: 'USD',
                         }),
-                    },
-                }, MockStrategy.realValue)
-                await provider.activeLocalization.load()
-                await provider.activeLocalization.overload({
+                    }
+                })
+                await activeLocalization.load()
+                await activeLocalization.overload({
                     dollar: 'USD',
                     krone: 'DKK',
                 })
-                const elementDetector = provider.elementDetector
 
                 // Act
                 const actual = await elementDetector.find(test.element)

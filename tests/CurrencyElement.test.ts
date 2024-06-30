@@ -1,5 +1,3 @@
-import {MockStrategy} from '@baizey/dependency-injection'
-import {CurrencyElement} from '../src/currencyConverter/Currency'
 import useMockContainer from './Container.mock'
 import {HtmlMock} from './Html.mock'
 import {RateResponse} from "../src/infrastructure";
@@ -62,7 +60,6 @@ describe( 'CurrencyElement', () => {
 					currencyTagConfig,
 					currencyElement,
 				} = useMockContainer( {
-					backendApi: MockStrategy.realValue,
 					backgroundMessenger: {
 						async getRate(from: string, to: string): Promise<RateResponse> {
 							return {
@@ -80,7 +77,7 @@ describe( 'CurrencyElement', () => {
 							} as SymbolResponse
 						}
 					},
-				}, MockStrategy.realValue )
+				})
 				await activeLocalization.load()
 				await activeLocalization.overload( { dollar: 'USD' } )
 				currencyTagConfig.showConversionInBrackets.setValue( test.showInBrackets )

@@ -1,12 +1,12 @@
-import {Stateful} from '@baizey/dependency-injection'
 import {BackgroundMessenger, InfrastructureDiTypes} from '../../infrastructure'
 import {BackendApiDiTypes} from '../BackendApi/BackendApi'
 import {CurrencyDiTypes, CurrencyElement} from '../Currency'
 import {ActiveLocalizationDi} from '../Localization/ActiveLocalization'
 import {ITextDetector, TextDetectorDi} from './TextDetector'
-import {PseudoDom, PseudoDomDi} from "./pseudoDom";
+import {PseudoDom, PseudoDomDi, PseudoDomType} from "./pseudoDom";
 import {PseudoDetector, PseudoDetectorDi} from "./PseudoDetector";
 import {log} from "../../di";
+import {FactoryDi} from "../../infrastructure/DiFactory";
 
 export type ElementDetectorDi = { elementDetector: ElementDetector }
 type ElementDetectorDep =
@@ -20,9 +20,9 @@ type ElementDetectorDep =
 
 export class ElementDetector {
     private readonly textDetector: ITextDetector
-    private readonly currencyElement: Stateful<HTMLElement, CurrencyElement>
+    private readonly currencyElement: FactoryDi<HTMLElement, CurrencyElement>
     private readonly backgroundMessenger: BackgroundMessenger;
-    private readonly pseudoDomFactory: Stateful<HTMLElement, PseudoDom>;
+    private readonly pseudoDomFactory: PseudoDomType;
     private pseudoDetector: PseudoDetector;
 
     constructor({

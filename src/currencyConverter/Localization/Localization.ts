@@ -72,7 +72,7 @@ export class Localizations {
       // Czechia
       CZK: ['Kč'],
       // South Africa
-      ZAR: ['R'],
+      //ZAR: ['R'], // this is just really annoying
       // Bitcoin
       BTC: ['₿'],
       // Monero
