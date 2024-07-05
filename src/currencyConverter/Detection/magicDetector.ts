@@ -10,6 +10,7 @@ export type MagicDetectorDi = {
 type MagicDetectorDiTypes = BackendApiDiTypes & ActiveLocalizationDi
 
 const whitespaces = toChars(" \t\n\r\u00A0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u202F\u205F\u3000")
+const triggers = toChars('1234567890' + 'qwertyuiopasdfghjlkzxcvbnm'.toLowerCase() + 'qwertyuiopasdfghjlkzxcvbnm'.toUpperCase())
 
 type DetectionResult = {
     startIndex: number,
@@ -26,13 +27,13 @@ export class MagicDetector {
     private stateMachine: Node = createNode()
     private symbolRoot: Node = createNode()
     private numberRoot: Node = createNode()
+    private trigger: Node = createNode();
 
     constructor({backendApi, activeLocalization}: MagicDetectorDiTypes) {
         this.backendApi = backendApi;
         this.activeLocalization = activeLocalization;
         this.stateMachine = createNode()
-        this.symbolRoot = this.stateMachine
-        this.numberRoot = this.stateMachine
+        triggers.forEach(e => this.trigger[e] = true as any)
     }
 
     async load() {
@@ -64,30 +65,21 @@ export class MagicDetector {
     }
 
     detect(text: string): boolean {
-        const rootState = this.stateMachine
-        const n = text.length
-        for (let i = 0; i < n; i++) {
-            let state = rootState[text.codePointAt(i)!]!
-            if (state === undefined) continue
-            i++
-            while (true) {
-                const nextState = state[text.codePointAt(i)!]
-                if (nextState == undefined) break
-                i++
-                state = nextState
-            }
-            i--
-            if (state.isLegalEnd) return true
-        }
-        return false
+        return this.find(text, true).length > 0
     }
 
-    find(text: string): DetectionResult[] {
+    find(text: string, detect: boolean = false): DetectionResult[] {
         const rootState = this.stateMachine
         const n = text.length
         const results: DetectionResult[] = []
+        let canStart = true
         for (let i = 0; i < n; i++) {
-            let state = rootState[text.codePointAt(i)!]!
+            const c = text.codePointAt(i)!
+            if (!canStart) {
+                canStart = this.trigger[c] === undefined
+                continue
+            }
+            let state = rootState[c]!
             if (state === undefined) continue
             const start = i
             i++
@@ -101,6 +93,7 @@ export class MagicDetector {
             i--
             if (state.isLegalEnd) {
                 results.push(this.mapToResult(text.substring(start, end), start, end))
+                if (detect) return results
             }
         }
         return results
@@ -279,12 +272,12 @@ function createTrie(values: number[][], root: Node): Node[] {
 
 type Node = { name: string, isLegalEnd: boolean } & (Node | undefined)[]
 
-function createNode(cheap: boolean = false): Node {
+function createNode(): Node {
     // when looking up random indexes, performance is significantly better with manually defined 'undefined' values than letting js do stuff behind the scenes
     // why? theories are:
     // - invalid bounds are slow
     // - 'empty' array indexes compare slowly
-    const node = (cheap ? [] : new Array(20000).fill(undefined)) as any as Node
+    const node = new Array(2000).fill(undefined) as any as Node
     node.isLegalEnd = false
     return node
 }
