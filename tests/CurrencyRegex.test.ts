@@ -1,4 +1,3 @@
-import { MockStrategy } from '@baizey/dependency-injection'
 import { CurrencyRegex, RegexResult } from '../src/currencyConverter/Detection/CurrencyRegex'
 import useMockContainer from './Container.mock'
 
@@ -204,7 +203,7 @@ describe( 'CurrencyRegex', () => {
 		} ) => {
 			it( `${ test.name || test.text }`, async () => {
 				// Setup
-				const provider = useMockContainer( MockStrategy.realValue )
+				const provider = useMockContainer()
 				await provider.activeLocalization.overload( { dollar: 'USD' } )
 				const regex = new CurrencyRegex( test.text )
 

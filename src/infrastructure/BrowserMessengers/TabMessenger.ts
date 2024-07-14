@@ -1,4 +1,6 @@
-import {Browser, BrowserDiTypes} from '../index'
+import {BackgroundMessage, Browser, BrowserDiTypes} from '../index'
+import {MessageResponse} from "./messengerHandlerManager";
+import {useProvider} from "../../di";
 
 export enum TabMessageType {
     openContextMenu,

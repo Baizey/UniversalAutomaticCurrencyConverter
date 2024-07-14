@@ -1,9 +1,8 @@
 import {PseudoNode} from "./pseudoTypes";
-import {Stateful} from "@baizey/dependency-injection";
+import {FactoryDi} from "../../infrastructure/DiFactory";
 
-export type PseudoDomDi = {
-    pseudoDom: Stateful<HTMLElement, PseudoDom>
-}
+export type PseudoDomType = FactoryDi<HTMLElement, PseudoDom>
+export type PseudoDomDi = { pseudoDom: PseudoDomType }
 
 export class PseudoDom {
     readonly root: PseudoNode

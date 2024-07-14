@@ -1,4 +1,3 @@
-import { MockStrategy } from '@baizey/dependency-injection'
 import { themes } from '../src/infrastructure'
 import { darkTheme } from '../src/infrastructure/Theme/DarkTheme'
 import { lightTheme } from '../src/infrastructure/Theme/LightTheme'
@@ -116,7 +115,6 @@ export const decorators = [
 		const screenType = context.globals.width.toLowerCase() as ScreenType
 
 		const { metaConfig: { colorTheme } } = useMockContainer( {
-			backendApi: MockStrategy.realValue,
 			backgroundMessenger: {
 				getRate: ( from, to ) => Promise.resolve( {
 					rate: getRate( from, to ),
@@ -124,7 +122,7 @@ export const decorators = [
 				} ),
 				getSymbols: () => Promise.resolve( symbols ),
 			},
-		}, MockStrategy.realValue )
+		})
 		colorTheme.setValue( theme )
 
 		function findUsedBackgroundColor() {

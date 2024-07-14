@@ -1,5 +1,3 @@
-import { MockStrategy } from '@baizey/dependency-injection'
-import { CurrencyLocalization } from '../src/currencyConverter/Localization/CurrencyLocalization'
 import { SyncSetting } from '../src/infrastructure/Configuration/setting/SyncSetting'
 import useMockContainer from './Container.mock'
 
@@ -43,7 +41,7 @@ describe( 'CurrencyLocalization', () => {
 			const {
 				browser,
 				currencyLocalization,
-			} = useMockContainer( MockStrategy.realValue )
+			} = useMockContainer(  )
 			const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 			const localization = currencyLocalization.create( {
 				key: '',
@@ -75,7 +73,7 @@ describe( 'CurrencyLocalization', () => {
 			const {
 				browser,
 				currencyLocalization,
-			} = useMockContainer( MockStrategy.realValue )
+			} = useMockContainer( )
 			const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 			const localization = currencyLocalization.create( {
 				key: '',
@@ -91,10 +89,7 @@ describe( 'CurrencyLocalization', () => {
 
 	it( `Save`, async () => {
 		// Setup
-		const {
-			browser,
-			currencyLocalization,
-		} = useMockContainer( MockStrategy.realValue )
+		const {browser, currencyLocalization } = useMockContainer()
 		const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 		const localization = currencyLocalization.create( {
 			key: 'key',

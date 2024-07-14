@@ -1,17 +1,16 @@
-import {MockStrategy, ProviderMock, ServiceCollection} from '@baizey/dependency-injection'
+import {ProviderMock, ServiceCollection} from '@baizey/dependency-injection'
 import {providable, Providable} from '../provideable'
 
 
-export type Mockable = MockStrategy | ProviderMock<Providable>
+export type Mockable = ProviderMock<Providable>
 
 let _services: ServiceCollection<Providable> | undefined
+
 let _proxy: Providable | undefined
 
-export const useServices = (): ServiceCollection<Providable> =>
-    _services ?? (_services = new ServiceCollection(providable))
+export const useServices = (): ServiceCollection<Providable> => _services ?? (_services = new ServiceCollection(providable))
 
-export const setMockProvider = (mock?: Mockable, defaultStrategy?: MockStrategy): Providable =>
-    _proxy = useServices().buildMock(mock, defaultStrategy).proxy
+export const setMockProvider = (mock?: Mockable): Providable => _proxy = useServices().buildMock(mock).proxy
 
 export const useProvider = (): Providable => _proxy ?? (_proxy = useServices().build().proxy)
 

@@ -19,6 +19,8 @@ export class RateApi {
             body: init.body ? JSON.stringify(init.body) : undefined,
             headers: {
                 ...(init.headers || {}),
+                // This is hardcoded, but we don't really care
+                // It's for our own service and is just to avoid significant abuse.
                 'x-apikey': 'a8685f3f-9955-4d80-bff8-a927be128ece',
             },
         })

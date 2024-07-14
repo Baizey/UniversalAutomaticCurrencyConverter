@@ -1,4 +1,3 @@
-import { MockStrategy } from '@baizey/dependency-injection'
 import { TabState } from '../src/currencyConverter/Live/TabState'
 import useMockContainer from './Container.mock'
 import { HtmlMock } from './Html.mock'
@@ -33,7 +32,7 @@ describe( 'TabInformation', () => {
 
 	it( `is not showing conversions after flip`, () => {
 		// Setup
-		const provider = useMockContainer( MockStrategy.realValue )
+		const provider = useMockContainer( )
 		const tabInformation = provider.tabState
 		const element = provider.currencyElement.create( HtmlMock.empty() )
 		tabInformation.conversions.push( element )
@@ -52,7 +51,7 @@ describe( 'TabInformation', () => {
 			qualityOfLifeConfig,
 			tabState,
 			currencyElement,
-		} = useMockContainer( MockStrategy.realValue )
+		} = useMockContainer( )
 		qualityOfLifeConfig.keyPressOnHoverFlipConversion.setValue( 'Shift' )
 		const element = currencyElement.create( HtmlMock.empty() )
 		element.setupListener()

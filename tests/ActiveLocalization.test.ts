@@ -1,4 +1,3 @@
-import { MockStrategy } from '@baizey/dependency-injection'
 import { SyncSetting } from '../src/infrastructure/Configuration/setting/SyncSetting'
 import useMockContainer from './Container.mock'
 
@@ -42,7 +41,7 @@ describe( 'ActiveLocalization', () => {
 			const {
 				browser,
 				currencyLocalization,
-			} = useMockContainer( MockStrategy.realValue )
+			} = useMockContainer(  )
 			const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 			const localization = currencyLocalization.create( {
 				key: '',
@@ -73,7 +72,7 @@ describe( 'ActiveLocalization', () => {
 			const {
 				browser,
 				currencyLocalization,
-			} = useMockContainer( MockStrategy.realValue )
+			} = useMockContainer( )
 			const setting = new SyncSetting<string>( { browser }, '', '', () => true )
 			const localization = currencyLocalization.create( {
 				key: '',
@@ -88,7 +87,7 @@ describe( 'ActiveLocalization', () => {
 
 	it( `Save`, async () => {
 		// Setup
-		const { activeLocalization } = useMockContainer( MockStrategy.realValue )
+		const { activeLocalization } = useMockContainer( )
 
 		jest.spyOn( activeLocalization.krone, 'save' )
 		const kroneSpy = jest.spyOn( activeLocalization.krone, 'save' )
