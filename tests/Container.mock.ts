@@ -24,8 +24,8 @@ function mockContainer(mock?: Mockable): Providable {
     })
 }
 
-export function as<A>(obj: any) {
-    return obj as unknown as A
+export function as<A>(obj: unknown) {
+    return obj as A
 }
 
 export default function useMockContainer(mock?: Mockable): Providable {
