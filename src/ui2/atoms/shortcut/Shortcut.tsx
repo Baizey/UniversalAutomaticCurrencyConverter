@@ -11,7 +11,7 @@ export type ShortcutProps = InputProps & {
 }
 
 export function Shortcut({value: defaultValue, onValueChange}: ShortcutProps) {
-    const current = useSignal<string>(defaultValue)
+    const current = useSignal<string>(defaultValue!)
     return <ReadonlyInput
         value={current.value}
         onClick={() => {
