@@ -7,7 +7,6 @@ import type {TextDetectorDi} from './TextDetector'
 import {TextDetector} from './TextDetector'
 import {PseudoDom, PseudoDomDi} from "./pseudoDom";
 import {PseudoDetector, PseudoDetectorDi} from "./PseudoDetector";
-import {MagicDetector, MagicDetectorDi} from "./magicDetector";
 import {factory} from "../../infrastructure/DiFactory";
 
 export {ElementDetector, SiteAllowance, TextDetector}
@@ -21,10 +20,8 @@ export type DetectionDiTypes =
     & ElementDetectorDi
     & PseudoDetectorDi
     & PseudoDomDi
-    & MagicDetectorDi
 
 const {
-    magicDetector,
     pseudoDom,
     pseudoDetector,
     siteAllowance,
@@ -34,7 +31,6 @@ const {
 
 
 export const DetectionDi = {
-    [magicDetector]: singleton(MagicDetector),
     [siteAllowance]: singleton(SiteAllowance),
     [textDetector]: singleton(TextDetector),
     [elementDetector]: singleton(ElementDetector),
