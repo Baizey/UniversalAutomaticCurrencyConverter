@@ -1,7 +1,8 @@
-import {aliexpress_com_site, amazon_com_thing_site} from "./TestData.mock";
+import {amazon_com_html_site} from "./TestData.mock";
 import useMockContainer from "./Container.mock";
 import {Suite} from "benchmark";
 import {RateApi} from "../src/serviceWorker/RateApi";
+import {HtmlMock} from "./Html.mock";
 
 const disabled = true
 describe('benchmark', () => {
@@ -9,44 +10,23 @@ describe('benchmark', () => {
         it('dummy', () => expect(true).toBeTruthy())
         return
     }
-    const size = 8000
 
-    function scale(txt: string) {
-        const scale = size / txt.length
-        return txt.repeat(scale)
-    }
+    it('amazon_html', async () => await testHtml('amazon_html', amazon_com_html_site))
 
-    const realistic = scale(' €1 for 3 of these US items')
-    it('realistic', async () => await test('realistic', realistic))
-
-    const almost = scale('12345USA')
-    it('almost', async () => await test('almost', almost))
-
-    const match = scale('12345USD ')
-    it('match', async () => await test('match', match))
-
-    const numbers = scale('12345678')
-    it('numbers', async () => await test('numbers', numbers))
-
-    const randomText = scale('ruhgheri')
-    it('randomText', async () => await test('randomText', randomText))
-
-    const whitespace = scale('        ')
-    it('whitespace', async () => await test('whitespace', whitespace))
-
-    const strange = scale('€€€€€€€€')
-    it('strange', async () => await test('strange', strange))
-
-    const amazon = amazon_com_thing_site
-    it('amazon', async () => await test('amazon', amazon))
-
-    const aliexpress = aliexpress_com_site
-    it('aliexpress', async () => await test('aliexpress', aliexpress))
+    it('simple', async () => await testHtml('simple', `
+<div><div><div><div>5</div><div>.</div><div>0</div><div>USD</div></div></div></div>
+<div>I like 5. $ is bad</div>
+<div>I like $ 5-10 to be money</div>
+<div>cake$534798heruiygfh</div>
+<div>5.000,20$</div>
+<div>5,000.20$</div>
+<div>I want $5. 0 dollar is not ok</div>
+`))
 })
 
-async function test(name: string, text: string) {
+async function testHtml(name: string, text: string) {
     const resp = await RateApi.fetch(`v4/symbols`).then(e => e.text()).then(e => JSON.parse(e))
-    const {textDetector, activeLocalization} = useMockContainer({
+    const {pseudoFlat, textFlat, pseudoDetector, textDetector, activeLocalization, pseudoDom} = useMockContainer({
         backendApi: {symbols: () => Promise.resolve(resp)},
         metaConfig: {logging: {}},
         currencyTagConfig: {
@@ -59,14 +39,74 @@ async function test(name: string, text: string) {
     })
     await activeLocalization.load()
 
+    const dom = pseudoDom.create(HtmlMock.parse(text))
+    const expectedRaw = pseudoDetector.find(dom.root, {})
+    const actualRaw = pseudoFlat.find(dom.root)
+    console.log(Object.keys(actualRaw).length + " " + Object.keys(expectedRaw).length)
+
+    const actual: any[] = []
+    const expected: any[] = []
+    Object.values(actualRaw).forEach(key => {
+        if (!expectedRaw.includes(key)) {
+            const actualElement = dom.elementText(key)
+            actual.push(key)
+            const expectedKey = expectedRaw
+                .filter(e => actualElement.includes(dom.elementText(e)) || dom.elementText(e).includes(actualElement))
+                .sort((a, b) => dom.elementText(a).length - dom.elementText(b).length)[0] ?? -1
+            expected.push(expectedKey)
+        } else {
+            actual.push(key)
+            expected.push(key)
+        }
+    })
+    Object.values(expectedRaw).forEach(key => {
+        if (expected.includes(key)) return
+        if (!actualRaw.includes(key)) {
+            const expectedElement = dom.elementText(key)
+            expected.push(key)
+            const actualKey = actualRaw
+                .filter(e => expectedElement.includes(dom.elementText(e)) || dom.elementText(e).includes(expectedElement))
+                .sort((a, b) => dom.elementText(a).length - dom.elementText(b).length)[0] ?? -1
+            actual.push(actualKey)
+        }
+    })
+
+    const actualLine0 = actual
+        .map(id => dom.elementText(id))
+        .map(e => textFlat.find(e).map(ee => e.substring(ee.startIndex, ee.endIndex))[0])
+        .map(e => e ? e.replace(/\s/g, ' ') : '')
+    const actualLine1 = actual
+        .map(id => dom.elementText(id))
+        .map(e => textFlat.find(e).map(ee => e.substring(ee.startIndex, ee.endIndex))[1])
+        .map(e => e ? e.replace(/\s/g, ' ') : '')
+
+    const expectedLine0 = expected
+        .map(id => dom.elementText(id))
+        .map(e => textDetector.find(e).map(e => e.text)[0])
+        .map(e => e ? e.replace(/\s/g, ' ') : '')
+    const expectedLine1 = expected
+        .map(id => dom.elementText(id))
+        .map(e => textDetector.find(e).map(e => e.text)[1])
+        .map(e => e ? e.replace(/\s/g, ' ') : '')
+
+    const lengths = actualLine0.map((actual0, i) => Math.max(
+        actual0?.length || 0,
+        actualLine1[i]?.length || 0,
+        expectedLine0[i]?.length || 0,
+        expectedLine1[i]?.length || 0,
+    ))
+    const compareLine = actual.map((e, i) => e === expected[i] ? ''.padStart(lengths[i], ' ') : ''.padStart(lengths[i], '#'))
+    console.log(`Verification
+    ${actualLine0.map((e, i) => e.padStart(lengths[i], ' ')).join(', ')}
+    ${actualLine1.map((e, i) => e.padStart(lengths[i], ' ')).join(', ')}
+    ${compareLine.join(', ')}
+    ${expectedLine0.map((e, i) => e.padStart(lengths[i], ' ')).join(', ')}
+    ${expectedLine1.map((e, i) => e.padStart(lengths[i], ' ')).join(', ')}
+    `)
+
     new Suite()
-        .add(name + " text", () => textDetector.find(text))
-        .add(name + " dream", () => {
-            let a = 0
-            const n = text.length
-            for (let i = 0; i < n; i++) a = text.charCodeAt(i)
-            return a
-        })
+        .add(name + " pseudoDetector", () => pseudoDetector.find(dom.root, {}))
+        .add(name + " pseudoFlat", () => pseudoFlat.find(dom.root))
         .on('cycle', (event: any) => console.log(String(event.target)))
         .run({async: false})
 }

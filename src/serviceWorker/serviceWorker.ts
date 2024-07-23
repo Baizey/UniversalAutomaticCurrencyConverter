@@ -39,8 +39,11 @@ async function handleMessengerRegistration() {
 
 export const startServiceWorker = async () => {
     await loadSettings()
-    log.info('Initializing background')
+    log.info('loadSettings')
     await handleVersionCheck()
+    log.info('handleVersionCheck')
     await handleContextMenuCreation()
+    log.info('handleContextMenuCreation')
     await handleMessengerRegistration()
+    log.info('handleMessengerRegistration')
 }

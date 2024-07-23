@@ -7,12 +7,13 @@ import {
 } from '../../infrastructure/Configuration/Configuration'
 import {IBackendApi} from '../BackendApi'
 import {BackendApiDiTypes} from '../BackendApi/BackendApi'
-import {ITextDetector, TextDetectorDi} from '../Detection'
+import {TextDetectorDi} from '../Detection'
 import {IActiveLocalization} from '../Localization'
 import {ActiveLocalizationDi} from '../Localization/ActiveLocalization'
 import {CurrencyAmount, CurrencyAmountDiTypes, CurrencyAmountType} from './CurrencyAmount'
 import {ElementSnapshot} from './ElementSnapshot'
 import {factory, FactoryDi} from "../../infrastructure/DiFactory";
+import {TextFlat, TextFlatDi} from "../Detection/TextFlat";
 
 type CurrencyInfo = {
     original: CurrencyAmount;
@@ -22,7 +23,7 @@ type CurrencyInfo = {
     right: { start: number; end: number };
 };
 
-export type CurrencyElementType =  FactoryDi<HTMLElement, CurrencyElement>
+export type CurrencyElementType = FactoryDi<HTMLElement, CurrencyElement>
 export type CurrencyElementDi = { currencyElement: CurrencyElementType }
 
 export type CurrencyElementDep =
@@ -32,6 +33,7 @@ export type CurrencyElementDep =
     & TextDetectorDi
     & CurrencyElementDi
     & CurrencyAmountDiTypes
+    & TextFlatDi
 
 export class CurrencyElement {
     private static nextId: number = 1
@@ -41,7 +43,7 @@ export class CurrencyElement {
 
     readonly element: HTMLElement
 
-    private readonly detector: ITextDetector
+    private readonly detector: TextFlat
     private readonly backendApi: IBackendApi
     private readonly currencyElement: CurrencyElementType
     private readonly localization: IActiveLocalization
@@ -60,7 +62,7 @@ export class CurrencyElement {
                     highlightConfig,
                     currencyTagConfig,
                     backendApi,
-                    textDetector,
+                    textFlat,
                     activeLocalization,
                     logger,
                     currencyElement,
@@ -79,7 +81,7 @@ export class CurrencyElement {
 
         this.localization = activeLocalization
         this.backendApi = backendApi
-        this.detector = textDetector
+        this.detector = textFlat
 
         this.original = new ElementSnapshot(element)
         this.converted = this.original.clone()
@@ -184,43 +186,29 @@ export class CurrencyElement {
         const text = texts.join(' ')
 
         const result = this.detector.find(text)
-
         const currencyInfo: CurrencyInfo[] = await Promise.all(
             result.map(async (r) => {
-                const currency =
-                    this.localization.parseCurrency(r.currencies[0]) ||
-                    this.localization.parseCurrency(r.currencies[1]) ||
-                    ''
-                const numbers = r.amounts.map((e) =>
-                    Number(`${e.neg + e.integer}.${e.decimal}`),
-                )
+                const currency = this.localization.parseCurrency(r.currency)!
+                const numbers = r.amounts
                 const amount = this.currencyAmount.create({
                     tag: currency,
                     amount: numbers,
                 })
 
-                let left, right
-                if (this.localization.parseCurrency(r.currencies[0])) {
-                    left = r.indexes[0]
-                    right = r.indexes[4]
-                } else {
-                    left = r.indexes[1]
-                    right = r.indexes[5]
-                }
                 return {
                     original: amount,
                     converted: await amount.convertTo(this.conversionTo),
                     left: {
-                        start: left,
-                        end: r.indexes[2],
+                        start: r.startIndex,
+                        end: r.amountIndexes.start,
                     },
                     center: {
-                        start: r.indexes[2],
-                        end: r.indexes[3],
+                        start: r.amountIndexes.start,
+                        end: r.amountIndexes.start + 1,
                     },
                     right: {
-                        start: r.indexes[3],
-                        end: right,
+                        start: r.amountIndexes.start + 1,
+                        end: r.endIndex,
                     },
                 }
             }),
@@ -296,4 +284,4 @@ export class CurrencyElement {
     }
 }
 
-export const CurrencyElementDi = {currencyElement: factory<HTMLElement, CurrencyElement>(CurrencyElement) }
+export const CurrencyElementDi = {currencyElement: factory<HTMLElement, CurrencyElement>(CurrencyElement)}

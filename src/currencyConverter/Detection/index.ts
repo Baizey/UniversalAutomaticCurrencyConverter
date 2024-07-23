@@ -8,9 +8,11 @@ import {TextDetector} from './TextDetector'
 import {PseudoDom, PseudoDomDi} from "./pseudoDom";
 import {PseudoDetector, PseudoDetectorDi} from "./PseudoDetector";
 import {factory} from "../../infrastructure/DiFactory";
+import {PseudoFlat, PseudoFlatDi} from "./PseudoFlat";
+import {TextFlat, TextFlatDi} from "./TextFlat";
 
 export {ElementDetector, SiteAllowance, TextDetector}
-export type{ITextDetector, TextDetectorDi} from './TextDetector'
+export type{TextDetectorDi} from './TextDetector'
 export type{ElementDetectorDi} from './ElementDetector'
 export type {ISiteAllowance, SiteAllowanceDi} from './SiteAllowance'
 
@@ -20,6 +22,8 @@ export type DetectionDiTypes =
     & ElementDetectorDi
     & PseudoDetectorDi
     & PseudoDomDi
+    & PseudoFlatDi
+    & TextFlatDi
 
 const {
     pseudoDom,
@@ -27,13 +31,17 @@ const {
     siteAllowance,
     textDetector,
     elementDetector,
+    pseudoFlat,
+    textFlat
 } = propertyOf<DetectionDiTypes>()
 
 
 export const DetectionDi = {
     [siteAllowance]: singleton(SiteAllowance),
     [textDetector]: singleton(TextDetector),
+    [pseudoDetector]: singleton(PseudoDetector),
     [elementDetector]: singleton(ElementDetector),
     [pseudoDom]: factory<HTMLElement, PseudoDom>(PseudoDom),
-    [pseudoDetector]: singleton(PseudoDetector),
+    [pseudoFlat]: singleton(PseudoFlat),
+    [textFlat]: singleton(TextFlat),
 }

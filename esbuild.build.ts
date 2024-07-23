@@ -49,24 +49,21 @@ time('build', async () => {
     async function bundle(browser: string) {
         const unpackedDir = `${rootDistDir}/${browser}_${version}`
         const assetDir = `${rootAssetsDir}/${browser}`
-        await Promise.all(
-            [
-                chain([
-                    () => updateAssetManifest(assetDir),
-                    () => copyAssets(assetDir, unpackedDir)
-                ]),
-                ...files.map(build)
-            ]
-        )
+        await async([
+            () => sync([
+                () => updateAssetManifest(assetDir),
+                () => copyAssets(assetDir, unpackedDir)
+            ]),
+            ...files.map(file => () => build(file))
+        ])
         await zipFolder(unpackedDir, `${unpackedDir}.zip`)
 
         async function updateAssetManifest(assetDir: string) {
-            if (isProd) {
-                const manifestFile = `${assetDir}/manifest.json`
-                const manifest: VersionFile = await fs.readFile(manifestFile).then(e => e.toString()).then(JSON.parse)
-                manifest.version = (await packageJson.get()).version
-                await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2))
-            }
+            const manifestFile = `${assetDir}/manifest.json`
+            const manifest: VersionFile = await fs.readFile(manifestFile).then(e => e.toString()).then(JSON.parse)
+            manifest.version = (await packageJson.get()).version
+            if (isDev) manifest.version += '.' + Math.random().toString().split('.')[1].substring(0, 2)
+            await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2))
         }
 
         async function copyAssets(src: string, dist: string) {
@@ -106,7 +103,11 @@ time('build', async () => {
     }
 }).catch(console.error)
 
-async function chain(actions: (() => Promise<any>)[]) {
+async function async(actions: (() => Promise<any | void>)[]): Promise<void> {
+    await Promise.all(actions.map(e => e()))
+}
+
+async function sync(actions: (() => Promise<any | void>)[]): Promise<void> {
     for (let supplier of actions) {
         await supplier();
     }
