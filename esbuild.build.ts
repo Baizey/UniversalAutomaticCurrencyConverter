@@ -50,17 +50,19 @@ time('build', async () => {
     async function bundle(browser: string) {
         const unpackedDir = `${rootDistDir}/${browser}_${version}`
         const assetDir = `${rootAssetsDir}/${browser}`
-        await async([
-            () => sync([
-                () => updateAssetManifest(assetDir),
-                () => copyAssets(assetDir, unpackedDir)
+        await sync([
+            () => async([
+                () => sync([
+                    () => copyAssets(assetDir, unpackedDir),
+                    () => updateAssetManifest(unpackedDir),
+                ]),
+                ...files.map(file => () => build(file))
             ]),
-            ...files.map(file => () => build(file))
+            () => zipFolder(unpackedDir, `${unpackedDir}.zip`)
         ])
-        await zipFolder(unpackedDir, `${unpackedDir}.zip`)
 
-        async function updateAssetManifest(assetDir: string) {
-            const manifestFile = `${assetDir}/manifest.json`
+        async function updateAssetManifest(unpackedDir: string) {
+            const manifestFile = `${unpackedDir}/manifest.json`
             const manifest: VersionFile = await fs.readFile(manifestFile).then(e => e.toString()).then(JSON.parse)
             manifest.version = (await packageJson.get()).version
             manifest.version_name = manifest.version
