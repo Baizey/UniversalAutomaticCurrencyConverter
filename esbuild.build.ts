@@ -63,6 +63,7 @@ time('build', async () => {
             const manifestFile = `${assetDir}/manifest.json`
             const manifest: VersionFile = await fs.readFile(manifestFile).then(e => e.toString()).then(JSON.parse)
             manifest.version = (await packageJson.get()).version
+            manifest.version_name = manifest.version
             if (isDev) {
                 const now = Date.now().toString()
                 manifest.version += `.${now.substring(now.length - 8, now.length - 4)}`
