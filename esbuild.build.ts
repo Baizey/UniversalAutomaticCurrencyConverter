@@ -18,6 +18,7 @@ const isProd = !isDev
 
 type VersionFile = {
     version: string
+    version_name: string
 }
 
 class Lazy<T> {
@@ -62,7 +63,12 @@ time('build', async () => {
             const manifestFile = `${assetDir}/manifest.json`
             const manifest: VersionFile = await fs.readFile(manifestFile).then(e => e.toString()).then(JSON.parse)
             manifest.version = (await packageJson.get()).version
-            if (isDev) manifest.version += '.' + Math.random().toString().split('.')[1].substring(0, 2)
+            if (isDev) {
+                const now = Date.now().toString()
+                manifest.version += `.${now.substring(now.length - 8, now.length - 4)}`
+                manifest.version_name = `${manifest.version}-dev`
+                console.log(manifest.version_name)
+            }
             await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2))
         }
 
