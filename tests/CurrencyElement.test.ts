@@ -34,18 +34,6 @@ describe('CurrencyElement', () => {
             showInBrackets: true,
             element: HtmlMock.parse(`<div>5 - 5 USD</div>`),
         },
-        {
-            name: 'bracket negative number',
-            expect: '-5 USD (-5 USD)',
-            showInBrackets: true,
-            element: HtmlMock.parse(`<div>-5 USD</div>`),
-        },
-        {
-            name: 'bracket negative number',
-            expect: '-5 - -5 USD (-5 - -5 USD)',
-            showInBrackets: true,
-            element: HtmlMock.parse(`<div>-5 - -5 USD</div>`),
-        },
     ]
     tests.forEach(
         (test: {

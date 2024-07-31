@@ -44,83 +44,102 @@ export class TextFlat {
 
         const zero = '0'.split('').map(e => e.charCodeAt(0))
         const nonZero = '123456789'.split('').map(e => e.charCodeAt(0))
+        const dash = '-'.split('').map(e => e.charCodeAt(0))
         const digits = zero.concat(nonZero)
         const whitespace = ' \t\n\r '.split('').map(e => e.charCodeAt(0))
         const groups = ',.'.split('').map(e => e.charCodeAt(0))
         const connect = (from: Node, edge: number[], to: Node) => edge.forEach(e => from[e] = to)
 
-        const connectWithWhitespace = (from: Node, edge: number[], to: Node) => {
+        const createNode = (isEnd: boolean) => ({isEnd}) as Node
+
+        connect(this.whitespace, whitespace, this.whitespace)
+
+        const secondRoot = createNode(false)
+        connect(secondRoot, whitespace, secondRoot)
+        createAmountStateMachine(secondRoot, (from, edge, to) => {
             const p = createNode(false)
             connect(from, whitespace, p)
             connect(p, whitespace, p)
             connect(from, edge, to)
             connect(p, edge, to)
-        }
+        })
+        createAmountStateMachine(this.amount, (from, edge, to) => {
+            const p = createNode(false)
+            connect(from, whitespace, p);
+            connect(from, edge, to)
+            connect(p, whitespace, p);
+            connect(p, edge, to)
 
-        const createNode = (isEnd: boolean) => ({isEnd}) as Node
+            connect(from, dash, secondRoot)
+            connect(p, dash, secondRoot)
+        })
 
-        connect(this.whitespace, whitespace, this.whitespace)
 
-        const lowInt = createNode(true)
-        connect(this.amount, zero, lowInt)
+        function createAmountStateMachine(root: Node, connectWithWhitespace: (from: Node, edge: number[], to: Node) => void) {
+            const lowInt = createNode(true)
+            connect(root, zero, lowInt)
 
-        const lowDecimalPoint = createNode(false)
-        connectWithWhitespace(lowInt, groups, lowDecimalPoint)
+            const lowDecimalPoint = createNode(false)
+            connectWithWhitespace(lowInt, groups, lowDecimalPoint)
 
-        const lowDecimal = createNode(true)
-        connectWithWhitespace(lowDecimalPoint, digits, lowDecimal)
-        connect(lowDecimal, digits, lowDecimal)
+            const lowDecimal = createNode(true)
+            connectWithWhitespace(lowDecimalPoint, digits, lowDecimal)
+            connect(lowDecimal, digits, lowDecimal)
+            connectWithWhitespace(lowDecimal, [], createNode(false))
 
-        const highFirst = createNode(true)
-        connect(this.amount, nonZero, highFirst)
-        const highSecond = createNode(true)
-        connect(highFirst, digits, highSecond)
-        const highThird = createNode(true)
-        connect(highSecond, digits, highThird)
+            const highFirst = createNode(true)
+            connect(root, nonZero, highFirst)
+            const highSecond = createNode(true)
+            connect(highFirst, digits, highSecond)
+            const highThird = createNode(true)
+            connect(highSecond, digits, highThird)
 
-        const highInf = createNode(true)
-        connect(highThird, digits, highInf)
-        connect(highInf, digits, highInf)
-
-        const decimalPoint = createNode(false)
-        connectWithWhitespace(highInf, groups, decimalPoint)
-
-        const highDecimals = createNode(true)
-        connectWithWhitespace(decimalPoint, digits, highDecimals)
-        const highDecimals2 = createNode(true)
-        connect(highDecimals, digits, highDecimals2)
-
-        ;[
-            [[groups[0]], [groups[1]]],
-            [[groups[1]], [groups[0]]]
-        ].forEach(([group, point]) => {
-            const decimalPointOrGrouping = createNode(false)
-            connectWithWhitespace(highFirst, group, decimalPointOrGrouping)
-            connectWithWhitespace(highSecond, group, decimalPointOrGrouping)
-            connectWithWhitespace(highThird, group, decimalPointOrGrouping)
-
-            const maybeFirst = createNode(true)
-            connectWithWhitespace(decimalPointOrGrouping, digits, maybeFirst)
-            const maybeSecond = createNode(true)
-            connect(maybeFirst, digits, maybeSecond)
-            const maybeThird = createNode(true)
-            connect(maybeSecond, digits, maybeThird)
-
-            const grouping = createNode(false)
-            connectWithWhitespace(maybeThird, group, grouping)
-
-            const groupFirst = createNode(false)
-            connectWithWhitespace(grouping, digits, groupFirst)
-            const groupSecond = createNode(false)
-            connect(groupFirst, digits, groupSecond)
-            const groupThird = createNode(true)
-            connect(groupSecond, digits, groupThird)
+            const highInf = createNode(true)
+            connect(highThird, digits, highInf)
+            connect(highInf, digits, highInf)
 
             const decimalPoint = createNode(false)
-            connectWithWhitespace(groupThird, point, decimalPoint)
-            connectWithWhitespace(maybeThird, point, decimalPoint)
-            connectWithWhitespace(decimalPoint, point, highDecimals)
-        })
+            connectWithWhitespace(highInf, groups, decimalPoint)
+
+            const highDecimals = createNode(true)
+            connectWithWhitespace(decimalPoint, digits, highDecimals)
+            const highDecimals2 = createNode(true)
+            connect(highDecimals, digits, highDecimals2)
+            connectWithWhitespace(highDecimals2, [], createNode(false))
+
+            ;[
+                [[groups[0]], [groups[1]]],
+                [[groups[1]], [groups[0]]]
+            ].forEach(([group, point]) => {
+                const decimalPointOrGrouping = createNode(false)
+                connectWithWhitespace(highFirst, group, decimalPointOrGrouping)
+                connectWithWhitespace(highSecond, group, decimalPointOrGrouping)
+                connectWithWhitespace(highThird, group, decimalPointOrGrouping)
+
+                const maybeFirst = createNode(true)
+                connectWithWhitespace(decimalPointOrGrouping, digits, maybeFirst)
+                const maybeSecond = createNode(true)
+                connect(maybeFirst, digits, maybeSecond)
+                connectWithWhitespace(maybeSecond, [], createNode(false))
+                const maybeThird = createNode(true)
+                connect(maybeSecond, digits, maybeThird)
+
+                const grouping = createNode(false)
+                connectWithWhitespace(maybeThird, group, grouping)
+
+                const groupFirst = createNode(false)
+                connectWithWhitespace(grouping, digits, groupFirst)
+                const groupSecond = createNode(false)
+                connect(groupFirst, digits, groupSecond)
+                const groupThird = createNode(true)
+                connect(groupSecond, digits, groupThird)
+
+                const decimalPoint = createNode(false)
+                connectWithWhitespace(groupThird, point, decimalPoint)
+                connectWithWhitespace(maybeThird, point, decimalPoint)
+                connectWithWhitespace(decimalPoint, point, highDecimals)
+            })
+        }
 
 
         /*
@@ -200,7 +219,8 @@ export class TextFlat {
                     .map(e => {
                         if (e.charAt(0) === '0') return +e
                         const lastDot = e.lastIndexOf('.')
-                        if (lastDot === -1 || lastDot !== e.length - 3) return +e.replace(/\./g, '')
+                        if (lastDot === -1) return +e
+                        if (lastDot !== e.length - 3) return +e.replace(/\./g, '')
                         return +(e.substring(0, lastDot).replace(/\./g, '') + '.' + e.substring(lastDot + 1))
                     }),
                 currencyIndexes: {start: currency.start, end: currency.end},
