@@ -48,6 +48,7 @@ export class PseudoFlat {
 
         function toText(node: PseudoNode, startIndexes: Record<number, number>, endIndexes: Record<number, number>, index: number): string {
             let value = ''
+            if(!node) return value
             startIndexes[node.id] = index
             for (const child of node.children) {
                 if (typeof child === 'string') value += ' ' + child
