@@ -16,7 +16,6 @@ function mockContainer(mock?: Mockable): Providable {
     mock ??= {}
     return setMockProvider({
         browser: new BrowserMock(),
-        backendApi: {},
         backgroundMessenger: {},
         tabMessenger: {},
         popupMessenger: {},

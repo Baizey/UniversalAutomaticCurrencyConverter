@@ -3,11 +3,6 @@ import { DependenciesOf } from '@baizey/dependency-injection'
 import { BackgroundMessenger, Browser, InfrastructureDiTypes, RatePath } from '../../infrastructure'
 import { CurrencyRate, ICurrencyRate } from './CurrencyRate'
 
-export interface IBackendApi {
-	symbols(): Promise<Record<string, string>>;
-
-	rate( from: string, to: string ): Promise<ICurrencyRate | undefined>;
-}
 
 type RateStorage = {
 	rate: number;
@@ -15,7 +10,7 @@ type RateStorage = {
 	path: RatePath;
 };
 
-export class BackendApi implements IBackendApi {
+export class BackendApi {
 	private readonly backgroundMessenger: BackgroundMessenger
 	private readonly browser: Browser
 

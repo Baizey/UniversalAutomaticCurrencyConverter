@@ -5,8 +5,7 @@ import {
     CurrencyTagConfig,
     QualityOfLifeConfig,
 } from '../../infrastructure/Configuration/Configuration'
-import {IBackendApi} from '../BackendApi'
-import {BackendApiDiTypes} from '../BackendApi/BackendApi'
+import {BackendApi, BackendApiDiTypes} from '../BackendApi/BackendApi'
 import {TextDetectorDi} from '../Detection'
 import {IActiveLocalization} from '../Localization'
 import {ActiveLocalizationDi} from '../Localization/ActiveLocalization'
@@ -44,7 +43,7 @@ export class CurrencyElement {
     readonly element: HTMLElement
 
     private readonly detector: TextFlat
-    private readonly backendApi: IBackendApi
+    private readonly backendApi: BackendApi
     private readonly currencyElement: CurrencyElementType
     private readonly localization: IActiveLocalization
     private readonly logger: Logger
