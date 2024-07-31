@@ -3,7 +3,7 @@
   "name": "Universal Automatic Currency Converter",
   "description": "Universal automatic currency converter for all web browsing needs",
   "manifest_version": 3,
-  "version": "5.1.0",
+  "version": "unknown",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
@@ -46,6 +46,5 @@
     "contextMenus",
     "activeTab",
     "storage"
-  ],
-  "version_name": "5.1.0"
+  ]
 }

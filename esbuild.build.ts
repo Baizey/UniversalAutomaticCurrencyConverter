@@ -67,9 +67,9 @@ time('build', async () => {
             manifest.version = (await packageJson.get()).version
             manifest.version_name = manifest.version
             if (isDev) {
-                const now = Date.now().toString()
-                manifest.version += `.${now.substring(now.length - 8, now.length - 4)}`
-                manifest.version_name = `${manifest.version}-dev`
+                const now = new Date()
+                const stamp = `${now.getUTCFullYear()}/${(now.getUTCMonth() + 1).toString().padStart(2, '0')}/${now.getUTCDay().toString().padStart(2, '0')}|${now.getUTCHours().toString().padStart(2, '0')}:${now.getUTCMinutes().toString().padStart(2, '0')}:${now.getUTCSeconds().toString().padStart(2, '0')}`
+                manifest.version_name = `${stamp}`
                 console.log(manifest.version_name)
             }
             await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2))
