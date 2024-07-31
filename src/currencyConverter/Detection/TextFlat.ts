@@ -50,21 +50,21 @@ export class TextFlat {
         const groups = ',.'.split('').map(e => e.charCodeAt(0))
         const connect = (from: Node, edge: number[], to: Node) => edge.forEach(e => from[e] = to)
 
-        const createNode = (isEnd: boolean) => ({isEnd}) as Node
+        const createNode = (name: string, isEnd: boolean) => ({name, isEnd}) satisfies Node
 
         connect(this.whitespace, whitespace, this.whitespace)
 
-        const secondRoot = createNode(false)
+        const secondRoot = createNode('second amount', false)
         connect(secondRoot, whitespace, secondRoot)
         createAmountStateMachine(secondRoot, (from, edge, to) => {
-            const p = createNode(false)
+            const p = createNode('whitespace', false)
             connect(from, whitespace, p)
             connect(p, whitespace, p)
             connect(from, edge, to)
             connect(p, edge, to)
         })
         createAmountStateMachine(this.amount, (from, edge, to) => {
-            const p = createNode(false)
+            const p = createNode('whitespace', false)
             connect(from, whitespace, p);
             connect(from, edge, to)
             connect(p, whitespace, p);
@@ -76,68 +76,68 @@ export class TextFlat {
 
 
         function createAmountStateMachine(root: Node, connectWithWhitespace: (from: Node, edge: number[], to: Node) => void) {
-            const lowInt = createNode(true)
+            const lowInt = createNode('lowInt', true)
             connect(root, zero, lowInt)
 
-            const lowDecimalPoint = createNode(false)
+            const lowDecimalPoint = createNode('lowDecimalPoint', false)
             connectWithWhitespace(lowInt, groups, lowDecimalPoint)
 
-            const lowDecimal = createNode(true)
+            const lowDecimal = createNode('lowDecimal', true)
             connectWithWhitespace(lowDecimalPoint, digits, lowDecimal)
             connect(lowDecimal, digits, lowDecimal)
-            connectWithWhitespace(lowDecimal, [], createNode(false))
+            connectWithWhitespace(lowDecimal, [], createNode('ignored', false))
 
-            const highFirst = createNode(true)
+            const highFirst = createNode('highFirst', true)
             connect(root, nonZero, highFirst)
-            const highSecond = createNode(true)
+            const highSecond = createNode('highSecond', true)
             connect(highFirst, digits, highSecond)
-            const highThird = createNode(true)
+            const highThird = createNode('highThird', true)
             connect(highSecond, digits, highThird)
 
-            const highInf = createNode(true)
+            const highInf = createNode('highInf', true)
             connect(highThird, digits, highInf)
             connect(highInf, digits, highInf)
 
-            const decimalPoint = createNode(false)
+            const decimalPoint = createNode('decimalPoint', false)
             connectWithWhitespace(highInf, groups, decimalPoint)
 
-            const highDecimals = createNode(true)
+            const highDecimals = createNode('highDecimals', true)
             connectWithWhitespace(decimalPoint, digits, highDecimals)
-            const highDecimals2 = createNode(true)
+            const highDecimals2 = createNode('highDecimals2', true)
             connect(highDecimals, digits, highDecimals2)
-            connectWithWhitespace(highDecimals2, [], createNode(false))
+            connectWithWhitespace(highDecimals2, [], createNode('ignored2', false))
 
             ;[
                 [[groups[0]], [groups[1]]],
                 [[groups[1]], [groups[0]]]
             ].forEach(([group, point]) => {
-                const decimalPointOrGrouping = createNode(false)
+                const decimalPointOrGrouping = createNode('decimalPointOrGrouping', false)
                 connectWithWhitespace(highFirst, group, decimalPointOrGrouping)
                 connectWithWhitespace(highSecond, group, decimalPointOrGrouping)
                 connectWithWhitespace(highThird, group, decimalPointOrGrouping)
 
-                const maybeFirst = createNode(true)
+                const maybeFirst = createNode('maybeFirst', true)
                 connectWithWhitespace(decimalPointOrGrouping, digits, maybeFirst)
-                const maybeSecond = createNode(true)
+                const maybeSecond = createNode('maybeSecond', true)
                 connect(maybeFirst, digits, maybeSecond)
-                connectWithWhitespace(maybeSecond, [], createNode(false))
-                const maybeThird = createNode(true)
+                connectWithWhitespace(maybeSecond, [], createNode('lowInt', false))
+                const maybeThird = createNode('maybeThird', true)
                 connect(maybeSecond, digits, maybeThird)
 
-                const grouping = createNode(false)
+                const grouping = createNode('grouping', false)
                 connectWithWhitespace(maybeThird, group, grouping)
 
-                const groupFirst = createNode(false)
+                const groupFirst = createNode('groupFirst', false)
                 connectWithWhitespace(grouping, digits, groupFirst)
-                const groupSecond = createNode(false)
+                const groupSecond = createNode('groupSecond', false)
                 connect(groupFirst, digits, groupSecond)
-                const groupThird = createNode(true)
+                const groupThird = createNode('groupThird', true)
                 connect(groupSecond, digits, groupThird)
 
-                const decimalPoint = createNode(false)
+                const decimalPoint = createNode('decimalPoint', false)
                 connectWithWhitespace(groupThird, point, decimalPoint)
                 connectWithWhitespace(maybeThird, point, decimalPoint)
-                connectWithWhitespace(decimalPoint, point, highDecimals)
+                connectWithWhitespace(decimalPoint, digits, highDecimals)
             })
         }
 
@@ -174,7 +174,7 @@ export class TextFlat {
         const result: FlatResult[] = []
         let currency: ReturnType<typeof this.match>
         let amount: ReturnType<typeof this.match>
-        for (let i = 0; i < text.length; i++) {
+        for (let i = 0; i < text.length;) {
             const char = text.charCodeAt(i)
 
             if (this.currency[char]) {
@@ -203,7 +203,10 @@ export class TextFlat {
                 i = currency.end
                 if (!currency.match) continue
 
-            } else continue
+            } else {
+                i++
+                continue
+            }
 
             const start = Math.min(currency.start, amount.start)
             const end = Math.max(currency.end, amount.end)

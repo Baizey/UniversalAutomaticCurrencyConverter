@@ -15,11 +15,13 @@ describe('benchmark', () => {
 
     it('simple', async () => await testHtml('simple', `
 <div><div><div><div>5</div><div>.</div><div>0</div><div>USD</div></div></div></div>
+<div>$4$4</div>
+<div>$4.$4</div>
 <div>I like 5. $ is bad</div>
 <div>I like $ 5-10 to be money</div>
 <div>cake$534798heruiygfh</div>
-<div>5.000,20$</div>
-<div>5,000.20$</div>
+<div>aaaa 5.000,20$ aaaa</div>
+<div>aaaa 5,000.20$ aaaa</div>
 <div>I want $5. 0 dollar is not ok</div>
 `))
 })
