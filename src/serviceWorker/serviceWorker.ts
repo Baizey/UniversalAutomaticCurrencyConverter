@@ -25,12 +25,14 @@ async function handleVersionCheck() {
 
 async function handleContextMenuCreation() {
     const {browser, tabMessenger} = useProvider()
-    browser.contextMenus.create({
-            id: ContextMenuItem.openContextMenu,
-            title: `Open context menu...`,
-            contexts: ['all',]
-        },
-        () => browser.contextMenus.onClicked.addListener((_, tab) => tabMessenger.openContextMenu(tab!.id)))
+    browser.runtime.onInstalled.addListener(() => {
+        browser.contextMenus.create({
+                id: ContextMenuItem.openContextMenu,
+                title: `Open context menu...`,
+                contexts: ['all',]
+            },
+            () => browser.contextMenus.onClicked.addListener((_, tab) => tabMessenger.openContextMenu(tab!.id)))
+    })
 }
 
 async function handleMessengerRegistration() {
