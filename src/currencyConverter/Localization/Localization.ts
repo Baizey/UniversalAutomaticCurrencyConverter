@@ -13,6 +13,10 @@ export class Localizations {
         return (this._uniqueSymbols = result);
     }
 
+    /**
+     * Alternative shared ways for currencies to display themselves.
+     * Note that for these to work correctly extensive support is required in ActiveLocalization
+     */
     static get shared() {
         return {
             // Usa, Canada, Australia, Mexico, New Zealand, Singapore, Hong kong, Argentine peso
@@ -29,6 +33,9 @@ export class Localizations {
         };
     }
 
+    /**
+     * Alternative unique displays for currencies
+     */
     static get unique() {
         return {
             // Hungary
@@ -50,13 +57,13 @@ export class Localizations {
             // EU
             EUR: ['€'],
             // UK
-            GBP: ['£'],
+            GBP: ['£', '￡'],
             // Japan
             JPY: ['JP¥', '円'],
             // China
             CNY: ['CN¥', '元'],
             // India
-            INR: ['₹'],
+            INR: ['₹', 'Rs'],
             // Russia
             RUB: ['₽'],
             // Kazakhstan
@@ -88,6 +95,9 @@ export class Localizations {
         };
     }
 
+    /**
+     * This exists primarily to avoid async setup for currency detection
+     */
     static get currencySymbols(): string[] {
         return [
             "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
