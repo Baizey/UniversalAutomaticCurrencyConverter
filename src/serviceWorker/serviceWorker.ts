@@ -22,18 +22,15 @@ async function handleVersionCheck() {
     if (last < current) await browser.tabs.create({url: 'options.html'})
 }
 
+
 async function handleContextMenuCreation() {
     const {browser, tabMessenger} = useProvider()
-    try {
-        browser.contextMenus.create({
-                id: ContextMenuItem.openContextMenu,
-                title: `Open context menu...`,
-                contexts: ['all',]
-            },
-            () => browser.contextMenus.onClicked.addListener((_, tab) => tabMessenger.openContextMenu(tab!.id)))
-    } catch (e) {
-        log.error(e as Error, `Failed to create context menu`)
-    }
+    browser.contextMenus.create({
+            id: ContextMenuItem.openContextMenu,
+            title: `Open context menu...`,
+            contexts: ['all',]
+        },
+        () => browser.contextMenus.onClicked.addListener((_, tab) => tabMessenger.openContextMenu(tab!.id)))
 }
 
 async function handleMessengerRegistration() {
@@ -41,7 +38,9 @@ async function handleMessengerRegistration() {
     backgroundHandlers.listen()
 }
 
+let hasRun = false
 export const startServiceWorker = async () => {
+    if (hasRun) return
     await loadSettings()
     log.info('loadSettings')
     await handleVersionCheck()
@@ -50,4 +49,5 @@ export const startServiceWorker = async () => {
     log.info('handleContextMenuCreation')
     await handleMessengerRegistration()
     log.info('handleMessengerRegistration')
+    hasRun = true
 }
