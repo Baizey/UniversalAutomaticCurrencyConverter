@@ -16,6 +16,7 @@ export class PseudoFlat {
         const startIndexes: Record<number, number> = {}
         const endIndexes: Record<number, number> = {}
 
+        if(!element) return []
         const text = toText(element, startIndexes, endIndexes, 0)
         const matches = this.textDetector.find(text)
         const results: Record<number, number> = {}
@@ -48,7 +49,6 @@ export class PseudoFlat {
 
         function toText(node: PseudoNode, startIndexes: Record<number, number>, endIndexes: Record<number, number>, index: number): string {
             let value = ''
-            if(!node) return value
             startIndexes[node.id] = index
             for (const child of node.children) {
                 if (typeof child === 'string') value += ' ' + child
