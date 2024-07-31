@@ -57,14 +57,14 @@ export class TextFlat {
         const secondRoot = createNode('second amount', false)
         connect(secondRoot, whitespace, secondRoot)
         createAmountStateMachine(secondRoot, (from, edge, to) => {
-            const p = createNode('whitespace', false)
+            const p = from[whitespace[0]] ? from[whitespace[0]] : createNode('whitespace', false)
             connect(from, whitespace, p)
             connect(p, whitespace, p)
             connect(from, edge, to)
             connect(p, edge, to)
         })
         createAmountStateMachine(this.amount, (from, edge, to) => {
-            const p = createNode('whitespace', false)
+            const p = from[whitespace[0]] ? from[whitespace[0]] : createNode('whitespace2', false)
             connect(from, whitespace, p);
             connect(from, edge, to)
             connect(p, whitespace, p);

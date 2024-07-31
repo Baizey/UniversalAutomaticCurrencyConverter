@@ -14,6 +14,7 @@ describe('benchmark', () => {
     it('amazon_html', async () => await testHtml('amazon_html', amazon_com_html_site))
 
     it('simple', async () => await testHtml('simple', `
+<div>5 , 10$</div>
 <div><div><div><div>5</div><div>.</div><div>0</div><div>USD</div></div></div></div>
 <div>$4$4</div>
 <div>$4.$4</div>
