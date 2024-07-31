@@ -6,7 +6,7 @@ import {css, Div} from "@baizey/styled-preact";
 
 const Container = ({children}: PropsWithChildren) =>
     <Div styling={css`
-      
+
         max-width: calc(${Percent.all} - ${Pixel.of(20)});
         width: ${Pixel.of(600)};
         height: fit-content;
@@ -29,7 +29,15 @@ export function PopupApp() {
                            text="Go to settings"/>
         </ButtonGrid>
         <FooterText text="Like or hate this extension?"/>
-        <FooterText><Link text="Leave a review" href={browser.reviewLink} target="_blank"/></FooterText>
-        <FooterText text={`Version ${browser.extensionVersion} created by ${browser.author}`}/>
+        <FooterText>
+            <Link text="Leave a review"
+                  href={browser.reviewLink}
+                  target="_blank"/>
+        </FooterText>
+        <FooterText>
+            <Link text={`Version ${browser.extensionVersion} Baizey`}
+                  href={browser.sourceCodeLink}
+                  target="_blank"/>
+        </FooterText>
     </Container>
 }

@@ -94,6 +94,10 @@ export class Browser {
         return this.access.storage
     }
 
+    get sourceCodeLink(): string {
+        return `https://github.com/Baizey/UniversalAutomaticCurrencyConverter`
+    }
+
     get reviewLink(): string {
         switch (this.type) {
             case Browsers.Firefox:
@@ -106,7 +110,7 @@ export class Browser {
     }
 
     get author(): string {
-        return this.runtime.getManifest().author?.email || ''
+        return 'Baizey'
     }
 
     get extensionName(): string {
