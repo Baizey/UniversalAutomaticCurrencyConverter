@@ -25,7 +25,7 @@ async function handleVersionCheck() {
 
 async function handleContextMenuCreation() {
     const {browser, tabMessenger} = useProvider()
-    browser.runtime.onInstalled.addListener(() => {
+    browser.runtime.onStartup.addListener(() => {
         browser.contextMenus.create({
                 id: ContextMenuItem.openContextMenu,
                 title: `Open context menu...`,
