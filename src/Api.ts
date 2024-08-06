@@ -5,6 +5,7 @@ import {Conversion, CurrencyRateGraph} from './CurrencyRateGraph';
 import {SymbolsService} from "./services/SymbolsService";
 import {HttpStatus, Routes} from "./constants";
 
+
 class Data {
     symbols: Record<string, string> = {}
     rates: CurrencyRateGraph = new CurrencyRateGraph({})
