@@ -15,6 +15,7 @@ interface RatesResponse {
     rates: Record<string, number>
 }
 
+
 interface SymbolsResponse {
     symbols: Record<string, string>
 }
