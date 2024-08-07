@@ -1,5 +1,5 @@
 import {PseudoNode} from "./pseudoTypes";
-import {TextDetector, TextDetectorDi} from "./index";
+import {TextDetector, TextDetectorDi} from "./TextDetector";
 
 export type PseudoDetectorDi = {
     pseudoDetector: PseudoDetector

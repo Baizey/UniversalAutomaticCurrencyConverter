@@ -15,6 +15,21 @@ export class PseudoDom {
         this.root = this.createPseudoNode(element, isWatched)[0] as PseudoNode
     }
 
+    elementText(id: number): string {
+        const element = this.pseudo(id)
+        if (!element) return ''
+        function asText(node: PseudoNode): string {
+            let value = ''
+            node.children.forEach(child => {
+                if (typeof child === 'string') value += ' ' + child
+                else value += asText(child)
+            })
+            return value
+        }
+
+        return asText(element)
+    }
+
     element(id: number): Node | undefined {
         return this.lookup[id]?.real
     }

@@ -22,14 +22,17 @@ async function handleVersionCheck() {
     if (last < current) await browser.tabs.create({url: 'options.html'})
 }
 
+
 async function handleContextMenuCreation() {
     const {browser, tabMessenger} = useProvider()
-    browser.contextMenus.create({
-            id: ContextMenuItem.openContextMenu,
-            title: `Open context menu...`,
-            contexts: ['all',]
-        },
-        () => browser.contextMenus.onClicked.addListener((_, tab) => tabMessenger.openContextMenu(tab!.id)))
+    browser.contextMenus.removeAll(() => {
+        browser.contextMenus.create({
+                id: ContextMenuItem.openContextMenu,
+                title: `Open context menu...`,
+                contexts: ['all',]
+            },
+            () => browser.contextMenus.onClicked.addListener((_, tab) => tabMessenger.openContextMenu(tab!.id)))
+    })
 }
 
 async function handleMessengerRegistration() {
@@ -37,10 +40,16 @@ async function handleMessengerRegistration() {
     backgroundHandlers.listen()
 }
 
+let hasRun = false
 export const startServiceWorker = async () => {
+    if (hasRun) return
     await loadSettings()
-    log.info('Initializing background')
+    log.info('loadSettings')
     await handleVersionCheck()
+    log.info('handleVersionCheck')
     await handleContextMenuCreation()
+    log.info('handleContextMenuCreation')
     await handleMessengerRegistration()
+    log.info('handleMessengerRegistration')
+    hasRun = true
 }

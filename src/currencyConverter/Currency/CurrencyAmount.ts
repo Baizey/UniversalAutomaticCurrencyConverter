@@ -1,7 +1,7 @@
 import {DependenciesOf} from '@baizey/dependency-injection/lib/utils'
 import {InfrastructureDi} from '../../infrastructure'
 import {CurrencyStylingConfig, NumberStylingConfig} from '../../infrastructure/Configuration/Configuration'
-import {BackendApiDi, IBackendApi} from '../BackendApi'
+import {BackendApi, BackendApiDi} from '../BackendApi'
 import {factory, FactoryDi} from "../../infrastructure/DiFactory";
 
 export type CurrencyAmountProps = { tag: string, amount: number | number[] }
@@ -16,7 +16,7 @@ type CurrencyAmountDep =
 export class CurrencyAmount {
     readonly tag: string
     readonly amount: number[]
-    private readonly backendApi: IBackendApi
+    private readonly backendApi: BackendApi
     private readonly currencyAmount:  CurrencyAmountType
     private readonly numberStylingConfig: NumberStylingConfig
     private readonly currencyStylingConfig: CurrencyStylingConfig

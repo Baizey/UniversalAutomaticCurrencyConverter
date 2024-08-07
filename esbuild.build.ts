@@ -18,6 +18,7 @@ const isProd = !isDev
 
 type VersionFile = {
     version: string
+    version_name: string
 }
 
 class Lazy<T> {
@@ -49,24 +50,29 @@ time('build', async () => {
     async function bundle(browser: string) {
         const unpackedDir = `${rootDistDir}/${browser}_${version}`
         const assetDir = `${rootAssetsDir}/${browser}`
-        await Promise.all(
-            [
-                chain([
-                    () => updateAssetManifest(assetDir),
-                    () => copyAssets(assetDir, unpackedDir)
+        await sync([
+            () => async([
+                () => sync([
+                    () => copyAssets(assetDir, unpackedDir),
+                    () => updateAssetManifest(unpackedDir),
                 ]),
-                ...files.map(build)
-            ]
-        )
-        await zipFolder(unpackedDir, `${unpackedDir}.zip`)
+                ...files.map(file => () => build(file))
+            ]),
+            () => zipFolder(unpackedDir, `${unpackedDir}.zip`)
+        ])
 
-        async function updateAssetManifest(assetDir: string) {
-            if (isProd) {
-                const manifestFile = `${assetDir}/manifest.json`
-                const manifest: VersionFile = await fs.readFile(manifestFile).then(e => e.toString()).then(JSON.parse)
-                manifest.version = (await packageJson.get()).version
-                await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2))
+        async function updateAssetManifest(unpackedDir: string) {
+            const manifestFile = `${unpackedDir}/manifest.json`
+            const manifest: VersionFile = await fs.readFile(manifestFile).then(e => e.toString()).then(JSON.parse)
+            manifest.version = (await packageJson.get()).version
+            manifest.version_name = manifest.version
+            if (isDev) {
+                const now = new Date()
+                const stamp = `${now.getUTCFullYear()}/${(now.getUTCMonth() + 1).toString().padStart(2, '0')}/${now.getUTCDay().toString().padStart(2, '0')}|${now.getUTCHours().toString().padStart(2, '0')}:${now.getUTCMinutes().toString().padStart(2, '0')}:${now.getUTCSeconds().toString().padStart(2, '0')}`
+                manifest.version_name = `${stamp}`
+                console.log(manifest.version_name)
             }
+            await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2))
         }
 
         async function copyAssets(src: string, dist: string) {
@@ -106,7 +112,11 @@ time('build', async () => {
     }
 }).catch(console.error)
 
-async function chain(actions: (() => Promise<any>)[]) {
+async function async(actions: (() => Promise<any | void>)[]): Promise<void> {
+    await Promise.all(actions.map(e => e()))
+}
+
+async function sync(actions: (() => Promise<any | void>)[]): Promise<void> {
     for (let supplier of actions) {
         await supplier();
     }

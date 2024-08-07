@@ -13,6 +13,10 @@ export class Localizations {
         return (this._uniqueSymbols = result);
     }
 
+    /**
+     * Alternative shared ways for currencies to display themselves.
+     * Note that for these to work correctly extensive support is required in ActiveLocalization
+     */
     static get shared() {
         return {
             // Usa, Canada, Australia, Mexico, New Zealand, Singapore, Hong kong, Argentine peso
@@ -29,6 +33,9 @@ export class Localizations {
         };
     }
 
+    /**
+     * Alternative unique displays for currencies
+     */
     static get unique() {
         return {
             // Hungary
@@ -50,13 +57,13 @@ export class Localizations {
             // EU
             EUR: ['€'],
             // UK
-            GBP: ['£'],
+            GBP: ['£', '￡'],
             // Japan
             JPY: ['JP¥', '円'],
             // China
             CNY: ['CN¥', '元'],
             // India
-            INR: ['₹'],
+            INR: ['₹', 'Rs'],
             // Russia
             RUB: ['₽'],
             // Kazakhstan
@@ -86,6 +93,40 @@ export class Localizations {
             // Litecoin
             LTC: ['Ł'],
         };
+    }
+
+    /**
+     * This exists primarily to avoid async setup for currency detection
+     */
+    static get currencySymbols(): string[] {
+        return [
+            "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
+            "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL", "BSD", "BTC", "BTN", "BWP", "BYN", "BZD",
+            "CAD", "CDF", "CHF", "CLF", "CLP", "CNH", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK",
+            "DJF", "DKK", "DOP", "DZD",
+            "EGP", "ERN", "ETB", "EUR",
+            "FJD", "FKP",
+            "GBP", "GEL", "GGP", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD",
+            "HKD", "HNL", "HRK", "HTG", "HUF",
+            "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK",
+            "JEP", "JMD", "JOD", "JPY",
+            "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT",
+            "LAK", "LBP", "LKR", "LRD", "LSL", "LYD",
+            "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN",
+            "NAD", "NGN", "NIO", "NOK", "NPR", "NZD",
+            "OMR",
+            "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG",
+            "QAR",
+            "RON", "RSD", "RUB", "RWF",
+            "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP",
+            "STD", "STN", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS",
+            "UAH", "UGX", "USD", "UYU", "UZS",
+            "VEF", "VES", "VND", "VUV",
+            "WST",
+            "XAF", "XAG", "XAU", "XCD", "XDR", "XOF", "XPD", "XPF", "XPT",
+            "YER",
+            "ZAR", "ZMW", "ZWL"
+        ]
     }
 
     static get hostCurrency() {

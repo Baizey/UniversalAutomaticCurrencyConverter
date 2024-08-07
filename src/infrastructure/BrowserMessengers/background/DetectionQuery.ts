@@ -18,7 +18,7 @@ export class DetectionQuery implements Query<DetectionBackgroundMessage, Detecti
     }
 
     async handle({root}: DetectionBackgroundMessage) {
-        const {pseudoDetector} = this.provider
-        return pseudoDetector.find(root, {})
+        const {pseudoFlat} = this.provider
+        return pseudoFlat.find(root)
     }
 }

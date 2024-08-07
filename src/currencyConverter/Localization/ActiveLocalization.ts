@@ -1,7 +1,6 @@
 import { Browser, InfrastructureDiTypes, Logger } from '../../infrastructure'
 import { DisabledCurrenciesSetting } from '../../infrastructure/Configuration/setting'
-import { IBackendApi } from '../BackendApi'
-import { BackendApiDiTypes } from '../BackendApi/BackendApi'
+import {BackendApi, BackendApiDiTypes} from '../BackendApi/BackendApi'
 import { CurrencyLocalization, CurrencyLocalizationDi } from './CurrencyLocalization'
 import { Localizations } from './Localization'
 
@@ -50,7 +49,7 @@ export class ActiveLocalization implements IActiveLocalization {
 	readonly yen: CurrencyLocalization
 	readonly dollar: CurrencyLocalization
 	private readonly browser: Browser
-	private readonly backendApi: IBackendApi
+	private readonly backendApi: BackendApi
 	private readonly lockedKey: string
 	private readonly localizationMapping: Record<string, string>
 	private readonly isDisabled: Record<string, boolean>

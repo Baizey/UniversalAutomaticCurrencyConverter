@@ -14,7 +14,7 @@ export class RateApi {
                     .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
                     .join('&')
         }
-        return fetch(`https://uacc-bff-api.azurewebsites.net/api/${path}`, {
+        return fetch(`https://uacc-go-h3a6bmejfnaebygu.northeurope-01.azurewebsites.net/api/${path}`, {
             method: init?.method || 'GET',
             body: init.body ? JSON.stringify(init.body) : undefined,
             headers: {

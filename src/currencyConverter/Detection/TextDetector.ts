@@ -2,20 +2,14 @@ import {IActiveLocalization} from '../Localization'
 import {ActiveLocalizationDi} from '../Localization/ActiveLocalization'
 import {CurrencyRegex, RegexResult} from './CurrencyRegex'
 
-export interface ITextDetector {
-    detect(text: string): boolean;
-
-    find(text: string): RegexResult[];
-}
-
 export type TextDetectorDi = { textDetector: TextDetector }
 
 type TextDetectorDep = ActiveLocalizationDi
 
-export class TextDetector implements ITextDetector {
+export class TextDetector {
     private localization: IActiveLocalization
 
-    constructor({activeLocalization,}: TextDetectorDep) {
+    constructor({activeLocalization}: TextDetectorDep) {
         this.localization = activeLocalization
     }
 

@@ -13,7 +13,10 @@ export class MessengerHandlerManager {
     listen() {
         const self = this
         this.browser.runtime.onMessage.addListener((request: BackgroundMessage, sender, senderResponse,): boolean => {
-            self.handle(senderResponse, request.type, request).catch(log.error)
+            self.handle(senderResponse, request.type, request).catch(err => {
+                log.error(err)
+                senderResponse({data: err, success: false})
+            })
             return true
         })
     }
@@ -25,6 +28,7 @@ export class MessengerHandlerManager {
     async handle(respond: (resp: MessageResponse) => void, key: string, request: any) {
         log.info(`Handling message ${key}`)
         const queryHandler = this.queries[key]
+        log.debug(`Has handler: ${!!queryHandler}`)
         if (!queryHandler) return respond({
             success: false,
             data: `No handler for key '${key}'`,
