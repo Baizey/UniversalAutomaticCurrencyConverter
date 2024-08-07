@@ -28,9 +28,7 @@ describe('benchmark', () => {
 })
 
 async function testHtml(name: string, text: string) {
-    const resp = await RateApi.fetch(`v4/symbols`).then(e => e.text()).then(e => JSON.parse(e))
     const {pseudoFlat, textFlat, pseudoDetector, textDetector, activeLocalization, pseudoDom} = useMockContainer({
-        backendApi: {symbols: () => Promise.resolve(resp)},
         metaConfig: {logging: {}},
         currencyTagConfig: {
             disabled: {

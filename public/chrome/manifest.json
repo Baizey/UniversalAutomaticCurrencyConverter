@@ -40,7 +40,7 @@
     "page": "options.html"
   },
   "host_permissions": [
-    "https://uacc-bff-api.azurewebsites.net/*"
+    "https://uacc-go-h3a6bmejfnaebygu.northeurope-01.azurewebsites.net/*"
   ],
   "permissions": [
     "contextMenus",
