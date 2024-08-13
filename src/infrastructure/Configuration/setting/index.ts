@@ -214,13 +214,13 @@ export class UsingLocalizationAlertSetting extends SyncSetting<boolean> {
 
 export class UsingWhitelistingSetting extends SyncSetting<boolean> {
     constructor(provider: SettingDep) {
-        super(provider, 'usingWhitelist', false, isBool)
+        super(provider, 'usingWhitelist', true, isBool)
     }
 }
 
 export class UsingBlacklistingSetting extends SyncSetting<boolean> {
     constructor(provider: SettingDep) {
-        super(provider, 'usingBlacklist', false, isBool)
+        super(provider, 'usingBlacklist', true, isBool)
     }
 }
 
