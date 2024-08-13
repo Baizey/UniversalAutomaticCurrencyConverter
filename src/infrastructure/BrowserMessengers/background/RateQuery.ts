@@ -21,24 +21,25 @@ export type RateResponse = {
     path: RatePath;
 };
 
+export type RatesResponse = {
+    rates: RateResponse[]
+}
+
 export type RateBackgroundMessage = {
     type: BackgroundMessageType.getRate
-    from: string
     to: string
 }
 
-export class RateQuery implements Query<RateBackgroundMessage, RateResponse> {
+export class RateQuery implements Query<RateBackgroundMessage, RatesResponse> {
     readonly key = BackgroundMessageType.getRate
 
-    async handle(request: RateBackgroundMessage): Promise<RateResponse> {
-        if (!isCurrencyTag(request.to) || !isCurrencyTag(request.from))
-            throw new Error(`Invalid currency tags given (${request.from}, ${request.to})`)
-        if (request.from === request.to)
-            return {rate: 1, ...request, timestamp: Date.now(), path: []}
+    async handle(request: RateBackgroundMessage): Promise<RatesResponse> {
+        if (!isCurrencyTag(request.to))
+            throw new Error(`Invalid currency tags given '${request.to}'`)
 
-        const resp = await RateApi.fetch(`v4/rate/${request.from}/${request.to}`)
+        const resp = await RateApi.fetch(`v5/rates/${request.to}`)
         const text: string = await resp.text()
-        log.info(`Fetching rate ${request.from} => ${request.to} = ${resp.statusText}\n${text}`)
+        log.info(`Fetching rate for ${request.to} = ${resp.statusText}\n${text}`)
         return JSON.parse(text)
     }
 }

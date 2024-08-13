@@ -1,6 +1,6 @@
 import {Browser, BrowserDiTypes} from '../../index'
 import {MessageResponse} from "../messengerHandlerManager";
-import {RateBackgroundMessage, RateResponse} from "./RateQuery";
+import {RateBackgroundMessage, RateResponse, RatesResponse} from "./RateQuery";
 import {SymbolBackgroundMessage, SymbolResponse} from "./SymbolQuery";
 import {BackgroundMessageType} from "./BackgroundMessageType";
 import {DetectionBackgroundMessage} from "./DetectionQuery";
@@ -25,8 +25,8 @@ export class BackgroundMessenger {
         return result.map(id => dom.element(id)).filter(e => e) as HTMLElement[]
     }
 
-    async getRate(from: string, to: string): Promise<RateResponse> {
-        const request: BackgroundMessage = {type: BackgroundMessageType.getRate, to, from}
+    async getRates(to: string): Promise<RatesResponse> {
+        const request: BackgroundMessage = {type: BackgroundMessageType.getRate, to}
         return await this.sendMessage(request)
     }
 
