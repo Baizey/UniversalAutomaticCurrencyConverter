@@ -190,6 +190,20 @@ export class TextFlat {
                 i = amount.end
                 if (!amount.match) continue
 
+                i = this.match(this.whitespace, text, i).end
+                const firstGap = Math.abs(currency.end - amount.start)
+                const secondGap = Math.abs(amount.end - i)
+                if (secondGap < firstGap) {
+                    if (this.currency[text.charCodeAt(i)]) {
+                        const rightSide = this.match(this.currency, text, i)
+                        if (rightSide.match) {
+                            currency = rightSide
+                            i = currency.end
+                        }
+                    }
+                }
+
+
             } else if (this.amount[char]) {
 
                 amount = this.match(this.amount, text, i)
@@ -202,6 +216,20 @@ export class TextFlat {
                 currency = this.match(this.currency, text, i)
                 i = currency.end
                 if (!currency.match) continue
+
+
+                i = this.match(this.whitespace, text, i).end
+                const firstGap = Math.abs(amount.end - currency.start)
+                const secondGap = Math.abs(currency.end - i)
+                if (secondGap < firstGap) {
+                    if (this.amount[text.charCodeAt(i)]) {
+                        const rightSide = this.match(this.amount, text, i)
+                        if (rightSide.match) {
+                            amount = rightSide
+                            i = amount.end
+                        }
+                    }
+                }
 
             } else {
                 i++

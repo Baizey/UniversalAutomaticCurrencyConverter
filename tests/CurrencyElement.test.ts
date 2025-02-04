@@ -3,6 +3,7 @@ import {HtmlMock} from './Html.mock'
 import {RateResponse} from "../src/infrastructure";
 import {SymbolResponse} from "../src/infrastructure/BrowserMessengers/background/SymbolQuery";
 import {Localizations} from "../src/currencyConverter/Localization";
+import {RatesResponse} from "../src/infrastructure/BrowserMessengers/background/RateQuery";
 
 describe('CurrencyElement', () => {
     const tests = [
@@ -50,14 +51,16 @@ describe('CurrencyElement', () => {
                     currencyElement,
                 } = useMockContainer({
                     backgroundMessenger: {
-                        async getRate(from: string, to: string): Promise<RateResponse> {
+                        async getRates(from: string, to: string): Promise<RatesResponse> {
                             return {
-                                from,
-                                to,
-                                timestamp: Date.now(),
-                                rate: 1,
-                                path: []
-                            } as RateResponse
+                                rates: [{
+                                    from,
+                                    to,
+                                    timestamp: Date.now(),
+                                    rate: 1,
+                                    path: []
+                                }]
+                            } as RatesResponse
                         },
                         async getSymbols(): Promise<SymbolResponse> {
                             return Localizations.currencySymbols.reduce((a, b) => {

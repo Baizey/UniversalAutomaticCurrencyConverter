@@ -33,7 +33,7 @@ function mockContainer(mock?: Mockable): Providable {
                     }, {})
                 )
             },
-            async getRate() {
+            async getRates() {
                 throw new Error('Should be overridden by mock')
             }
         },
