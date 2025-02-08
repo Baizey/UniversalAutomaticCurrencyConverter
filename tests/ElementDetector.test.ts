@@ -35,12 +35,13 @@ describe('ElementDetector', () => {
                         symbols: async () => Promise.resolve({
                             DKK: 'DKK',
                             USD: 'USD',
+                            EUR: 'EUR'
                         }),
                     },
                 })
-                await provider.activeLocalization.load()
-                await provider.activeLocalization.overload({dollar: 'USD'})
                 const elementDetector = provider.elementDetector
+                await elementDetector.textDetector.activeLocalization.load()
+                await elementDetector.textDetector.activeLocalization.overload({dollar: 'USD'})
 
                 // Act
                 const actual = await elementDetector.find(test.element)

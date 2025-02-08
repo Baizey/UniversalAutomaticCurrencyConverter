@@ -18,9 +18,9 @@ function mockContainer(mock?: Mockable): Providable {
     mock ??= {}
     return setMockProvider({
         browser: new BrowserMock(),
-        backgroundMessenger: {
+        backgroundMessenger: scope => ({
             async findCurrencyHolders(dom: PseudoDom): Promise<HTMLElement[]> {
-                const {pseudoFlat} = useMockContainer()
+                const {pseudoFlat} = scope
                 return Promise.resolve(pseudoFlat.find(dom.root)
                     .map(id => dom.element(id))
                     .filter(e => e) as HTMLElement[])
@@ -36,7 +36,7 @@ function mockContainer(mock?: Mockable): Providable {
             async getRates() {
                 throw new Error('Should be overridden by mock')
             }
-        },
+        }),
         tabMessenger: {
             openContextMenu() {
                 throw new Error('Should not be called')

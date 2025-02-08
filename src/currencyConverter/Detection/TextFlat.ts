@@ -25,7 +25,7 @@ export class TextFlat {
     private readonly amount: Node = {name: 'currency'}
     private readonly whitespace: Node = {name: 'whitespace'}
 
-    private activeLocalization: ActiveLocalization;
+    readonly activeLocalization: ActiveLocalization;
 
     constructor({activeLocalization}: TextDetectorDep) {
         this.activeLocalization = activeLocalization;
