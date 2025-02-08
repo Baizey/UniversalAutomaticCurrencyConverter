@@ -19,10 +19,10 @@ type ElementDetectorDep =
     & TextFlatDi
 
 export class ElementDetector {
-    private readonly textDetector: TextFlat
-    private readonly currencyElement: FactoryDi<HTMLElement, CurrencyElement>
-    private readonly backgroundMessenger: BackgroundMessenger;
-    private readonly pseudoDomFactory: PseudoDomType;
+    readonly textDetector: TextFlat
+    readonly currencyElement: FactoryDi<HTMLElement, CurrencyElement>
+    readonly backgroundMessenger: BackgroundMessenger;
+    readonly pseudoDomFactory: PseudoDomType;
     private pseudoDetector: PseudoFlat;
 
     constructor({

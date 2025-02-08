@@ -26,7 +26,7 @@ describe('CurrencyElement', () => {
             expect: '\n        23 USD\n    ',
             element:
                 HtmlMock.parse(`<span id="price_inside_buybox" class="a-size-medium a-color-price" style="">
-        22,99&nbsp;€
+        22,99&nbsp;USD
     </span>`),
         },
         {
