@@ -18,7 +18,7 @@ export type RateResponse = {
     to: string;
     rate: number;
     timestamp: number;
-    path: RatePath[];
+    path: RatePath;
 };
 
 export type RatesResponse = {
