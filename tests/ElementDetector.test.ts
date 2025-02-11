@@ -4,6 +4,11 @@ import {HtmlMock} from './Html.mock'
 describe('ElementDetector', () => {
     const originalShowTest = [
         {
+            name: 'aliexpress is bad and it should feel bad',
+            element: HtmlMock.parse(`<div class="es--wrap--2p8eS4Q notranslate" style="color: rgb(51, 51, 51); font-size: 20px;" id="aaaa"><span class="es--char--1Qcd3D7">DKK</span><span class="es--space2--2NEE6dI"></span><span class="es--char--1Qcd3D7" data-spm-anchor-id="a2g0o.cart.0.i5.6c4738dar3W1U8">1</span><span class="es--char--1Qcd3D7" data-spm-anchor-id="a2g0o.cart.0.i7.6c4738dar3W1U8">4</span><span class="es--char--1Qcd3D7" data-spm-anchor-id="a2g0o.cart.0.i0.6c4738dar3W1U8">5</span><span class="es--char--1Qcd3D7" data-spm-anchor-id="a2g0o.cart.0.i4.6c4738dar3W1U8">.</span><span class="es--char--1Qcd3D7">8</span><span class="es--char--1Qcd3D7">9</span></div>`),
+            expect: ["DKK145.89"]
+        },
+        {
             name: 'Amazon one original',
             element: HtmlMock.parse(
                 `<span class="a-price" data-a-size="l" data-a-color="base"><span class="a-offscreen">DKK&nbsp;21.44</span><span aria-hidden="true"><span class="a-price-symbol">DKK</span><span class="a-price-whole">21<span class="a-price-decimal">.</span></span><span class="a-price-fraction">44</span></span></span>`,
