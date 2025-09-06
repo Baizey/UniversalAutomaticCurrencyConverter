@@ -1,5 +1,5 @@
 import {useProvider} from "./di";
-import {OptionsUi} from "./ui3/Options";
+import {OptionsUi} from "./ui3/OptionsUi";
 import {ThemeHandler} from "./ui3/ThemeHandler";
 
 const provider = useProvider()
