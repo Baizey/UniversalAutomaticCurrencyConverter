@@ -1,0 +1,43 @@
+.uacc-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100px; /* fixed total height */
+    box-sizing: border-box;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--uacc-background3);
+}
+
+.uacc-input-wrapper-title {
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--uacc-title);
+}
+
+.uacc-input-wrapper-input {
+    height: 50px;
+    width: 95%; /* 95% width of wrapper */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto; /* centers it, leaving 2.5% on each side */
+}
+
+.uacc-input-wrapper-subtitle {
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--uacc-text);
+    opacity: 0.7;
+}
