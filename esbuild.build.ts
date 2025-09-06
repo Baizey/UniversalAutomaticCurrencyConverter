@@ -5,16 +5,28 @@ import * as path from "node:path";
 import archiver from "archiver";
 
 const browsers = ['chrome', 'firefox']
-const files = ['content.tsx', 'popup.tsx', 'options.tsx', 'background.ts']
-const mode = process.argv[2];
-console.log(`mode: ${mode}`);
+const files = ['content.tsx', 'popup.tsx', 'options.ts', 'background.ts']
+
+function getArg(argName: string): null | string {
+    const index = process.argv.indexOf(`--${argName}`)
+    const value = process.argv[index + 1]
+    if (!value || value.startsWith('--')) throw Error(`value after ${argName} is missing value`)
+    return value
+}
+
+function hasArg(argName: string): boolean {
+    return process.argv.indexOf(`--${argName}`) !== -1
+}
+
+const shouldWatch = hasArg("watch");
+const isProd = hasArg("prod")
+const isDev = !isProd
+
+console.log(`mode: ${isProd ? 'production' : 'development'}`);
 
 const rootDistDir = `dist`
 const rootSrcDir = `src`
 const rootAssetsDir = `public`
-
-const isDev = mode !== 'production';
-const isProd = !isDev
 
 type VersionFile = {
     version: string
@@ -35,11 +47,10 @@ class Lazy<T> {
     }
 }
 
-time('build', async () => {
+const runBuild = (title: string) => time(title, async () => {
     const packageJson = new Lazy<VersionFile>(() => fs.readFile(`package.json`).then(e => e.toString()).then(JSON.parse))
     await cleanDir(rootDistDir)
     const version = isProd ? (await packageJson.get()).version : 'dev'
-    console.log(`version: ${version}`);
     await Promise.all(browsers.map(bundle));
 
     async function cleanDir(dir: string) {
@@ -50,10 +61,12 @@ time('build', async () => {
     async function bundle(browser: string) {
         const unpackedDir = `${rootDistDir}/${browser}_${version}`
         const assetDir = `${rootAssetsDir}/${browser}`
+        const sharedAssetDir = `${rootAssetsDir}/base`
         await sync([
             () => async([
                 () => sync([
                     () => copyAssets(assetDir, unpackedDir),
+                    () => bundleSharedCss(sharedAssetDir, unpackedDir),
                     () => updateAssetManifest(unpackedDir),
                 ]),
                 ...files.map(file => () => build(file))
@@ -70,9 +83,28 @@ time('build', async () => {
                 const now = new Date()
                 const stamp = `${now.getUTCFullYear()}/${(now.getUTCMonth() + 1).toString().padStart(2, '0')}/${now.getUTCDay().toString().padStart(2, '0')}|${now.getUTCHours().toString().padStart(2, '0')}:${now.getUTCMinutes().toString().padStart(2, '0')}:${now.getUTCSeconds().toString().padStart(2, '0')}`
                 manifest.version_name = `${stamp}`
-                console.log(manifest.version_name)
+                //console.log(manifest.version_name)
             }
             await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2))
+        }
+
+        async function bundleSharedCss(src: string, dist: string) {
+            async function getFiles(at: string): Promise<string[]> {
+                const entries = await fs.readdir(at, {withFileTypes: true});
+                const unresolvedFiles = entries.map(entry =>
+                    entry.isDirectory()
+                        ? getFiles(path.join(src, entry.name))
+                        : Promise.resolve([path.join(src, entry.name)])
+                )
+                const files = await Promise.all(unresolvedFiles)
+                return files.flatMap(it => it)
+            }
+
+            const files = await getFiles(src)
+            const cssContent = await Promise.all(files
+                .filter(it => it.endsWith(".css"))
+                .map(it => fs.readFile(it).then(it => it.toString())))
+            await fs.writeFile(`${dist}/shared.css`, cssContent.join("\n"), "utf8")
         }
 
         async function copyAssets(src: string, dist: string) {
@@ -100,6 +132,20 @@ time('build', async () => {
             })
         }
 
+        async function getFiles(directory: string, filetype: string): Promise<string[]> {
+            const entries = await fs.readdir(directory, {withFileTypes: true});
+            const files: string[] = [];
+            for (const entry of entries) {
+                const fullPath = path.join(directory, entry.name);
+                if (entry.isDirectory()) {
+                    files.push(...(await getFiles(fullPath, filetype)));
+                } else if (entry.isFile() && entry.name.endsWith(`.${filetype}`)) {
+                    files.push(fullPath);
+                }
+            }
+            return files;
+        }
+
         async function zipFolder(unpackedOut: string, packedOut: string) {
             const archive = archiver('zip', {zlib: {level: 9}});
             const stream = fsSync.createWriteStream(packedOut);
@@ -110,7 +156,25 @@ time('build', async () => {
             });
         }
     }
-}).catch(console.error)
+})
+
+runBuild('build').catch(console.error)
+if (shouldWatch) {
+    let lastChange: null | number = null;
+    ['src', 'public'].forEach(dir => {
+        fsSync.watch(`./${dir}`, {recursive: true}, (eventType, filename) => {
+            //console.log(`${filename} changed (${eventType})`);
+            lastChange = Date.now();
+        });
+    })
+    setInterval(() => {
+        if (lastChange && Date.now() > lastChange + 1000) {
+            runBuild('rebuild').catch(console.error)
+            lastChange = null
+        }
+    }, 500)
+}
+
 
 async function async(actions: (() => Promise<any | void>)[]): Promise<void> {
     await Promise.all(actions.map(e => e()))

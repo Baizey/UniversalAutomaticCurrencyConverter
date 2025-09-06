@@ -1,0 +1,87 @@
+.uacc-option-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 300px; /* test width */
+    background-color: var(--uacc-background3);
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Search input field */
+.uacc-search-input {
+    width: 100%;
+    height: 100%;
+    background-color: var(--uacc-background3);
+    border: none;
+    border-bottom: 2px solid var(--uacc-ternary);
+    outline: none;
+    color: var(--uacc-text);
+    font-size: 20px;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 500;
+    line-height: 48px;
+    box-sizing: border-box;
+    transition: border-color 0.25s ease;
+}
+
+.uacc-search-input:focus {
+    border-bottom-color: var(--uacc-primary);
+}
+
+.uacc-search-input::placeholder {
+    color: var(--uacc-text);
+    opacity: 0.6;
+}
+
+/* Dropdown container */
+.uacc-dropdown {
+    position: absolute;
+    top: 50px; /* just under wrapper */
+    left: 0;
+    width: 100%; /* matches input width */
+    max-height: 160px; /* 4 * 40px */
+    overflow-y: auto;
+    background-color: var(--uacc-background3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+
+/* Dropdown items */
+.uacc-dropdown-item {
+    height: 40px;
+    width: calc(95% - 2px); /* 95% width of wrapper */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0 auto; /* centers it, leaving 2.5% on each side */
+    color: var(--uacc-text);
+    transition: background-color 0.2s;
+    border-radius: 0; /* no rounding */
+    border-left: 1px solid var(--uacc-ternary);
+    border-right: 1px solid var(--uacc-ternary);
+}
+
+.uacc-dropdown-item:last-child {
+    border-bottom: 1px solid var(--uacc-ternary);
+}
+
+.uacc-dropdown-item:hover,
+.uacc-dropdown-item.uacc-selected {
+    background-color: var(--uacc-ternary);
+}
+
+/* No results message */
+.uacc-dropdown-empty {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--uacc-text); /* ensure readability */
+    font-style: italic;
+}

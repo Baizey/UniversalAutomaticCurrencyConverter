@@ -1,0 +1,22 @@
+.uacc-options-page-content {
+    display: flex;
+    width: 100%;
+    gap: 20px; /* spacing between left and right columns */
+}
+
+.uacc-options-left {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.uacc-options-right {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 20px; /* sticks as you scroll */
+    align-items: center;
+    gap: 10px;
+}

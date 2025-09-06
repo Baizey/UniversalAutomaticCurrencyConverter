@@ -1,0 +1,40 @@
+.uacc-option-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 100%;
+    background-color: var(--uacc-background3);
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 0 1rem;
+}
+
+/* Text input itself */
+.uacc-text-input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid var(--uacc-ternary);
+    outline: none;
+    color: var(--uacc-text);
+    font-size: 20px;               /* upscaled to fill 50px row nicely */
+    padding: 0 0.5rem;             /* minimal horizontal padding */
+    box-sizing: border-box;
+    line-height: 48px;              /* vertically centers text inside 50px height minus border */
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 500;  /* semi-bold for clarity inside 50px height */
+    transition: border-color 0.25s ease;
+}
+
+/* Focus state for underline */
+.uacc-text-input:focus {
+    border-bottom-color: var(--uacc-primary);
+}
+
+/* Placeholder matches text color with subtle opacity */
+.uacc-text-input::placeholder {
+    color: var(--uacc-text);
+    opacity: 0.6;
+}

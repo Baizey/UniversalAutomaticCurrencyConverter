@@ -1,0 +1,37 @@
+.uacc-options-background-wrapper {
+    width: 900px;
+    margin: 90px auto auto;
+}
+
+.uacc-options-background-section {
+    width: 100%;
+    background-color: var(--uacc-background2);
+    border: 1px solid var(--uacc-ternary);
+    margin: 10px auto auto;
+    border-radius: 0.5rem;
+}
+
+.uacc-input-row-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.uacc-options-section-header {
+    width: 100%;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--uacc-title);
+    text-align: center;
+}
+
+body {
+    background-color: var(--uacc-background1);
+}
