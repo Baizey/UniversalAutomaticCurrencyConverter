@@ -138,4 +138,45 @@ export class OptionsUi {
         );
         return localizationSection
     }
+
+    static createShortcutsOptionSection() {
+        const {config} = useProvider()
+        const section = OptionsUi.createOptionsSection({title: 'Keyboard shortcuts'});
+
+        const hoveredShortcut = Input.createWrapper({
+            title: "Convert-hovered shortcut",
+            subtitle: 'Left-click to clear, then click your desired shortcut key',
+            value: Input.createShortcutInput({
+                value: config.qualityOfLife.keyPressOnHoverFlipConversion.value,
+                onChange: (v) => config.qualityOfLife.keyPressOnHoverFlipConversion.setAndSaveValue(v)
+            })
+        })
+        const allShortcut = Input.createWrapper({
+            title: "Convert-all shortcut",
+            subtitle: 'Left-click to clear, then click your desired shortcut key',
+            value: Input.createShortcutInput({
+                value: config.qualityOfLife.keyPressOnAllFlipConversion.value,
+                onChange: (v) => config.qualityOfLife.keyPressOnAllFlipConversion.setAndSaveValue(v)
+            })
+        })
+        const leftClickToggle = Input.createWrapper({
+            title: 'Convert prices by left clicking',
+            value: Input.createToggle({
+                value: config.qualityOfLife.leftClickOnHoverFlipConversion.value,
+                onChange: (v) => config.qualityOfLife.leftClickOnHoverFlipConversion.setAndSaveValue(v)
+            })
+        })
+
+        const hoverToggle = Input.createWrapper({
+            title: 'Convert prices on hover over',
+            value: Input.createToggle({
+                value: config.qualityOfLife.onHoverFlipConversion.value,
+                onChange: (v) => config.qualityOfLife.onHoverFlipConversion.setAndSaveValue(v)
+            })
+        })
+
+        section.appendChild(Input.createWrapperRow({values: [hoveredShortcut, allShortcut]}))
+        section.appendChild(Input.createWrapperRow({values: [leftClickToggle, hoverToggle]}))
+        return section
+    }
 }

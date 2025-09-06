@@ -15,11 +15,12 @@ let filter: string = ""
 document.addEventListener("DOMContentLoaded", () => {
     ;(async () => {
         const [symbols] = await Promise.all([symbolsPromise, configPromise])
-        root.appendChild(OptionsUi.createFilterOptionsSection(() => {
+        root.appendChild(OptionsUi.createFilterOptionsSection((filter) => {
             // TODO: handle filter
         }))
         root.appendChild(OptionsUi.createCurrencyOptionSection(symbols))
         root.appendChild(OptionsUi.createLocalizationOptionSection(symbols))
+        root.appendChild(OptionsUi.createShortcutsOptionSection())
     })()
 
 });
