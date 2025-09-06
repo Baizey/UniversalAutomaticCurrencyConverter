@@ -153,9 +153,7 @@ export class Input {
                     input.placeholder = item.label; // show selected label
                     input.value = ""; // clear input
                     dropdown.style.display = "none";
-
-                    // You can handle the selected value here
-                    console.log("Selected value:", item.value);
+                    onChange(item);
                 });
                 dropdown.appendChild(el);
             });
@@ -197,7 +195,7 @@ export class Input {
                     input.placeholder = selected.label;
                     input.value = "";
                     dropdown.style.display = "none";
-                    console.log("Selected value:", selected.value);
+                    onChange(selected);
                     e.preventDefault();
                 }
             }

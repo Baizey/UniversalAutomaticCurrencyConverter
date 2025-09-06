@@ -1,6 +1,8 @@
 import {createDiv} from "./Utils";
 import {DropdownOption, Input} from "./Input";
 import {useProvider} from "../di";
+import {LoggingSettingType} from "../infrastructure/Configuration/setting";
+import {ThemeHandler} from "./ThemeHandler";
 
 type OptionsSectionProps = {
     title: string,
@@ -177,6 +179,70 @@ export class OptionsUi {
 
         section.appendChild(Input.createWrapperRow({values: [hoveredShortcut, allShortcut]}))
         section.appendChild(Input.createWrapperRow({values: [leftClickToggle, hoverToggle]}))
+        return section
+    }
+
+    static createMiscOptionSection() {
+        const {config} = useProvider()
+        const section = OptionsUi.createOptionsSection({title: 'Misc'});
+
+        const loggingOptions: DropdownOption[] = [
+            {value: LoggingSettingType.nothing, label: 'Nothing'},
+            {value: LoggingSettingType.error, label: 'Error'},
+            {value: LoggingSettingType.info, label: 'Info'},
+            {value: LoggingSettingType.debug, label: 'Everything'},
+            {value: LoggingSettingType.profile, label: 'Everything with profiling'},
+        ]
+        const loggingWrapper = Input.createWrapper({
+            title: 'Allowed logging level',
+            subtitle: 'You can see logs via F12 > Console',
+            value: Input.createDropdown({
+                value: {value: config.meta.logging.value as unknown as string, label: '' + config.meta.logging.value},
+                options: loggingOptions,
+                onChange: (opt) => {
+                    // opt.value is of type string; cast to LoggingSettingType
+                    config.meta.logging.setAndSaveValue(opt.value as unknown as LoggingSettingType)
+                }
+            })
+        })
+
+        const bracketsWrapper = Input.createWrapper({
+            title: 'Display conversion in brackets beside original price',
+            value: Input.createToggle({
+                value: config.currencyTag.showConversionInBrackets.value,
+                onChange: (v) => config.currencyTag.showConversionInBrackets.setAndSaveValue(v)
+            })
+        })
+
+        section.appendChild(Input.createWrapperRow({values: [loggingWrapper, bracketsWrapper]}))
+        return section
+    }
+
+    static createThemeOptionSection() {
+        const {config} = useProvider()
+        const section = OptionsUi.createOptionsSection({title: 'Theme'});
+
+        const themeKeys = ThemeHandler.getThemeNames()
+        const options: DropdownOption[] = themeKeys.map(k => ({
+            value: k,
+            label: k.substring(0, 1).toUpperCase() +
+                k.substring(1).replace(/[A-Z]/g, e => ` ${e}`)
+        }))
+        const initial = config.meta.colorTheme.value
+        const selected = options.find(k => k.value === initial) ?? options[0]
+        const themeDropdown = Input.createWrapper({
+            title: 'Color theme',
+            value: Input.createDropdown({
+                value: selected,
+                options: options,
+                onChange: (opt) => {
+                    config.meta.colorTheme.setAndSaveValue(opt.value as any)
+                    ThemeHandler.updateTheme(opt.value)
+                }
+            })
+        })
+
+        section.appendChild(Input.createWrapperRow({values: [themeDropdown]}))
         return section
     }
 }

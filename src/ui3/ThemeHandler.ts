@@ -42,6 +42,10 @@ export class ThemeHandler {
     private static themeNames = ['lightTheme', 'darkTheme'];
     private static themes = [lightTheme, darkTheme];
 
+    static getThemeNames() {
+        return this.themeNames
+    }
+
     static swapTheme() {
         const next = (this.themeNames.indexOf(this.name) + 1) % this.themes.length;
         this.updateTheme(this.themeNames[next])
