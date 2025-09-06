@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
         root.appendChild(OptionsUi.createCurrencyOptionSection(symbols))
         root.appendChild(OptionsUi.createLocalizationOptionSection(symbols))
         root.appendChild(OptionsUi.createShortcutsOptionSection())
+        root.appendChild(OptionsUi.createMiscOptionSection())
+        root.appendChild(OptionsUi.createThemeOptionSection())
     })()
 
 });
