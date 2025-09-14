@@ -1,5 +1,5 @@
 /* Option row wrapper (50px tall) */
-.uacc-option-wrapper {
+.uacc-toggle-wrapper {
     display: flex;
     align-items: center;    /* vertical centering */
     justify-content: center; /* horizontal centering */

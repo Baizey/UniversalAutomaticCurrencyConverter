@@ -1,55 +1,62 @@
 // This file is run as a background script
-import {log, useProvider} from '../di'
-import {ContextMenuItem} from "./contextMenuItem";
+import { log, useProvider } from '../di'
+import { ContextMenuItem } from "./contextMenuItem";
+import { generateUUID } from "./utils";
 
 async function loadSettings() {
-    const {browser} = useProvider()
+    const { browser } = useProvider()
     browser.setAsServiceWorker()
-    const {config} = useProvider()
+    const { config } = useProvider()
     await config.load()
-    const {activeLocalization} = useProvider()
-    await activeLocalization.load('<html lang="us-EN"></html>')
+
+    // Ensure we have a trace id and lock it in when we make it
+    if ( config.user.traceId.value === '' ) {
+        await config.user.traceId.setAndSaveValue( generateUUID() )
+    }
+
+    const { activeLocalization } = useProvider()
+    await activeLocalization.load( '<html lang="us-EN"></html>' )
 }
 
 async function handleVersionCheck() {
     const {
         browser,
-        metaConfig: {lastVersion},
+        metaConfig: { lastVersion },
     } = useProvider()
     // Force open options if updating to a new major version
-    const current = browser.extensionVersion.split('.').map((e) => +e)[0]
-    const last = lastVersion.value.split('.').map((e) => +e)[0]
-    if (last < current) await browser.tabs.create({url: 'options.html'})
+    const current = browser.extensionVersion.split( '.' ).map( ( e ) => +e )[0]
+    const last = lastVersion.value.split( '.' ).map( ( e ) => +e )[0]
+    if ( last < current ) await browser.tabs.create( { url: 'options.html' } )
 }
 
 
 async function handleContextMenuCreation() {
-    const {browser, tabMessenger} = useProvider()
-    browser.contextMenus.removeAll(() => {
-        browser.contextMenus.create({
+    const { browser, tabMessenger } = useProvider()
+    browser.contextMenus.removeAll( () => {
+        browser.contextMenus.create( {
                 id: ContextMenuItem.openContextMenu,
                 title: `Open context menu...`,
-                contexts: ['all',]
+                contexts: [ 'all', ]
             },
-            () => browser.contextMenus.onClicked.addListener((_, tab) => tabMessenger.openContextMenu(tab!.id)))
-    })
+            () => browser.contextMenus.onClicked.addListener( ( _, tab ) => tabMessenger.openContextMenu( tab!.id ) ) )
+    } )
 }
 
 async function handleMessengerRegistration() {
-    const {backgroundHandlers} = useProvider()
+    const { backgroundHandlers } = useProvider()
     backgroundHandlers.listen()
 }
 
 let hasRun = false
 export const startServiceWorker = async () => {
-    if (hasRun) return
+    if ( hasRun ) return
     await loadSettings()
-    log.info('loadSettings')
+    log.info( 'loadSettings' )
     await handleVersionCheck()
-    log.info('handleVersionCheck')
+    log.info( 'handleVersionCheck' )
     await handleContextMenuCreation()
-    log.info('handleContextMenuCreation')
+    log.info( 'handleContextMenuCreation' )
     await handleMessengerRegistration()
-    log.info('handleMessengerRegistration')
+    log.info( 'handleMessengerRegistration' )
     hasRun = true
 }

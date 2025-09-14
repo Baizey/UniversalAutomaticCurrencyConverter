@@ -9,3 +9,22 @@
     --uacc-background2: #1F2937;
     --uacc-background3: #1F2937;
 }
+
+.uacc-gap-1em {
+    height: 1em;
+    width: 100%;
+}
+
+.uacc-gap-2em {
+    height: 2em;
+    width: 100%;
+}
+
+.uacc-gap-3em {
+    height: 3em;
+    width: 100%;
+}
+
+.uacc-hidden {
+    display: none;
+}

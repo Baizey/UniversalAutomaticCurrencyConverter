@@ -1,7 +1,7 @@
-import {themes} from '../../Theme'
-import {LocalSetting} from './LocalSetting'
-import {SettingDep, SyncSetting} from './SyncSetting'
-import {UrlSettingsBase} from './UrlSettingsBase'
+import { themes } from '../../Theme'
+import { LocalSetting } from './LocalSetting'
+import { SettingDep, SyncSetting } from './SyncSetting'
+import { UrlSettingsBase } from './UrlSettingsBase'
 import {
     hasLength,
     hasLengthRange,
@@ -15,119 +15,120 @@ import {
     isPositiveInt,
     isString,
 } from './validators'
+import { randomUUID } from "node:crypto";
 
 export class HighlightDurationSetting extends SyncSetting<number> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyHighlightDuration', 500, isPositiveInt)
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyHighlightDuration', 500, isPositiveInt )
     }
 }
 
 export class HighlightColorSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyHighlightColor', 'yellow', (e) => {
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyHighlightColor', 'yellow', ( e ) => {
             const browser = provider.browser
-            if (browser.isServiceWorker) return true
-            const div = provider.browser.document.createElement('div')
+            if ( browser.isServiceWorker ) return true
+            const div = provider.browser.document.createElement( 'div' )
             div.style.backgroundColor = e + ''
             return !!div.style.backgroundColor
-        })
+        } )
     }
 }
 
 export class DollarLocalizationSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyLocalizationDollar', 'USD', (e) =>
-            hasLength(e, 3),
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyLocalizationDollar', 'USD', ( e ) =>
+            hasLength( e, 3 ),
         )
     }
 }
 
 export class DisabledCurrenciesSetting extends SyncSetting<string[]> {
-    constructor(provider: SettingDep) {
+    constructor( provider: SettingDep ) {
         super(
             provider,
             'disabledCurrencies',
             [],
-            (array) =>
-                isArrayWithRegexMatch(array, /^[A-Z]{3}$/) && isDistinctArray(array),
+            ( array ) =>
+                isArrayWithRegexMatch( array, /^[A-Z]{3}$/ ) && isDistinctArray( array ),
         )
     }
 }
 
 export class DecimalPointSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'decimalDisplay', '.', () => true)
+    constructor( provider: SettingDep ) {
+        super( provider, 'decimalDisplay', '.', () => true )
     }
 }
 
 export class CustomConversionRateSetting extends SyncSetting<number> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyCustomTagValue', 1, isNumber)
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyCustomTagValue', 1, isNumber )
     }
 }
 
 export class ConvertToSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currency', 'USD', (e) => hasLength(e, 3))
+    constructor( provider: SettingDep ) {
+        super( provider, 'currency', 'USD', ( e ) => hasLength( e, 3 ) )
     }
 }
 
 export class ConvertHoverShortcutSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyShortcut', 'Shift', isString)
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyShortcut', 'Shift', isString )
     }
 }
 
 export class ConvertAllShortcutSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'shortcut:convert:all', '', isString)
+    constructor( provider: SettingDep ) {
+        super( provider, 'shortcut:convert:all', '', isString )
     }
 }
 
 export class ConversionDisplaySetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyCustomTag', '$¤', (e) =>
-            hasRegexMatch(e, /.*¤.*/),
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyCustomTag', '$¤', ( e ) =>
+            hasRegexMatch( e, /.*¤.*/ ),
         )
     }
 }
 
 export class ColorThemeSetting extends SyncSetting<keyof typeof themes> {
-    constructor(dep: SettingDep) {
-        super(dep, 'uacc:theme:selection', 'darkTheme', isString)
+    constructor( dep: SettingDep ) {
+        super( dep, 'uacc:theme:selection', 'darkTheme', isString )
     }
 }
 
 export class BlacklistedUrlsSetting extends UrlSettingsBase {
-    constructor(provider: SettingDep) {
-        super(provider, 'blacklistingurls')
+    constructor( provider: SettingDep ) {
+        super( provider, 'blacklistingurls' )
     }
 }
 
 export class IsFirstTimeSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'showFirstTimeGuide', true, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'showFirstTimeGuide', true, isBool )
     }
 }
 
 export class IsPausedSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'uacc:pause', false, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'uacc:pause', false, isBool )
     }
 }
 
 export class KroneLocalizationSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyLocalizationKroner', 'SEK', (e) =>
-            hasLength(e, 3),
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyLocalizationKroner', 'SEK', ( e ) =>
+            hasLength( e, 3 ),
         )
     }
 }
 
 export class LastVersionSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'lastVersion', '0.0.0', (e) =>
-            hasRegexMatch(e, /^\d+\.\d+\.\d+$/),
+    constructor( provider: SettingDep ) {
+        super( provider, 'lastVersion', '0.0.0', ( e ) =>
+            hasRegexMatch( e, /^\d+\.\d+\.\d+$/ ),
         )
     }
 }
@@ -139,26 +140,26 @@ type MiniConverterRow = {
 };
 
 export class MiniConverterSetting extends LocalSetting<MiniConverterRow[]> {
-    constructor(provider: SettingDep) {
-        super(provider, 'uacc:global:converter', [], isArray)
+    constructor( provider: SettingDep ) {
+        super( provider, 'uacc:global:converter', [], isArray )
     }
 }
 
 export class ShowConversionInBracketsSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'uacc:currency:brackets', false, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'uacc:currency:brackets', false, isBool )
     }
 }
 
 export class SignificantDigitsSetting extends SyncSetting<number> {
-    constructor(provider: SettingDep) {
-        super(provider, 'decimalAmount', 2, isPositiveInt)
+    constructor( provider: SettingDep ) {
+        super( provider, 'decimalAmount', 2, isPositiveInt )
     }
 }
 
 export class ThousandsSeparatorSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'thousandDisplay', ' ', (e) => hasLengthRange(e, 0, 1))
+    constructor( provider: SettingDep ) {
+        super( provider, 'thousandDisplay', ' ', ( e ) => hasLengthRange( e, 0, 1 ) )
     }
 }
 
@@ -170,68 +171,86 @@ export enum LoggingSettingType {
     profile = 'profile'
 }
 
+export class TraceIdSetting extends SyncSetting<string> {
+    constructor( provider: SettingDep ) {
+        super( provider, 'uacc:user:traceId', '', isString )
+    }
+}
+
+export class UserSessionIdSetting extends SyncSetting<string> {
+    constructor( provider: SettingDep ) {
+        super( provider, 'uacc:user:sessionId', '', isString )
+    }
+}
+
+export class UserEmailSetting extends SyncSetting<string> {
+    constructor( provider: SettingDep ) {
+        super( provider, 'uacc:user:email', '', isString )
+    }
+}
+
 export class UseDebugLoggingSetting extends SyncSetting<LoggingSettingType> {
-    constructor(provider: SettingDep) {
-        super(provider, 'uacc:debug:logging', LoggingSettingType.error, (e) => isOfEnum(e, LoggingSettingType))
+    constructor( provider: SettingDep ) {
+        super( provider, 'uacc:debug:logging', LoggingSettingType.error, ( e ) => isOfEnum( e, LoggingSettingType ) )
     }
 }
 
 export class UsingAutoConversionOnPageLoadSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyUsingAutomatic', true, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyUsingAutomatic', true, isBool )
     }
 }
 
 export class UsingConversionHighlightingSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyUsingHighlight', true, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyUsingHighlight', true, isBool )
     }
 }
 
 export class UsingCustomDisplaySetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyUsingCustomTag', false, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyUsingCustomTag', false, isBool )
     }
 }
 
 export class UsingHoverFlipConversionSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'utilityHoverConvert', false, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'utilityHoverConvert', false, isBool )
     }
 }
 
 export class UsingLeftClickFlipConversionSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'utilityClickConvert', true, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'utilityClickConvert', true, isBool )
     }
 }
 
 export class UsingLocalizationAlertSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'showNonDefaultCurrencyAlert', true, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'showNonDefaultCurrencyAlert', true, isBool )
     }
 }
 
 export class UsingWhitelistingSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'usingWhitelist', true, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'usingWhitelist', true, isBool )
     }
 }
 
 export class UsingBlacklistingSetting extends SyncSetting<boolean> {
-    constructor(provider: SettingDep) {
-        super(provider, 'usingBlacklist', true, isBool)
+    constructor( provider: SettingDep ) {
+        super( provider, 'usingBlacklist', true, isBool )
     }
 }
 
 export class WhitelistedUrlsSetting extends UrlSettingsBase {
-    constructor(provider: SettingDep) {
-        super(provider, 'whitelistingurls')
+    constructor( provider: SettingDep ) {
+        super( provider, 'whitelistingurls' )
     }
 }
 
 export class YenLocalizationSetting extends SyncSetting<string> {
-    constructor(provider: SettingDep) {
-        super(provider, 'currencyLocalizationAsian', 'JPY', (e) => hasLength(e, 3))
+    constructor( provider: SettingDep ) {
+        super( provider, 'currencyLocalizationAsian', 'JPY', ( e ) => hasLength( e, 3 ) )
     }
 }

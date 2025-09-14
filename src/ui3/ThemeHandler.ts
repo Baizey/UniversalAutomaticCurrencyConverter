@@ -13,15 +13,15 @@ export interface ThemeColors {
 }
 
 const lightTheme = {
-    primary: '#1E40AF',
-    secondary: '#2F6FE4',
-    ternary: '#F3F4F6',
+    primary: '#2563EB',
+    secondary: '#3B82F6',
+    ternary: '#D1D5DB',
     warning: '#DC2626',
-    title: '#111827',
-    text: '#111827',
-    background1: '#FFFFFF',
-    background2: '#F9FAFB',
-    background3: '#F9FAFB',
+    title: '#0F172A',
+    text: '#1E293B',
+    background1: '#F9FAFB',
+    background2: '#E5E7EB',
+    background3: '#E5E7EB',
 } satisfies ThemeColors;
 const darkTheme = {
     primary: '#FACC15',

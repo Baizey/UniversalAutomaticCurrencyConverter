@@ -1,0 +1,56 @@
+/* Ever Expanding List input specific styles */
+
+/* Outer wrapper for the list placed inside .uacc-input-wrapper-input */
+.uacc-everlist {
+    width: 95%;
+    margin: 0 auto;
+}
+
+/* Vertical stack container for inputs */
+.uacc-everlist-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* no visual gap; inputs already have bottom borders */
+}
+
+/* Each row uses the same look as a single-line input wrapper */
+.uacc-everlist-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 100%;
+    background-color: var(--uacc-background3);
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 0 1rem;
+}
+
+/* The actual input reuses .uacc-text-input but we ensure center alignment by default here */
+.uacc-everlist-input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid var(--uacc-ternary);
+    outline: none;
+    color: var(--uacc-text);
+    font-size: 20px;
+    line-height: 48px;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 500;
+    text-align: center;
+}
+
+.uacc-everlist-input:focus {
+    border-bottom-color: var(--uacc-primary);
+}
+
+.uacc-everlist-input:hover {
+    border-bottom-color: var(--uacc-primary);
+}
+
+.uacc-everlist-input::placeholder {
+    color: var(--uacc-text);
+    opacity: 0.6;
+}

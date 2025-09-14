@@ -78,7 +78,7 @@ const Input = {
     // Toggle
     createToggle: function ({value, onChange}) {
         return ThemeChangeHandler.renderElement((div) => {
-            div.className = "uacc-option-wrapper";
+            div.className = "uacc-toggle-wrapper";
 
             const label = document.createElement("label");
             label.className = "uacc-toggle";
@@ -106,7 +106,7 @@ const Input = {
     // Dropdown
     createDropdown: function ({value, align, options, onChange}) {
         return ThemeChangeHandler.renderElement((div, theme) => {
-            div.className = "uacc-option-wrapper";
+            div.className = "uacc-dropdown-wrapper";
 
             const input = document.createElement("input");
             input.type = "text";
@@ -195,7 +195,7 @@ const Input = {
     // Number Input
     createNumberInput: function ({placeholder, align, value, min, max, step, onChange}) {
         return ThemeChangeHandler.renderElement((div) => {
-            div.className = "uacc-option-wrapper";
+            div.className = "uacc-text-input-wrapper";
             const input = document.createElement("input");
             input.type = "number";
             input.className = "uacc-text-input";
@@ -214,7 +214,7 @@ const Input = {
     // Text Input
     createTextInput: function ({align, placeholder, value, onChange}) {
         return ThemeChangeHandler.renderElement((div) => {
-            div.className = "uacc-option-wrapper";
+            div.className = "uacc-text-input-wrapper";
             const input = document.createElement("input");
             input.type = "text";
             input.className = "uacc-text-input";
@@ -234,7 +234,7 @@ const Input = {
     // Shortcut Input
     createShortcutInput: function ({value, onChange, align}) {
         return ThemeChangeHandler.renderElement((div) => {
-            div.className = "uacc-option-wrapper";
+            div.className = "uacc-text-input-wrapper";
             const input = document.createElement("input");
             input.type = "text";
             input.readOnly = true;

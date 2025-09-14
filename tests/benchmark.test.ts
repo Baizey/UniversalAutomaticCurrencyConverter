@@ -1,7 +1,7 @@
 import {amazon_com_html_site} from "./TestData.mock";
 import useMockContainer from "./Container.mock";
 import {Suite} from "benchmark";
-import {RateApi} from "../src/serviceWorker/RateApi";
+import {BackendApiCaller} from "../src/serviceWorker/BackendApiCaller";
 import {HtmlMock} from "./Html.mock";
 
 const disabled = true

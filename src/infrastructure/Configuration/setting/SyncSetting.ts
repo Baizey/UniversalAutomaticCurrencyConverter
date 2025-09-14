@@ -4,54 +4,62 @@ import { ISetting } from './ISetting'
 export type SettingDep = BrowserDiTypes
 
 export class SyncSetting<T> implements ISetting<T> {
-	readonly defaultValue: T
-	readonly storageKey: string
-	readonly validation: ( v: T ) => boolean
-	private browser: Browser
+    private readonly listeners: (() => void)[] = []
+    readonly defaultValue: T
+    readonly storageKey: string
+    readonly validation: ( v: T ) => boolean
+    private browser: Browser
 
-	constructor(
-		{ browser }: SettingDep,
-		storageKey: string,
-		defaultValue: T,
-		validation: ( v: T ) => boolean = () => true,
-	) {
-		this.browser = browser
-		this.storageKey = storageKey
-		this.validation = validation
-		this.defaultValue = defaultValue
-		this._value = defaultValue
-	}
+    constructor(
+        { browser }: SettingDep,
+        storageKey: string,
+        defaultValue: T,
+        validation: ( v: T ) => boolean = () => true,
+    ) {
+        this.browser = browser
+        this.storageKey = storageKey
+        this.validation = validation
+        this.defaultValue = defaultValue
+        this._value = defaultValue
+    }
 
-	protected _value: T
+    protected _value: T
 
-	get value(): T {
-		return this._value
-	}
+    get value(): T {
+        return this._value
+    }
 
-	setValue( value: T | undefined ): boolean {
-		if ( typeof value === 'undefined' ) return false
-		if ( !this.validation( value ) ) return false
-		if ( typeof this.defaultValue === 'number' ) {
-			// @ts-ignore
-			this._value = Number( value )
-		} else {
-			this._value = value
-		}
-		return true
-	}
+    registerListener( listener: () => void ): this {
+        this.listeners.push( listener )
+        return this
+    }
 
-	async save(): Promise<void> {
-		return await this.browser.saveSync( this.storageKey, this.value )
-	}
+    setValue( value: T | undefined ): boolean {
+        if ( typeof value === 'undefined' ) return false
+        if ( !this.validation( value ) ) return false
+        if ( typeof this.defaultValue === 'number' ) {
+            // @ts-ignore
+            this._value = Number( value )
+        } else {
+            this._value = value
+        }
+        const v = this._value
+        this.listeners.forEach( e => e() )
+        return true
+    }
 
-	async loadSetting(): Promise<boolean> {
-		return this.setValue( await this.browser.loadSync<T>( this.storageKey ) )
-	}
+    async save(): Promise<void> {
+        return await this.browser.saveSync( this.storageKey, this.value )
+    }
 
-	async setAndSaveValue( v: T ): Promise<boolean> {
-		const result = this.setValue( v )
+    async loadSetting(): Promise<boolean> {
+        return this.setValue( await this.browser.loadSync<T>( this.storageKey ) )
+    }
 
-		await this.save()
-		return result
-	}
+    async setAndSaveValue( v: T ): Promise<boolean> {
+        const result = this.setValue( v )
+
+        await this.save()
+        return result
+    }
 }

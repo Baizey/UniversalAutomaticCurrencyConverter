@@ -1,8 +1,30 @@
+.uacc-input-row-wrapper {
+    width: 95%;
+    margin: auto;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.uacc-input-row-wrapper-solo {
+    width: 95%;
+    margin: auto;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: baseline;
+}
+
 .uacc-input-wrapper {
     display: flex;
+    height: fit-content;
     flex-direction: column;
     width: 100%;
-    height: 100px; /* fixed total height */
     box-sizing: border-box;
     align-items: center;
     margin-top: 1rem;
@@ -22,16 +44,15 @@
 }
 
 .uacc-input-wrapper-input {
-    height: 50px;
-    width: 95%; /* 95% width of wrapper */
+    height: fit-content;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto; /* centers it, leaving 2.5% on each side */
+    margin: auto;
 }
 
 .uacc-input-wrapper-subtitle {
-    height: 15px;
     display: flex;
     align-items: center;
     justify-content: center;

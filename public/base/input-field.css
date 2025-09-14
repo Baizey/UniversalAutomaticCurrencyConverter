@@ -1,13 +1,11 @@
-.uacc-option-wrapper {
+.uacc-text-input-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 50px;
     width: 100%;
     background-color: var(--uacc-background3);
-    border-radius: 10px;
     box-sizing: border-box;
-    padding: 0 1rem;
 }
 
 /* Text input itself */
@@ -30,6 +28,10 @@
 
 /* Focus state for underline */
 .uacc-text-input:focus {
+    border-bottom-color: var(--uacc-primary);
+}
+
+.uacc-text-input:hover {
     border-bottom-color: var(--uacc-primary);
 }
 

@@ -1,0 +1,68 @@
+.uacc-button-group-wrap {
+    width: 100%;
+    height: fit-content;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.uacc-button-group {
+    width: 95%;
+    height: fit-content;
+    margin: auto;
+    display: inline-flex;
+    border-radius: 1em;
+    overflow: hidden;
+    align-content: space-evenly;
+    align-items: center;
+}
+
+.uacc-button-group .uacc-button {
+    border-radius: 0;
+    margin: 0;
+}
+
+.uacc-button {
+    width: 100%;
+    text-align: center;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    height: 50px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    color: var(--uacc-text);
+}
+
+/* Variants */
+.uacc-button-primary {
+    background-color: var(--uacc-primary);
+}
+
+.uacc-button-secondary {
+    background-color: var(--uacc-secondary);
+}
+
+.uacc-button-ternary {
+    background-color: var(--uacc-ternary);
+}
+
+.uacc-button-warning {
+    background-color: var(--uacc-warning);
+}
+
+/* States */
+.uacc-button:hover:not(.uacc-button-disabled) {
+    opacity: 0.9;
+}
+
+.uacc-button:active:not(.uacc-button-disabled) {
+    opacity: 0.8;
+}
+
+.uacc-button-disabled {
+    background-color: var(--uacc-background2);
+    cursor: not-allowed;
+    opacity: 0.6;
+}

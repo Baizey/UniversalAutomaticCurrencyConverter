@@ -1,6 +1,7 @@
 .uacc-options-background-wrapper {
     width: 900px;
-    margin: 90px auto auto;
+    margin: auto;
+    height: fit-content;
 }
 
 .uacc-options-background-section {
@@ -11,27 +12,33 @@
     border-radius: 0.5rem;
 }
 
-.uacc-input-row-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .uacc-options-section-header {
     width: 100%;
     font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 24px;
     line-height: 1.6;
     letter-spacing: 0.05em;
-    text-transform: uppercase;
     color: var(--uacc-title);
     text-align: center;
 }
 
-body {
-    background-color: var(--uacc-background1);
+.uacc-options-section-header-subtitle {
+    width: 100%;
+    text-align: center;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--uacc-text);
+    opacity: 0.9;
+}
+
+.uacc-section-subtitle {
+    width: 100%;
+    text-align: center;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    font-size: 14px;
+    color: var(--uacc-text);
 }

@@ -20,8 +20,8 @@ import {
     MiniConverterSetting,
     ShowConversionInBracketsSetting,
     SignificantDigitsSetting,
-    ThousandsSeparatorSetting,
-    UseDebugLoggingSetting,
+    ThousandsSeparatorSetting, TraceIdSetting,
+    UseDebugLoggingSetting, UserEmailSetting, UserSessionIdSetting,
     UsingAutoConversionOnPageLoadSetting,
     UsingBlacklistingSetting,
     UsingConversionHighlightingSetting,
@@ -154,6 +154,19 @@ export class MetaConfig extends IConfig {
     }
 }
 
+export class UserConfig extends IConfig {
+    readonly traceId: TraceIdSetting
+    readonly userSessionId: UserSessionIdSetting
+    readonly userEmail: UserEmailSetting
+
+    constructor(dep: SettingDep) {
+        super()
+        this.settings.push(this.traceId = new TraceIdSetting(dep))
+        this.settings.push(this.userSessionId = new UserSessionIdSetting(dep))
+        this.settings.push(this.userEmail = new UserEmailSetting(dep))
+    }
+}
+
 export const SubConfigDi = {
     numberStylingConfig: singleton(NumberStylingConfig),
     currencyStylingConfig: singleton(CurrencyStylingConfig),
@@ -163,6 +176,7 @@ export const SubConfigDi = {
     highlightConfig: singleton(ConversionHighlightConfig),
     currencyTagConfig: singleton(CurrencyTagConfig),
     metaConfig: singleton(MetaConfig),
+    userConfig: singleton(UserConfig),
 }
 
 type SubConfigDiTypes = DependenciesOf<typeof SubConfigDi>
@@ -176,6 +190,7 @@ export class Configuration {
     readonly highlight: ConversionHighlightConfig
     readonly currencyTag: CurrencyTagConfig
     readonly meta: MetaConfig
+    readonly user: UserConfig
     private configs: IConfig[]
 
     constructor({
@@ -187,6 +202,7 @@ export class Configuration {
         highlightConfig,
         currencyTagConfig,
         metaConfig,
+        userConfig
     }: SubConfigDiTypes) {
         this.numberStyling = numberStylingConfig
         this.currencyStyling = currencyStylingConfig
@@ -196,6 +212,7 @@ export class Configuration {
         this.highlight = highlightConfig
         this.currencyTag = currencyTagConfig
         this.meta = metaConfig
+        this.user = userConfig
         this.configs = [
             numberStylingConfig,
             currencyStylingConfig,
@@ -205,6 +222,7 @@ export class Configuration {
             highlightConfig,
             currencyTagConfig,
             metaConfig,
+            userConfig
         ]
     }
 

@@ -1,6 +1,6 @@
 import {Query} from "../messengerHandlerManager";
 import {isCurrencyTag} from "../../../serviceWorker/utils";
-import {RateApi} from "../../../serviceWorker/RateApi";
+import {BackendApiCaller} from "../../../serviceWorker/BackendApiCaller";
 import {log} from "../../../di";
 
 import {BackgroundMessageType} from "./BackgroundMessageType";
@@ -37,7 +37,7 @@ export class RateQuery implements Query<RateBackgroundMessage, RatesResponse> {
         if (!isCurrencyTag(request.to))
             throw new Error(`Invalid currency tags given '${request.to}'`)
 
-        const resp = await RateApi.fetch(`v5/rates/${request.to}`)
+        const resp = await BackendApiCaller.fetch(`api/v1/market/rates/${request.to}`)
         const text: string = await resp.text()
         log.info(`Fetching rate for ${request.to} = ${resp.statusText}\n${text}`)
         return JSON.parse(text)
