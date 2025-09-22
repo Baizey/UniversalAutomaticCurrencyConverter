@@ -1,8 +1,8 @@
 .uacc-button-group-wrap {
     width: 100%;
     height: fit-content;
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .uacc-button-group {
@@ -10,7 +10,7 @@
     height: fit-content;
     margin: auto;
     display: inline-flex;
-    border-radius: 1em;
+    border-radius: 1rem;
     overflow: hidden;
     align-content: space-evenly;
     align-items: center;

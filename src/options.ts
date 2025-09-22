@@ -16,7 +16,7 @@ type SectionFilter = {
 }
 
 document.addEventListener( "DOMContentLoaded", () => {
-    const realRoot = document.getElementById("uacc-root")!!
+    const realRoot = document.getElementById( "uacc-root" )!!
     const root = realRoot.appendChild( OptionsUi.createOptionsBackground() )
 
     ;(async () => {
@@ -62,6 +62,10 @@ document.addEventListener( "DOMContentLoaded", () => {
         optionSections.push( {
             keys: [ 'highlight', 'duration', ],
             div: root.appendChild( OptionsUi.createNumberConversionHighlightingOptionSection() )
+        } )
+        optionSections.push( {
+            keys: [ 'disable', 'block', 'currency', 'skip' ],
+            div: root.appendChild( OptionsUi.createDisabledCurrencyCurrency( symbols ) )
         } )
         optionSections.push( {
             keys: [ 'whitelist', 'blacklist', 'site allowance', ],

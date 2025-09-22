@@ -19,6 +19,14 @@ export type TextInputProps = {
     onChange: ( value: string ) => void;
 };
 
+export type TextClickInputProps = {
+    align?: 'left' | 'center' | 'right';
+    placeholder?: string;
+    value?: string;
+    readonly?: boolean;
+    onClick: ( self: HTMLDivElement ) => void;
+};
+
 export type ShortcutInputProps = {
     align?: "left" | "center" | "right";
     value?: string;
@@ -31,6 +39,15 @@ export type DropdownProps = {
     align?: 'left' | 'center' | 'right';
     options: DropdownOption[];
     onChange: ( option: DropdownOption ) => void;
+};
+
+export type MultiSelectProps = {
+    title: string
+    subtitle?: string
+    align?: 'left' | 'center' | 'right';
+    options: DropdownOption[];
+    selected: string[]
+    onChange: ( selected: string[] ) => void;
 };
 
 export type ToggleProps = {
@@ -124,6 +141,52 @@ export class Input {
         div.appendChild( inputContainer );
         div.appendChild( subtitleEl );
         return div;
+    }
+
+    static createMultiSelect( { onChange, align, options, selected, title, subtitle }: MultiSelectProps ) {
+        const container = document.createElement( "div" );
+        container.className = "uacc-everlist";
+
+        let values: { value: string, element: HTMLDivElement }[] = []
+
+        function addRow( input: DropdownOption ) {
+            const wrap = { value: input.value, element: null as any as HTMLDivElement }
+            wrap.element = Input.createTextClick( {
+                value: `${ input.label } (${ input.value })`,
+                readonly: true,
+                onClick: ( self ) => {
+                    self.remove()
+                    values = values.filter( e => e !== wrap )
+                    onChange( values.map( e => e.value ) )
+                }
+            } )
+            values.push( wrap )
+            container.appendChild( wrap.element )
+        }
+
+        container.appendChild( Input.createWrapper( {
+            title, subtitle,
+            value: this.createDropdown( {
+                align,
+                options: options.map( e => ({ value: e.value, label: `${ e.label } (${ e.value })` }) ),
+                onChange: value => {
+                    // No duplicates
+                    if ( values.map( e => e.value ).includes( value.value ) )
+                        return
+                    addRow( value )
+                    onChange( values.map( e => e.value ) )
+                }
+            } )
+        } ) )
+
+        selected
+            .map( it => options.find( e => it === e.value ) )
+            .forEach( e => {
+                if ( e ) addRow( e )
+            } );
+
+        values.forEach( i => container.appendChild( i.element ) )
+        return container;
     }
 
     static createToggle( { value, onChange }: ToggleProps ): HTMLDivElement {
@@ -296,16 +359,44 @@ export class Input {
 
         // Font family and weight
         input.style.fontFamily = "'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        input.style.fontWeight = "500"; // semi-bold for readability
+        input.style.fontWeight = "500";
         input.style.fontSize = "20px";
-        input.style.lineHeight = "48px"; // centers text in 50px row
+        input.style.lineHeight = "48px";
 
         div.appendChild( input );
 
-        // Focus / blur handled via Tailwind classes
         input.addEventListener( "input", ( e ) => {
             onChange?.( (e.target as HTMLInputElement).value );
         } );
+        return div;
+    }
+
+    static createTextClick( { align, placeholder, value, onClick, readonly }: TextClickInputProps ) {
+        const div = document.createElement( "div" );
+        div.className = "uacc-text-input-wrapper";
+
+        // Text input
+        const input = document.createElement( "input" );
+        input.type = "text";
+        input.classList.add( 'uacc-text-input-click', "uacc-text-input" );
+        input.placeholder = placeholder ?? "";
+        input.value = value ?? "";
+        input.readOnly = readonly ?? false;
+
+        // Text alignment
+        input.style.textAlign = align ?? "center";
+
+        // Font family and weight
+        input.style.fontFamily = "'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        input.style.fontWeight = "500";
+        input.style.fontSize = "20px";
+        input.style.lineHeight = "48px";
+
+        div.appendChild( input );
+
+        input.addEventListener( "click", () => {
+            onClick( div )
+        } )
         return div;
     }
 

@@ -4,6 +4,7 @@
 .uacc-everlist {
     width: 95%;
     margin: 0 auto;
+    padding-bottom: 1rem;
 }
 
 /* Vertical stack container for inputs */
@@ -21,7 +22,7 @@
     height: 50px;
     width: 100%;
     background-color: var(--uacc-background3);
-    border-radius: 10px;
+    border-radius: 1rem;
     box-sizing: border-box;
     padding: 0 1rem;
 }

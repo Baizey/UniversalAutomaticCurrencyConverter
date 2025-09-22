@@ -24,14 +24,13 @@
     line-height: 48px;
     box-sizing: border-box;
     transition: border-color 0.25s ease;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
 }
 
-.uacc-search-input:focus {
+.uacc-search-input:focus, .uacc-search-input:hover {
     border-bottom-color: var(--uacc-primary);
-}
-
-.uacc-search-input:hover {
-    border-bottom-color: var(--uacc-primary);
+    background-color: color-mix(in srgb, var(--uacc-background1) 90%, var(--uacc-primary) 10%);
 }
 
 .uacc-search-input::placeholder {

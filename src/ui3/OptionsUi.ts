@@ -160,14 +160,18 @@ export class OptionsUi {
         localizationSection.appendChild( Input.createWrapperRow( {
             values: [ dollarOption, kroneOption, yenOption ]
         } ) )
-        localizationSection.appendChild( Input.createWrapper( {
-                title: "Show localization alerts",
-                value: Input.createToggle( {
-                    value: config.localization.usingAlert.value,
-                    onChange: v => {
-                        config.localization.usingAlert.setAndSaveValue( v );
-                    }
-                } )
+        localizationSection.appendChild( Input.createWrapperRow( {
+                values: [
+                    Input.createWrapper( {
+                        title: "Show localization alerts",
+                        value: Input.createToggle( {
+                            value: config.localization.usingAlert.value,
+                            onChange: v => {
+                                config.localization.usingAlert.setAndSaveValue( v );
+                            }
+                        } )
+                    } )
+                ]
             } )
         );
         wrap.appendChild( localizationSection )
@@ -299,6 +303,27 @@ export class OptionsUi {
             ]
         } ) )
         wrap.appendChild( section )
+        return wrap
+    }
+
+    static createDisabledCurrencyCurrency( symbols: Record<string, string> ) {
+        const wrap = createDiv()
+        wrap.appendChild( OptionsUi.createGap( 1 ) )
+        const { config } = useProvider()
+        const currencyOptions: DropdownOption[] = Object.entries( symbols )
+            .map( ( [ symbol, value ] ) => ({ label: value, value: symbol }) )
+        const section = wrap.appendChild( OptionsUi.createOptionsSection( { title: 'Disable currencies' } ) );
+        section.appendChild( Input.createWrapperRow( {
+            values: [ Input.createMultiSelect( {
+                title: 'Search for currencies to disable',
+                subtitle: 'Your disabled currencies are listed below',
+                options: currencyOptions,
+                selected: config.currencyTag.disabled.value,
+                onChange: ( data ) => {
+                    config.currencyTag.disabled.setAndSaveValue( data )
+                }
+            } ) ]
+        } ) );
         return wrap
     }
 
@@ -482,7 +507,7 @@ export class OptionsUi {
             const hasUser = email.length > 0
 
             const subtitle =
-            wrap.appendChild( Section.subtitle( { text: '' } ) )
+                wrap.appendChild( Section.subtitle( { text: '' } ) )
 
 
             const isPass = state === SetupType.login

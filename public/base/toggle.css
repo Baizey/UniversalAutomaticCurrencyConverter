@@ -1,20 +1,20 @@
 /* Option row wrapper (50px tall) */
 .uacc-toggle-wrapper {
     display: flex;
-    align-items: center;    /* vertical centering */
+    align-items: center; /* vertical centering */
     justify-content: center; /* horizontal centering */
-    height: 50px;           /* fixed row height */
+    height: 50px; /* fixed row height */
     width: 100%;
     background-color: var(--uacc-background3);
-    border-radius: 10px;
+    border-radius: 1rem;
     box-sizing: border-box;
 }
 
 /* Toggle wrapper */
 .uacc-toggle {
     position: relative;
-    width: 46px;   /* track width */
-    height: 26px;  /* track height */
+    width: 46px; /* track width */
+    height: 26px; /* track height */
     display: inline-block;
     cursor: pointer;
 }
@@ -57,6 +57,11 @@
 }
 
 .uacc-toggle-input:checked + .uacc-toggle-track .uacc-toggle-thumb {
-    transform: translateX(20px);  /* track width - thumb width - 4px padding */
+    transform: translateX(20px); /* track width - thumb width - 4px padding */
     background-color: var(--uacc-background3);
+}
+
+.uacc-toggle-wrapper:focus, .uacc-toggle-wrapper:hover {
+    border-color: var(--uacc-primary);
+    background-color: color-mix(in srgb, var(--uacc-background1) 90%, var(--uacc-primary) 10%);
 }
