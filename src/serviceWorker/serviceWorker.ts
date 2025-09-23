@@ -2,6 +2,7 @@
 import { log, useProvider } from '../di'
 import { ContextMenuItem } from "./contextMenuItem";
 import { generateUUID } from "./utils";
+import { SemVerPart, SemVersion } from "../infrastructure/Version";
 
 async function loadSettings() {
     const { browser } = useProvider()
@@ -24,9 +25,10 @@ async function handleVersionCheck() {
         metaConfig: { lastVersion },
     } = useProvider()
     // Force open options if updating to a new major version
-    const current = browser.extensionVersion.split( '.' ).map( ( e ) => +e )[0]
-    const last = lastVersion.value.split( '.' ).map( ( e ) => +e )[0]
-    if ( last < current ) await browser.tabs.create( { url: 'options.html' } )
+    const current = SemVersion.parse( browser.extensionVersion )
+    const last = SemVersion.parse( lastVersion.value )
+    const diff = last.difference( current )
+    if ( diff === SemVerPart.major ) await browser.tabs.create( { url: 'options.html' } )
 }
 
 

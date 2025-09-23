@@ -31,6 +31,12 @@ document.addEventListener( "DOMContentLoaded", () => {
                     e.div.classList.add( 'uacc-hidden' )
             } )
         } ) )
+        const newVersionSection = OptionsUi.createNewVersionSection()
+        if ( newVersionSection ) root.appendChild( newVersionSection )
+        optionSections.push( {
+            keys: [ 'user', 'email', 'login', 'logout', 'password', 'recovery', 'reset', 'register' ],
+            div: root.appendChild( OptionsUi.createLoginSection() )
+        } )
         optionSections.push( {
             keys: [ 'user', 'email', 'login', 'logout', 'password', 'recovery', 'reset', 'register' ],
             div: root.appendChild( OptionsUi.createLoginSection() )
@@ -60,7 +66,7 @@ document.addEventListener( "DOMContentLoaded", () => {
             div: root.appendChild( OptionsUi.createMiscOptionSection() )
         } )
         optionSections.push( {
-            keys: [ 'highlight', 'duration', ],
+            keys: [ 'highlight', 'duration', 'flash' ],
             div: root.appendChild( OptionsUi.createNumberConversionHighlightingOptionSection() )
         } )
         optionSections.push( {

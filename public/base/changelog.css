@@ -1,0 +1,30 @@
+/* Version header */
+.uacc-changelog-version-header {
+    width: 100%;
+    text-align: center;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: var(--uacc-primary);
+}
+
+/* Change list */
+.uacc-changelog-change-list {
+    width: 100%;
+    text-align: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.uacc-changelog-change-item {
+    width: 100%;
+    text-align: center;
+    position: relative;
+    margin: 8px 0;
+    padding-left: 24px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--uacc-text);
+}

@@ -4,6 +4,7 @@ import { useProvider } from "../di";
 import { LoggingSettingType } from "../infrastructure/Configuration/setting";
 import { ThemeHandler } from "./ThemeHandler";
 import { Section } from "./Text";
+import { SemVerPart, SemVersion } from "../infrastructure/Version";
 
 type OptionsSectionProps = {
     title: string,
@@ -474,35 +475,158 @@ export class OptionsUi {
         return wrap
     }
 
+    static createNewVersionSection(): HTMLDivElement | null {
+        const { config, browser } = useProvider()
+        const currentVersion = SemVersion.parse( browser.extensionVersion )
+        const lastVersion = SemVersion.parse( config.meta.lastVersion.value )
+        config.meta.lastVersion.setAndSaveValue( currentVersion.toString() ).catch()
+        config.meta.lastVersion.setAndSaveValue( '1.1.1' ).catch()
+        const changeType = lastVersion.difference( currentVersion )
+        console.log( `${ lastVersion.toString() } => ${ currentVersion.toString() }` )
+        console.log( changeType.toString() )
+        if ( changeType === SemVerPart.none || changeType === SemVerPart.patch ) return null
+        const changelogs = [
+            {
+                version: SemVersion.parse( '6.0.0' ),
+                changes: [
+                    'Refreshed UI - cleaner look with updated colors, smoother interactions and doesnt require refreshes for theme changes',
+                    //'Improved currency handling – better parsing of tricky cases and support for K/M/B suffixes.',
+                    'Login system added – sign up with email/password (required for sharing and paid features).',
+                    //'Introduced paid tier – faster rate updates and advanced conversion display features.',
+                ]
+            },
+        ]
+
+        if ( lastVersion.major === 0 ) {
+            const section = OptionsUi.createOptionsSection( { title: `Thank you for installing UA Currency Converter :)` } )
+            section.appendChild( Section.subtitle( { text: 'Below is the settings available for customization, use the search field above to quick-filter' } ) )
+            section.appendChild( OptionsUi.createGap( 1 ) )
+            const wrap = createDiv()
+            wrap.appendChild( OptionsUi.createGap( 1 ) )
+            wrap.appendChild( section )
+            return wrap
+        }
+
+        const section = OptionsUi.createOptionsSection( {
+            title: `Extension updated: ${ lastVersion.toString() } → ${ currentVersion.toString() }`
+        } )
+
+        changelogs.forEach( ( { version: changelogVersion, changes } ) => {
+            if ( changelogVersion.isBetween( lastVersion, currentVersion ) ) {
+                const versionBlock = createDiv()
+                const header = createDiv()
+                header.className = 'uacc-changelog-version-header'
+                header.innerText = `${ changelogVersion.toString() }`
+                versionBlock.appendChild( header )
+
+                const ul = document.createElement( 'div' )
+                ul.className = 'uacc-changelog-change-list'
+                changes.forEach( text => {
+                    const li = document.createElement( 'p' )
+                    li.className = 'uacc-changelog-change-item'
+                    li.innerText = text
+                    ul.appendChild( li )
+                } )
+                versionBlock.appendChild( ul )
+
+                section.appendChild( versionBlock )
+            }
+        } )
+
+        section.appendChild( OptionsUi.createGap( 1 ) )
+        const wrap = createDiv()
+        wrap.appendChild( OptionsUi.createGap( 1 ) )
+        wrap.appendChild( section )
+        return wrap
+    }
+
     static createLoginSection() {
         const wrap = createDiv()
         wrap.appendChild( OptionsUi.createGap( 1 ) )
-        const { config, backendApi } = useProvider()
+        const { config, backgroundMessenger } = useProvider()
 
         const section = OptionsUi.createOptionsSection( { title: 'User' } )
 
         const getSessionId = () => config.user.userSessionId.value
 
-        /* States:
-            - no email
-                + recover password (add token field / act with it)
-                + login (add password field / act with it)
+        enum SetupType {
+            dashboard,
+            register_email,
+            recover_password,
+            reset_password,
+            login,
+            logout
+        }
 
-                + register email (button no extra fields)
-            - has email
-                + recover password (add token field / act with it)
-                + login, if session is dead (add password field / act with it)
-
-                + logout (button, no extra fields)
-        */
-        enum SetupType {dashboard, recover_password, login,}
+        let background_email: string = config.user.userEmail.value
+        let background_password: string = ''
 
         function setupUi(
             state: SetupType,
         ) {
+            background_password = ''
             section.innerHTML = ''
             const sessionId = config.user.userSessionId.value
             const email = config.user.userEmail.value
+
+            const emailField = Input.createWrapperRow( {
+                values: [
+                    Input.createWrapper( {
+                        title: 'Your email',
+                        value: Input.createTextInput( {
+                            value: background_email,
+                            readonly: background_email !== '',
+                            onChange: it => background_email = it,
+                        } )
+                    } )
+                ]
+            } )
+            const passwordField = Input.createWrapperRow( {
+                values: [
+                    Input.createWrapper( {
+                        title: state === SetupType.login ? 'Your password'
+                            : state === SetupType.recover_password ? 'Your reset token'
+                                : '',
+                        value: Input.createTextInput( {
+                            value: background_password,
+                            onChange: it => background_password = it,
+                        } )
+                    } )
+                ]
+            } )
+
+
+            switch ( state ) {
+                case SetupType.dashboard:
+                    if ( background_email !== '' ) {
+                        section.appendChild( emailField )
+                    } else {
+                        section.appendChild( Section.subtitle( { text: 'You are not logged in' } ) )
+                    }
+                    break;
+                case SetupType.register_email:
+                    section.appendChild( emailField )
+                    break;
+                case SetupType.recover_password:
+                    section.appendChild( emailField )
+                    break;
+                case SetupType.reset_password:
+                    section.appendChild( emailField )
+                    section.appendChild( passwordField )
+                    break;
+                case SetupType.login:
+                    section.appendChild( emailField )
+                    section.appendChild( passwordField )
+                    break;
+                case SetupType.logout:
+                    backgroundMessenger.logout().catch()
+                    config.user.userEmail.setAndSaveValue( '' ).catch()
+                    config.user.userSessionId.setAndSaveValue( '' ).catch()
+                    background_email = ''
+                    setupUi( SetupType.dashboard )
+                    break;
+            }
+
             const inSystem = sessionId.length > 0
             const hasUser = email.length > 0
 

@@ -168,7 +168,7 @@ export class Input {
             title, subtitle,
             value: this.createDropdown( {
                 align,
-                options: options.map( e => ({ value: e.value, label: `${ e.label } (${ e.value })` }) ),
+                options: options.map( e => ({ value: e.value, label: `${ e.label }` }) ),
                 onChange: value => {
                     // No duplicates
                     if ( values.map( e => e.value ).includes( value.value ) )
@@ -229,10 +229,6 @@ export class Input {
         input.className = "uacc-search-input";
         input.placeholder = value?.label ?? "";
         input.style.textAlign = align ?? "center";
-        input.style.fontFamily = "'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        input.style.fontWeight = "500";
-        input.style.fontSize = "20px";
-        input.style.lineHeight = "48px";
 
         // Dropdown container
         const dropdown = document.createElement( "div" );
