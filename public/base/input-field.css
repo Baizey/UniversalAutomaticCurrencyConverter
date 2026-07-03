@@ -45,3 +45,19 @@
     color: var(--uacc-text);
     opacity: 0.6;
 }
+
+.uacc-range-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--uacc-background3);
+}
+
+.uacc-range-input {
+    width: 90%;
+    height: 24px;
+    margin: 0.5rem auto 1rem;
+    accent-color: var(--uacc-primary);
+}

@@ -1,0 +1,41 @@
+.uacc-popup {
+    max-width: calc(100% - 20px);
+    width: 600px;
+    height: fit-content;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: var(--uacc-background1);
+    color: var(--uacc-text);
+}
+
+.uacc-converter {
+    width: 100%;
+    height: fit-content;
+}
+
+.uacc-converter-rows {
+    width: 100%;
+}
+
+.uacc-conversion-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.uacc-cell-icon {
+    width: 6%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.uacc-cell-amount {
+    width: 34%;
+}
+
+.uacc-cell-currency {
+    width: 10%;
+}

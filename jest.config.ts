@@ -12,6 +12,7 @@ const config: Config = {
 		'build',
 		'node_modules',
 		'\\.cache',
+		'public/test',
 	],
 	testEnvironmentOptions: {
 		url: 'http://localhost',

@@ -57,6 +57,13 @@
     border-bottom: 1px solid var(--uacc-ternary);
 }
 
+.uacc-dropdown-top {
+    top: auto;
+    bottom: 50px;
+    border-top: 1px solid var(--uacc-ternary);
+    border-bottom: none;
+}
+
 /* Dropdown items */
 .uacc-dropdown-item {
     height: 40px;

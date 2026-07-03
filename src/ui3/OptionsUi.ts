@@ -146,7 +146,6 @@ export class OptionsUi {
                 }
             } )
         } )
-        console.log( dollar )
         const dollarOption = Input.createWrapper( {
             title: "Dollar",
             value: Input.createDropdown( {

@@ -38,10 +38,6 @@ document.addEventListener( "DOMContentLoaded", () => {
             div: root.appendChild( OptionsUi.createLoginSection() )
         } )
         optionSections.push( {
-            keys: [ 'user', 'email', 'login', 'logout', 'password', 'recovery', 'reset', 'register' ],
-            div: root.appendChild( OptionsUi.createLoginSection() )
-        } )
-        optionSections.push( {
             keys: [ 'currency', 'convert to', 'auto convert page' ],
             div: root.appendChild( OptionsUi.createCurrencyOptionSection( symbols ) )
         } )

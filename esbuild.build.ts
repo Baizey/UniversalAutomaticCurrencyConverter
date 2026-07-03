@@ -5,7 +5,7 @@ import * as path from "node:path";
 import archiver from "archiver";
 
 const browsers = ['chrome', 'firefox']
-const files = ['content.tsx', 'popup.tsx', 'options.ts', 'background.ts']
+const files = ['content.ts', 'popup.ts', 'options.ts', 'background.ts']
 
 function getArg(argName: string): null | string {
     const index = process.argv.indexOf(`--${argName}`)

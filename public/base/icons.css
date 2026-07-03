@@ -1,0 +1,22 @@
+.uacc-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    cursor: pointer;
+    color: var(--uacc-text);
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.uacc-icon-button:hover {
+    background-color: var(--uacc-ternary);
+}
+
+.uacc-icon-button-danger {
+    color: var(--uacc-warning);
+}
+
+.uacc-icon-svg {
+    width: 22px;
+    height: 22px;
+}

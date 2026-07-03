@@ -37,8 +37,15 @@ export type DropdownOption = { value: string; label: string };
 export type DropdownProps = {
     value?: DropdownOption,
     align?: 'left' | 'center' | 'right';
+    listLocation?: "top" | "bottom";
     options: DropdownOption[];
     onChange: ( option: DropdownOption ) => void;
+};
+
+export type RangeInputProps = {
+    options: string[];
+    initialValue: string;
+    onChange: ( value: string ) => void;
 };
 
 export type MultiSelectProps = {
@@ -219,7 +226,7 @@ export class Input {
         return div;
     }
 
-    static createDropdown( { value, align, options, onChange }: DropdownProps ) {
+    static createDropdown( { value, align, listLocation, options, onChange }: DropdownProps ) {
         const div = document.createElement( "div" );
         div.className = "uacc-dropdown-wrapper";
 
@@ -233,6 +240,7 @@ export class Input {
         // Dropdown container
         const dropdown = document.createElement( "div" );
         dropdown.className = "uacc-dropdown";
+        if ( listLocation === "top" ) dropdown.classList.add( "uacc-dropdown-top" );
 
         let filteredItems: DropdownOption[] = [ ...options ];
         let selectedIndex = 0;
@@ -310,6 +318,37 @@ export class Input {
         return div;
     }
 
+    static createRange( { options, initialValue, onChange }: RangeInputProps ): HTMLDivElement {
+        const container = document.createElement( "div" );
+        container.className = "uacc-range-wrapper";
+
+        const readout = Input.createTextInput( {
+            readonly: true,
+            value: initialValue,
+            onChange: () => {}
+        } );
+        const readoutInput = readout.querySelector( "input" ) as HTMLInputElement;
+
+        const input = document.createElement( "input" );
+        input.type = "range";
+        input.className = "uacc-range-input";
+        input.min = "0";
+        input.step = "1";
+        input.max = Math.max( options.length - 1, 0 ).toString();
+        input.value = Math.max( options.indexOf( initialValue ), 0 ).toString();
+        input.disabled = options.length === 0;
+
+        input.addEventListener( "input", () => {
+            const next = options[Number( input.value )] ?? "";
+            readoutInput.value = next;
+            onChange( next );
+        } );
+
+        container.appendChild( readout );
+        container.appendChild( input );
+        return container;
+    }
+
     static createNumberInput( { placeholder, align, value, min, max, step, onChange }: NumberInputProps ) {
         const div = document.createElement( "div" );
         div.className = "uacc-text-input-wrapper";
@@ -320,10 +359,10 @@ export class Input {
         input.className = "uacc-text-input";
         input.placeholder = placeholder ?? "";
         input.style.textAlign = align ?? "center";
-        if ( min ) input.min = min.toString()
-        if ( max ) input.max = max.toString()
-        if ( step ) input.step = step.toString()
-        if ( value ) input.value = value.toString()
+        if ( min !== undefined ) input.min = min.toString()
+        if ( max !== undefined ) input.max = max.toString()
+        if ( step !== undefined ) input.step = step.toString()
+        if ( value !== undefined ) input.value = value.toString()
 
         // Font family and weight
         input.style.fontFamily = "'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";

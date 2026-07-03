@@ -1,0 +1,31 @@
+.uacc-title {
+    width: 100%;
+    text-align: center;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--uacc-title);
+    margin-bottom: 0.5rem;
+}
+
+.uacc-footer-text {
+    width: 100%;
+    text-align: center;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--uacc-text);
+    opacity: 0.85;
+}
+
+.uacc-link {
+    color: var(--uacc-secondary);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.uacc-link:hover {
+    text-decoration: underline;
+}

@@ -10,9 +10,7 @@
     "noImplicitAny": false,
     "module": "commonjs",
     "target": "ES2017",
-    "allowJs": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact"
+    "allowJs": true
   },
   "include": [
     "./src/components/**/*",

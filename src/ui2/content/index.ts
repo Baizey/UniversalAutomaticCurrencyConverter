@@ -1,5 +1,0 @@
-export * from './MenuAlert'
-export * from './TitleAlert'
-export * from './AlertSection'
-export * from './app'
-export * from './LocalizationAlert'
