@@ -8,6 +8,8 @@
 
 # testing
 /coverage
+/.playwright-mcp/*.log
+/.playwright-mcp/*.yml
 
 # production
 /build
