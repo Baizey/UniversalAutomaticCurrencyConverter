@@ -2,7 +2,7 @@ import esbuild from 'esbuild';
 import * as fs from "fs/promises";
 import * as fsSync from "node:fs";
 import * as path from "node:path";
-import archiver from "archiver";
+import { ZipArchive } from "archiver";
 
 const browsers = ['chrome', 'firefox']
 const files = ['content.ts', 'popup.ts', 'options.ts', 'background.ts']
@@ -147,7 +147,7 @@ const runBuild = (title: string) => time(title, async () => {
         }
 
         async function zipFolder(unpackedOut: string, packedOut: string) {
-            const archive = archiver('zip', {zlib: {level: 9}});
+            const archive = new ZipArchive({zlib: {level: 9}});
             const stream = fsSync.createWriteStream(packedOut);
             await new Promise((resolve, reject) => {
                 stream.on('close', resolve);

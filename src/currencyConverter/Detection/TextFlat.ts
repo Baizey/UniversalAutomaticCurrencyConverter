@@ -236,29 +236,68 @@ export class TextFlat {
                 continue
             }
 
-            const start = Math.min(currency.start, amount.start)
-            const end = Math.max(currency.end, amount.end)
             const realCurrency = this.activeLocalization.parseCurrency(text.substring(currency.start, currency.end))
             if (realCurrency === null) continue
+            amount = this.expandSpaceSeparatedGroups(text, amount)
+            if (!this.isAmountBoundary(text, amount.end)) continue
+            const start = Math.min(currency.start, amount.start)
+            const end = Math.max(currency.end, amount.end)
             result.push({
                 startIndex: start,
                 endIndex: end,
                 currency: realCurrency,
                 amounts: text.substring(amount.start, amount.end).split('-')
                     .map(e => e.replace(/\s/g, ''))
-                    .map(e => e.replace(/,/g, '.'))
-                    .map(e => {
-                        if (e.charAt(0) === '0') return +e
-                        const lastDot = e.lastIndexOf('.')
-                        if (lastDot === -1) return +e
-                        if (lastDot !== e.length - 3) return +e.replace(/\./g, '')
-                        return +(e.substring(0, lastDot).replace(/\./g, '') + '.' + e.substring(lastDot + 1))
-                    }),
+                    .map(e => this.parseAmount(e)),
                 currencyIndexes: {start: currency.start, end: currency.end},
                 amountIndexes: {start: amount.start, end: amount.end}
             })
         }
         return result
+    }
+
+    private expandSpaceSeparatedGroups(text: string, amount: ReturnType<typeof this.match>): ReturnType<typeof this.match> {
+        let start = amount.start
+        while (start > 1) {
+            let groupEnd = start - 1
+            while (groupEnd >= 0 && /\s/.test(text[groupEnd])) groupEnd--
+            if (groupEnd === start - 1) break
+
+            let groupStart = groupEnd
+            while (groupStart >= 0 && /\d/.test(text[groupStart])) groupStart--
+
+            const groupLength = groupEnd - groupStart
+            if (groupLength < 1 || groupLength > 3) break
+
+            start = groupStart + 1
+            if (groupLength < 3) break
+        }
+
+        return {...amount, start}
+    }
+
+    private parseAmount(amount: string): number {
+        const normalized = amount.replace(/,/g, '.')
+        if (normalized.charAt(0) === '0') return +normalized
+
+        const lastDot = normalized.lastIndexOf('.')
+        if (lastDot === -1) return +normalized
+
+        const separatorCount = normalized.split('.').length - 1
+        const digitsAfterLastDot = normalized.length - lastDot - 1
+
+        if (separatorCount === 1 && digitsAfterLastDot !== 3) return +normalized
+        if (digitsAfterLastDot !== 2) return +normalized.replace(/\./g, '')
+
+        return +(normalized.substring(0, lastDot).replace(/\./g, '') + '.' + normalized.substring(lastDot + 1))
+    }
+
+    private isAmountBoundary(text: string, index: number): boolean {
+        return !this.startsHyphenatedWord(text, index)
+    }
+
+    private startsHyphenatedWord(text: string, index: number): boolean {
+        return text[index] === '-' && /[A-Za-z]/.test(text[index + 1] || '')
     }
 
     private match(node: Node, text: string, i: number) {

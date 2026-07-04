@@ -46,8 +46,8 @@ function polyfill(access: typeof chrome) {
         sendNativeMessage: () => Promise.resolve(null),
         setUninstallURL: () => Promise.resolve(null as any as Window),
         openOptionsPage: () => Promise.resolve(),
-        onConnect: null as any as chrome.runtime.ExtensionConnectEvent,
-        onConnectExternal: null as any as chrome.runtime.ExtensionConnectEvent,
+        onConnect: null as any as typeof chrome.runtime.onConnect,
+        onConnectExternal: null as any as typeof chrome.runtime.onConnectExternal,
         lastError: undefined,
         id: 'TEST',
     } as any as typeof chrome.runtime
@@ -275,7 +275,7 @@ export class Browser {
             storage.get([key], (resp) =>
                 self.runtime.lastError
                     ? reject(Error(self.runtime.lastError.message))
-                    : resolve(resp[key]),
+                    : resolve(resp[key] as T),
             ),
         )
     }

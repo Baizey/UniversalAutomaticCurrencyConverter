@@ -101,6 +101,6 @@ describe( 'CurrencyLocalization', () => {
 		await localization.save()
 
 		// Assert
-		expect( spy ).toBeCalledWith( 'key', '' )
+		expect( spy ).toHaveBeenCalledWith( 'key', '' )
 	} )
 } )

@@ -2,7 +2,7 @@ import { Config } from 'jest'
 
 const config: Config = {
 	transform: {
-		'<transform_regex>': [ 'ts-jest', { tsconfig: { target: 'es2019' } } ],
+		'^.+\\.tsx?$': [ 'ts-jest', { tsconfig: { target: 'es2019', types: [ 'jest', 'node', 'chrome', 'firefox' ] } } ],
 	},
 	moduleNameMapper: {
 		'.+\\.(css|styl|less|sass|scss)$': 'identity-obj-proxy',

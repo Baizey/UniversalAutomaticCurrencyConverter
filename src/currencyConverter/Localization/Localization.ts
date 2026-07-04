@@ -30,6 +30,7 @@ export class Localizations {
             ',--': ['SEK', 'DKK', 'NOK', 'ISK'],
             // China, Japan
             '¥': ['CNY', 'JPY'],
+            '￥': ['CNY', 'JPY'],
         };
     }
 
@@ -92,6 +93,8 @@ export class Localizations {
             ETH: ['Ξ'],
             // Litecoin
             LTC: ['Ł'],
+            // Namibia
+            NAD: ['N$'],
         };
     }
 

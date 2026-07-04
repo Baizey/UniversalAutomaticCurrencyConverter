@@ -9,7 +9,16 @@
     "noImplicitReturns": true,
     "noImplicitAny": false,
     "module": "commonjs",
-    "target": "ES2017",
+    "target": "ES2019",
+    "lib": [
+      "DOM",
+      "ES2019"
+    ],
+    "types": [
+      "node",
+      "chrome",
+      "firefox"
+    ],
     "allowJs": true
   },
   "include": [

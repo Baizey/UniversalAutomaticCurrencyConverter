@@ -98,8 +98,8 @@ describe( 'ActiveLocalization', () => {
 		await activeLocalization.save()
 
 		// Assert
-		expect( kroneSpy ).toBeCalledTimes( 1 )
-		expect( yenSpy ).toBeCalledTimes( 1 )
-		expect( dollarSpy ).toBeCalledTimes( 1 )
+		expect( kroneSpy ).toHaveBeenCalledTimes( 1 )
+		expect( yenSpy ).toHaveBeenCalledTimes( 1 )
+		expect( dollarSpy ).toHaveBeenCalledTimes( 1 )
 	} )
 } )
