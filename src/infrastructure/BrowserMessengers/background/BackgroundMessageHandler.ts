@@ -1,23 +1,23 @@
-import { MessengerHandlerManager, Query } from "../messengerHandlerManager";
-import { BackgroundMessengerQueryDi, BrowserDiTypes } from "../../index";
-import { BackgroundMessageType } from "./BackgroundMessageType";
-import { BackendApiCaller } from "../../../serviceWorker/BackendApiCaller";
+import {MessengerHandlerManager, Query} from "../messengerHandlerManager";
+import {BackgroundMessengerQueryDi, BrowserDiTypes} from "../../index";
+import {BackgroundMessageType} from "./BackgroundMessageType";
+import {BackendApiCaller} from "../../../serviceWorker/BackendApiCaller";
 
 export class BackgroundMessageHandler extends MessengerHandlerManager {
-    constructor( p: BrowserDiTypes & BackgroundMessengerQueryDi ) {
-        super( p )
-        this.add( p.backgroundGetRateQuery )
-        this.add( p.backgroundGetSymbolQuery )
-        this.add( p.backgroundDetectQuery )
+    constructor(p: BrowserDiTypes & BackgroundMessengerQueryDi) {
+        super(p)
+        this.add(p.backgroundGetRateQuery)
+        this.add(p.backgroundGetSymbolQuery)
+        this.add(p.backgroundDetectQuery)
 
-        this.add( p.authLogoutQuery )
-        this.add( p.authLoginQuery )
+        this.add(p.authLogoutQuery)
+        this.add(p.authLoginQuery)
 
-        this.add( p.authUserRegisterQuery )
-        this.add( p.authUserInfoQuery )
+        this.add(p.authUserRegisterQuery)
+        this.add(p.authUserInfoQuery)
 
-        this.add( p.authPasswordResetQuery )
-        this.add( p.authPasswordRecoveryQuery )
+        this.add(p.authPasswordResetQuery)
+        this.add(p.authPasswordRecoveryQuery)
     }
 }
 
@@ -76,23 +76,21 @@ export type UserResetPasswordRequest = {
 export class AuthLoginQuery implements Query<UserLoginRequest, SessionInfoResponse> {
     readonly key = BackgroundMessageType.login
 
-    async handle( request: UserLoginRequest ): Promise<SessionInfoResponse> {
-        const resp = await BackendApiCaller.fetch( `api/v1/auth/login`, {
+    async handle(request: UserLoginRequest): Promise<SessionInfoResponse> {
+        return await BackendApiCaller.fetchJson(`api/v1/auth/login`, {
             method: 'POST',
             body: request,
-        } )
-        const text: string = await resp.text()
-        return JSON.parse( text )
+        })
     }
 }
 
 export class AuthLogoutQuery implements Query<UserLogoutRequest, boolean> {
     readonly key = BackgroundMessageType.logout
 
-    async handle( request: UserLogoutRequest ): Promise<boolean> {
-        await BackendApiCaller.fetch( `api/v1/auth/logout`, {
+    async handle(request: UserLogoutRequest): Promise<boolean> {
+        await BackendApiCaller.fetch(`api/v1/auth/logout`, {
             method: 'DELETE',
-        } )
+        })
         return true
     }
 }
@@ -100,11 +98,11 @@ export class AuthLogoutQuery implements Query<UserLogoutRequest, boolean> {
 export class AuthPasswordRecoveryQuery implements Query<UserRecoveryRequest, boolean> {
     readonly key = BackgroundMessageType.password_recovery
 
-    async handle( request: UserRecoveryRequest ): Promise<boolean> {
-        await BackendApiCaller.fetch( `api/v1/auth/password/recovery`, {
+    async handle(request: UserRecoveryRequest): Promise<boolean> {
+        await BackendApiCaller.fetchJson(`api/v1/auth/password/recovery`, {
             method: 'POST',
             body: request,
-        } )
+        })
         return true
     }
 }
@@ -112,35 +110,29 @@ export class AuthPasswordRecoveryQuery implements Query<UserRecoveryRequest, boo
 export class AuthPasswordResetQuery implements Query<UserResetPasswordRequest, UserWithSessionInfoResponse> {
     readonly key = BackgroundMessageType.password_reset
 
-    async handle( request: UserResetPasswordRequest ): Promise<UserWithSessionInfoResponse> {
-        const resp = await BackendApiCaller.fetch( `api/v1/auth/password/reset`, {
+    async handle(request: UserResetPasswordRequest): Promise<UserWithSessionInfoResponse> {
+        return await BackendApiCaller.fetchJson(`api/v1/auth/password/reset`, {
             method: 'POST',
             body: request,
-        } )
-        const text: string = await resp.text()
-        return JSON.parse( text )
+        })
     }
 }
 
 export class AuthUserInfoQuery implements Query<UserInfoRequest, UserInfoResponse> {
     readonly key = BackgroundMessageType.users_info
 
-    async handle( request: UserInfoRequest ): Promise<UserInfoResponse> {
-        const resp = await BackendApiCaller.fetch( `api/v1/auth/users` )
-        const text: string = await resp.text()
-        return JSON.parse( text )
+    async handle(request: UserInfoRequest): Promise<UserInfoResponse> {
+        return await BackendApiCaller.fetchJson(`api/v1/auth/users`)
     }
 }
 
 export class AuthUserRegisterQuery implements Query<UserRegisterRequest, SessionInfoResponse> {
     readonly key = BackgroundMessageType.users_register
 
-    async handle( request: UserRegisterRequest ): Promise<SessionInfoResponse> {
-        const resp = await BackendApiCaller.fetch( `api/v1/auth/users/register`, {
+    async handle(request: UserRegisterRequest): Promise<SessionInfoResponse> {
+        return await BackendApiCaller.fetchJson(`api/v1/auth/users/register`, {
             method: 'POST',
             body: request,
-        } )
-        const text: string = await resp.text()
-        return JSON.parse( text )
+        })
     }
 }
