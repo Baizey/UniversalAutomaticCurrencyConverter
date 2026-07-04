@@ -1,6 +1,6 @@
 import {useProvider} from "../di";
 
-const baseUrl = "https://uacc-go-h3a6bmejfnaebygu.northeurope-01.azurewebsites.net"
+const baseUrl = "https://bloodguilty-squelchily-darlena.ngrok-free.app"
 
 export type FetchOptions = {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
