@@ -77,12 +77,10 @@ export class AuthLoginQuery implements Query<UserLoginRequest, SessionInfoRespon
     readonly key = BackgroundMessageType.login
 
     async handle( request: UserLoginRequest ): Promise<SessionInfoResponse> {
-        const resp = await BackendApiCaller.fetch( `api/v1/auth/login`, {
+        return BackendApiCaller.fetchJson<SessionInfoResponse>( `api/v1/auth/login`, {
             method: 'POST',
             body: request,
         } )
-        const text: string = await resp.text()
-        return JSON.parse( text )
     }
 }
 
@@ -90,7 +88,7 @@ export class AuthLogoutQuery implements Query<UserLogoutRequest, boolean> {
     readonly key = BackgroundMessageType.logout
 
     async handle( request: UserLogoutRequest ): Promise<boolean> {
-        await BackendApiCaller.fetch( `api/v1/auth/logout`, {
+        await BackendApiCaller.fetchOk( `api/v1/auth/logout`, {
             method: 'DELETE',
         } )
         return true
@@ -101,7 +99,7 @@ export class AuthPasswordRecoveryQuery implements Query<UserRecoveryRequest, boo
     readonly key = BackgroundMessageType.password_recovery
 
     async handle( request: UserRecoveryRequest ): Promise<boolean> {
-        await BackendApiCaller.fetch( `api/v1/auth/password/recovery`, {
+        await BackendApiCaller.fetchOk( `api/v1/auth/password/recovery`, {
             method: 'POST',
             body: request,
         } )
@@ -113,12 +111,10 @@ export class AuthPasswordResetQuery implements Query<UserResetPasswordRequest, U
     readonly key = BackgroundMessageType.password_reset
 
     async handle( request: UserResetPasswordRequest ): Promise<UserWithSessionInfoResponse> {
-        const resp = await BackendApiCaller.fetch( `api/v1/auth/password/reset`, {
+        return BackendApiCaller.fetchJson<UserWithSessionInfoResponse>( `api/v1/auth/password/reset`, {
             method: 'POST',
             body: request,
         } )
-        const text: string = await resp.text()
-        return JSON.parse( text )
     }
 }
 
@@ -126,9 +122,7 @@ export class AuthUserInfoQuery implements Query<UserInfoRequest, UserInfoRespons
     readonly key = BackgroundMessageType.users_info
 
     async handle( request: UserInfoRequest ): Promise<UserInfoResponse> {
-        const resp = await BackendApiCaller.fetch( `api/v1/auth/users` )
-        const text: string = await resp.text()
-        return JSON.parse( text )
+        return BackendApiCaller.fetchJson<UserInfoResponse>( `api/v1/auth/users` )
     }
 }
 
@@ -136,11 +130,9 @@ export class AuthUserRegisterQuery implements Query<UserRegisterRequest, Session
     readonly key = BackgroundMessageType.users_register
 
     async handle( request: UserRegisterRequest ): Promise<SessionInfoResponse> {
-        const resp = await BackendApiCaller.fetch( `api/v1/auth/users/register`, {
+        return BackendApiCaller.fetchJson<SessionInfoResponse>( `api/v1/auth/users/register`, {
             method: 'POST',
             body: request,
         } )
-        const text: string = await resp.text()
-        return JSON.parse( text )
     }
 }

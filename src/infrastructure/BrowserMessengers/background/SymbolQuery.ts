@@ -13,9 +13,7 @@ export class SymbolQuery implements Query<SymbolBackgroundMessage, SymbolRespons
     readonly key = BackgroundMessageType.getSymbols
 
     async handle( request: SymbolBackgroundMessage ) {
-        const resp = await BackendApiCaller.fetch( `api/v1/market/symbols` )
-        const text: string = await resp.text()
-        log.info( `Fetching symbols ${ resp.statusText }\n${ text }` )
-        return JSON.parse( text )
+        log.info( `Fetching symbols` )
+        return BackendApiCaller.fetchJson<SymbolResponse>( `api/v1/market/symbols` )
     }
 }
