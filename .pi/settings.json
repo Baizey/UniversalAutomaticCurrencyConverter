@@ -1,0 +1,6 @@
+{
+  "theme": "agent-tools-flat-dark",
+  "packages": [
+    "https://github.com/Baizey/pi-agent-tools"
+  ]
+}
