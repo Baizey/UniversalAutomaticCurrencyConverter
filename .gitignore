@@ -29,3 +29,4 @@ yarn-debug.log*
 yarn-error.log*
 .env
 UniversalAutomaticCurrencyConverter.zip
+/.pi/git
