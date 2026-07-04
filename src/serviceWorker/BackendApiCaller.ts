@@ -24,7 +24,6 @@ export class BackendApiCaller {
         const traceId = userConfig.traceId.value
 
         const headers: Record<string, string> = (init.headers ?? {})
-        headers['ngrok-skip-browser-warning'] = 'true'
         if ( sessionId ) headers['Authorization'] = `Bearer ${ sessionId }`
         headers['x-traceid'] = traceId
 
