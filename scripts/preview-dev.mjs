@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 const root = path.resolve( __dirname, ".." );
 const distRoot = path.join( root, "dist", "chrome_dev" );
+const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 const port = Number( process.env.PORT || 4173 );
 const previewStartedAt = Date.now();
 let server = null;
@@ -24,7 +25,7 @@ const mimeTypes = {
 
 await rm( distRoot, { recursive: true, force: true } );
 
-const build = spawn( process.platform === "win32" ? "npm.cmd" : "npm", [ "run", "build-dev" ], {
+const build = spawn( npmCommand, [ "run", "build-dev" ], {
     cwd: root,
     stdio: [ "ignore", "pipe", "pipe" ],
     env: process.env,
@@ -89,19 +90,26 @@ function shutdown( code ) {
 
 async function waitForBuild() {
     const deadline = Date.now() + 30_000;
-    const required = [
+    const requiredFresh = [
         path.join( distRoot, "manifest.json" ),
+        path.join( distRoot, "content.js" ),
+        path.join( distRoot, "options.js" ),
+        path.join( distRoot, "popup.js" ),
+        path.join( distRoot, "shared.css" ),
+    ];
+    const requiredCopied = [
         path.join( distRoot, "popup.html" ),
         path.join( distRoot, "options.html" ),
-        path.join( distRoot, "content.js" ),
+        path.join( distRoot, "content.css" ),
     ];
 
     while ( Date.now() < deadline ) {
         if ( buildExitCode !== null ) {
             throw new Error( `build-dev exited before preview output was ready: ${ buildExitCode }` );
         }
-        const fresh = await Promise.all( required.map( hasFreshMtime ) );
-        if ( fresh.every( Boolean ) ) return;
+        const fresh = await Promise.all( requiredFresh.map( hasFreshMtime ) );
+        const copied = await Promise.all( requiredCopied.map( fileExists ) );
+        if ( fresh.every( Boolean ) && copied.every( Boolean ) ) return;
         await new Promise( resolve => setTimeout( resolve, 250 ) );
     }
 
@@ -112,6 +120,15 @@ async function hasFreshMtime( file ) {
     try {
         const fileStat = await stat( file );
         return fileStat.mtimeMs >= previewStartedAt;
+    } catch {
+        return false;
+    }
+}
+
+async function fileExists( file ) {
+    try {
+        await stat( file );
+        return true;
     } catch {
         return false;
     }

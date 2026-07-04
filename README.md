@@ -14,21 +14,23 @@ An extension for Chrome, Firefox and (the new) Edge
 
 ## Environment
 
-- NodeJs (LTS v16.X.X)
-- Npm (v8.X.X)
+- Node.js >=20.19.0
+- npm >=8
 - Windows 10 (which OS compiles it should hopefully not matter)
 
-The exact sub-versions should not matter
+Later supported Node and npm versions should work.
 
 ## Build
-Run the following commands: 
+For a production bundle, run the following commands:
 1. ```npm install```
-1. ```npm run start:dev```
+1. ```npm run build-prod```
+
+For development, use ```npm run build-dev``` as a long-running watch build and ```npm run preview-dev``` to serve the Chrome development output locally.
 
 Individual components can also be viewed in storybook
 - ```npm run storybook``` (```http://localhost:6006```)
 
-Deployment code is placed in dist.zip
+Deployment artifacts are placed under ```dist/```.
 
 ## Summary of features
 
