@@ -26,6 +26,8 @@
 .env.production.local
 vite.build.js
 
+/.pi/git
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
