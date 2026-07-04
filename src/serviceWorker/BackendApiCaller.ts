@@ -11,8 +11,8 @@ export type FetchOptions = {
 
 export class BackendApiCaller {
 
-    static fetchJson<T>(path: string, init: FetchOptions = {}): Promise<T> {
-        const result = await fetch(path, init)
+    static async fetchJson<T>(path: string, init: FetchOptions = {}): Promise<T> {
+        const result = await this.fetch(path, init)
         const text = await result.text()
         try {
             return JSON.parse(text)
