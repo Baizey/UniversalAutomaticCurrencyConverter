@@ -278,7 +278,7 @@ export class ContentUi {
         wrapper.appendChild( Input.createButtonGroup( {
             values: [ Input.createButton( {
                 label: tabState.isShowingConversions ? "Hide conversions" : "Show conversions",
-                variant: tabState.isShowingConversions ? "warning" : "primary",
+                variant: tabState.isShowingConversions ? "secondary" : "primary",
                 onClick: () => {
                     tabState.setIsShowingConversions( !tabState.isShowingConversions );
                     this.render();

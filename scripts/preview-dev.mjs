@@ -7,7 +7,10 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 const root = path.resolve( __dirname, ".." );
 const distRoot = path.join( root, "dist", "chrome_dev" );
-const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const npmCommand = process.platform === "win32" ? (process.env.ComSpec || "cmd.exe") : "npm";
+const npmArgs = process.platform === "win32"
+    ? [ "/d", "/s", "/c", "npm.cmd", "run", "build-dev" ]
+    : [ "run", "build-dev" ];
 const port = Number( process.env.PORT || 4173 );
 const previewStartedAt = Date.now();
 let server = null;
@@ -25,7 +28,7 @@ const mimeTypes = {
 
 await rm( distRoot, { recursive: true, force: true } );
 
-const build = spawn( npmCommand, [ "run", "build-dev" ], {
+const build = spawn( npmCommand, npmArgs, {
     cwd: root,
     stdio: [ "ignore", "pipe", "pipe" ],
     env: process.env,

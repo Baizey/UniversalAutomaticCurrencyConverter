@@ -1,12 +1,14 @@
 .uacc-popup {
-    max-width: calc(100% - 20px);
-    width: 600px;
+    width: 420px;
+    max-width: 100%;
+    min-height: 0;
     height: fit-content;
-    margin: auto;
-    padding: 20px;
+    margin: 0 auto;
+    padding: 18px;
     box-sizing: border-box;
     background-color: var(--uacc-background1);
     color: var(--uacc-text);
+    overflow-x: hidden;
 }
 
 .uacc-converter {
@@ -16,26 +18,89 @@
 
 .uacc-converter-rows {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .uacc-conversion-row {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 32px minmax(0, 1fr);
+    grid-template-rows: 42px 42px;
+    gap: 6px;
     align-items: center;
     width: 100%;
+    padding: 6px;
+    border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%);
+    border-radius: 14px;
+    background-color: color-mix(in srgb, var(--uacc-background2) 78%, var(--uacc-background3) 22%);
+}
+
+.uacc-conversion-row > :nth-child(1) {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+}
+
+.uacc-conversion-row > :nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.uacc-conversion-row > :nth-child(3) {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.uacc-conversion-row > :nth-child(4) {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+}
+
+.uacc-conversion-row > :nth-child(5) {
+    grid-column: 4;
+    grid-row: 1;
+}
+
+.uacc-conversion-row > :nth-child(6) {
+    grid-column: 4;
+    grid-row: 2;
+}
+
+.uacc-cell-icon,
+.uacc-cell-amount,
+.uacc-cell-currency {
+    width: 100%;
+    min-width: 0;
 }
 
 .uacc-cell-icon {
-    width: 6%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.uacc-cell-amount {
-    width: 34%;
+.uacc-popup .uacc-icon-button {
+    height: 42px;
+    border-radius: 10px;
 }
 
-.uacc-cell-currency {
-    width: 10%;
+.uacc-popup .uacc-text-input,
+.uacc-popup .uacc-search-input {
+    font-size: 14px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+
+@media (max-width: 390px) {
+    .uacc-popup {
+        width: 360px;
+        padding: 14px;
+    }
+
+    .uacc-conversion-row {
+        grid-template-columns: 30px minmax(0, 1fr) 30px minmax(0, 1fr);
+        gap: 5px;
+        padding: 5px;
+    }
 }

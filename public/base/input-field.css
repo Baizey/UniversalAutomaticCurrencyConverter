@@ -2,48 +2,55 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 50px;
+    min-height: 44px;
     width: 100%;
-    background-color: var(--uacc-background3);
-    box-sizing: border-box;
-}
-
-.uacc-text-input-click:focus, .uacc-text-input-click:hover {
-    border-color: var(--uacc-warning) !important;
-    background-color: color-mix(in srgb, var(--uacc-background1) 95%, var(--uacc-warning) 5%) !important;
-    cursor: pointer;
-}
-
-/* Text input itself */
-.uacc-text-input {
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    width: 100%;
-    height: 100%;
     background-color: transparent;
-    border: none;
-    border-bottom: 2px solid var(--uacc-ternary);
-    outline: none;
-    color: var(--uacc-text);
-    font-size: 20px; /* upscaled to fill 50px row nicely */
-    padding: 0 0.5rem; /* minimal horizontal padding */
     box-sizing: border-box;
-    line-height: 48px; /* vertically centers text inside 50px height minus border */
-    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-weight: 500; /* semi-bold for clarity inside 50px height */
-    transition: border-color 0.25s ease;
 }
 
-/* Focus state for underline */
-.uacc-text-input:focus, .uacc-text-input:hover {
-    border-color: var(--uacc-primary);
-    background-color: color-mix(in srgb, var(--uacc-background1) 90%, var(--uacc-primary) 10%);
+.uacc-text-input-click:focus,
+.uacc-text-input-click:hover {
+    border-color: var(--uacc-warning) !important;
+    background-color: color-mix(in srgb, var(--uacc-background1) 88%, var(--uacc-warning) 12%) !important;
+    cursor: pointer !important;
 }
 
-/* Placeholder matches text color with subtle opacity */
-.uacc-text-input::placeholder {
-    color: var(--uacc-text);
-    opacity: 0.6;
+#uacc-root .uacc-text-input {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    display: block !important;
+    width: 100% !important;
+    height: 42px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%) !important;
+    border-radius: 10px !important;
+    outline: none !important;
+    background-color: var(--uacc-background3) !important;
+    color: var(--uacc-title) !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    line-height: 42px !important;
+    box-shadow: none !important;
+    transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease !important;
+}
+
+#uacc-root .uacc-text-input[readonly] {
+    color: var(--uacc-text) !important;
+    background-color: color-mix(in srgb, var(--uacc-background1) 45%, var(--uacc-background3) 55%) !important;
+}
+
+#uacc-root .uacc-text-input:focus,
+#uacc-root .uacc-text-input:hover {
+    border-color: var(--uacc-primary) !important;
+    background-color: color-mix(in srgb, var(--uacc-background3) 86%, var(--uacc-primary) 14%) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--uacc-primary) 22%, transparent) !important;
+}
+
+#uacc-root .uacc-text-input::placeholder {
+    color: var(--uacc-text) !important;
+    opacity: 0.75 !important;
 }
 
 .uacc-range-wrapper {
@@ -52,12 +59,13 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    background-color: var(--uacc-background3);
+    background-color: transparent;
 }
 
-.uacc-range-input {
-    width: 90%;
-    height: 24px;
-    margin: 0.5rem auto 1rem;
-    accent-color: var(--uacc-primary);
+#uacc-root .uacc-range-input {
+    appearance: auto !important;
+    width: 92% !important;
+    height: 22px !important;
+    margin: 0.35rem auto 0.6rem !important;
+    accent-color: var(--uacc-primary) !important;
 }

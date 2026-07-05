@@ -2,93 +2,96 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 50px;
+    min-height: 44px;
     width: 100%;
-    background-color: var(--uacc-background3);
+    background-color: transparent;
     position: relative;
     box-sizing: border-box;
 }
 
-/* Search input field */
-.uacc-search-input {
-    width: 100%;
-    height: 100%;
-    background-color: var(--uacc-background3);
-    border: none;
-    border-bottom: 2px solid var(--uacc-ternary);
-    outline: none;
-    color: var(--uacc-text);
-    font-size: 20px;
-    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-weight: 500;
-    line-height: 48px;
-    box-sizing: border-box;
-    transition: border-color 0.25s ease;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
+#uacc-root .uacc-search-input {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    display: block !important;
+    width: 100% !important;
+    height: 42px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%) !important;
+    border-radius: 10px !important;
+    outline: none !important;
+    background-color: var(--uacc-background3) !important;
+    color: var(--uacc-title) !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    line-height: 42px !important;
+    box-shadow: none !important;
+    transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease !important;
 }
 
-.uacc-search-input:focus, .uacc-search-input:hover {
-    border-bottom-color: var(--uacc-primary);
-    background-color: color-mix(in srgb, var(--uacc-background1) 90%, var(--uacc-primary) 10%);
+#uacc-root .uacc-search-input:focus,
+#uacc-root .uacc-search-input:hover {
+    border-color: var(--uacc-primary) !important;
+    background-color: color-mix(in srgb, var(--uacc-background3) 86%, var(--uacc-primary) 14%) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--uacc-primary) 22%, transparent) !important;
 }
 
-.uacc-search-input::placeholder {
-    color: var(--uacc-text);
-    opacity: 0.6;
+#uacc-root .uacc-search-input::placeholder {
+    color: var(--uacc-text) !important;
+    opacity: 0.8 !important;
 }
 
-/* Dropdown container */
 .uacc-dropdown {
     position: absolute;
-    top: 50px; /* just under wrapper */
+    top: 46px;
     left: 0;
-    width: calc(100% - 2px); /* matches input width */
-    max-height: 160px; /* 4 * 40px */
+    width: 100%;
+    max-height: 176px;
     overflow-y: auto;
-    background-color: var(--uacc-background3);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--uacc-background2);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
     display: none;
-    z-index: 1000;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    border-left: 1px solid var(--uacc-ternary);
-    border-right: 1px solid var(--uacc-ternary);
-    border-bottom: 1px solid var(--uacc-ternary);
+    z-index: 2147483647;
+    scrollbar-width: thin;
+    border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%);
+    border-radius: 10px;
+    padding: 4px;
 }
 
 .uacc-dropdown-top {
     top: auto;
-    bottom: 50px;
-    border-top: 1px solid var(--uacc-ternary);
-    border-bottom: none;
+    bottom: 46px;
 }
 
-/* Dropdown items */
 .uacc-dropdown-item {
-    height: 40px;
+    min-height: 36px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    margin: 0 auto; /* centers it, leaving 2.5% on each side */
     color: var(--uacc-text);
-    transition: background-color 0.2s;
-    border-radius: 0; /* no rounding */
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.16s ease, color 0.16s ease;
+    border-radius: 7px;
+    padding: 0 8px;
+    text-align: center;
 }
 
 .uacc-dropdown-item:hover,
 .uacc-dropdown-item.uacc-selected {
-    background-color: var(--uacc-ternary);
+    background-color: color-mix(in srgb, var(--uacc-primary) 24%, var(--uacc-background3) 76%);
+    color: var(--uacc-title);
 }
 
-/* No results message */
 .uacc-dropdown-empty {
-    height: 40px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--uacc-text); /* ensure readability */
+    color: var(--uacc-text);
+    font-size: 14px;
     font-style: italic;
 }

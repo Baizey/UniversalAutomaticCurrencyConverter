@@ -14,25 +14,25 @@ export interface ThemeColors {
 
 const lightTheme = {
     primary: '#2563EB',
-    secondary: '#3B82F6',
-    ternary: '#D1D5DB',
+    secondary: '#475569',
+    ternary: '#E2E8F0',
     warning: '#DC2626',
     title: '#0F172A',
-    text: '#1E293B',
-    background1: '#F9FAFB',
-    background2: '#E5E7EB',
-    background3: '#E5E7EB',
+    text: '#334155',
+    background1: '#F8FAFC',
+    background2: '#FFFFFF',
+    background3: '#F1F5F9',
 } satisfies ThemeColors;
 const darkTheme = {
-    primary: '#FACC15',
-    secondary: '#CA8A04',
-    ternary: '#374151',
+    primary: '#2563EB',
+    secondary: '#334155',
+    ternary: '#1E293B',
     warning: '#EF4444',
-    title: '#F9FAFB',
-    text: '#E5E7EB',
-    background1: '#0B0F17',
-    background2: '#0E131E',
-    background3: '#0E131E',
+    title: '#F8FAFC',
+    text: '#CBD5E1',
+    background1: '#0F172A',
+    background2: '#111827',
+    background3: '#1E293B',
 } satisfies ThemeColors;
 
 export class ThemeHandler {

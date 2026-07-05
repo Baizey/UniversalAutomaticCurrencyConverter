@@ -1,13 +1,24 @@
 :root {
-    --uacc-primary: #FACC15;
-    --uacc-secondary: #22D3EE;
-    --uacc-ternary: #374151;
+    --uacc-primary: #2563EB;
+    --uacc-secondary: #334155;
+    --uacc-ternary: #1E293B;
     --uacc-warning: #EF4444;
-    --uacc-text: #E5E7EB;
-    --uacc-title: #E5E7EB;
-    --uacc-background1: #1F2937;
-    --uacc-background2: #1F2937;
-    --uacc-background3: #1F2937;
+    --uacc-text: #CBD5E1;
+    --uacc-title: #F8FAFC;
+    --uacc-background1: #0F172A;
+    --uacc-background2: #111827;
+    --uacc-background3: #1E293B;
+}
+
+#uacc-root,
+#uacc-root * {
+    box-sizing: border-box;
+}
+
+#uacc-root,
+#uacc-root button,
+#uacc-root input {
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 .uacc-gap-1em {

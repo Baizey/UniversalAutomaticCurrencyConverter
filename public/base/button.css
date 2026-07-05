@@ -1,68 +1,88 @@
 .uacc-button-group-wrap {
     width: 100%;
     height: fit-content;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 0.65rem;
+    margin-bottom: 0.65rem;
 }
 
 .uacc-button-group {
     width: 95%;
     height: fit-content;
     margin: auto;
-    display: inline-flex;
-    border-radius: 1rem;
-    overflow: hidden;
-    align-content: space-evenly;
-    align-items: center;
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.uacc-button-group > div {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0;
 }
 
 .uacc-button-group .uacc-button {
-    border-radius: 0;
     margin: 0;
 }
 
-.uacc-button {
-    width: 100%;
-    text-align: center;
-    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-weight: 600;
-    font-size: 18px;
-    height: 50px;
-    padding: 12px 24px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease, opacity 0.2s ease;
-    color: var(--uacc-text);
+#uacc-root .uacc-button {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+    padding: 10px 16px !important;
+    border: 1px solid transparent !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    transition: transform 0.12s ease, background-color 0.16s ease, border-color 0.16s ease, opacity 0.16s ease !important;
+    color: var(--uacc-title) !important;
+    box-shadow: none !important;
 }
 
-/* Variants */
 .uacc-button-primary {
-    background-color: var(--uacc-primary);
+    background-color: var(--uacc-primary) !important;
+    border-color: var(--uacc-primary) !important;
+    color: white !important;
 }
 
 .uacc-button-secondary {
-    background-color: var(--uacc-secondary);
+    background-color: var(--uacc-secondary) !important;
+    border-color: color-mix(in srgb, var(--uacc-secondary) 78%, white 22%) !important;
+    color: var(--uacc-title) !important;
 }
 
 .uacc-button-ternary {
-    background-color: var(--uacc-ternary);
+    background-color: var(--uacc-background3) !important;
+    border-color: color-mix(in srgb, var(--uacc-ternary) 82%, white 18%) !important;
+    color: var(--uacc-title) !important;
 }
 
 .uacc-button-warning {
-    background-color: var(--uacc-warning);
+    background-color: var(--uacc-warning) !important;
+    border-color: var(--uacc-warning) !important;
+    color: white !important;
 }
 
-/* States */
-.uacc-button:hover:not(.uacc-button-disabled) {
-    opacity: 0.9;
+#uacc-root .uacc-button:hover:not(.uacc-button-disabled) {
+    opacity: 0.95 !important;
+    transform: translateY(-1px);
 }
 
-.uacc-button:active:not(.uacc-button-disabled) {
-    opacity: 0.8;
+#uacc-root .uacc-button:active:not(.uacc-button-disabled) {
+    opacity: 0.88 !important;
+    transform: translateY(0);
 }
 
 .uacc-button-disabled {
-    background-color: var(--uacc-background2);
-    cursor: not-allowed;
-    opacity: 0.6;
+    background-color: var(--uacc-background3) !important;
+    border-color: var(--uacc-ternary) !important;
+    cursor: not-allowed !important;
+    opacity: 0.55 !important;
 }
