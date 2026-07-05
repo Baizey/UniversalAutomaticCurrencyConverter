@@ -54,7 +54,7 @@
     width: 28px;
     height: 28px;
     z-index: 1;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .uacc-alert-inner {
@@ -126,7 +126,7 @@
     color: var(--uacc-text);
     background-color: color-mix(in srgb, var(--uacc-background1) 44%, var(--uacc-background3) 56%);
     border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%);
-    border-radius: 10px;
+    border-radius: 6px;
     text-align: center;
     font-size: 15px;
     line-height: 1.25;
