@@ -24,15 +24,15 @@ const lightTheme = {
     background3: '#F1F5F9',
 } satisfies ThemeColors;
 const darkTheme = {
-    primary: '#2563EB',
-    secondary: '#334155',
-    ternary: '#1E293B',
+    primary: '#F0AD4E',
+    secondary: '#5C656D',
+    ternary: '#444C56',
     warning: '#EF4444',
     title: '#F8FAFC',
     text: '#CBD5E1',
-    background1: '#0F172A',
-    background2: '#111827',
-    background3: '#1E293B',
+    background1: '#22272E',
+    background2: '#262A32',
+    background3: '#333B45',
 } satisfies ThemeColors;
 
 export class ThemeHandler {

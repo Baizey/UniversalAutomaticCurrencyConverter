@@ -33,7 +33,7 @@
     font-weight: 600 !important;
     line-height: 42px !important;
     box-shadow: none !important;
-    transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease !important;
+    transition: border-color 0.16s ease, background-color 0.16s ease !important;
 }
 
 #uacc-root .uacc-text-input[readonly] {
@@ -44,8 +44,8 @@
 #uacc-root .uacc-text-input:focus,
 #uacc-root .uacc-text-input:hover {
     border-color: var(--uacc-primary) !important;
-    background-color: color-mix(in srgb, var(--uacc-background3) 86%, var(--uacc-primary) 14%) !important;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--uacc-primary) 22%, transparent) !important;
+    background-color: color-mix(in srgb, var(--uacc-background1) 90%, var(--uacc-primary) 10%) !important;
+    box-shadow: none !important;
 }
 
 #uacc-root .uacc-text-input::placeholder {

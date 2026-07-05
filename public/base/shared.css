@@ -1,13 +1,13 @@
 :root {
-    --uacc-primary: #2563EB;
-    --uacc-secondary: #334155;
-    --uacc-ternary: #1E293B;
+    --uacc-primary: #F0AD4E;
+    --uacc-secondary: #5C656D;
+    --uacc-ternary: #444C56;
     --uacc-warning: #EF4444;
     --uacc-text: #CBD5E1;
     --uacc-title: #F8FAFC;
-    --uacc-background1: #0F172A;
-    --uacc-background2: #111827;
-    --uacc-background3: #1E293B;
+    --uacc-background1: #22272E;
+    --uacc-background2: #262A32;
+    --uacc-background3: #333B45;
 }
 
 #uacc-root,
