@@ -1,6 +1,17 @@
 import {useProvider} from "../di";
 
-const baseUrl = "https://bloodguilty-squelchily-darlena.ngrok-free.app"
+enum BackendEnvironment {
+    staging = 'staging',
+    hosted = 'hosted',
+}
+
+const backendEnvironment: BackendEnvironment = BackendEnvironment.staging
+const backendUrls = {
+    [BackendEnvironment.staging]: 'https://bloodguilty-squelchily-darlena.ngrok-free.app',
+    [BackendEnvironment.hosted]: 'https://uacc-go-h3a6bmejfnaebygu.northeurope-01.azurewebsites.net',
+} satisfies Record<BackendEnvironment, string>
+
+const baseUrl = backendUrls[backendEnvironment]
 
 export type FetchOptions = {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
