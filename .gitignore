@@ -26,6 +26,8 @@
 .env.production.local
 vite.build.js
 
+*.png
+
 /.pi/git
 
 npm-debug.log*
