@@ -12,13 +12,22 @@ export type FetchOptions = {
 export class BackendApiCaller {
 
     static async fetchJson<T>(path: string, init: FetchOptions = {}): Promise<T> {
-        const result = await this.fetch(path, init)
+        const result = await this.fetchOk(path, init)
         const text = await result.text()
         try {
             return JSON.parse(text)
         } catch (e) {
-            throw new Error(`Failed to parse JSON from ${path}: ${text}\nFull error:\n${e}`)
+            throw new Error(`Failed to parse JSON from ${path}: ${result.status} ${result.statusText}\n${text}\nFull error:\n${e}`)
         }
+    }
+
+    static async fetchOk(path: string, init: FetchOptions = {}): Promise<Response> {
+        const result = await this.fetch(path, init)
+        if (!result.ok) {
+            const text = await result.text()
+            throw new Error(`Request failed for ${path}: ${result.status} ${result.statusText}\n${text}`)
+        }
+        return result
     }
 
     static fetch(path: string,
@@ -36,15 +45,19 @@ export class BackendApiCaller {
         const sessionId = userConfig.userSessionId.value
         const traceId = userConfig.traceId.value
 
-        const headers: Record<string, string> = (init.headers ?? {})
+        const headers: Record<string, string> = {...(init.headers ?? {})}
         if (sessionId) headers['Authorization'] = `Bearer ${sessionId}`
+        headers['Accept'] = 'application/json'
+        headers['ngrok-skip-browser-warning'] = 'true'
+        headers['X-Request-ID'] = traceId
         headers['x-traceid'] = traceId
+        if (init.body) headers['Content-Type'] = 'application/json'
 
         return fetch(`${baseUrl}/${path}`, {
             method: init.method ?? 'GET',
             body: init.body ? JSON.stringify(init.body) : undefined,
             headers: {
-                ...(headers || {}),
+                ...headers,
                 // This is hardcoded, but we don't really care
                 // It's for our own service and is just to avoid significant abuse.
                 'x-apikey': 'a8685f3f-9955-4d80-bff8-a927be128ece',

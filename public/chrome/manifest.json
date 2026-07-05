@@ -40,7 +40,8 @@
     "page": "options.html"
   },
   "host_permissions": [
-    "https://uacc-go-h3a6bmejfnaebygu.northeurope-01.azurewebsites.net/*"
+    "https://uacc-go-h3a6bmejfnaebygu.northeurope-01.azurewebsites.net/*",
+    "https://bloodguilty-squelchily-darlena.ngrok-free.app/*"
   ],
   "permissions": [
     "contextMenus",

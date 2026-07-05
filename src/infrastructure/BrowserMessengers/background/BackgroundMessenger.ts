@@ -10,6 +10,7 @@ import {
     UserInfoRequest,
     UserInfoResponse,
     UserLoginRequest,
+    UserWithSessionInfoResponse,
     UserLogoutRequest,
     UserRecoveryRequest,
     UserRegisterRequest,
@@ -50,12 +51,12 @@ export class BackgroundMessenger {
         return await this.sendMessage( request )
     }
 
-    async recoverPassword( email: string ): Promise<SymbolResponse> {
+    async recoverPassword( email: string ): Promise<boolean> {
         const request: BackgroundMessage = { type: BackgroundMessageType.password_recovery, email }
         return await this.sendMessage( request )
     }
 
-    async resetPassword( token: string, newPassword: string ): Promise<SymbolResponse> {
+    async resetPassword( token: string, newPassword: string ): Promise<UserWithSessionInfoResponse> {
         const request: BackgroundMessage = { type: BackgroundMessageType.password_reset, token, newPassword }
         return await this.sendMessage( request )
     }
@@ -65,17 +66,17 @@ export class BackgroundMessenger {
         return await this.sendMessage( request )
     }
 
-    async register( email: string ): Promise<SymbolResponse> {
+    async register( email: string ): Promise<UserWithSessionInfoResponse> {
         const request: BackgroundMessage = { type: BackgroundMessageType.users_register, email }
         return await this.sendMessage( request )
     }
 
-    async login( email: string, password: string ): Promise<SymbolResponse> {
+    async login( email: string, password: string ): Promise<UserWithSessionInfoResponse> {
         const request: BackgroundMessage = { type: BackgroundMessageType.login, email, password }
         return await this.sendMessage( request )
     }
 
-    async logout(): Promise<SymbolResponse> {
+    async logout(): Promise<boolean> {
         const request: BackgroundMessage = { type: BackgroundMessageType.logout }
         return await this.sendMessage( request )
     }
