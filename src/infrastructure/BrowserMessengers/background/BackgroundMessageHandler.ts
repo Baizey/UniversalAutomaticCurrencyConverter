@@ -79,7 +79,10 @@ export class AuthLoginQuery implements Query<UserLoginRequest, UserWithSessionIn
     async handle(request: UserLoginRequest): Promise<UserWithSessionInfoResponse> {
         return await BackendApiCaller.fetchJson<UserWithSessionInfoResponse>(`api/v1/auth/login`, {
             method: 'POST',
-            body: request,
+            body: {
+                email: request.email,
+                password: request.password,
+            },
         })
     }
 }
@@ -101,7 +104,9 @@ export class AuthPasswordRecoveryQuery implements Query<UserRecoveryRequest, boo
     async handle(request: UserRecoveryRequest): Promise<boolean> {
         await BackendApiCaller.fetchOk(`api/v1/auth/password/recovery`, {
             method: 'POST',
-            body: request,
+            body: {
+                email: request.email,
+            },
         })
         return true
     }
@@ -113,7 +118,10 @@ export class AuthPasswordResetQuery implements Query<UserResetPasswordRequest, U
     async handle(request: UserResetPasswordRequest): Promise<UserWithSessionInfoResponse> {
         return await BackendApiCaller.fetchJson<UserWithSessionInfoResponse>(`api/v1/auth/password/reset`, {
             method: 'POST',
-            body: request,
+            body: {
+                token: request.token,
+                newPassword: request.newPassword,
+            },
         })
     }
 }
@@ -132,7 +140,9 @@ export class AuthUserRegisterQuery implements Query<UserRegisterRequest, UserWit
     async handle(request: UserRegisterRequest): Promise<UserWithSessionInfoResponse> {
         return await BackendApiCaller.fetchJson<UserWithSessionInfoResponse>(`api/v1/auth/users/register`, {
             method: 'POST',
-            body: request,
+            body: {
+                email: request.email,
+            },
         })
     }
 }
