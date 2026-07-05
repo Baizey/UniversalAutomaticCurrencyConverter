@@ -19,7 +19,7 @@
     margin: 0 !important;
     padding: 0 12px !important;
     border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%) !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
     outline: none !important;
     background-color: var(--uacc-background3) !important;
     color: var(--uacc-title) !important;
@@ -55,7 +55,7 @@
     z-index: 2147483647;
     scrollbar-width: thin;
     border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%);
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 4px;
 }
 
@@ -75,7 +75,7 @@
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.16s ease, color 0.16s ease;
-    border-radius: 4px;
+    border-radius: 3px;
     padding: 0 8px;
     text-align: center;
 }

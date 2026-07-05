@@ -61,8 +61,8 @@ export class PopupUi {
         const miniConverter = config.meta.miniConverter;
         const convertTo = config.currencyTag.convertTo;
 
-        const options: DropdownOption[] = Object.entries( symbols )
-            .map( ( [ value, label ] ) => ({ value, label }) );
+        const options: DropdownOption[] = Object.keys( symbols )
+            .map( value => ({ value, label: value }) );
 
         const container = createDiv();
         container.className = "uacc-converter";
@@ -129,7 +129,7 @@ export class PopupUi {
 
             // From currency
             const fromCurrency = Input.createDropdown( {
-                value: { value: row.from, label: symbols[row.from] ?? row.from },
+                value: { value: row.from, label: row.from },
                 options,
                 onChange: option => {
                     row.from = option.value;
@@ -154,7 +154,7 @@ export class PopupUi {
 
             // To currency
             const toCurrency = Input.createDropdown( {
-                value: { value: row.to, label: symbols[row.to] ?? row.to },
+                value: { value: row.to, label: row.to },
                 options,
                 onChange: option => {
                     row.to = option.value;

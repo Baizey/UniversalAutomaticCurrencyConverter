@@ -25,7 +25,7 @@
     margin: 0 !important;
     padding: 0 12px !important;
     border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%) !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
     outline: none !important;
     background-color: var(--uacc-background3) !important;
     color: var(--uacc-title) !important;

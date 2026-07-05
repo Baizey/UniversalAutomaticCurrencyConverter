@@ -26,45 +26,14 @@
 
 .uacc-conversion-row {
     display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) 32px minmax(0, 1fr);
-    grid-template-rows: 42px 42px;
-    gap: 6px;
+    grid-template-columns: 28px minmax(54px, 0.85fr) minmax(44px, 0.65fr) 28px minmax(54px, 0.85fr) minmax(44px, 0.65fr);
+    gap: 5px;
     align-items: center;
     width: 100%;
-    padding: 6px;
+    padding: 5px;
     border: 1px solid color-mix(in srgb, var(--uacc-ternary) 82%, white 18%);
-    border-radius: 14px;
+    border-radius: 10px;
     background-color: color-mix(in srgb, var(--uacc-background2) 78%, var(--uacc-background3) 22%);
-}
-
-.uacc-conversion-row > :nth-child(1) {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-}
-
-.uacc-conversion-row > :nth-child(2) {
-    grid-column: 2;
-    grid-row: 1;
-}
-
-.uacc-conversion-row > :nth-child(3) {
-    grid-column: 2;
-    grid-row: 2;
-}
-
-.uacc-conversion-row > :nth-child(4) {
-    grid-column: 3;
-    grid-row: 1 / span 2;
-}
-
-.uacc-conversion-row > :nth-child(5) {
-    grid-column: 4;
-    grid-row: 1;
-}
-
-.uacc-conversion-row > :nth-child(6) {
-    grid-column: 4;
-    grid-row: 2;
 }
 
 .uacc-cell-icon,
@@ -81,15 +50,22 @@
 }
 
 .uacc-popup .uacc-icon-button {
-    height: 42px;
-    border-radius: 6px;
+    height: 38px;
+    border-radius: 4px;
 }
 
 .uacc-popup .uacc-text-input,
 .uacc-popup .uacc-search-input {
-    font-size: 14px !important;
-    padding-left: 8px !important;
-    padding-right: 8px !important;
+    height: 38px !important;
+    line-height: 38px !important;
+    font-size: 13px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
+
+.uacc-popup .uacc-button {
+    min-height: 40px !important;
+    border-radius: 4px !important;
 }
 
 @media (max-width: 390px) {
@@ -99,8 +75,8 @@
     }
 
     .uacc-conversion-row {
-        grid-template-columns: 30px minmax(0, 1fr) 30px minmax(0, 1fr);
-        gap: 5px;
-        padding: 5px;
+        grid-template-columns: 24px minmax(48px, 0.9fr) minmax(40px, 0.65fr) 24px minmax(48px, 0.9fr) minmax(40px, 0.65fr);
+        gap: 4px;
+        padding: 4px;
     }
 }

@@ -17,11 +17,11 @@
     font-size: 14px;
     line-height: 1.5;
     color: var(--uacc-text);
-    opacity: 0.85;
+    opacity: 0.95;
 }
 
 .uacc-link {
-    color: var(--uacc-secondary);
+    color: #60A5FA;
     text-decoration: none;
     cursor: pointer;
 }

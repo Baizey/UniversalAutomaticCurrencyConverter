@@ -39,7 +39,7 @@
     line-height: 1.2 !important;
     padding: 10px 16px !important;
     border: 1px solid transparent !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
     cursor: pointer !important;
     transition: transform 0.12s ease, background-color 0.16s ease, border-color 0.16s ease, opacity 0.16s ease !important;
     color: var(--uacc-title) !important;
